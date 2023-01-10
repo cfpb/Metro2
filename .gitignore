@@ -1,0 +1,20 @@
+# ignore all
+**
+
+# ...except the following directories
+!metro2/
+!metro2/*
+!metro2/*/*
+!requirements/
+!requirements/*
+
+# ...and the following files
+!setup.sh
+!unzip.sh
+!ingest-data.sh
+!README.md
+!Dockerfile
+!docker-compose.yml
+!.env_SAMPLE
+!.dockerignore
+!.gitignore

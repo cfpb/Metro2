@@ -1,0 +1,45 @@
+version: '3.4'
+
+volumes:
+  postgres_data:
+  evaluators:
+
+services:
+  postgres:
+    image: postgres:13-alpine
+    user: postgres
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_PASSWORD: cfpb
+      POSTGRES_DB: metro2
+    ports:
+      - 127.0.0.1:5432:5432
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+  evaluator:
+    image: metro2_evaluator:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - evaluators:/var/lib/docker/volumes/eval/
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    environment:
+      PGDATABASE: metro2
+      PGUSER: postgres
+      PGPASSWORD: cfpb
+      POSTGRES_USER: postgres
+      PGHOST: postgres
+      PGPORT: 5432
+      METRO2ENV: local

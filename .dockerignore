@@ -1,0 +1,13 @@
+# Ignore all
+**
+
+# ...except these directories
+!metro2
+!requirements
+!local
+
+# ...and these files
+!setup.sh
+!unzip.sh
+!ingest-data.sh
+!.env

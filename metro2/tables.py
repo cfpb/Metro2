@@ -1,0 +1,308 @@
+import psycopg2
+import os
+
+from sqlalchemy import(
+    create_engine,
+    MetaData,
+    Table,
+    Column,
+    Integer,
+    SmallInteger,
+    String
+)
+
+# check if tool is set to run locally
+try:
+    METRO2ENV = os.environ['METRO2ENV']
+except KeyError as e:
+    print("Environment (local, prod, etc.) not found: %s", e)
+    exit(1)
+except:
+    print("Unexpected error, quitting...")
+    exit(1)
+
+# quit if not local
+if METRO2ENV != 'local':
+    print("Metro2 evaluator tool is not configured to run in production. \
+        Quitting...")
+    exit(1)
+
+# retrieve environment variables. Throw exception if not found.
+try:
+    PGHOST = os.environ['PGHOST']
+    PGPORT = os.environ['PGPORT']
+    PGDATABASE = os.environ['PGDATABASE']
+    PGUSER = os.environ['PGUSER']
+    PGPASSWORD = os.environ['PGPASSWORD']
+except KeyError as e:
+    print("Postgres connection variable(s) not found: ", e)
+    exit(1)
+except:
+    print("Unexpected error, quitting...")
+    exit(1)
+
+meta = MetaData()
+
+header = Table(
+    'header', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('rdw_header', SmallInteger),
+    Column('record_identifer_header', String(6)),
+    Column('cycle_identifier_header', String(2)),
+    Column('innovis_program_identifier', String(10)),
+    Column('equifax_program_identifier', String(10)),
+    Column('experian_program_identifier', String(5)),
+    Column('transunion_program_identifier', String(10)),
+    Column('activity_date', String(8)),
+    Column('date_created', String(8)),
+    Column('program_date', String(8)),
+    Column('program_revision_date', String(8)),
+    Column('reporter_name', String(40)),
+    Column('reporter_address', String(96)),
+    Column('reporter_telephone_number', String(10)),
+    Column('software_vendor_name', String(40)),
+    Column('software_version_number', String(5)),
+    Column('microbilt_prbc_program_identifier', String(10)),
+    Column('reserved_header', String(146))
+)
+
+base = Table(
+    'base', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('rdw', SmallInteger),
+    Column('proc_ind', SmallInteger),
+    Column('time_stamp', String(8)),
+    Column('throw_out_hms', String(6)),
+    Column('reserved_base', String(1)),
+    Column('id_num', String(20)),
+    Column('cycle_id', String(2)),
+    Column('cons_acct_num', String(30)),
+    Column('port_type', String(1)),
+    Column('acct_type', String(2)),
+    Column('date_open', String(8)),
+    Column('credit_limit', Integer),
+    Column('hcola', Integer),
+    Column('terms_dur', String(3)),
+    Column('terms_freq', String(1)),
+    Column('smpa', Integer),
+    Column('actual_pmt_amt', Integer),
+    Column('acct_stat', String(2)),
+    Column('pmt_rating', String(1)),
+    Column('php', String(24)),
+    Column('spc_com_cd', String(2)),
+    Column('compl_cond_cd', String(2)),
+    Column('current_bal', Integer),
+    Column('amt_past_due', Integer),
+    Column('orig_chg_off_amt', Integer),
+    Column('doai', String(8)),
+    Column('dofd', String(8)),
+    Column('date_closed', String(8)),
+    Column('dolp', String(8)),
+    Column('int_type_ind', String(1)),
+    Column('reserved_base_2', String(17)),
+    Column('surname', String(25)),
+    Column('first_name', String(20)),
+    Column('middle_name', String(20)),
+    Column('gen_code', String(1)),
+    Column('ssn', String(9)),
+    Column('dob', String(8)),
+    Column('phone_num', String(10)),
+    Column('ecoa', String(1)),
+    Column('cons_info_ind', String(2)),
+    Column('country_cd', String(2)),
+    Column('addr_line_1', String(32)),
+    Column('addr_line_2', String(32)),
+    Column('city', String(20)),
+    Column('us_state', String(2)),
+    Column('zip', String(9)),
+    Column('addr_ind', String(1)),
+    Column('res_cd', String(1))
+)
+
+j1 = Table(
+    'j1', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('segment_identifier_j1', String(2)),
+    Column('reserved_j1', String(1)),
+    Column('surname_j1', String(25)),
+    Column('first_name_j1', String(20)),
+    Column('middle_name_j1', String(20)),
+    Column('gen_code_j1', String(1)),
+    Column('ssn_j1', String(9)),
+    Column('dob_j1', String(8)),
+    Column('phone_num_j1', String(10)),
+    Column('ecoa_j1', String(1)),
+    Column('cons_info_ind_j1', String(2)),
+    Column('reserved_j1_2', String(1))
+)
+
+j2 = Table(
+    'j2', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('segment_identifier_j2', String(2)),
+    Column('reserved_j2', String(1)),
+    Column('surname_j2', String(25)),
+    Column('first_name_j2', String(20)),
+    Column('middle_name_j2', String(20)),
+    Column('gen_code_j2', String(1)),
+    Column('ssn_j2', Integer),
+    Column('dob_j2', Integer),
+    Column('phone_num_j2', String(10)),
+    Column('ecoa_j2', String(1)),
+    Column('cons_info_ind_j2', String(2)),
+    Column('country_cd_j2', String(2)),
+    Column('addr_line_1_j2', String(32)),
+    Column('addr_line_2_j2', String(32)),
+    Column('city_j2', String(20)),
+    Column('state_j2', String(2)),
+    Column('zip_j2', String(9)),
+    Column('addr_ind_j2', String(1)),
+    Column('res_cd_j2', String(1)),
+    Column('reserved_j2_2', String(2))
+)
+
+k1 = Table(
+    'k1', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('K1_seg_id', String(2)),
+    Column('K1_orig_creditor_name', String(30)),
+    Column('K1_creditor_classification', Integer)
+)
+
+k2 = Table(
+    'k2', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('k2_seg_id', String(2)),
+    Column('k2_purch_sold_ind', Integer),
+    Column('k2_purch_sold_name', String(30)),
+    Column('reserved_k2', String(1))
+)
+
+k3 = Table(
+    'k3', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('k3_seg_id', String(2)),
+    Column('k3_agcy_id', Integer),
+    Column('k3_agcy_acct_num', String(18)),
+    Column('k3_min', String(18))
+)
+
+k4 = Table(
+    'k4', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('k4_seg_id', String(2)),
+    Column('k4_spc_pmt_ind', Integer),
+    Column('k4_deferred_pmt_st_dt', String(8)),
+    Column('k4_balloon_pmt_due_dt', String(8)),
+    Column('k4_balloon_pmt_amt', Integer),
+    Column('reserved_k4', String(1))
+)
+
+l1 = Table(
+    'l1', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('l1_seg_id', String(2)),
+    Column('l1_change_ind', Integer),
+    Column('l1_new_acc_num', String(30)),
+    Column('l1_new_id_num', String(20)),
+    Column('reserved_l1', String(1))
+)
+
+n1 = Table(
+    'n1', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('n1_seg_id', String(2)),
+    Column('n1_employer_name', String(30)),
+    Column('employer_addr1', String(32)),
+    Column('employer_addr2', String(32)),
+    Column('employer_city', String(20)),
+    Column('employer_state', String(2)),
+    Column('employer_zip', String(9)),
+    Column('occupation', String(18)),
+    Column('reserved_n1', String(1))
+)
+
+trailer = Table(
+    'trailer', meta,
+    Column('id', String(24)),
+    Column('file', String(24)),
+    Column('rdw_trailer', Integer),
+    Column('record_identifer_trailer', String(7)),
+    Column('total_base_records', Integer),
+    Column('reserved_trailer', String(9)),
+    Column('total_status_df', Integer),
+    Column('total_j1_segments', Integer),
+    Column('total_j2_segments', Integer),
+    Column('block_count', Integer),
+    Column('total_status_da', Integer),
+    Column('reserved_trailer_2', String(9)),
+    Column('total_status_11', Integer),
+    Column('total_status_13', Integer),
+    Column('total_status_61', Integer),
+    Column('total_status_62', Integer),
+    Column('total_status_63', Integer),
+    Column('total_status_64', Integer),
+    Column('total_status_65', Integer),
+    Column('total_status_71', Integer),
+    Column('total_status_78', Integer),
+    Column('total_status_80', Integer),
+    Column('total_status_82', Integer),
+    Column('total_status_83', Integer),
+    Column('total_status_84', Integer),
+    Column('total_status_88', Integer),
+    Column('total_status_89', Integer),
+    Column('total_status_93', Integer),
+    Column('total_status_94', Integer),
+    Column('total_status_95', Integer),
+    Column('total_status_96', Integer),
+    Column('total_status_97', Integer),
+    Column('total_ecoa_z', Integer),
+    Column('total_employment_segments', Integer),
+    Column('total_original_creditor_segments', Integer),
+    Column('total_purchased_sold_segments', Integer),
+    Column('total_mortgage_segments', Integer),
+    Column('total_special_payment_segments', Integer),
+    Column('total_change_segments', Integer),
+    Column('total_ssn', Integer),
+    Column('total_ssn_base', Integer),
+    Column('total_ssn_j1', Integer),
+    Column('total_ssn_j2', Integer),
+    Column('total_dob', Integer),
+    Column('total_dob_base', Integer),
+    Column('total_dob_j1', Integer),
+    Column('total_dob_j2', Integer),
+    Column('total_phone_numbers', Integer),
+    Column('reserved_trailer_3', String(19))
+)
+
+def connect():
+    return psycopg2.connect(
+        host=PGHOST,
+        port=PGPORT,
+        database=PGDATABASE,
+        user=PGUSER,
+        password=PGPASSWORD
+    )
+
+# creates tables defined above
+def create():
+    try:
+        engine = create_engine('postgresql+psycopg2://', creator=connect)
+        # create all tables defined above
+        meta.create_all(engine)
+
+    except Exception as e:
+        print("There was a problem establishing the connection: ", e)
+    finally:
+        if engine is not None:
+            engine.dispose()
