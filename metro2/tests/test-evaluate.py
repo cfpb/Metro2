@@ -2,7 +2,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from metro2.evaluate import evaluator
-from metro2.tests.fixtures import Connect
+from metro2.tests.fixtures import Connect, Engine, evaluators
 
 class EvaluateTestCase(TestCase):
     @classmethod
@@ -42,17 +42,12 @@ class EvaluateTestCase(TestCase):
         self.assertEqual(evaluator.evaluators[self.criteria][self.test_new], {self.test_success})
 
     # uses fixtures to test evaluator code
-    # TODO update this to reflect updated evaluating
-    # @patch('psycopg2.connect', return_value=Connect())
-    # @patch('metro2.evaluate.Evaluate.load_json', return_value=None)
-    # @patch('metro2.evaluate.Evaluate.write_json', return_value=None)
-    # def testRunEvaluators(self, *_):
-    #     evaluator.evaluators["test"] = {
-    #         "globals": {
-    #             "exam_number": [9999],
-    #             "industry_type": ['']
-    #         },
-    #         "query": "test"
-    #     }
-    #     evaluator.run_evaluators("test.json")
-    #     self.assertEqual(evaluator.results["test"]["hits"], "1")
+    @patch('psycopg2.connect', return_value=Connect())
+    @patch('sqlalchemy.create_engine', return_value=Engine())
+    @patch('metro2.evaluator.Evaluator.set_globals', return_value=None)
+    @patch('metro2.evaluator.Evaluator.exec_custom_func', return_value="success")
+    @patch('metro2.evaluate.Evaluate.load_json', return_value=None)
+    @patch('metro2.evaluate.Evaluate.write_json', return_value=None)
+    def testRunEvaluators(self, *_):
+        evaluator.run_evaluators("test.json")
+        self.assertEqual(evaluator.results["test"]["hits"], "1")

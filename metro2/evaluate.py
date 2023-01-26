@@ -21,11 +21,12 @@ if METRO2ENV != 'local':
     exit(1)
 
 class Evaluate():
-    evaluators = dict()
-    results = dict()
-    exam_number = 9999
-    industry_type = ''
-    date_format = '%m%d%Y'
+    def __init__(self):
+        self.evaluators = dict()
+        self.results = dict()
+        self.exam_number = 9999
+        self.industry_type = ''
+        self.date_format = '%m%d%Y'
 
     # reads in a JSON file and stores the data in memory
     def load_json(self, path):
