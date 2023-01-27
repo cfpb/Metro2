@@ -116,7 +116,7 @@ class ParseTestCase(TestCase):
             parser.exec_commands(None)
             self.assertIn(self.problem, mock.getvalue())
 
-    # test that if any one of the environment variables are wront, connection
+    # test that if any one of the environment variables are wrong, connection
     # will fail.
     @mock.patch.dict(os.environ, {"PGHOST": "fail"}, clear=True)
     def testExecCommandsFailsOnPGHOST(self):
