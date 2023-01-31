@@ -7,6 +7,8 @@
 !metro2/*/*
 !requirements/
 !requirements/*
+!front-end/
+!front-end/**
 
 # ...and the following files
 !setup.sh
