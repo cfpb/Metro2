@@ -6,13 +6,15 @@ This application is written in JavaScript with React.
 
 ## Running the App Locally
 
+In the `front-end` directory:
+
 1. Run `yarn`. This is only necessary if the yarn packages have changed since the last time the app was started.
 2. Run `yarn dev`.
 3. Open [http://localhost:3000](http://localhost:3000)
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the `front-end` directory, you can run:
 
 ### `yarn dev`
 
