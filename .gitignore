@@ -9,12 +9,13 @@
 !requirements/*
 
 # ...and the following files
-!setup.sh
-!unzip.sh
-!ingest-data.sh
-!README.md
 !Dockerfile
 !docker-compose.yml
-!.env_SAMPLE
 !.dockerignore
+!.env_SAMPLE
 !.gitignore
+!ingest-data.sh
+!README.md
+!setup.sh
+!secerts.sh
+!unzip.sh
