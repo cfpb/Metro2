@@ -58,9 +58,7 @@ def writeSecret(team, label, secret_string) -> None:
 def deleteSecret(team, label) -> None:
     client = getClient()
     client.delete_secret(
-        SecretId=f'cfpb/team/{team}/{label}',
-        RecoveryWindowInDays=7,
-        ForceDeleteWithoutRecovery=False
+        SecretId=f'cfpb/team/{team}/{label}'
     )
 
 def get_secret(team, label) -> str:
