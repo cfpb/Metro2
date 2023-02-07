@@ -30,6 +30,7 @@ class Evaluate():
 
     # reads in a JSON file and stores the data in memory
     def load_json(self, path):
+        file = None
         try:
             file = open(path, "r")
             self.evaluators = json.load(file)
@@ -42,6 +43,7 @@ class Evaluate():
 
     # writes evaluators to file
     def write_json(self, path, data):
+        file = None
         try:
             file = open(path, "w")
             json.dump(data, file, indent=4)
@@ -73,6 +75,7 @@ class Evaluate():
         hits = 'hits'
         date = 'date'
         fields = 'fields'
+        engine = None
 
         print("Connecting to PostgreSQL database...")
         try:
@@ -85,12 +88,16 @@ class Evaluate():
 
             # run evaluators
             for evaluator in evaluators:
+                print(evaluator)
                 # execute evaluator code
                 results = list()
                 sel = evaluator.exec_custom_func()
+                print(sel)
                 if sel is not None:
                     res = conn.execute(sel)
+                    print(res)
                     for row in res:
+                        print(row)
                         results.append(list(row))
                     
                     # write to results

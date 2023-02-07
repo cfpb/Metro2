@@ -14,14 +14,10 @@ class Connect():
     def cursor(self):
         return Cursor()
 
+    def execute(self, *_):
+        return [('a', 'b', 'c', 'd')]
+
     def close(self):
-        return None
-
-class Engine():
-    def connect(self):
-        return Connect()
-
-    def dispose(self):
         return None
 
 class Evaluator():
@@ -29,12 +25,15 @@ class Evaluator():
         self.name = name
         self.description = description
         self.func = func
+        self.exam_number = 9999
+        self.industry_type = ''
 
     def set_globals(self, ind_type, exam_num):
-        exam_number = exam_num
-        industry_type = ind_type
+        self.exam_number = exam_num
+        self.industry_type = ind_type
 
     def exec_custom_func(self):
-        return self.func()
+        return self.func
 
-evaluators = Evaluator("1A", "success", None)
+eval1A = Evaluator("1A", "success", "success")
+evaluators_test = [eval1A]
