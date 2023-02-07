@@ -48,7 +48,8 @@ def writeSecret(team, label, secret_string) -> None:
     mgr = SecretsManagerSecret(client)
 
     try:
-        mgr.create(f'cfpb/team/{team}/{label}', secret_string) 
+        mgr.create(f'cfpb/team/{team}/{label}', secret_string)
+        print(f'cfpb/team/{team}/{label} successfully added') 
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceExistsException':
             print('The desired secret ' + f'cfpb/team/{team}/{label}' + ' already exists.')
@@ -68,6 +69,7 @@ def deleteSecret(team, label) -> None:
         client.delete_secret(
             SecretId=f'cfpb/team/{team}/{label}'
         )
+        print(f'cfpb/team/{team}/{label} successfully deleted')
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceNotFoundException':
             print('The requested secret ' + f'cfpb/team/{team}/{label}' + ' was not found')
