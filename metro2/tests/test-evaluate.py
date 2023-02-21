@@ -1,11 +1,6 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from metro2.tests.fixtures import Connect, Evaluator, evaluators_test
-from metro2.evaluator import evaluators as curr_evals
-
-curr_evals = evaluators_test
-
 from metro2.evaluate import evaluator
 
 
@@ -45,14 +40,4 @@ class EvaluateTestCase(TestCase):
         self.assertEqual(evaluator.evaluators[self.criteria][self.test_new], {self.test_success})
 
     # uses fixtures to test evaluator code
-    @patch('metro2.evaluator.Evaluator', Evaluator("1A", "success", "success"))
-    @patch('sqlalchemy.engine.Engine.connect', return_value=Connect())
-    @patch('metro2.tables.connect', return_value=None)
-    @patch('metro2.evaluate.Evaluate.load_json', return_value=None)
-    @patch('metro2.evaluate.Evaluate.write_json', return_value=None)
-    def testRunEvaluators(self, *_):
-        evaluator.run_evaluators("test.json")
-        print(evaluator.results)
-        self.assertEqual(evaluator.results['1A']['description'], 'success')
-        self.assertEqual(evaluator.results['1A']['data'], {'a': {'date': 'b', 'fields': ['c', 'd']}})
-        self.assertEqual(evaluator.results['1A']['hits'], 1)
+    # TODO: test run_evaluators. Removed for now because the test relied too heavily on mocking.

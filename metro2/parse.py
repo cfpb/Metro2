@@ -125,6 +125,7 @@ class Parser():
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, file_name):
         values_list = list()
+        fstream = None
         try:
             fstream = open(file_name, 'r')
             fstream.seek(start)
@@ -204,6 +205,7 @@ class Parser():
         chunk_size = int(file_size / num_workers)
 
         # open file and find first newline after each chunk size
+        fstream = None
         try:
             fstream = open(file_name, 'rb')
             chunk_endpoints = list()
@@ -275,6 +277,7 @@ class Parser():
     # establish connection to postgres database
     def exec_commands(self, commands, values=None, segment=None):
         max_block_size = 2000
+        conn = None
 
         try:
             conn = connect()

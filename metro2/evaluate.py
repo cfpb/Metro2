@@ -88,16 +88,12 @@ class Evaluate():
 
             # run evaluators
             for evaluator in evaluators:
-                print(evaluator)
                 # execute evaluator code
                 results = list()
                 sel = evaluator.exec_custom_func()
-                print(sel)
                 if sel is not None:
                     res = conn.execute(sel)
-                    print(res)
                     for row in res:
-                        print(row)
                         results.append(list(row))
                     
                     # write to results

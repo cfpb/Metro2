@@ -72,11 +72,10 @@ class ParseTestCase(TestCase):
     # test parsing a chunk of a file
     def testParseChunkRaisesExceptionWithBadFilename(self):
         file_length = 10
-        self.assertRaises(
-            FileNotFoundError,
-            parser.parse_chunk,
-            0, file_length, "fail"
-        )
+        with self.assertRaises(SystemExit) as cm:
+            parser.parse_chunk(0, file_length, "fail.json")
+
+        self.assertEqual(cm.exception.code, 1)
 
     def testParseChunkWithInvalidLine(self):
         parser.mapping = dict()
