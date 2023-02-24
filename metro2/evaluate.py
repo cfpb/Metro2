@@ -21,23 +21,38 @@ if METRO2ENV != 'local':
     exit(1)
 
 class Evaluate():
-    evaluators = dict()
-    results = dict()
-    exam_number = 9999
-    industry_type = ''
-    date_format = '%m%d%Y'
+    def __init__(self):
+        self.evaluators = dict()
+        self.results = dict()
+        self.exam_number = 9999
+        self.industry_type = ''
+        self.date_format = '%m%d%Y'
 
     # reads in a JSON file and stores the data in memory
     def load_json(self, path):
-        file = open(path, "r")
-        self.evaluators = json.load(file)
-        file.close()
+        file = None
+        try:
+            file = open(path, "r")
+            self.evaluators = json.load(file)
+        except FileNotFoundError as e:
+            print("Invalid file name for loading JSON: ", e)
+            exit(1)
+        finally:
+            if file is not None:
+                file.close()
 
     # writes evaluators to file
     def write_json(self, path, data):
-        file = open(path, "w")
-        json.dump(data, file, indent=4)
-        file.close()
+        file = None
+        try:
+            file = open(path, "w")
+            json.dump(data, file, indent=4)
+        except FileNotFoundError as e:
+            print("Path does not exist: ", e)
+            exit(1)
+        finally:
+            if file is not None:
+                file.close()
 
     # adds a custom evaluator given an evaluator name, and dictionaries
     # containing fields and inverse fields.
@@ -60,6 +75,7 @@ class Evaluate():
         hits = 'hits'
         date = 'date'
         fields = 'fields'
+        engine = None
 
         print("Connecting to PostgreSQL database...")
         try:

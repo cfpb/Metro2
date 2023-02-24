@@ -125,65 +125,73 @@ class Parser():
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, file_name):
         values_list = list()
-        fstream = open(file_name, 'r')
-        fstream.seek(start)
-        pos = fstream.tell()
-        # generate GUID that will be unique between chunks and files
-        str_pos = str(pos)
-        guid = hash(f'{file_name}-{str_pos}')
-        # this remains consistent for the chunk
-        file = hash(f'{file_name}')
-
-        # read until the end of the chunk is reached
-        while pos < end:
-            while pos < end and self.peek(fstream, 1) != '\n':
-                segment = ""
-                # determine segment
-                # the order here is very important since regex is expensive.
-                # base will be the most common segment in any file so we want to test that first
-                # extra segments will be the next most common, so we want to test those second
-                # header and trailer are one per file, so we test those last
-                if re.match(r'\d{5}', self.peek(fstream, 5)):
-                    segment = "base"
-                elif re.match(r'[A-Z][1-4]', self.peek(fstream, 2)):
-                    segment = self.peek(fstream, 2)
-                elif re.match(r'.*HEADER$', self.peek(fstream, 10)):
-                    segment = "header"
-                elif re.match(r'.*TRAILER$', self.peek(fstream, 11)):
-                    segment = "trailer"
-                # catch unreadable lines
-                else:
-                    fstream.readline()
-                    pos = fstream.tell()
-                    # seek back one for the newline
-                    fstream.seek(pos - 1)
-                    break
-
-                # read in entire segment
-                values = list()
-
-                # add guid and file to beginning of values list
-                values.append(guid)
-                values.append(file)
-
-                for field_start, field_end in self.mapping[segment]:
-                    length = int(field_end) - (int(field_start) - 1)
-                    values.append(fstream.read(length))
-
-                # add segment to the end of the values list
-                values.append(segment)
-                # update pos
-                pos = fstream.tell()
-                values_list.append(values)
-
-            # read newline
-            fstream.read(1)
+        fstream = None
+        try:
+            fstream = open(file_name, 'r')
+            fstream.seek(start)
             pos = fstream.tell()
-            # update guid
+            # generate GUID that will be unique between chunks and files
             str_pos = str(pos)
             guid = hash(f'{file_name}-{str_pos}')
+            # this remains consistent for the chunk
+            file = hash(f'{file_name}')
 
-        fstream.close() 
+            # read until the end of the chunk is reached
+            while pos < end:
+                while pos < end and self.peek(fstream, 1) != '\n':
+                    segment = ""
+                    # determine segment
+                    # the order here is very important since regex is expensive.
+                    # base will be the most common segment in any file so we want to test that first
+                    # extra segments will be the next most common, so we want to test those second
+                    # header and trailer are one per file, so we test those last
+                    if re.match(r'\d{5}', self.peek(fstream, 5)):
+                        segment = "base"
+                    elif re.match(r'[A-Z][1-4]', self.peek(fstream, 2)):
+                        segment = self.peek(fstream, 2)
+                    elif re.match(r'.*HEADER$', self.peek(fstream, 10)):
+                        segment = "header"
+                    elif re.match(r'.*TRAILER$', self.peek(fstream, 11)):
+                        segment = "trailer"
+                    # catch unreadable lines
+                    else:
+                        fstream.readline()
+                        pos = fstream.tell()
+                        # seek back one for the newline
+                        fstream.seek(pos - 1)
+                        break
+
+                    # read in entire segment
+                    values = list()
+
+                    # add guid and file to beginning of values list
+                    values.append(guid)
+                    values.append(file)
+
+                    for field_start, field_end in self.mapping[segment]:
+                        length = int(field_end) - (int(field_start) - 1)
+                        values.append(fstream.read(length))
+
+                    # add segment to the end of the values list
+                    values.append(segment)
+                    # update pos
+                    pos = fstream.tell()
+                    values_list.append(values)
+
+                # read newline
+                fstream.read(1)
+                pos = fstream.tell()
+                # update guid
+                str_pos = str(pos)
+                guid = hash(f'{file_name}-{str_pos}')
+
+        except Exception as e:
+            print("encountered an error opening file", e)
+            exit(1)
+        finally:
+            if fstream is not None:
+                fstream.close() 
+        
         return values_list
 
     # constructs commands to feed to exec_commands method with parallel processing
@@ -197,27 +205,33 @@ class Parser():
         chunk_size = int(file_size / num_workers)
 
         # open file and find first newline after each chunk size
-        fstream = open(file_name, 'rb')
-        chunk_endpoints = list()
-        offset = 0
-        chunk_start = 0
-        for _ in range(num_workers - 1):
-            # 1 for the second argument means we are starting from the current read position
-            fstream.seek(chunk_size, 1)
-            offset += chunk_size
-            # find the first newline after offset and append the position to chunk_endpoints
-            while fstream.read(1) != b'\n':
+        fstream = None
+        try:
+            fstream = open(file_name, 'rb')
+            chunk_endpoints = list()
+            offset = 0
+            chunk_start = 0
+            for _ in range(num_workers - 1):
+                # 1 for the second argument means we are starting from the current read position
+                fstream.seek(chunk_size, 1)
+                offset += chunk_size
+                # find the first newline after offset and append the position to chunk_endpoints
+                while fstream.read(1) != b'\n':
+                    offset+=1
+                # add one more to offset for the newline we found
                 offset+=1
-            # add one more to offset for the newline we found
-            offset+=1
-            chunk_endpoints.append((chunk_start, offset))
-            # next chunk will start at the next byte
-            chunk_start = offset
-        
-        # add the last chunk
-        chunk_endpoints.append((chunk_start, file_size - 1))
-
-        fstream.close()
+                chunk_endpoints.append((chunk_start, offset))
+                # next chunk will start at the next byte
+                chunk_start = offset
+            
+            # add the last chunk
+            chunk_endpoints.append((chunk_start, file_size - 1))
+        except Exception as e:
+            print("encountered an error opening file: ", e)
+            exit(1)
+        finally:
+            if fstream is not None:
+                fstream.close()
 
         print("Parsing...")
         pool = mp.Pool(num_workers)
@@ -263,6 +277,7 @@ class Parser():
     # establish connection to postgres database
     def exec_commands(self, commands, values=None, segment=None):
         max_block_size = 2000
+        conn = None
 
         try:
             conn = connect()

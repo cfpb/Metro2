@@ -2,7 +2,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from metro2.evaluate import evaluator
-from metro2.tests.fixtures import Connect
+
 
 class EvaluateTestCase(TestCase):
     @classmethod
@@ -17,19 +17,17 @@ class EvaluateTestCase(TestCase):
 
     # make sure load json fails with invalid file name
     def testLoadJSONFailsWithInvalidFilename(self):
-        self.assertRaises(
-            FileNotFoundError,
-            evaluator.load_json,
-            "fail.xlsx"
-        )
+        with self.assertRaises(SystemExit) as cm:
+            evaluator.load_json("fail.json")
+
+        self.assertEqual(cm.exception.code, 1)
 
     # make sure write json doesn't create new directories
     def testWriteJSONFailsWithInvalidDirectory(self):
-        self.assertRaises(
-            FileNotFoundError,
-            evaluator.write_json,
-            "metro2/fail/results.json", {}
-        )
+        with self.assertRaises(SystemExit) as cm:
+            evaluator.write_json("metro2/fail/results.json", {})
+
+        self.assertEqual(cm.exception.code, 1)
 
     @patch('metro2.evaluate.Evaluate.load_json', return_value=None)
     @patch('metro2.evaluate.Evaluate.write_json', return_value=None)
@@ -42,17 +40,4 @@ class EvaluateTestCase(TestCase):
         self.assertEqual(evaluator.evaluators[self.criteria][self.test_new], {self.test_success})
 
     # uses fixtures to test evaluator code
-    # TODO update this to reflect updated evaluating
-    # @patch('psycopg2.connect', return_value=Connect())
-    # @patch('metro2.evaluate.Evaluate.load_json', return_value=None)
-    # @patch('metro2.evaluate.Evaluate.write_json', return_value=None)
-    # def testRunEvaluators(self, *_):
-    #     evaluator.evaluators["test"] = {
-    #         "globals": {
-    #             "exam_number": [9999],
-    #             "industry_type": ['']
-    #         },
-    #         "query": "test"
-    #     }
-    #     evaluator.run_evaluators("test.json")
-    #     self.assertEqual(evaluator.results["test"]["hits"], "1")
+    # TODO: test run_evaluators. Removed for now because the test relied too heavily on mocking.
