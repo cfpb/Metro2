@@ -34,9 +34,9 @@ If docker desktop is not already installed, please [download and install it](htt
 
 For local development, postgresql will run inside a docker container with sample data. To start the container in the background, run `docker-compose up -d`. This will create a postgresql container, a container to run the app, a volume to persist data for both postgres and the application, and a default network that allows communication with the containers from the host machine.
 
-Once your containers are up and running, you can connect to the postgres container using `docker-compose exec postgres sh` and the application container using `docker-compose exec evaluator sh`
+Once your containers are up and running, you can connect to the postgres container using `docker-compose exec -it metro2_postgres_1 sh` and the application container using `docker-compose exec -it metro2_evaluator_1 sh`
 
-To run the applicatin once you are connected to the evaluator container, run the command `./setup.sh'`.
+To run the application once you are connected to the evaluator container, run the command `./setup.sh'`.
 
 To bring down the created containers when you are done with them, run `docker-compose down`. To also remove volumes at the same time, run `docker-compose down -v`. To remove images in addition to volumes, run `docker-compose down --rmi "all" -v`.
 
