@@ -52,11 +52,11 @@ To bring down the created containers when you are done with them, run `docker-co
 
 - This also serves as a double check on if the entity submitted properly.
 
-- A template for the M2 mapping file can be found in the Refererence folder from the root directory on GitHub (the root directory is where this README exists)
+- A template for the M2 mapping file can be found in the Reference folder from the root directory on GitHub (the root directory is where this README exists)
 
 ## Populate the Mapping File
 
-This is a manual process, but it can be helped with some code and Excel formulas, prepopluated in the template.
+This is a manual process, but it can be helped with some code and Excel formulas, pre-populated in the template.
 
 - Open the mapping file that was written to the exam folder above.
 
@@ -78,7 +78,7 @@ This is a manual process, but it can be helped with some code and Excel formulas
 
   + Copy/paste (as values!) the data from DataDictionary sheet to the Mapping sheet.
   
-  + The orange column, M2FieldLower, needs to be filled in manually. You can deduce the intended M2 field from the entity's field most of the time. Some are exact matches. If there are any descrepancies, check the CRRG first, then work with the OSP or ENF POCs to clear them up if necessary.
+  + The orange column, M2FieldLower, needs to be filled in manually. You can deduce the intended M2 field from the entity's field most of the time. Some are exact matches. If there are any discrepancies, check the CRRG first, then work with the OSP or ENF POCs to clear them up if necessary.
   
 _Note: the field type for phone numbers must be `col_double()` because R cannot handle integers above about 2 billion. All other numeric fields are okay as integers, because they are only 9 characters long, and the M2 format calls for truncating decimals._
 
