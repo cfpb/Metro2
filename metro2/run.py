@@ -37,6 +37,27 @@ SHEET_NAME = "Mapping"
 COL_SEGMENT = "B"
 COL_START = "F"
 COL_END = "G"
+COL_FIELDS = "I"
+PII_FIELDS = list([
+    "surname",
+    "surname_j1",
+    "surname_j2",
+    "middle_name",
+    "middle_name_j1",
+    "middle_name_j2",
+    "ssn",
+    "ssn_j1",
+    "ssn_j2",
+    "dob",
+    "dob_j1",
+    "dob_j2",
+    "addr_line_1",
+    "addr_line_1_j2",
+    "addr_line_2",
+    "addr_line_2_j2",
+    "zip",
+    "zip_j2",
+])
 
 def init_db():
     # init database tables
@@ -47,22 +68,22 @@ def init_db():
 def parse(filename, file):
     # create a temporary parser for each file
     temp_parser = Parser()
-    temp_parser.map_fields(MAPFILE_PATH, SHEET_NAME, COL_SEGMENT, COL_START, COL_END)
+    temp_parser.map_fields(MAPFILE_PATH, SHEET_NAME, COL_SEGMENT, COL_START, COL_END, COL_FIELDS, PII_FIELDS)
     # write file contents to database
     print(f'Parsing file {filename}')
     temp_parser.construct_commands(file)
     print(f'Writing file {filename} to database')
-    temp_parser.exec_commands(temp_parser.header_commands, temp_parser.header_values, "header")
-    temp_parser.exec_commands(temp_parser.trailer_commands, temp_parser.trailer_values, "trailer")
-    temp_parser.exec_commands(temp_parser.base_commands, temp_parser.base_values, "base")
-    temp_parser.exec_commands(temp_parser.J1_commands, temp_parser.J1_values, "j1")
-    temp_parser.exec_commands(temp_parser.J2_commands, temp_parser.J2_values, "j2")
-    temp_parser.exec_commands(temp_parser.K1_commands, temp_parser.K1_values, "k1")
-    temp_parser.exec_commands(temp_parser.K2_commands, temp_parser.K2_values, "k2")
-    temp_parser.exec_commands(temp_parser.K3_commands, temp_parser.K3_values, "k3")
-    temp_parser.exec_commands(temp_parser.K4_commands, temp_parser.K4_values, "k4")
-    temp_parser.exec_commands(temp_parser.L1_commands, temp_parser.L1_values, "l1")
-    temp_parser.exec_commands(temp_parser.N1_commands, temp_parser.N1_values, "n1")
+    temp_parser.exec_commands(temp_parser.header_values, "header")
+    temp_parser.exec_commands(temp_parser.trailer_values, "trailer")
+    temp_parser.exec_commands(temp_parser.base_values, "base")
+    temp_parser.exec_commands(temp_parser.J1_values, "j1")
+    temp_parser.exec_commands(temp_parser.J2_values, "j2")
+    temp_parser.exec_commands(temp_parser.K1_values, "k1")
+    temp_parser.exec_commands(temp_parser.K2_values, "k2")
+    temp_parser.exec_commands(temp_parser.K3_values, "k3")
+    temp_parser.exec_commands(temp_parser.K4_values, "k4")
+    temp_parser.exec_commands(temp_parser.L1_values, "l1")
+    temp_parser.exec_commands(temp_parser.N1_values, "n1")
     print(f'File {filename} written to database')
 
 def run():
