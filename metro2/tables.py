@@ -115,7 +115,7 @@ base = Table(
     Column('addr_line_1', String(32)),
     Column('addr_line_2', String(32)),
     Column('city', String(20)),
-    Column('us_state', String(2)),
+    Column('state', String(2)),
     Column('zip', String(9)),
     Column('addr_ind', String(1)),
     Column('res_cd', String(1))

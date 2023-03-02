@@ -32,17 +32,7 @@ class Parser():
     def __init__(self):
         #create empty DataFrame used for mapping
         self.mapping = dict()
-        self.header_commands = ''
-        self.trailer_commands = ''
-        self.base_commands = ''
-        self.J1_commands = ''
-        self.J2_commands = ''
-        self.K1_commands = ''
-        self.K2_commands = ''
-        self.K3_commands = ''
-        self.K4_commands = ''
-        self.L1_commands = ''
-        self.N1_commands = ''
+        self.commands = dict()
         self.header_values = list()
         self.trailer_values = list()
         self.base_values = list()
@@ -54,15 +44,18 @@ class Parser():
         self.K4_values = list()
         self.L1_values = list()
         self.N1_values = list()
+        self.field_names = dict()
+        self.seg_length = dict()
 
     # maps fixed width fields in each segment from mapping file
-    def map_fields(self, mapfile, sheetname, colsegment, colstart, colend):
+    def map_fields(self, mapfile, sheetname, colsegment, colstart, colend, colfield, skip):
         # load workbook and strip out data we need
         wb = xl.load_workbook(mapfile)
         sheet = wb[sheetname]
         segments = sheet[colsegment]
         starts = sheet[colstart]
         ends = sheet[colend]
+        fieldnames = sheet[colfield]
 
         # start at 1 to skip the xlsx column header
         iterator = 1
@@ -72,39 +65,27 @@ class Parser():
         # iterate over data and save to mapping dict
         while iterator < num_rows:
             values = list()
+            # each table starts with id and file fields not included in the mapping file
+            fields = list(["id", "file"])
             while iterator < num_rows and segment == segments[iterator].value:
-                values.append((starts[iterator].value, ends[iterator].value))
+                if fieldnames[iterator].value.lower() not in skip:
+                    values.append((starts[iterator].value, ends[iterator].value))
+                    fields.append(fieldnames[iterator].value.lower())
                 iterator+=1
             # save values and update segment
             self.mapping[segment] = values
+            # segment needs to be lower so it matches table names
+            self.field_names[segment.lower()] = fields
+            # seg length will be the last value of the ends column
+            self.seg_length[segment] = ends[iterator - 1].value
 
             # update commands
             sub = list()
             sub.append('{}')
             # add two to values for the guid and file (added later)
             command = '\t'.join(sub * (len(values) + 2))
-            if segment == "header":
-                self.header_commands = command
-            elif segment == "trailer":
-                self.trailer_commands = command
-            elif segment == "base":
-                self.base_commands = command
-            elif segment == "J1":
-                self.J1_commands = command
-            elif segment == "J2":
-                self.J2_commands = command
-            elif segment == "K1":
-                self.K1_commands = command
-            elif segment == "K2":
-                self.K2_commands = command
-            elif segment == "K3":
-                self.K3_commands = command
-            elif segment == "K4":
-                self.K4_commands = command
-            elif segment == "L1":
-                self.L1_commands = command
-            elif segment == "N1":
-                self.N1_commands = command
+            # segment needs to be lower so it matches table names
+            self.commands[segment.lower()] = command
 
             # if there's another segment to map
             if iterator < num_rows and segments[iterator].value != None:
@@ -155,7 +136,8 @@ class Parser():
                         segment = "trailer"
                     # catch unreadable lines
                     else:
-                        fstream.readline()
+                        print("error: encountered unreadable line...")
+                        print("unread data: ", fstream.readline())
                         pos = fstream.tell()
                         # seek back one for the newline
                         fstream.seek(pos - 1)
@@ -168,9 +150,22 @@ class Parser():
                     values.append(guid)
                     values.append(file)
 
+                    prev_field_end = 0
                     for field_start, field_end in self.mapping[segment]:
+                        # in case there's a segment that was skipped
+                        skip = (int(field_start) - 1) - int(prev_field_end)
+                        if skip > 0:
+                            fstream.read(skip)
+                        
                         length = int(field_end) - (int(field_start) - 1)
                         values.append(fstream.read(length))
+                        # update prev_field_end
+                        prev_field_end = field_end
+
+                    # in case the last field is skipped
+                    if prev_field_end != self.seg_length[segment]:
+                        skip_last = self.seg_length[segment] - prev_field_end
+                        fstream.read(skip_last)
 
                     # add segment to the end of the values list
                     values.append(segment)
@@ -275,7 +270,7 @@ class Parser():
         print("Parsing complete.")
 
     # establish connection to postgres database
-    def exec_commands(self, commands, values=None, segment=None):
+    def exec_commands(self, values=None, segment=None):
         max_block_size = 2000
         conn = None
 
@@ -289,6 +284,8 @@ class Parser():
             if values and segment:
                 block_start = 0
                 block_end = max_block_size
+                commands = self.commands[segment]
+                cols = list(self.field_names[segment])
                 
                 # process statements in blocks
                 while block_end < len(values) - block_start:
@@ -298,7 +295,7 @@ class Parser():
                     copy_str = IteratorFile((commands.format(*vals) for vals in val_list))
 
                     # execute block
-                    cur.copy_from(copy_str, segment)
+                    cur.copy_from(copy_str, segment, columns=cols)
 
                     # persist changes
                     conn.commit()
@@ -314,18 +311,8 @@ class Parser():
                 copy_str = IteratorFile((commands.format(*vals) for vals in val_list))
 
                 # execute block
-                cur.copy_from(copy_str, segment)
+                cur.copy_from(copy_str, segment, columns=cols)
 
-                cur.close()
-
-                # persist changes
-                conn.commit()
-
-            else:
-                for command in commands:
-                    cur.execute(command)
-
-                # close the communication with the PostgreSQL
                 cur.close()
 
                 # persist changes
