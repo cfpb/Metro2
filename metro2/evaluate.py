@@ -103,7 +103,14 @@ class Evaluate():
                 if len(results) > 0:
                     data_dict = {}
                     try:
-                        data_dict = {row_data[0]: {evaluator.fields[1]: row_data[1], fields: [evaluator.fields[2:], row_data[2:]]} for row_data in results}
+                        data_dict = {
+                            row_data[0]: {
+                                evaluator.fields[1]: row_data[1],
+                                fields: {
+                                    evaluator.fields[i]: row_data[i] for i in range(2, len(evaluator.fields))
+                                }
+                            } for row_data in results
+                        }
                     except Exception as e:
                         print("Unable to add data: ", e)
                         continue
