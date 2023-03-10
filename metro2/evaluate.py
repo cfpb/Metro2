@@ -71,9 +71,7 @@ class Evaluate():
     # outputs evaluators to json
     def run_evaluators(self, outpath):
         description = 'description'
-        data = 'data'
         hits = 'hits'
-        date = 'date'
         fields = 'fields'
         engine = None
 
@@ -90,25 +88,30 @@ class Evaluate():
             for evaluator in evaluators:
                 # execute evaluator code
                 results = list()
-                sel = evaluator.exec_custom_func()
-                if sel is not None:
-                    res = conn.execute(sel)
-                    for row in res:
-                        results.append(list(row))
-                    
-                    # write to results
-                    if len(results) > 0:
-                        data_dict = {}
-                        try:
-                            data_dict = {row_data[0]: {date: row_data[1], fields: row_data[2:]} for row_data in results}
-                        except Exception as e:
-                            print("Unable to add data: ", e)
-                            continue
-                        self.results[evaluator.name] = {
-                            description: evaluator.description,
-                            data: data_dict,
-                            hits: len(results)
-                        }
+                res = None
+                if evaluator.longitudinal_func:
+                    res = evaluator.exec_custom_func(connection=conn)
+                    results = res
+                else:
+                    sel = evaluator.exec_custom_func()
+                    if sel is not None:
+                        res = conn.execute(sel)
+                        for row in res:
+                            results.append(list(row))
+                
+                # write to results
+                if len(results) > 0:
+                    data_dict = {}
+                    try:
+                        data_dict = {row_data[0]: {evaluator.fields[1]: row_data[1], fields: [evaluator.fields[2:], row_data[2:]]} for row_data in results}
+                    except Exception as e:
+                        print("Unable to add data: ", e)
+                        continue
+                    self.results[evaluator.name] = {
+                        description: evaluator.description,
+                        evaluator.fields[0]: data_dict,
+                        hits: len(results)
+                    }
 
             # write results to json
             self.write_json(outpath, self.results)
