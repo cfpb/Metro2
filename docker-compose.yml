@@ -31,7 +31,6 @@ services:
         condition: service_healthy
     volumes:
       - evaluators:/var/lib/docker/volumes/eval/
-      - .:/src/metro2
     stdin_open: true
     tty: true
     env_file:
