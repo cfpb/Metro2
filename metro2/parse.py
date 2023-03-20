@@ -68,7 +68,7 @@ class Parser():
             # each table starts with id and file fields not included in the mapping file
             fields = list(["id", "file"])
             while iterator < num_rows and segment == segments[iterator].value:
-                if fieldnames[iterator].value.lower() not in skip:
+                if not skip or fieldnames[iterator].value.lower() not in skip:
                     values.append((starts[iterator].value, ends[iterator].value))
                     fields.append(fieldnames[iterator].value.lower())
                 iterator+=1

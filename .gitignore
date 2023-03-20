@@ -4,7 +4,7 @@
 # ...except the following directories
 !metro2/
 !metro2/*
-!metro2/*/*
+!metro2/tests/*
 !requirements/
 !requirements/*
 !front-end/
