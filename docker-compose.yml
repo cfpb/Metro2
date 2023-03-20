@@ -43,3 +43,14 @@ services:
       PGHOST: postgres
       PGPORT: 5432
       METRO2ENV: local
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: ./front-end/Dockerfile
+    ports:
+      - 127.0.0.1:3000:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: yarn dev
