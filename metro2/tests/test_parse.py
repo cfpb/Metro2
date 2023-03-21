@@ -17,7 +17,7 @@ class TestParse(TestCase):
         cls.segment = "header"
         cls.problem = "There was a problem establishing the connection"
 
-    # map fields should raise an excption if incorrect values are provided
+    # map fields should raise an exception if incorrect values are provided
     def test_map_fields_raises_exception_invalid_filename(self):
         self.assertRaises(
             FileNotFoundError,
