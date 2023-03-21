@@ -1,8 +1,5 @@
-from unittest import mock, TestCase
+from unittest import TestCase
 from unittest.mock import patch
-import os
-
-from io import StringIO
 from metro2.parse import parser
 
 class TestParse(TestCase):
@@ -28,26 +25,26 @@ class TestParse(TestCase):
             "fail.xlsx", "fail", "fail", "fail", "fail", "fail", "fail"
         )
 
-    def testMapFieldsRaisesExceptionInvalidSheetname(self):
+    def test_map_fields_raises_exception_invalid_sheetname(self):
         self.assertRaises(
             KeyError,
             parser.map_fields,
             self.valid_xlsx, "fail", "fail", "fail", "fail", "fail", "fail"
         )
 
-    def testMapFieldsRaisesExceptionInvalidColumnName(self):
+    def test_map_fields_raises_exception_invalid_column_name(self):
         self.assertRaises(
             ValueError,
             parser.map_fields,
             self.valid_xlsx, self.valid_sheet, "fail", "fail", "fail", "fail", "fail"
         )
 
-    def testMapFieldsSetsValuesOnEmptySheet(self):
+    def test_map_fields_sets_values_on_empty_sheet(self):
         parser.mapping = dict()
         parser.map_fields(self.valid_xlsx, self.valid_sheet, self.valid_colsegment, self.valid_colstart, self.valid_colend, self.valid_colfield, None)
         self.assertEqual(0, len(parser.mapping))
 
-    def testMapFieldsPassWithValidData(self):
+    def test_map_fields_pass_with_valid_data(self):
         parser.mapping = dict()
         parser.map_fields(self.valid_xlsx, self.valid_sheet_with_data, self.valid_colsegment, self.valid_colstart, self.valid_colend, self.valid_colfield, None)
         self.assertEqual(self.num_segments, len(parser.mapping))
@@ -99,7 +96,7 @@ class TestParse(TestCase):
     def test_construct_commands_raises_exception_with_bad_filename(self):
         self.assertRaises(FileNotFoundError, parser.construct_commands, "fail.txt")
 
-    def testConstructCommandsAddsCommands(self):
+    def test_construct_commands_adds_commands(self):
         parser.mapping = dict()
         file_to_read = "metro2/tests/test.txt"
         parser.mapping["header"] = [(1, 10)]
