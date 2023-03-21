@@ -5,6 +5,7 @@
 !metro2
 !requirements
 !local
+!front-end
 
 # ...and these files
 !setup.sh

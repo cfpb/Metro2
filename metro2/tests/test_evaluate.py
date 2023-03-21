@@ -4,7 +4,7 @@ from unittest.mock import patch
 from metro2.evaluate import evaluator
 
 
-class TestEvaluateTestCase(TestCase):
+class TestEvaluate(TestCase):
     @classmethod
     def set_up_class(cls):
         evaluator.evaluators["criteria"] = {}
@@ -16,6 +16,7 @@ class TestEvaluateTestCase(TestCase):
         cls.criteria = "criteria"
 
     # make sure load json fails with invalid file name
+
     def test_load_JSON_fails_with_invalid_filename(self):
         with self.assertRaises(SystemExit) as cm:
             evaluator.load_json("fail.json")
