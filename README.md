@@ -128,3 +128,8 @@ Currently available test files:
 - `test-parse`
 
 TODO: Add tests, improve running tests, and run on PRs
+
+
+### Test Coverage
+
+To measure test coverage of metro2, connect to the application with `docker-compose exec -it metro2_evaluator_1 sh` and run `coverage run -m --source=./metro2 unittest discover metro2/tests`.  

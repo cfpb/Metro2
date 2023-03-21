@@ -5,9 +5,9 @@ import os
 from io import StringIO
 from metro2.parse import parser
 
-class ParseTestCase(TestCase):
+class TestParse(TestCase):
     @classmethod
-    def setUpClass(cls):
+    def set_up_class(cls):
         cls.valid_xlsx = "metro2/tests/test.xlsx"
         cls.valid_sheet = "test"
         cls.valid_sheet_with_data = "test2"
@@ -21,7 +21,7 @@ class ParseTestCase(TestCase):
         cls.problem = "There was a problem establishing the connection"
 
     # map fields should raise an excption if incorrect values are provided
-    def testMapFieldsRaisesExceptionInvalidFilename(self):
+    def test_map_fields_raises_exception_invalid_filename(self):
         self.assertRaises(
             FileNotFoundError,
             parser.map_fields,
@@ -54,7 +54,7 @@ class ParseTestCase(TestCase):
         self.assertEqual(self.num_fields, len(parser.mapping[self.segment]))
 
     # test that peek does not advance file pointer, and returns correct character
-    def testPeek(self):
+    def test_peek(self):
         valid_char = 't'
         seek_pos = 7
         file_to_read = "metro2/tests/test.txt"
@@ -71,14 +71,14 @@ class ParseTestCase(TestCase):
         self.assertEqual(valid_char, peeked_char)
 
     # test parsing a chunk of a file
-    def testParseChunkRaisesExceptionWithBadFilename(self):
+    def test_parse_chunk_raises_exception_with_bad_filename(self):
         file_length = 10
         with self.assertRaises(SystemExit) as cm:
             parser.parse_chunk(0, file_length, "fail.json")
 
         self.assertEqual(cm.exception.code, 1)
 
-    def testParseChunkWithInvalidLine(self):
+    def test_parse_chunk_with_invalid_line(self):
         parser.mapping = dict()
         file_length = 45
         num_segments = 4
@@ -96,7 +96,7 @@ class ParseTestCase(TestCase):
         self.assertEqual(num_segments, len(res))
 
     # test files are broken down into chunks
-    def testConstructCommandsRaisesExceptionWithBadFilename(self):
+    def test_construct_commands_raises_exception_with_bad_filename(self):
         self.assertRaises(FileNotFoundError, parser.construct_commands, "fail.txt")
 
     def testConstructCommandsAddsCommands(self):

@@ -30,7 +30,7 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./metro2:/src/metro2/metro2
+      - ./metro2:/src/metro2/
     stdin_open: true
     tty: true
     env_file:
