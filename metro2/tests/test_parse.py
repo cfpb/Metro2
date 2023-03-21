@@ -7,7 +7,7 @@ from metro2.parse import parser
 
 class ParseTestCase(TestCase):
     @classmethod
-    def setUpClass(cls):
+    def set_up_class(cls):
         cls.valid_xlsx = "metro2/tests/test.xlsx"
         cls.valid_sheet = "test"
         cls.valid_sheet_with_data = "test2"
@@ -19,41 +19,41 @@ class ParseTestCase(TestCase):
         cls.segment = "header"
         cls.problem = "There was a problem establishing the connection"
 
-    # map fields should raise an excption if incorrect values are provided
-    def testMapFieldsRaisesExceptionInvalidFilename(self):
+    # map fields should raise an exception if incorrect values are provided
+    def test_map_fields_raises_exception_invalid_filename(self):
         self.assertRaises(
             FileNotFoundError,
             parser.map_fields,
             "fail.xlsx", "fail", "fail", "fail", "fail"
         )
 
-    def testMapFieldsRaisesExceptionInvalidSheetname(self):
+    def test_map_fields_raises_exception_invalid_sheetname(self):
         self.assertRaises(
             KeyError,
             parser.map_fields,
             self.valid_xlsx, "fail", "fail", "fail", "fail"
         )
 
-    def testMapFieldsRaisesExceptionInvalidColumnName(self):
+    def test_map_fields_raises_exception_invalid_column_name(self):
         self.assertRaises(
             ValueError,
             parser.map_fields,
             self.valid_xlsx, self.valid_sheet, "fail", "fail", "fail"
         )
 
-    def testMapFieldsSetsValuesOnEmptySheet(self):
+    def test_map_fields_sets_values_on_empty_sheet(self):
         parser.mapping = dict()
         parser.map_fields(self.valid_xlsx, self.valid_sheet, self.valid_colsegment, self.valid_colstart, self.valid_colend)
         self.assertEqual(0, len(parser.mapping))
 
-    def testMapFieldsPassWithValidData(self):
+    def test_map_fields_pass_with_valid_data(self):
         parser.mapping = dict()
         parser.map_fields(self.valid_xlsx, self.valid_sheet_with_data, self.valid_colsegment, self.valid_colstart, self.valid_colend)
         self.assertEqual(self.num_segments, len(parser.mapping))
         self.assertEqual(self.num_fields, len(parser.mapping[self.segment]))
 
     # test that peek does not advance file pointer, and returns correct character
-    def testPeek(self):
+    def test_peek(self):
         valid_char = 't'
         seek_pos = 7
         file_to_read = "metro2/tests/test.txt"
@@ -70,14 +70,14 @@ class ParseTestCase(TestCase):
         self.assertEqual(valid_char, peeked_char)
 
     # test parsing a chunk of a file
-    def testParseChunkRaisesExceptionWithBadFilename(self):
+    def test_parse_chunk_raises_exception_with_bad_filename(self):
         file_length = 10
         with self.assertRaises(SystemExit) as cm:
             parser.parse_chunk(0, file_length, "fail.json")
 
         self.assertEqual(cm.exception.code, 1)
 
-    def testParseChunkWithInvalidLine(self):
+    def test_parse_chunk_with_invalid_line(self):
         parser.mapping = dict()
         file_length = 45
         num_segments = 4
@@ -91,10 +91,10 @@ class ParseTestCase(TestCase):
         self.assertEqual(num_segments, len(res))
 
     # test files are broken down into chunks
-    def testConstructCommandsRaisesExceptionWithBadFilename(self):
+    def test_construct_commands_raises_exception_with_bad_filename(self):
         self.assertRaises(FileNotFoundError, parser.construct_commands, "fail")
 
-    def testConstructCommandsAddsCommands(self):
+    def test_construct_commands_adds_commands(self):
         parser.mapping = dict()
         file_to_read = "metro2/tests/test.txt"
         parser.mapping["header"] = [(1, 10)]
@@ -110,7 +110,7 @@ class ParseTestCase(TestCase):
 
     # Test that exec_commands is called
     @mock.patch('psycopg2.connect', return_value=None)
-    def testExecCommandsFailsOnBadConnection(self, _):
+    def test_exec_commands_fails_on_bad_connection(self, _):
         with patch('sys.stdout', new = StringIO()) as mock:
             parser.exec_commands(None)
             self.assertIn(self.problem, mock.getvalue())
@@ -118,31 +118,31 @@ class ParseTestCase(TestCase):
     # test that if any one of the environment variables are wrong, connection
     # will fail.
     @mock.patch.dict(os.environ, {"PGHOST": "fail"}, clear=True)
-    def testExecCommandsFailsOnPGHOST(self):
+    def test_exec_commands_fails_on_PGHOST(self):
         with patch('sys.stdout', new = StringIO()) as mock:
             parser.exec_commands(None)
             self.assertIn(self.problem, mock.getvalue())
 
     @mock.patch.dict(os.environ, {"PGPORT": "fail"}, clear=True)
-    def testExecCommandsFailsOnPGPORT(self):
+    def test_exec_commands_fails_on_PGPORT(self):
         with patch('sys.stdout', new = StringIO()) as mock:
             parser.exec_commands(None)
             self.assertIn(self.problem, mock.getvalue())
 
     @mock.patch.dict(os.environ, {"PGDATABASE": "fail"}, clear=True)
-    def testExecCommandsFailsOnPGDATABASE(self):
+    def test_exec_commands_fails_on_PGDATABASE(self):
         with patch('sys.stdout', new = StringIO()) as mock:
             parser.exec_commands(None)
             self.assertIn(self.problem, mock.getvalue())
 
     @mock.patch.dict(os.environ, {"PGUSER": "fail"}, clear=True)
-    def testExecCommandsFailsOnPGUSER(self):
+    def test_exec_commands_fails_on_PGUSER(self):
         with patch('sys.stdout', new = StringIO()) as mock:
             parser.exec_commands(None)
             self.assertIn(self.problem, mock.getvalue())
 
     @mock.patch.dict(os.environ, {"PGPASSWORD": "fail"}, clear=True)
-    def testExecCommandsFailsOnPGPASSWORD(self):
+    def test_exec_commands_fails_on_PGPASSWORD(self):
         with patch('sys.stdout', new = StringIO()) as mock:
             parser.exec_commands(None)
             self.assertIn(self.problem, mock.getvalue())
