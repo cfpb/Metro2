@@ -40,9 +40,9 @@ industry type - Is one of the following: B, CU
 #### Code description and explanation of inconsistency:
 The activity date is retrieved from the file that the line of data came from.
 
-The portfolio type is not 'line of credit', 'installment loan', 'mortgage', 'open', or 'revolving'.
+The portfolio type is not 'line of credit' (C), 'installment loan' (I), 'mortgage' (M), 'open' (O), or 'revolving' (R).
 
-The portfolio type does not match the industry type which is either 'Bank' or 'Credit Union'.
+The portfolio type does not match the industry type which is either 'Bank' (B) or 'Credit Union' (CU).
 
 
 ### 2_2A
@@ -57,15 +57,15 @@ portfolio type
 
 #### Fields examined:
 file - Make sure the file of the line of data matches the file of the date created field in the header
-portfolio type - Is not one of the following: C, I, M, O, R
+portfolio type - Is not one of the following: C, I, O, R
 industry type - Is FC
 
 #### Code description and explanation of inconsistency:
 The activity date is retrieved from the file that the line of data came from.
 
-The portfolio type is not 'line of credit', 'installment loan', 'open', or 'revolving'.
+The portfolio type is not 'line of credit' (C), 'installment loan' (I), 'open' (O), or 'revolving' (R).
 
-The portfolio type does not match the industry type which is 'Finance Company'.
+The portfolio type does not match the industry type which is 'Finance Company' (FC).
 
 
 ### 2_3A
@@ -86,9 +86,9 @@ industry type - Is M
 #### Code description and explanation of inconsistency:
 The activity date is retrieved from the file that the line of data came from.
 
-The portfolio type is not 'line of credit', 'installment loan', 'mortgage'.
+The portfolio type is not 'line of credit' (C), 'installment loan' (I), 'mortgage' (M).
 
-The portfolio type does not match the industry type which is 'Mortgage Lender'.
+The portfolio type does not match the industry type which is 'Mortgage Lender' (M).
 
 
 ### 2_4A
@@ -109,9 +109,9 @@ industry type - Is CC
 #### Code description and explanation of inconsistency:
 The activity date is retrieved from the file that the line of data came from.
 
-The portfolio type is not 'line of credit', 'open', or 'revolving'.
+The portfolio type is not 'line of credit' (C), 'open' (O), or 'revolving' (R).
 
-The portfolio type does not match the industry type which is 'Credit Card'.
+The portfolio type does not match the industry type which is 'Credit Card' (CC).
 
 
 ### 2_5A
@@ -132,9 +132,9 @@ industry type - Is either SF or RS
 #### Code description and explanation of inconsistency:
 The activity date is retrieved from the file that the line of data came from.
 
-The portfolio type is not 'installment loan', or 'revolving'.
+The portfolio type is not 'installment loan' (I), or 'revolving' (R).
 
-The portfolio type does not match the industry type which is either 'Sales Finance' or 'Retail Store'.
+The portfolio type does not match the industry type which is either 'Sales Finance' (SF) or 'Retail Store' (RS).
 
 
 ### 2_6A
@@ -155,9 +155,9 @@ industry type - Is CI
 #### Code description and explanation of inconsistency:
 The activity date is retrieved from the file that the line of data came from.
 
-The portfolio type is not 'open'.
+The portfolio type is not 'open' (O).
 
-The portfolio type does not match the industry type which is either 'Collection Agency' or 'Debt Buyer'.
+The portfolio type does not match the industry type which is either 'Collection Agency' or 'Debt Buyer' (CI).
 
 
 ### 6_4B
@@ -186,7 +186,7 @@ The activity date is retrieved from the file that the line of data came from.
 
 The database record id matches the corresponding K4 segment.
 
-The account status is not transferred, paid or closed / zero balance, paid in full - was a voluntary surrender, paid in full - was a collection account, paid in full - was a repossession, paid in full - was a charge-off, or paid in full - a foreclosure was started.
+The account status is not transferred (05), paid or closed / zero balance (13), paid in full - was a voluntary surrender (61), paid in full - was a collection account (62), paid in full - was a repossession (63), paid in full - was a charge-off (64), or paid in full - a foreclosure was started (65).
 
 The terms frequency is not deferred.
 
@@ -220,11 +220,11 @@ prior date created - Is one month prior to current date created
 #### Code description and explanation of inconsistency:
 The activity date is retrieved from the file that the line of data came from.
 
-The prior account status is delinquent and is paid in full - was a voluntary surrender, paid in full - was a collection account, paid in full - was a repossession, paid in full - was a charge-off, paid in full - a foreclosure was started, 30-59 days past the due date, 60-89 days past the due date, 90-119 days past the due date, 120-149 days past the due date, 150-179 days past the due date, 180 or more days past the due date, assigned to internal or external collections, foreclosure completed; there may be a balance due, voluntary surrender; there may be a balance due, merchandise was repossessed; there may be a balance due, or unpaid balance reported as a loss (charge-off).
+The prior account status is delinquent and is paid in full - was a voluntary surrender (61), paid in full - was a collection account (62), paid in full - was a repossession (63), paid in full - was a charge-off (64), paid in full - a foreclosure was started (65), 30-59 days past the due date (71), 60-89 days past the due date (78), 90-119 days past the due date (80), 120-149 days past the due date (82), 150-179 days past the due date (83), 180 or more days past the due date (84), assigned to internal or external collections (93), foreclosure completed; there may be a balance due (94), voluntary surrender; there may be a balance due (95), merchandise was repossessed; there may be a balance due (96), or unpaid balance reported as a loss (charge-off) (97).
 
 The prior period's date of first delinquency is not equal to the current date of first delinquency.
 
-The account status is delinquent and is paid in full - was a voluntary surrender, paid in full - was a collection account, paid in full - was a repossession, paid in full - was a charge-off, paid in full - a foreclosure was started, 30-59 days past the due date, 60-89 days past the due date, 90-119 days past the due date, 120-149 days past the due date, 150-179 days past the due date, 180 or more days past the due date, assigned to internal or external collections, foreclosure completed; there may be a balance due, voluntary surrender; there may be a balance due, merchandise was repossessed; there may be a balance due, or unpaid balance reported as a loss (charge-off).
+The account status is delinquent and is paid in full - was a voluntary surrender (61), paid in full - was a collection account (62), paid in full - was a repossession (63), paid in full - was a charge-off (64), paid in full - a foreclosure was started (65), 30-59 days past the due date (71), 60-89 days past the due date (78), 90-119 days past the due date (80), 120-149 days past the due date (82), 150-179 days past the due date (83), 180 or more days past the due date (84), assigned to internal or external collections (93), foreclosure completed; there may be a balance due (94), voluntary surrender; there may be a balance due (95), merchandise was repossessed; there may be a balance due (96), or unpaid balance reported as a loss (charge-off) (97).
 
 The consumer account number matches between the periods examined.
 
@@ -253,151 +253,326 @@ account status - Is one of the following: '80', '82', '83', '84'
 #### Code description and explanation of inconsistency:
 The activity date is retrieved from the file that the line of data came from.
 
-The prior period's account status is 30-59 days past the due date.
+The prior period's account status is 30-59 days past the due date (71).
 
 The consumer account number matches the account number from the prior month.
 
 The prior activity date is one month prior to the current month's activity date.
 
-The current account status is 90 or more days past the due date, either 90-119 days past the due date, 120-149 days past the due date, 150-179 days past the due date, or 180 days or more past the due date.
+The current account status is 90 or more days past the due date, either 90-119 days past the due date (80), 120-149 days past the due date (82), 150-179 days past the due date (83), or 180 days or more past the due date (84).
 
 
 ### addl_apd_1
 #### Short description:
+The account status indicates a delinquent account, but there is no amount past due.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+account status
+amount past due
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+account status - Is one of the following: '71', '78', '80', '82', '83', '84', '93', '97'
+amount past due - Is zero
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The account status is either 30-59 days past the due date (71), 60-89 days past the due date (78), 90-119 days past the due date (80), 120-149 days past the due date (82), 150-179 days past the due date (83), 180 days or more past the due date (84), assigned to internal or external collections (93), or unpaid balance reported as a loss (charge-off) (97).
 
-#### Location in CRRG:
+The amount past due is zero.
 
 
 ### addl_doai_1
 #### Short description:
+A paid or settled account status indicated but date of account information is not equal to the date of last payment.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+account status
+date of account information
+date of last payment
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+account status - Is one of the following: '13', '61', '62', '63', '64', '65'
+date of account information (doai) - Is not equal to date of last payment (dolp)
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The account status is either paid or closed account / zero balance (13), paid in full - was a voluntary surrender (61), paid in full - was a collection account (62), paid in full - was a repossession (63), paid in full - was a charge off (64), or paid in full - a foreclosure was started (65).
 
-#### Location in CRRG:
+The date of account information (doai) is not equal to the date of last payment (dolp).
 
 
 ### 13_10B_1
 #### Short description:
+Account indicates a discharge for Chapter 7 or 11 bankruptcy for a charged off obligation in the base segment. But there is no date of first delinquency.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+account status
+amount past due
+base consumer information indicator
+current balance
+date closed
+date of first delinquency
+scheduled monthly payment amount
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+account status - Is '97'
+base consumer information indicator - Is one of the following: 'E', 'F'
+date of first delinquency - There is no date of first delinquency
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The account status is unpaid balance reported as a loss (charge-off) (97).
 
-#### Location in CRRG:
+The base consumer information indicator is either discharged through bankruptcy chapter 12 (E), or discharged through bankruptcy chapter 11 (F).
+
+There is no date of first delinquency (dofd).
 
 
 ### 13_10B_2
 #### Short description:
+Account indicates a discharge for Chapter 7 or 11 bankruptcy for a charged off obligation in the J1 segment. But there is no date of first delinquency.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+account status
+amount past due
+J1 consumer information indicator
+current balance
+date closed
+date of first delinquency
+scheduled monthly payment amount
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+database record id - Is the same between the base segment and the J1 segment
+account status - Is '97'
+J1 consumer information indicator - Is one of the following: 'E', 'F'
+date of first delinquency - There is no date of first delinquency
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The database record id is the same between the base segment and J1 segment.
 
-#### Location in CRRG:
+The account status is unpaid balance reported as a loss (charge-off) (97).
+
+The J1 consumer information indicator is either discharged through bankruptcy chapter 12 (E), or discharged through bankruptcy chapter 11 (F).
+
+There is no date of first delinquency (dofd).
 
 
 ### 13_10B_3
 #### Short description:
+Account indicates a discharge for Chapter 7 or 11 bankruptcy for a charged off obligation in the J2 segment. But there is no date of first delinquency.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+account status
+amount past due
+J2 consumer information indicator
+current balance
+date closed
+date of first delinquency
+scheduled monthly payment amount
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+database record id - Is the same between the base segment and the J2 segment
+account status - Is '97'
+J2 consumer information indicator - Is one of the following: 'E', 'F'
+date of first delinquency - There is no date of first delinquency
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The database record id is the same between the base segment and J2 segment.
 
-#### Location in CRRG:
+The account status is unpaid balance reported as a loss (charge-off) (97).
+
+The J2 consumer information indicator is either discharged through bankruptcy chapter 12 (E), or discharged through bankruptcy chapter 11 (F).
+
+There is no date of first delinquency (dofd).
 
 
 ### 7_21C_1
 #### Short description:
+Special comment code suggests that the account was paid in full for less than the full balance, but the account status does not indicate the account was paid.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+account status
+amount past due
+current balance
+date closed
+special comment code
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+account status - Is not one of the following: '13', '61', '62', '63', '64', '65'
+special comment code - Is 'AU'
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The account status is not paid or closed account / zero balance (13), paid in full - was a voluntary surrender (61), paid in full - was a collection account (62), paid in full - was a repossession (63), paid in full - was a charge off (64), or paid in full - a foreclosure was started (65).
 
-#### Location in CRRG:
+The special comment code suggests that the account was paid in full for less than the full balance (AU).
 
 
 ### 7_21C_2
 #### Short description:
+Special comment code suggests that the account was paid in full for less than the full balance, but the account status does not indicate the account was paid. Includes a K2 segment.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+account status
+amount past due
+current balance
+date closed
+special comment code
+K2 purchased - sold indicator
+K2 purchased - sold name
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+database record id - The base segment id matches the id of the K2 segment
+account status - Is not one of the following: '13', '61', '62', '63', '64', '65'
+special comment code - Is 'AU'
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The database record id is the same between the base segment and K2 segment.
 
-#### Location in CRRG:
+The account status is not paid or closed account / zero balance (13), paid in full - was a voluntary surrender (61), paid in full - was a collection account (62), paid in full - was a repossession (63), paid in full - was a charge off (64), or paid in full - a foreclosure was started (65).
+
+The special comment code suggests that the account was paid in full for less than the full balance (AU).
 
 
 ### 9_4A_1
 #### Short description:
+When the account status for the previous period reported the account 30-59 days past due, the first entry of this payment history profile is not '1' which would imply that the previous period's account was 30-59 days past due. Consumer info indicator is blank in the base segment.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+payment history profile (first character)
+previous date created
+previous account status
+previous consumer information indicator (base segment)
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+prior account status - Is '71'
+prior consumer information indicator (base segment) - Is blank
+prior date created - Is one month prior to current activity date
+consumer account number - Matches between the two months compared
+payment history profile (first character) - Is not '1'
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The prior account status is 30-59 days past the due date (71).
 
-#### Location in CRRG:
+The consumer information indicator is blank in the base segment.
+
+The prior activity date is one month before the current activity date.
+
+The consumer account number is the same between dates.
+
+The first character of the payment history profile is not '1' which would imply that the previous period's account was 30-59 days past due.
 
 
 ### 9_4A_2
 #### Short description:
+When the account status for the previous period reported the account 30-59 days past due, the first entry of this payment history profile is not '1' which would imply that the previous period's account was 30-59 days past due. Consumer info indicator is blank in the J1 segment.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+payment history profile (first character)
+previous date created
+previous account status
+previous consumer information indicator (J1 segment)
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+prior account status - Is '71'
+prior consumer information indicator (J1 segment) - Is blank
+prior date created - Is one month prior to current activity date
+consumer account number - Matches between the two months compared
+payment history profile (first character) - Is not '1'
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The prior account status is 30-59 days past the due date (71).
 
-#### Location in CRRG:
+The consumer information indicator is blank in the J1 segment.
+
+The prior activity date is one month before the current activity date.
+
+The consumer account number is the same between dates.
+
+The first character of the payment history profile is not '1' which would imply that the previous period's account was 30-59 days past due.
 
 
 ### 9_4A_3
 #### Short description:
+When the account status for the previous period reported the account 30-59 days past due, the first entry of this payment history profile is not '1' which would imply that the previous period's account was 30-59 days past due. Consumer info indicator is blank in the base segment.
 
 #### Fields in output:
+database record id
+date created
+consumer account number
+payment history profile (first character)
+previous date created
+previous account status
+previous consumer information indicator (J2 segment)
 
 #### Fields examined:
+file - Make sure the file of the line of data matches the file of the date created field in the header
+prior account status - Is '71'
+prior consumer information indicator (J2 segment) - Is blank
+prior date created - Is one month prior to current activity date
+consumer account number - Matches between the two months compared
+payment history profile (first character) - Is not '1'
 
-#### Code description:
+#### Code description and explanation of inconsistency:
+The activity date is retrieved from the file that the line of data came from.
 
-#### Description of inconsistency:
+The prior account status is 30-59 days past the due date (71).
 
-#### Location in CRRG:
+The consumer information indicator is blank in the J2 segment.
+
+The prior activity date is one month before the current activity date.
+
+The consumer account number is the same between dates.
+
+The first character of the payment history profile is not '1' which would imply that the previous period's account was 30-59 days past due.
 
