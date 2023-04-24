@@ -15,7 +15,7 @@ WORKDIR ${APP_HOME}
 # Add `$HOME/.local/bin` to PATH
 RUN echo 'export PATH=$HOME/.local/bin:$PATH' >> /etc/profile
 
-COPY ./front-end .
+COPY . .
 
 RUN adduser -u $USER_UID -D $USERNAME && \
     yarn && \

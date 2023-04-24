@@ -30,7 +30,7 @@ except:
     print("Unexpected error, quitting...")
     exit(1)
 
-RESULTFILE_PATH = os.path.join(EXAM_ROOT, "results", "results.json")
+RESULTFILE_PATH = os.path.join("results", "results.json")
 DATAFILE_PATH = os.path.join(EXAM_ROOT, "data")
 MAPFILE_PATH = os.path.join(EXAM_ROOT, "reference", "sample-map.xlsx")
 SHEET_NAME = "Mapping"

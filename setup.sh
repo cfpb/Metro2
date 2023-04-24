@@ -3,6 +3,11 @@
 # Set script to exit on any errors.
 set -e
 
+## Source .env, if it exists
+if [ -f .env ]; then
+  source .env
+fi
+
 # check for arguments and set exam constants
 if [ -z $EXAM_NUMBER ] || [ -z $INDUSTRY_TYPE_CODE ]; then
     echo "Please provide valid .env file before running: docker compose up"
@@ -19,7 +24,8 @@ export INDUSTRY_TYPE_CODE=$CLEANED_INDUSTRY_TYPE_CODE
 export EXAM_ROOT="exam-${EXAM_NUMBER}"
 
 # create required directory structure
-mkdir -p $EXAM_ROOT/{data,reference,results}
+mkdir -p $EXAM_ROOT/{data,reference}
+mkdir results
 
 ./ingest-data.sh
 ./unzip.sh

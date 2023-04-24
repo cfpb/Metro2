@@ -43,6 +43,7 @@ services:
       PGHOST: postgres
       PGPORT: 5432
       METRO2ENV: local
+    command: ./setup.sh
   frontend:
     container_name: frontend
     build:

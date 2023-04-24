@@ -9,6 +9,8 @@
 !requirements/*
 !front-end/
 !front-end/**
+!helm/
+!helm/**
 
 # ...and the following files
 !Dockerfile
