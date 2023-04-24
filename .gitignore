@@ -22,3 +22,5 @@
 !README.md
 !setup.sh
 !unzip.sh
+!helm-install.sh
+!build-images.sh
