@@ -21,16 +21,19 @@ services:
       interval: 3s
       timeout: 3s
       retries: 10
+    shm_size: '256mb'
   evaluator:
     image: metro2_evaluator:local
     build:
       context: .
       dockerfile: Dockerfile
+      shm_size: '256mb'
+    shm_size: '256mb'
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
-      - ./metro2:/src/metro2/
+      - ./metro2:/src/metro2/metro2
     stdin_open: true
     tty: true
     env_file:
@@ -43,15 +46,3 @@ services:
       PGHOST: postgres
       PGPORT: 5432
       METRO2ENV: local
-    command: ./setup.sh
-  frontend:
-    container_name: frontend
-    build:
-      context: .
-      dockerfile: ./front-end/Dockerfile
-    ports:
-      - 127.0.0.1:3000:3000
-    depends_on:
-      postgres:
-        condition: service_healthy
-    command: yarn dev

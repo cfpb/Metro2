@@ -1,5 +1,6 @@
 import json
 import os
+import openpyxl as xl
 from metro2.tables import connect
 from metro2.evaluator import evaluators
 from sqlalchemy import create_engine
@@ -90,7 +91,7 @@ class Evaluate():
                 results = list()
                 res = None
                 if evaluator.longitudinal_func:
-                    res = evaluator.exec_custom_func(connection=conn)
+                    res = evaluator.exec_custom_func(connection=conn, engine=engine)
                     results = res
                 else:
                     sel = evaluator.exec_custom_func()
@@ -119,6 +120,46 @@ class Evaluate():
                         evaluator.fields[0]: data_dict,
                         hits: len(results)
                     }
+
+                # write results to excel
+                print("Writing to excel")
+                output_path = "/src/metro2/results-" + evaluator.name + ".xlsx"
+                if os.path.isfile(output_path):
+                    wb = xl.load_workbook("/src/metro2/results.xlsx")
+                    sheet = wb['results']
+                    sheet_hits = wb['total hits']
+                else:
+                    wb = xl.Workbook()
+                    sheet = wb.create_sheet("results")
+                    sheet_hits = wb.create_sheet("total hits")
+                    sheet['A1'] = "evaluator"
+                    sheet['B1'] = "description"
+                    sheet['C1'] = "date"
+                    sheet['D1'] = "fields and values"
+                    sheet_hits['A1'] = "evaluator"
+                    sheet_hits['B1'] = "hits on evaluator"
+
+                if len(results) > 0:
+                    try:
+                        for row_data in results:
+                            field_str = ', '.join([str(evaluator.fields[i]) + ': ' + str(row_data[i]) for i in range(2, len(evaluator.fields))])
+                            sheet.append(tuple([
+                                evaluator.name,
+                                evaluator.description,
+                                row_data[1],
+                                field_str
+                            ]))
+
+                        sheet_hits.append(tuple([
+                            evaluator.name,
+                            len(results)
+                        ]))
+
+                        wb.save(output_path)
+                        print("wrote one")
+
+                    except Exception as e:
+                        print("Unable to add data: ", e)
 
             # write results to json
             self.write_json(outpath, self.results)

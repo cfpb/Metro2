@@ -9,6 +9,6 @@ if [ -z $METRO2ENV ] || [ -z $APP_HOME ]; then
 fi
 
 if [ $METRO2ENV == "local" ]; then
-    cp -a $APP_HOME/local/data/. $EXAM_ROOT/data/
+    # cp -a $APP_HOME/local/data/. $EXAM_ROOT/data/
     cp -a $APP_HOME/local/reference/. $EXAM_ROOT/reference/
 fi
