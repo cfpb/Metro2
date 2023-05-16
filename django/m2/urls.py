@@ -17,6 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from m2 import views
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('unsecured/', views.unsecured_view),
+    path('secured/', views.secured_view),
 ]
