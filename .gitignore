@@ -2,6 +2,8 @@
 **
 
 # ...except the following directories
+!django/
+!django/**
 !metro2/
 !metro2/*
 !metro2/tests/*
@@ -20,3 +22,7 @@
 !README.md
 !setup.sh
 !unzip.sh
+
+# ... but still ignore compiled files
+*.pyc
+*.sqlite3
