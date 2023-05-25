@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -22,8 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-10krwij0mgdzw=r2$jq5=!i27!_)-9#r8(*42*)+0n54$k5g0f'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -74,7 +72,8 @@ WSGI_APPLICATION = 'm2.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# We'll need to attach to a postgres DB in docker-compose
+# TODO: We'll need to attach to a postgres DB in docker-compose
+#   If needed, use separate settings in local.py and staging.py
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
