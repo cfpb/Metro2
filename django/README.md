@@ -8,3 +8,6 @@ How to run this app locally, for now:
 
 To run the lint checks:
 1. `ruff check django/`
+
+To run the tests:
+1. `./django/manage.py test`
