@@ -54,3 +54,16 @@ services:
       postgres:
         condition: service_healthy
     command: yarn dev
+  django:
+    image: django-m2:local
+    build:
+      context: .
+      dockerfile: ./django/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - 127.0.0.1:8000:8000
+    stdin_open: true
+    tty: true
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
