@@ -4,7 +4,12 @@ from django.db import models
 
 class Dataset(models.Model):
     name = models.CharField(max_length=255)
-    user_group = models.ForeignKey(Group, blank=True, on_delete=models.CASCADE)
+    user_group = models.ForeignKey(
+        Group,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
     # etc.
 
     def __str__(self) -> str:
