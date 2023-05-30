@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group, User
 from django.test import TestCase
 from m2.models import Dataset
+from unittest import mock
 
 
 class TestSecuredViews(TestCase):
@@ -27,23 +28,19 @@ class TestSecuredViews(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestDatasetAuthorization(TestCase):
+class TestDatasetListView(TestCase):
     def setUp(self) -> None:
         self.exam_group = Group.objects.create(name="Exam2023")
-        self.exam_group.save()
 
         self.dataset = Dataset.objects.create(name="OfficialExam2023",
                                               user_group=self.exam_group)
-        self.dataset.save()
 
         self.examiner = User.objects.create(
-            username="examiner", password="pass",
+            username="examiner", password="",
         )
         self.examiner.groups.set([self.exam_group])
-        self.examiner.save()
-
         self.user_without_group = User.objects.create(
-            username="other_user", password="pass",
+            username="other_user", password="",
         )
         return super().setUp()
     
@@ -62,12 +59,29 @@ class TestDatasetAuthorization(TestCase):
         response = self.client.get("/datasets/")
         self.assertNotContains(response, "OfficialExam2023", status_code=200)
 
+
+class TestIndividualDatasetView(TestCase):
+    def setUp(self) -> None:
+        self.dataset = Dataset.objects.create(name="TestExamABC")
+        self.user = User.objects.create(
+            username="examiner", password="",
+        )
+        return super().setUp()
+
     def test_single_dataset_view_contains_info_when_authorized(self):
-        self.client.force_login(self.examiner)
-        response = self.client.get("/datasets/OfficialExam2023/")
-        self.assertContains(response, "OfficialExam2023", status_code=200)
+        self.client.force_login(self.user)
+        with mock.patch.object(Dataset, "check_access_for_user") as access_check:
+            # Mock the dataset.check_access_for_user method to return True
+            access_check.return_value = True
+            response = self.client.get("/datasets/TestExamABC/")
+            access_check.assert_called_once()
+            self.assertContains(response, "TestExamABC", status_code=200)
 
     def test_single_dataset_view_returns_404_when_not_authorized(self):
-        self.client.force_login(self.user_without_group)
-        response = self.client.get("/datasets/OfficialExam2023/")
-        self.assertEqual(response.status_code, 404)
+        self.client.force_login(self.user)
+        with mock.patch.object(Dataset, "check_access_for_user") as access_check:
+            # Mock the dataset.check_access_for_user method to return False
+            access_check.return_value = False
+            response = self.client.get("/datasets/TestExamABC/")
+            access_check.assert_called_once()
+            self.assertEqual(response.status_code, 404)
