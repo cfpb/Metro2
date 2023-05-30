@@ -67,8 +67,7 @@ class TestDatasetAuthorization(TestCase):
         response = self.client.get("/datasets/OfficialExam2023/")
         self.assertContains(response, "OfficialExam2023", status_code=200)
 
-    # TODO
-    def xtest_single_dataset_view_redirects_when_not_authorized(self):
+    def test_single_dataset_view_returns_404_when_not_authorized(self):
         self.client.force_login(self.user_without_group)
         response = self.client.get("/datasets/OfficialExam2023/")
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 404)

@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render
 
 from m2.models import Dataset
@@ -23,7 +24,9 @@ def datasets(request):
 
 @login_required
 def dataset(request, dataset_name):
-    # TODO: ensure user has this dataset permission before serving
-    info = Dataset.objects.get(name=dataset_name)
-    context = { "dataset": info }
+    dataset = Dataset.objects.get(name=dataset_name)
+    if not dataset.check_access_for_user(request.user):
+        raise Http404("Dataset does not exist or you do not have permission to view it.")
+
+    context = { "dataset": dataset }
     return render(request, "m2/dataset.html", context)
