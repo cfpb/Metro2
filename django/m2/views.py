@@ -26,7 +26,8 @@ def datasets(request):
 def dataset(request, dataset_id):
     dataset = Dataset.objects.get(id=dataset_id)
     if not dataset.check_access_for_user(request.user):
-        raise Http404("Dataset does not exist or you do not have permission to view it.")
+        msg = "Dataset does not exist or you do not have permission to view it."
+        raise Http404(msg)
 
     context = { "dataset": dataset }
     return render(request, "m2/dataset.html", context)

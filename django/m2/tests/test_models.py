@@ -8,12 +8,15 @@ class TestDataset(TestCase):
         group1 = Group.objects.create(name="Exam2023")
         group2 = Group.objects.create(name="OtherGroup")
 
-        self.dataset1 = Dataset.objects.create(name="OfficialExam2023", user_group=group1)
-        self.dataset2 = Dataset.objects.create(name="OtherExam", user_group=group2)
+        self.dataset1 = Dataset.objects.create(
+            name="OfficialExam2023", user_group=group1)
+        self.dataset2 = Dataset.objects.create(
+            name="OtherExam", user_group=group2)
 
         self.examiner = User.objects.create(username="examiner", password="")
         self.examiner.groups.set([group1, group2])
-        self.user_without_group = User.objects.create(username="other_user", password="")
+        self.user_without_group = User.objects.create(
+            username="other_user", password="")
         return super().setUp()
     
     def test_access_true_for_user_in_correct_group(self):
