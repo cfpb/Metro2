@@ -73,7 +73,7 @@ class TestIndividualDatasetView(TestCase):
         with mock.patch.object(Dataset, "check_access_for_user") as access_check:
             # Mock the dataset.check_access_for_user method to return True
             access_check.return_value = True
-            response = self.client.get("/datasets/TestExamABC/")
+            response = self.client.get(f"/datasets/{self.dataset.id}/")
             access_check.assert_called_once()
             self.assertContains(response, "TestExamABC", status_code=200)
 
@@ -82,6 +82,6 @@ class TestIndividualDatasetView(TestCase):
         with mock.patch.object(Dataset, "check_access_for_user") as access_check:
             # Mock the dataset.check_access_for_user method to return False
             access_check.return_value = False
-            response = self.client.get("/datasets/TestExamABC/")
+            response = self.client.get(f"/datasets/{self.dataset.id}/")
             access_check.assert_called_once()
             self.assertEqual(response.status_code, 404)

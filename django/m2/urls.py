@@ -25,5 +25,5 @@ urlpatterns = [
     path('unsecured/', views.unsecured_view),
     path('secured/', views.secured_view),
     path('datasets/', views.datasets),
-    path('datasets/<slug:dataset_name>/', views.dataset)
+    path('datasets/<int:dataset_id>/', views.dataset)
 ]
