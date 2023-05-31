@@ -3,7 +3,7 @@ from django.test import TestCase
 from m2.models import Dataset
 
 
-class TestDataset(TestCase):
+class TestDatasetAccess(TestCase):
     def setUp(self) -> None:
         group1 = Group.objects.create(name="Exam2023")
         group2 = Group.objects.create(name="OtherGroup")
@@ -34,3 +34,13 @@ class TestDataset(TestCase):
         """
         self.assertFalse(self.dataset1.check_access_for_user(self.user_without_group))
         self.assertFalse(self.dataset2.check_access_for_user(self.user_without_group))
+
+
+class TestDataset(TestCase):
+    def setUp(self) -> None:
+        self.name = "OfficialExam2023"
+        self.dataset = Dataset.objects.create(name=self.name)
+        return super().setUp()
+
+    def test_str_matches_name(self):
+        self.assertEqual(self.name, str(self.dataset))
