@@ -62,6 +62,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    environment:
+      DJANGO_SETTINGS_MODULE: m2.settings.local
     ports:
       - 127.0.0.1:8000:8000
     stdin_open: true
