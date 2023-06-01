@@ -26,3 +26,4 @@
 # ... but still ignore compiled files
 *.pyc
 *.sqlite3
+.coverage
