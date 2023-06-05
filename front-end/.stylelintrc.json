@@ -1,0 +1,16 @@
+{
+	"extends": [
+		"stylelint-config-standard",
+		"stylelint-config-recommended-less",
+		"stylelint-config-prettier"
+	],
+	"customSyntax": "postcss-less",
+	"rules": {
+		"at-rule-no-unknown": [
+			true,
+			{
+				"ignoreAtRules": ["layer"]
+			}
+		]
+	}
+}

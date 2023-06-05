@@ -1,45 +1,29 @@
 # Metro2 Tool Front-End
 
-## Technology Stack
+## Features
 
-This application is written in JavaScript with React.
+- [Vite](https://vitejs.dev) with [React](https://reactjs.org), [TypeScript](https://www.typescriptlang.org) and [absolute imports](https://github.com/aleclarson/vite-tsconfig-paths).
+- Uses [ESLint](https://eslint.org), [stylelint](https://stylelint.io) and [Prettier](https://prettier.io) on VSCode and before you commit with [Husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged).
+- Unit and integration tests with [Vitest](https://vitest.dev/) and [Testing Library](https://testing-library.com/).
+- e2e tests with [Cypress](https://www.cypress.io).
 
-## Running the App Locally
+## Getting started
 
-In the `front-end` directory:
+In the `front-end` directory, install the dependencies:
 
-1. Run `yarn`. This is only necessary if the yarn packages have changed since the last time the app was started.
-2. Run `yarn dev`.
-3. Open [http://localhost:3000](http://localhost:3000)
+```
+yarn install
+```
 
-## Available Scripts
+## Scripts
 
-In the `front-end` directory, you can run:
-
-### `yarn dev`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.
-
-### `yarn build`
-
-Builds the app for production. Built files will be written to the `dist` directory.
-
-### `yarn preview`
-
-Serves a preview of the production files locally after the build command has been run.\
-Open [http://localhost:4173](http://localhost:4173) to view it in your browser.
-
-### `yarn format`
-
-Runs prettier to fix file formatting.
-
-### `yarn lint`
-
-Lints JavaScript files with ESLint and CSS files with Stylelint.
-
-### `yarn test`
-
-Runs Cypress and unit tests.
+- `yarn dev` - start a development server with hot reload.
+- `yarn build` - build for production. The generated files will be on the `dist` folder.
+- `yarn preview` - locally preview the production build.
+- `yarn test` - run unit and integration tests related to changed files based on git.
+- `yarn test:ci` - run all unit and integration tests in CI mode.
+- `yarn test:e2e` - run all e2e tests with the Cypress Test Runner.
+- `yarn test:e2e:headless` - run all e2e tests headlessly.
+- `yarn format` - format all files with Prettier.
+- `yarn lint` - runs TypeScript, ESLint and Stylelint.
+- `yarn validate` - runs `lint`, `test:ci` and `test:e2e:ci`.
