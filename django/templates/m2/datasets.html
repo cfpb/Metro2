@@ -1,0 +1,24 @@
+<html><body>
+    <h1>M2 app</h1>
+    <p>Logged in user info:
+        <ul>
+            <li>username: {{request.user.username}}</li>
+            <li>groups: {{request.user.groups}}</li>
+        </ul>
+    </p>
+
+    <hr>
+    <h1>Datasets</h1>
+
+    {% if datasets %}
+        <ul>
+        {% for dataset in datasets %}
+            <li><a href="/datasets/{{ dataset.name }}/">{{ dataset.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>You do not have permission to view any datasets. Contact an administator to be added to a dataset.</p>
+    {% endif %}
+
+
+</body></html>
