@@ -6,7 +6,7 @@ export default function ResultsPage(): ReactElement {
 		<>
 			<Head title='Results' />
 			<div data-testid='header'>
-				<h2>Results</h2>		
+				<h2>Results</h2>
 			</div>
 		</>
 	)

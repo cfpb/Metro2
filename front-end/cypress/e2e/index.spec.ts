@@ -3,11 +3,9 @@ function get(id: string) {
 }
 
 describe('Basic flow', () => {
-
 	it('Should render the results view', () => {
 		cy.visit('/')
 
-		get('header').should('have.text', 'Results');
+		get('header').should('have.text', 'Results')
 	})
-
 })

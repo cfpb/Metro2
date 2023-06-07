@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 import { useParams } from 'react-router-dom'
 
 export default function DetailsPage(): ReactElement {
-	const { id } = useParams<Record<string, string | undefined>>() 
+	const { id } = useParams<Record<string, string | undefined>>()
 	return (
 		<>
 			<Head title={id ?? ''} />

@@ -7,8 +7,6 @@ describe('<App />', () => {
 		window.history.pushState({}, 'Home', '/')
 		renderWithProviders(<App />, false)
 
-		await expect(
-			screen.findByText('Results')
-		).resolves.toBeInTheDocument()
+		await expect(screen.findByText('Results')).resolves.toBeInTheDocument()
 	})
 })
