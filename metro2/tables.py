@@ -285,10 +285,10 @@ trailer = Table(
     Column('reserved_trailer_3', String(19))
 )
 
-def connect(database=PGDATABASE):
+def connect(database=PGDATABASE, port=PGPORT):
     return psycopg2.connect(
         host=PGHOST,
-        port=PGPORT,
+        port=port,
         database=database,
         user=PGUSER,
         password=PGPASSWORD

@@ -135,7 +135,7 @@ class Evaluate():
     # connect to results database and write results
     def write_results(self):
         try:
-            engine = create_engine('postgresql+psycopg2://', creator=connect('results'))
+            engine = create_engine('postgresql+psycopg2://', creator=connect('results-db', 5433))
             conn = engine.connect()
 
             # create tables in results database
