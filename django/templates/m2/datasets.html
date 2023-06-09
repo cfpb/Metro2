@@ -13,7 +13,7 @@
     {% if datasets %}
         <ul>
         {% for dataset in datasets %}
-            <li><a href="/datasets/{{ dataset.name }}/">{{ dataset.name }}</a></li>
+            <li><a href="/datasets/{{ dataset.id }}/">{{ dataset.name }}</a></li>
         {% endfor %}
         </ul>
     {% else %}
