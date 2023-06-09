@@ -1,0 +1,16 @@
+[tool.ruff]
+exclude = [
+    # These are directories that it's a waste of time to traverse
+    ".git",
+
+    # And directories in cfgov that don't have python files to lint
+    "__pycache__",
+    "/templates",
+
+    # Generated migration files will throw errors.
+    "m2/migrations/*.py",
+
+    # Our settings files might need to conform to different readability
+    # standards
+    "m2/settings",
+]

@@ -46,3 +46,29 @@ services:
       PGHOST: postgres
       PGPORT: 5432
       METRO2ENV: local
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: ./front-end/Dockerfile
+    ports:
+      - 127.0.0.1:3000:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: yarn dev
+  django:
+    image: django-m2:local
+    build:
+      context: .
+      dockerfile: ./django/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DJANGO_SETTINGS_MODULE: m2.settings.local
+    ports:
+      - 127.0.0.1:8000:8000
+    stdin_open: true
+    tty: true
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"

@@ -1,6 +1,5 @@
 import json
 import os
-import openpyxl as xl
 from metro2.tables import connect
 from metro2.evaluator import evaluators
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
