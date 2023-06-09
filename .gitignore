@@ -31,3 +31,5 @@
 *.pyc
 *.sqlite3
 .coverage
+*.DS_Store
+helm/metro2/charts/
