@@ -44,7 +44,7 @@ realpath() {
 ## Get Project Dir path containing helm-install.sh
 export PROJECT_DIR="$(dirname "$(realpath "$0")")"
 ## Set Default Args
-DEFAULT_ARGS="${PROJECT_DIR}/helm/overrides/services.yaml"
+DEFAULT_ARGS=""
 ## Source .env, if it exists
 if [ -f .env ]; then
   source .env
