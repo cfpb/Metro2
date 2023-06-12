@@ -1,20 +1,28 @@
 import LoadingOrError from 'components/LoadingOrError'
+import HeaderNavbar from 'components/HeaderNavbar'
+
 import type { ReactElement } from 'react'
 import { lazy, Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 
-const Results = lazy(async () => import('pages/Results'))
-const Evaluator = lazy(async () => import('pages/Evaluator'))
+import './App.less'
+
+const HomePage = lazy(async () => import('pages/Home'))
 
 export default function App(): ReactElement {
 	return (
-		<HashRouter>
-			<Suspense fallback={<LoadingOrError />}>
-				<Routes>
-					<Route path='/' element={<Results />} />
-					<Route path='/evaluators/:id' element={<Evaluator />} />
-				</Routes>
-			</Suspense>
-		</HashRouter>
+		<>
+			<HeaderNavbar />
+			<div className='app'>
+				<h1>Metro2 Evaluator Tool</h1>
+				<HashRouter>
+					<Suspense fallback={<LoadingOrError />}>
+						<Routes>
+							<Route path='/' element={<HomePage />} />
+						</Routes>
+					</Suspense>
+				</HashRouter>
+			</div>
+		</>
 	)
 }

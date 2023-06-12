@@ -24,5 +24,8 @@ export default defineConfig(({ mode }) => ({
 		tsconfigPaths(),
 		react(),
 		...(mode === 'test' ? [] : [eslintPlugin()])
-	]
+	],
+	server: {
+		port: 3000
+	}
 }))

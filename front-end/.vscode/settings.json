@@ -10,6 +10,8 @@
 	"editor.foldingImportsByDefault": true,
 	"editor.formatOnSave": true,
 	"editor.tabSize": 2,
+	"editor.insertSpaces": true,
+	"editor.detectIndentation": true,
 	"files.exclude": {
 		"**/.stylelintcache": true,
 		"**/.eslintcache": true,

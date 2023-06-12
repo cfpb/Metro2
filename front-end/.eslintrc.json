@@ -173,6 +173,9 @@
 			"files": ["vite.config.ts", "cypress.config.ts"],
 			"parserOptions": {
 				"project": ["./tsconfig.node.json"]
+			},
+			"rules": {
+				"@typescript-eslint/no-magic-numbers": ["off"]
 			}
 		},
 		{

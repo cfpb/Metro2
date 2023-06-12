@@ -3,17 +3,25 @@
 ## Features
 
 - [Vite](https://vitejs.dev) with [React](https://reactjs.org), [TypeScript](https://www.typescriptlang.org) and [absolute imports](https://github.com/aleclarson/vite-tsconfig-paths).
-- Uses [ESLint](https://eslint.org), [stylelint](https://stylelint.io) and [Prettier](https://prettier.io) on VSCode and before you commit with [Husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged).
+- Uses [ESLint](https://eslint.org), [stylelint](https://stylelint.io) and [Prettier](https://prettier.io)
 - Unit and integration tests with [Vitest](https://vitest.dev/) and [Testing Library](https://testing-library.com/).
 - e2e tests with [Cypress](https://www.cypress.io).
 
-## Getting started
+## Running locally
 
 In the `front-end` directory, install the dependencies:
 
 ```
 yarn install
 ```
+
+Start the server in development mode:
+
+```
+yarn dev
+```
+
+Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## Scripts
 
