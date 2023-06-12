@@ -28,7 +28,7 @@ fi
 
 ## Tag Option
 if [ -z $TAG ]; then
-  TAG="local"
+  TAG="--set image.tag=local"
 else
   TAG="--set image.tag=${TAG}"
 fi
@@ -97,7 +97,7 @@ done
 
 # Execute
 # install dbs for local releases
-if [ "$TAG" == "local" ]; then
+if [ "$TAG" == "--set image.tag=local" ]; then
   helm install metro2-db --set auth.username='cfpb' \
   --set auth.password='cfpb' \
   --set auth.database='metro2-data' \
@@ -110,7 +110,7 @@ if [ "$TAG" == "local" ]; then
 fi
 
 ## Install/Upgrade cfgov release
-helm upgrade --install metro2 ./helm/metro2
+helm upgrade --install ${WAIT_OPT} metro2 ${NAMESPACE_OPT} ${OVERRIDES} ${IMAGE} ${TAG} ${PROJECT_DIR}/helm/metro2
 
 # Add these in for local SSL.
 #  --set ingress.tls[0].secretName="${RELEASE}-tls" \  # local SSL
