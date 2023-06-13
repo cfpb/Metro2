@@ -1,9 +1,8 @@
 import json
 import os
-
 from metro2.tables import connect
 from metro2.evaluator import evaluators
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
 
 # check if tool is set to run locally
 try:
@@ -28,6 +27,8 @@ class Evaluate():
         self.exam_number = 9999
         self.industry_type = ''
         self.date_format = '%m%d%Y'
+        self.statements = list()
+        self.metadata_statements = list()
 
     # reads in a JSON file and stores the data in memory
     def load_json(self, path):
@@ -71,9 +72,6 @@ class Evaluate():
 
     # outputs evaluators to json
     def run_evaluators(self, outpath):
-        description = 'description'
-        hits = 'hits'
-        fields = 'fields'
         engine = None
 
         print("Connecting to PostgreSQL database...")
@@ -91,7 +89,7 @@ class Evaluate():
                 results = list()
                 res = None
                 if evaluator.longitudinal_func:
-                    res = evaluator.exec_custom_func(connection=conn)
+                    res = evaluator.exec_custom_func(connection=conn, engine=engine)
                     results = res
                 else:
                     sel = evaluator.exec_custom_func()
@@ -99,30 +97,77 @@ class Evaluate():
                         res = conn.execute(sel)
                         for row in res:
                             results.append(list(row))
-                
+
                 # write to results
                 if len(results) > 0:
-                    data_dict = {}
                     try:
-                        data_dict = {
-                            row_data[0]: {
-                                evaluator.fields[1]: row_data[1],
-                                fields: {
-                                    evaluator.fields[i]: row_data[i] for i in range(2, len(evaluator.fields))
-                                }
-                            } for row_data in results
-                        }
+                        for row_data in results:
+                            vals = ','.join(row_data[i] for i in range(3, len(evaluator.fields)))
+                            self.statements.append(
+                                insert(str(evaluator.name)).
+                                values(
+                                    date=row_data[1],
+                                    record_id=row_data[0],
+                                    acct_num=row_data[2],
+                                    field_values=vals
+                                )
+                            )
+                        # write to metadata table
+                        self.metadata_statements.append(
+                            insert('evaluator_metadata').
+                            values(
+                                evaluator_name=evaluator.name,
+                                short_description=evaluator.description,
+                                fields=evaluator.fields,
+                                hits=len(results)
+                            )
+                        )
                     except Exception as e:
-                        print("Unable to add data: ", e)
+                        print("Unable to add result to results: ", e)
                         continue
-                    self.results[evaluator.name] = {
-                        description: evaluator.description,
-                        evaluator.fields[0]: data_dict,
-                        hits: len(results)
-                    }
 
-            # write results to json
-            self.write_json(outpath, self.results)
+        except Exception as e:
+            print("There was a problem establishing the connection: ", e)
+        finally:
+            if engine is not None:
+                engine.dispose()
+
+    # connect to results database and write results
+    def write_results(self):
+        try:
+            engine = create_engine('postgresql+psycopg2://', creator=connect('metro2-results', 'results-db-postgresql', 5432))
+            conn = engine.connect()
+
+            # create tables in results database
+            meta = MetaData()
+
+            # create metadata table
+            temp_meta = Table(
+                'evaluator_metadata', meta,
+                Column('evaluator_name', String(30)),
+                Column('short_description', String(400)),
+                Column('fields', String(400)),
+                Column('hits', Integer)
+            )
+
+            temp_meta.create(engine)
+
+            for evaluator in evaluators:
+                temp_tbl = Table(
+                    str(evaluator.name), meta,
+                    Column('date', String(8)),
+                    Column('field_values', String()),
+                    Column('record_id', String(24)),
+                    Column('acct_num', String(30))
+                )
+
+                temp_tbl.create(engine)
+
+            # write to results database
+            for stmt in self.statements:
+                conn.execute(stmt)
+            for meta in self.metadata_statements:
+                conn.execute(meta)
 
         except Exception as e:
             print("There was a problem establishing the connection: ", e)

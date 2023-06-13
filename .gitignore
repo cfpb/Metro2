@@ -11,6 +11,8 @@
 !requirements/*
 !front-end/
 !front-end/**
+!helm/
+!helm/**
 
 # ...and the following files
 !Dockerfile
@@ -22,8 +24,12 @@
 !README.md
 !setup.sh
 !unzip.sh
+!helm-install.sh
+!build-images.sh
 
 # ... but still ignore compiled files
 *.pyc
 *.sqlite3
 .coverage
+*.DS_Store
+helm/metro2/charts/
