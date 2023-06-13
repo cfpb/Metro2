@@ -25,7 +25,7 @@ Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## Scripts
 
-In `front-end` you cann run:
+In `front-end` you can run:
 
 - `yarn dev` - start a development server with hot reload.
 - `yarn build` - build for production. The generated files will be on the `dist` folder.
