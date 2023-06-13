@@ -31,7 +31,7 @@ except:
     exit(1)
 
 RESULTFILE_PATH = os.path.join("results", "results.json")
-DATAFILE_PATH = os.path.join("local", "data")
+DATAFILE_PATH = os.path.join(EXAM_ROOT, "data")
 MAPFILE_PATH = os.path.join(EXAM_ROOT, "reference", "sample-map.xlsx")
 SHEET_NAME = "Mapping"
 COL_SEGMENT = "B"

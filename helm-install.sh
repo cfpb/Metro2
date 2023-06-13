@@ -98,19 +98,25 @@ done
 # Execute
 # install dbs for local releases
 if [ "$TAG" == "--set image.tag=local" ]; then
-  helm install metro2-db --set auth.username='cfpb' \
-  --set auth.password='cfpb' \
+  helm install metro2-db \
+  --set auth.postgresPassword='cfpb' \
   --set auth.database='metro2-data' \
   bitnami/postgresql --set persistence.enabled=false
 
-  helm install results-db --set auth.username='cfpb' \
-  --set auth.password='cfpb' \
+  helm install results-db \
+  --set auth.postgresPassword='cfpb' \
   --set auth.database='metro2-results' \
   bitnami/postgresql --set persistence.enabled=false
+
+  # wait for postgres to be in ready state
+  kubectl wait --for=condition=ready \
+  --all pods
 fi
 
 ## Install/Upgrade cfgov release
-helm upgrade --install ${WAIT_OPT} metro2 ${NAMESPACE_OPT} ${OVERRIDES} ${IMAGE} ${TAG} ${PROJECT_DIR}/helm/metro2
+helm upgrade --install ${WAIT_OPT} "${RELEASE}" \
+${NAMESPACE_OPT} ${OVERRIDES} ${IMAGE} ${TAG} \
+${PROJECT_DIR}/helm/metro2
 
 # Add these in for local SSL.
 #  --set ingress.tls[0].secretName="${RELEASE}-tls" \  # local SSL
