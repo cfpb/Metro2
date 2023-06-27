@@ -3,11 +3,12 @@ import HeaderNavbar from 'components/HeaderNavbar'
 
 import type { ReactElement } from 'react'
 import { lazy, Suspense } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import './App.less'
 
 const HomePage = lazy(async () => import('pages/Home'))
+const TestPage = lazy(async () => import('pages/Test'))
 
 export default function App(): ReactElement {
 	return (
@@ -15,13 +16,14 @@ export default function App(): ReactElement {
 			<HeaderNavbar />
 			<div className='app'>
 				<h1>Metro2 Evaluator Tool</h1>
-				<HashRouter>
+				<BrowserRouter>
 					<Suspense fallback={<LoadingOrError />}>
 						<Routes>
 							<Route path='/' element={<HomePage />} />
+							<Route path='/test' element={<TestPage />} />
 						</Routes>
 					</Suspense>
-				</HashRouter>
+				</BrowserRouter>
 			</div>
 		</>
 	)

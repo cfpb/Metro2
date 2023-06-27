@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 
 import './HeaderNavbar.less'
+import logo from '/images/logo_237x50@2x.png'
 
 export default function HeaderNavbar(): ReactElement {
 	return (
@@ -10,7 +11,7 @@ export default function HeaderNavbar(): ReactElement {
 					<a href='/'>
 						<img
 							className='o-header_logo-img'
-							src='/images/logo_237x50@2x.png'
+							src={logo}
 							alt='Consumer Financial Protection Bureau'
 							width='237'
 							height='50'
