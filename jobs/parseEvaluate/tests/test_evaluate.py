@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from metro2.evaluate import evaluator
+from evaluate import evaluator
 
 
 class TestEvaluate(TestCase):

@@ -1,5 +1,5 @@
-from metro2.parse import Parser
-from metro2.evaluate import evaluator
+from parse import Parser
+from evaluate import evaluator
 import os
 
 # check if tool is set to run locally

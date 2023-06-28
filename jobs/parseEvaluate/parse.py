@@ -9,8 +9,8 @@ import re
 import multiprocessing as mp
 import openpyxl as xl
 
-from metro2.iterator_file import IteratorFile
-from metro2.tables import create, connect
+from iterator_file import IteratorFile
+from tables import create, connect
 
 # check if tool is set to run locally
 try:

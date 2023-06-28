@@ -4,8 +4,8 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import and_, func, cast, Integer, Table, Column, String, MetaData
 from sqlalchemy.sql import select, literal
-from metro2.iterator_file import IteratorFile
-from metro2.tables import (
+from iterator_file import IteratorFile
+from tables import (
     connect,
     header,
     base,
