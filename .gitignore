@@ -8,8 +8,6 @@
 !jobs/parseEvaluate/
 !jobs/parseEvaluate/*
 !jobs/parseEvaluate/tests/*
-!requirements/
-!requirements/*
 !front-end/
 !front-end/**
 !helm/
