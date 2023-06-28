@@ -82,17 +82,22 @@ This is a manual process, but it can be helped with some code and Excel formulas
   
 _Note: the field type for phone numbers must be `col_double()` because R cannot handle integers above about 2 billion. All other numeric fields are okay as integers, because they are only 9 characters long, and the M2 format calls for truncating decimals._
 
-## Create Local Folder for Running Locally
+## Running in Helm (recommended except for quickly testing a new feature in only one portion of the application)
+Before building the metro2 helm charts, run `build-images.sh`
 
-When the tool runs locally, it expects to find the following files to copy from a local directory named `local`
+## Create temp Folder for Running Locally
 
-- local
+When the tool runs locally, it expects to find the following files to copy from a local directory named `temp`
+
+- temp
   - data
     - data-file.txt (can be named anything as long as the file extension is .txt)
     - data-file2.txt (can be named anything as long as the file extension is .txt)
     - ...
   - reference
     - sample-map.xlsx (keep this name consistent)
+
+TODO: In future releases, replace reference file with in-code data dictionary.
 
 ## Parse Data and Write to Database
 
@@ -121,15 +126,10 @@ The results.json file can be retrieved from the docker container by exiting the 
 
 ## Running Tests
 
-Connect to the application container with `docker-compose exec evaluator sh` then run `python3 -m unittest metro2.tests.test-to-run`
-
-Currently available test files:
-- `test-evaluate`
-- `test-parse`
+Connect to the application container with `docker-compose exec evaluator sh` then run `python3 -m unittest tests.test-file-to-run`
 
 TODO: Add tests, improve running tests, and run on PRs
 
-
 ### Test Coverage
 
-To measure test coverage of metro2, connect to the application with `docker-compose exec -it metro2_evaluator_1 sh` and run `coverage run -m --source=./metro2 unittest discover metro2/tests`.  
+To measure test coverage of the parseEvaluate job, connect to the application with `docker-compose exec -it evaluator sh` and run `coverage run -m --source=. unittest discover tests`.  
