@@ -3,6 +3,7 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import and_, func, cast, Integer, Table, Column, String, MetaData
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import select, literal
 from iterator_file import IteratorFile
 from tables import (
@@ -38,12 +39,30 @@ class Evaluator():
         industry_type = ind_type
 
     def exec_custom_func(self, connection=None, engine=None):
-        # longitudinal functions require a connection object
-        if connection and self.longitudinal_func:
-            res = self.longitudinal_func(connection, engine)
-            return res
+        # returns a list of results from running a query
+        if self.longitudinal_func:
+            res_set = self.longitudinal_func(connection, engine)
 
-        return self.func()
+            # if a temporary table was created in getting results, delete it here.
+            try:
+                base = declarative_base()
+                metadata = MetaData(engine, reflect=True)
+                table = metadata.tables.get('temp_tbl')
+                if table is not None:
+                    print("Deleting temp table...")
+                    base.metadata.drop_all(engine, [table], checkfirst=True)
+            except Exception as e:
+                print("There was an issue getting or deleting temp table: ", e)
+
+        else:
+            res = connection.execute(self.func())
+
+            res_set = list()
+
+            for result in res:
+                res_set.append(result)
+
+        return res_set
 
 # evaluators to run
 eval_2_1A = Evaluator(

@@ -45,18 +45,7 @@ class Evaluate():
 
             # run evaluators
             for evaluator in evaluators:
-                # execute evaluator code
-                results = list()
-                res = None
-                if evaluator.longitudinal_func:
-                    res = evaluator.exec_custom_func(connection=conn, engine=engine)
-                    results = res
-                else:
-                    sel = evaluator.exec_custom_func()
-                    if sel is not None:
-                        res = conn.execute(sel)
-                        for row in res:
-                            results.append(list(row))
+                results = evaluator.exec_custom_func(connection=conn, engine=engine)
 
                 # write to results
                 if len(results) > 0:
