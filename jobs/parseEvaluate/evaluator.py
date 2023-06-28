@@ -64,6 +64,56 @@ class Evaluator():
 
         return res_set
 
+# copy to previously created temp table
+def copy_to_temp(res_set):
+    conn = None
+    # create a new connection and cursor using just psycopg2 (not SQLAlchemy)
+    # use copy from function to copy results to temp_tbl
+    try:
+        conn = connect()
+        cur = conn.cursor()
+
+        block_start = 0
+        block_size = 2000
+        tup_set = tuple(res_set)
+        sub = list()
+        sub.append('{}')
+        # the length of each result will be the same.
+        commands = '\t'.join(sub * (len(tup_set[block_start])))
+
+        while (block_start + block_size) < len(tup_set):
+            block_end = block_start + block_size
+            # split values
+            val_list = tup_set[block_start:block_end]
+
+            copy = IteratorFile((commands.format(*vals) for vals in val_list))
+
+            cur.copy_from(copy, 'temp_tbl')
+            # persist changes
+            conn.commit()
+
+            block_start += block_size
+
+        # if start is still less than the length of results, do one more copy
+        if block_start < len(tup_set):
+            # split values
+            val_list = tup_set[block_start:len(tup_set)]
+
+            copy = IteratorFile((commands.format(*vals) for vals in val_list))
+
+            cur.copy_from(copy, 'temp_tbl')
+
+        cur.close()
+        # persist changes
+        conn.commit()
+
+    except Exception as e:
+        print("An exception occurred while trying to create a cursor: ", e)
+    finally:
+        if conn is not None:
+            conn.close()
+
+
 # evaluators to run
 eval_2_1A = Evaluator(
     "2-1A",
@@ -182,55 +232,7 @@ def eval_prog_dofd_1_func(connection, engine):
         result = list([str(compare_date_str), str(dofd), str(acct_num), str(acct_stat)])
         res_set.append(result)
 
-    print("set created")
-
-    conn = None
-    # create a new connection and cursor using just psycopg2 (not SQLAlchemy)
-    try:
-        conn = connect()
-        cur = conn.cursor()
-
-        block_start = 0
-        block_size = 2000
-        tup_set = tuple(res_set)
-        sub = list()
-        sub.append('{}')
-        # the length of each result will be the same.
-        commands = '\t'.join(sub * (len(tup_set[block_start])))
-
-        while (block_start + block_size) < len(tup_set):
-            block_end = block_start + block_size
-            # split values
-            val_list = tup_set[block_start:block_end]
-
-            copy = IteratorFile((commands.format(*vals) for vals in val_list))
-
-            cur.copy_from(copy, 'temp_tbl')
-            # persist changes
-            conn.commit()
-
-            block_start += block_size
-
-        # if start is still less than the length of results, do one more copy
-        if block_start < len(tup_set):
-            # split values
-            val_list = tup_set[block_start:len(tup_set)]
-
-            copy = IteratorFile((commands.format(*vals) for vals in val_list))
-
-            cur.copy_from(copy, 'temp_tbl')
-
-        cur.close()
-        # persist changes
-        conn.commit()
-
-    except Exception as e:
-        print("An exception occurred while trying to create a cursor: ", e)
-    finally:
-        if conn is not None:
-            conn.close()
-
-    print("copy done")
+    copy_to_temp(res_set)
 
     new_res = connection.execute(select(base.c.id, header.c.date_created, base.c.cons_acct_num, base.c.acct_stat, base.c.dofd, temp_tbl.c.compare_date, temp_tbl.c.prior_dofd, temp_tbl.c.prior_acct_stat).where(
         and_(
