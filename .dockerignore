@@ -3,9 +3,9 @@
 
 # ...except these directories
 !django
-!metro2
-!requirements
-!temp
+!jobs
+!jobs/parseEvaluate
+!jobs/parseEvaluate/temp
 !front-end
 
 # ...and these files

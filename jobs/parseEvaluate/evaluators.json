@@ -1,0 +1,103 @@
+{
+    "2-1A": {
+        "description": "Portfolio type does not match the industry type, 'Bank' or 'Credit Union'",
+        "IPL": [
+            "all"
+        ],
+        "query": "SELECT id, port_type FROM base WHERE port_type NOT IN ('C', 'I', 'M', 'O', 'R')",
+        "globals": {
+            "industry_type": [
+                "B",
+                "CU"
+            ]
+        }
+    },
+    "2-2A": {
+        "description": "Portfolio type does not match the industry type, 'Finance Company'",
+        "IPL": [
+            "all"
+        ],
+        "query": "SELECT id, port_type FROM base WHERE port_type NOT IN ('C', 'I', 'O', 'R')",
+        "globals": {
+            "industry_type": [
+                "FC"
+            ]
+        }
+    },
+    "2-3A": {
+        "description": "Portfolio type does not match the industry type, 'Mortgage Lender'",
+        "IPL": [
+            "mortgage"
+        ],
+        "query": "SELECT id, port_type FROM base WHERE port_type NOT IN ('C', 'I', 'M')",
+        "globals": {
+            "industry_type": [
+                "M"
+            ]
+        }
+    },
+    "2-4A": {
+        "description": "Portfolio type does not match the industry type, 'Credit Card'",
+        "IPL": [
+            "credit card"
+        ],
+        "query": "SELECT id, port_type FROM base WHERE port_type NOT IN ('C', 'O', 'R')",
+        "globals": {
+            "industry_type": [
+                "CC"
+            ]
+        }
+    },
+    "2-5A": {
+        "description": "Portfolio type does not match the industry type, 'Sales Finance' or 'Retail Store'",
+        "IPL": [
+            "all"
+        ],
+        "query": "SELECT id, port_type FROM base WHERE port_type NOT IN ('I', 'R')",
+        "globals": {
+            "industry_type": [
+                "SF",
+                "RS"
+            ]
+        }
+    },
+    "2-6A": {
+        "description": "Portfolio type does not match the industry type, 'Collection Agency' or 'Debt Buyer'",
+        "IPL": [
+            "all"
+        ],
+        "query": "SELECT id, port_type FROM base WHERE port_type != 'O'",
+        "globals": {
+            "industry_type": [
+                "CI"
+            ]
+        }
+    },
+    "6-4B": {
+        "description": "This is an account that has not been paid or transferred, has a current balance, and no deferred terms frequency, but has a balloon payment due date.",
+        "IPL": [
+            "all"
+        ],
+        "query": "SELECT base.id, base.acct_stat, base.terms_freq, base.current_bal, K4.k4_balloon_pmt_due_dt FROM base INNER JOIN K4 ON base.id = K4.id WHERE base.acct_stat NOT IN ('05', '13', '61', '62', '63', '64', '65') AND base.terms_freq != 'D' AND base.current_bal > 0",
+        "dates": {
+            "k4_balloon_pmt_due_dt": {
+                "specifier": "exists",
+                "pos": 4
+            }
+        }
+    },
+    "6-4C": {
+        "description": "This is an account that has not been paid or transferred, has a current balance, and no deferred terms frequency, but has a balloon payment amount.",
+        "IPL": [
+            "all"
+        ],
+        "query": "SELECT base.id, base.acct_stat, base.terms_freq, base.current_bal, K4.k4_balloon_pmt_amt FROM base INNER JOIN K4 ON base.id = K4.id WHERE base.acct_stat NOT IN ('05', '13', '61', '62', '63', '64', '65') AND base.terms_freq != 'D' AND base.current_bal > 0 AND K4.k4_balloon_pmt_amt > 0"
+    },
+    "6-4D": {
+        "description": "This is an account that has not been paid or transferred, has a current balance, and no deferred terms frequency.",
+        "IPL": [
+            "all"
+        ],
+        "query": "SELECT id, acct_stat, terms_freq, current_bal FROM base WHERE base.acct_stat NOT IN ('05', '13', '61', '62', '63', '64', '65') AND base.terms_freq != 'D' AND base.current_bal > 0"
+    }
+}
