@@ -1,8 +1,8 @@
 import json
 import os
-from tables import connect
-from evaluator import evaluators
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
+from tables import connect
+from m2_evaluators import *
 
 # check if tool is set to run locally
 try:
@@ -19,6 +19,30 @@ if METRO2ENV != 'local':
     print("Metro2 evaluator tool is not configured to run in production. \
         Quitting...")
     exit(1)
+
+
+evaluators = [
+    # eval_2_1A,
+    # eval_2_2A,
+    # eval_2_3A,
+    # eval_2_4A,
+    # eval_2_5A,
+    # eval_2_6A,
+    eval_6_4B,
+    eval_prog_dofd_1,
+    # eval_prog_status_1,
+    eval_addl_apd_1,
+    # eval_addl_doai_1,
+    # eval_13_10B_1,
+    # eval_13_10B_2,
+    # eval_13_10B_3,
+    # eval_7_21C_1,
+    eval_7_21C_2,
+    # eval_9_4A_1,
+    # eval_9_4A_2,
+    # eval_9_4A_3
+]
+
 
 class Evaluate():
     def __init__(self):
