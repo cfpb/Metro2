@@ -538,7 +538,7 @@ evaluators = [
     eval_6_4B,
     eval_prog_dofd_1,
     # eval_prog_status_1,
-    # eval_addl_apd_1,
+    eval_addl_apd_1,
     # eval_addl_doai_1,
     # eval_13_10B_1,
     # eval_13_10B_2,
