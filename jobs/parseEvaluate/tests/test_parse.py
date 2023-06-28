@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import patch
-from metro2.parse import parser
+from parse import parser
 
 class TestParse(TestCase):
     @classmethod

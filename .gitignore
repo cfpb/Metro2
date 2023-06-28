@@ -4,11 +4,10 @@
 # ...except the following directories
 !django/
 !django/**
-!metro2/
-!metro2/*
-!metro2/tests/*
-!requirements/
-!requirements/*
+!jobs/
+!jobs/parseEvaluate/
+!jobs/parseEvaluate/*
+!jobs/parseEvaluate/tests/*
 !front-end/
 !front-end/**
 !helm/

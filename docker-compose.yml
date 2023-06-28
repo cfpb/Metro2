@@ -25,15 +25,14 @@ services:
   evaluator:
     image: metro2_evaluator:local
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./jobs/parseEvaluate
       shm_size: '256mb'
     shm_size: '256mb'
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
-      - ./metro2:/src/metro2/metro2
+      - ./jobs/parseEvaluate:/src/parseEvaluate
     stdin_open: true
     tty: true
     env_file:
@@ -49,8 +48,7 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: .
-      dockerfile: ./front-end/Dockerfile
+      context: ./front-end
     ports:
       - 127.0.0.1:3000:3000
     depends_on:
@@ -60,8 +58,7 @@ services:
   django:
     image: django-m2:local
     build:
-      context: .
-      dockerfile: ./django/Dockerfile
+      context: ./django
     depends_on:
       postgres:
         condition: service_healthy
