@@ -285,13 +285,14 @@ trailer = Table(
     Column('reserved_trailer_3', String(19))
 )
 
-def connect(database=PGDATABASE, host=PGHOST, port=PGPORT):
+# establishes a database connection using psycopg2. Can pass arguments to override any value.
+def connect(database=PGDATABASE, host=PGHOST, port=PGPORT, user=PGUSER, password=PGPASSWORD):
     return psycopg2.connect(
         host=host,
         port=port,
         database=database,
-        user=PGUSER,
-        password=PGPASSWORD
+        user=user,
+        password=password
     )
 
 # creates tables defined above
