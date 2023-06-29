@@ -30,46 +30,6 @@ class Evaluate():
         self.statements = list()
         self.metadata_statements = list()
 
-    # reads in a JSON file and stores the data in memory
-    def load_json(self, path):
-        file = None
-        try:
-            file = open(path, "r")
-            self.evaluators = json.load(file)
-        except FileNotFoundError as e:
-            print("Invalid file name for loading JSON: ", e)
-            exit(1)
-        finally:
-            if file is not None:
-                file.close()
-
-    # writes evaluators to file
-    def write_json(self, path, data):
-        file = None
-        try:
-            file = open(path, "w")
-            json.dump(data, file, indent=4)
-        except FileNotFoundError as e:
-            print("Path does not exist: ", e)
-            exit(1)
-        finally:
-            if file is not None:
-                file.close()
-
-    # adds a custom evaluator given an evaluator name, and dictionaries
-    # containing fields and inverse fields.
-    def add_custom_evaluator(self, path, name, content):
-        criteria = "criteria"
-        self.load_json(path)
-        # check to make sure an existing evaluator will not be overwritten.
-        if name not in self.evaluators[criteria]:
-            self.evaluators[criteria][name] = {
-                content
-            }
-
-        # write to file
-        self.write_json(path, self.evaluators)
-
     # outputs evaluators to json
     def run_evaluators(self, outpath):
         engine = None

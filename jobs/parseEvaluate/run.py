@@ -38,6 +38,7 @@ COL_SEGMENT = "B"
 COL_START = "F"
 COL_END = "G"
 COL_FIELDS = "I"
+# This is included to give users the option to include or exclude these fields.
 PII_FIELDS = list([
     "surname",
     "surname_j1",
