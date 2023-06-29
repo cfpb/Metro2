@@ -64,6 +64,7 @@ class Evaluate():
             conn = engine.connect()
 
             # set exam globals
+            # TODO: Test that this works. We might need to find another way to set these.
             if len(evaluators) > 0:
                 evaluators[0].set_globals(self.industry_type, self.exam_number)
 
