@@ -8,6 +8,15 @@ The application consists of three main components;
 - and a front end container that provides a visual interface for authenticated and authorized users and allows them to interact with the data.
 
 ## Sections
+- [Alto Dev](#alto-dev)
+- [Alto Staging](#alto-staging)
+- [Alto Prod](#alto-prod)
+- [Helm](#helm)
+- [Running in Helm](#running-in-helm-recommended-except-for-quickly-testing-a-new-feature-in-only-one-portion-of-the-application)
+- [Docker](#docker-local)
+- [Create local folder for running locally](#create-local-folder-for-running-locally)
+- [Parse Data and Write to Database](#parse-data-and-write-to-database)
+- [Run Evaluators](#run-evaluators)
 - [Front End](#front-end)
 - [Evaluator Job](#evaluator-job)
 - [Copy .env_SAMPLE to .env and change values](#copy-.env_sample-to-.env-and-change-values)
@@ -15,13 +24,73 @@ The application consists of three main components;
 - [Docker container running postgres for local development](#docker-container-running-postgres-for-local-development)
 - [Create a Data Dictionary to M2 Mapping File](#create-a-data-dictionary-to-m2-mapping-file)
 - [Populate the Mapping File](#populate-the-mapping-file)
-- [Running in Helm](#running-in-helm-recommended-except-for-quickly-testing-a-new-feature-in-only-one-portion-of-the-application)
-- [Create local folder for running locally](#create-local-folder-for-running-locally)
-- [Parse Data and Write to Database](#parse-data-and-write-to-database)
-- [Run Evaluators](#run-evaluators)
 - [Django Container](#django-container)
 - [Testing](#testing)
 - [Running Tests](#running-tests)
+
+# Alto Dev
+
+Not currently available
+
+|Server|IP Address|Name|
+|------|----------|----|
+
+# Alto Staging
+
+Not currently available
+
+|Server|IP Address|Name|
+|------|----------|----|
+
+# Alto Prod
+
+Not currently available
+
+|Server|IP Address|Name|
+|------|----------|----|
+
+# Helm
+
+## Running in Helm (recommended except for quickly testing a new feature in only one portion of the application)
+Install helm and optionally install OpenLens for better visualization
+
+Enable Kubernetes in Docker Desktop under `Settings` > `Kubernetes`
+
+Before building the metro2 helm charts, run `build-images.sh`
+
+Additionally, you will need to set up binami postgres databases for running helm locally
+- `helm install metro2-data bitnami/postgresql --set persistence.enabled=false`
+- `helm install metro2-results bitnami/postgresql --set persistence.enabled=false`
+
+After building images, run `helm-install.sh`
+
+# Docker (local)
+
+## Create temp Folder for Running Locally
+
+When the tool runs locally, it expects to find the following files to copy from a local directory named `temp`
+
+- temp
+  - data
+    - data-file.txt (can be named anything as long as the file extension is .txt)
+    - data-file2.txt (can be named anything as long as the file extension is .txt)
+    - ...
+  - reference
+    - sample-map.xlsx (keep this name consistent)
+
+TODO: In future releases, replace reference file with in-code data dictionary.
+
+## Parse Data and Write to Database
+
+With your docker containers up and running and unzipped .txt data files, connect to the evaluator container using `docker-compose exec evaluator sh` and run the following command:
+
+`./setup.sh`
+
+## Run Evaluators
+
+After parsing, the same script that was used to parse will run all evaluators and output the results to a results postgresql database.
+
+## Cross Reference Hits with Consumer Disputes
 
 # Front End
 
@@ -94,58 +163,6 @@ This is a manual process, but it can be helped with some code and Excel formulas
   + The orange column, M2FieldLower, needs to be filled in manually. You can deduce the intended M2 field from the entity's field most of the time. Some are exact matches. If there are any discrepancies, check the CRRG first, then work with the OSP or ENF POCs to clear them up if necessary.
   
 _Note: the field type for phone numbers must be `col_double()` because R cannot handle integers above about 2 billion. All other numeric fields are okay as integers, because they are only 9 characters long, and the M2 format calls for truncating decimals._
-
-## Running in Helm (recommended except for quickly testing a new feature in only one portion of the application)
-Install helm and optionally install OpenLens for better visualization
-
-Enable Kubernetes in Docker Desktop under `Settings` > `Kubernetes`
-
-Before building the metro2 helm charts, run `build-images.sh`
-
-Additionally, you will need to set up binami postgres databases for running helm locally
-- `helm install metro2-data bitnami/postgresql --set persistence.enabled=false`
-- `helm install metro2-results bitnami/postgresql --set persistence.enabled=false`
-
-After building images, run `helm-install.sh`
-
-## Create temp Folder for Running Locally
-
-When the tool runs locally, it expects to find the following files to copy from a local directory named `temp`
-
-- temp
-  - data
-    - data-file.txt (can be named anything as long as the file extension is .txt)
-    - data-file2.txt (can be named anything as long as the file extension is .txt)
-    - ...
-  - reference
-    - sample-map.xlsx (keep this name consistent)
-
-TODO: In future releases, replace reference file with in-code data dictionary.
-
-## Parse Data and Write to Database
-
-With your docker containers up and running and unzipped .txt data files, connect to the evaluator container using `docker-compose exec evaluator sh` and run the following command:
-
-`./setup.sh`
-
-## Run Evaluators
-
-After parsing, the same script that was used to parse will run all evaluators and output the results to a json file. This file is intended to be passed to a frontend in order to visualize data.
-
-The data returned by the JSON is formatted as follows:
-- Criteria name (i.e. 6-4C)
-  - Description
-  - Data
-    - Record number
-      - Date
-      - Checked field values
-  - Number of hits
-
-The results.json file can be retrieved from the docker container by exiting the container with the command `exit` and then running the following command (replacing local/path/to/results.json with whatever local path you want to store it in):
-
-`docker-compose cp evaluator:"src/metro2/exam-<replace with exam number>/results/results.json" "local/path/to/results.json"`
-
-## Cross Reference Hits with Consumer Disputes
 
 # Django Container
 
