@@ -2,17 +2,30 @@
 
 The purpose of the Metro 2 evaluator tool is to automate as much as possible in regard to parsing, evaluating, and analyzing. The tool is currently configured to be run locally, but will soon be modified to run in any environment.
 
-## Sections
+The application consists of three main components;
+- an evaluator job that runs in the background and populates a results database,
+- a Django container that handles internal permissions and retrieves data from the results database to populate the front end,
+- and a front end container that provides a visual interface for authenticated and authorized users and allows them to interact with the data.
 
+## Sections
+- [Front End](#front-end)
+- [Evaluator Job](#evaluator-job)
 - [Copy .env_SAMPLE to .env and change values](#copy-.env_sample-to-.env-and-change-values)
 - [Define Exam Parameters](#define-exam-parameters)
 - [Docker container running postgres for local development](#docker-container-running-postgres-for-local-development)
 - [Create a Data Dictionary to M2 Mapping File](#create-a-data-dictionary-to-m2-mapping-file)
 - [Populate the Mapping File](#populate-the-mapping-file)
+- [Running in Helm](#running-in-helm-recommended-except-for-quickly-testing-a-new-feature-in-only-one-portion-of-the-application)
 - [Create local folder for running locally](#create-local-folder-for-running-locally)
 - [Parse Data and Write to Database](#parse-data-and-write-to-database)
 - [Run Evaluators](#run-evaluators)
+- [Django Container](#django-container)
+- [Testing](#testing)
 - [Running Tests](#running-tests)
+
+# Front End
+
+# Evaluator Job
 
 ## Copy .env_SAMPLE to .env and change values
 
@@ -83,7 +96,17 @@ This is a manual process, but it can be helped with some code and Excel formulas
 _Note: the field type for phone numbers must be `col_double()` because R cannot handle integers above about 2 billion. All other numeric fields are okay as integers, because they are only 9 characters long, and the M2 format calls for truncating decimals._
 
 ## Running in Helm (recommended except for quickly testing a new feature in only one portion of the application)
+Install helm and optionally install OpenLens for better visualization
+
+Enable Kubernetes in Docker Desktop under `Settings` > `Kubernetes`
+
 Before building the metro2 helm charts, run `build-images.sh`
+
+Additionally, you will need to set up binami postgres databases for running helm locally
+- `helm install metro2-data bitnami/postgresql --set persistence.enabled=false`
+- `helm install metro2-results bitnami/postgresql --set persistence.enabled=false`
+
+After building images, run `helm-install.sh`
 
 ## Create temp Folder for Running Locally
 
@@ -124,9 +147,13 @@ The results.json file can be retrieved from the docker container by exiting the 
 
 ## Cross Reference Hits with Consumer Disputes
 
+# Django Container
+
+# Testing
+
 ## Running Tests
 
-Connect to the application container with `docker-compose exec evaluator sh` then run `python3 -m unittest tests.test-file-to-run`
+Connect to the evaluator container with `docker-compose exec evaluator sh` then run `python3 -m unittest tests.test-file-to-run`
 
 TODO: Add tests, improve running tests, and run on PRs
 
