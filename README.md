@@ -15,8 +15,6 @@ The application consists of three main components;
 - [Running in Helm](#running-in-helm-recommended-except-for-quickly-testing-a-new-feature-in-only-one-portion-of-the-application)
 - [Docker](#docker-local)
 - [Create local folder for running locally](#create-local-folder-for-running-locally)
-- [Parse Data and Write to Database](#parse-data-and-write-to-database)
-- [Run Evaluators](#run-evaluators)
 - [Front End](#front-end)
 - [Evaluator Job](#evaluator-job)
 - [Copy .env_SAMPLE to .env and change values](#copy-.env_sample-to-.env-and-change-values)
@@ -24,6 +22,8 @@ The application consists of three main components;
 - [Docker container running postgres for local development](#docker-container-running-postgres-for-local-development)
 - [Create a Data Dictionary to M2 Mapping File](#create-a-data-dictionary-to-m2-mapping-file)
 - [Populate the Mapping File](#populate-the-mapping-file)
+- [Parse Data and Write to Database](#parse-data-and-write-to-database)
+- [Run Evaluators](#run-evaluators)
 - [Django Container](#django-container)
 - [Testing](#testing)
 - [Running Tests](#running-tests)
@@ -68,7 +68,7 @@ After building images, run `helm-install.sh`
 
 ## Create temp Folder for Running Locally
 
-When the tool runs locally, it expects to find the following files to copy from a local directory named `temp`
+When the evaluator job runs locally, it expects to find the following files to copy from a local directory named `temp`
 
 - temp
   - data
@@ -79,18 +79,6 @@ When the tool runs locally, it expects to find the following files to copy from 
     - sample-map.xlsx (keep this name consistent)
 
 TODO: In future releases, replace reference file with in-code data dictionary.
-
-## Parse Data and Write to Database
-
-With your docker containers up and running and unzipped .txt data files, connect to the evaluator container using `docker-compose exec evaluator sh` and run the following command:
-
-`./setup.sh`
-
-## Run Evaluators
-
-After parsing, the same script that was used to parse will run all evaluators and output the results to a results postgresql database.
-
-## Cross Reference Hits with Consumer Disputes
 
 # Front End
 
@@ -161,8 +149,18 @@ This is a manual process, but it can be helped with some code and Excel formulas
   + Copy/paste (as values!) the data from DataDictionary sheet to the Mapping sheet.
   
   + The orange column, M2FieldLower, needs to be filled in manually. You can deduce the intended M2 field from the entity's field most of the time. Some are exact matches. If there are any discrepancies, check the CRRG first, then work with the OSP or ENF POCs to clear them up if necessary.
-  
-_Note: the field type for phone numbers must be `col_double()` because R cannot handle integers above about 2 billion. All other numeric fields are okay as integers, because they are only 9 characters long, and the M2 format calls for truncating decimals._
+
+## Parse Data and Write to Database
+
+With your docker containers up and running and unzipped .txt data files, connect to the evaluator container using `docker-compose exec evaluator sh` and run the following command:
+
+`./setup.sh`
+
+## Run Evaluators
+
+After parsing, the same script that was used to parse will run all evaluators and output the results to a results postgresql database.
+
+## Cross Reference Hits with Consumer Disputes
 
 # Django Container
 
