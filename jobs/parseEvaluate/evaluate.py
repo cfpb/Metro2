@@ -2,7 +2,7 @@ import json
 import os
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
 from tables import connect
-from m2_evaluators import *
+from m2_evaluators import evaluators
 
 # check if tool is set to run locally
 try:
@@ -21,32 +21,9 @@ if METRO2ENV != 'local':
     exit(1)
 
 
-evaluators = [
-    # eval_2_1A,
-    # eval_2_2A,
-    # eval_2_3A,
-    # eval_2_4A,
-    # eval_2_5A,
-    # eval_2_6A,
-    eval_6_4B,
-    eval_prog_dofd_1,
-    # eval_prog_status_1,
-    eval_addl_apd_1,
-    # eval_addl_doai_1,
-    # eval_13_10B_1,
-    # eval_13_10B_2,
-    # eval_13_10B_3,
-    # eval_7_21C_1,
-    eval_7_21C_2,
-    # eval_9_4A_1,
-    # eval_9_4A_2,
-    # eval_9_4A_3
-]
-
-
 class Evaluate():
     def __init__(self):
-        self.evaluators = dict()
+        self.evaluators = evaluators
         self.results = dict()
         self.exam_number = 9999
         self.industry_type = ''
@@ -65,11 +42,11 @@ class Evaluate():
 
             # set exam globals
             # TODO: Test that this works. We might need to find another way to set these.
-            if len(evaluators) > 0:
-                evaluators[0].set_globals(self.industry_type, self.exam_number)
+            if len(self.evaluators) > 0:
+                self.evaluators[0].set_globals(self.industry_type, self.exam_number)
 
             # run evaluators
-            for evaluator in evaluators:
+            for evaluator in self.evaluators:
                 results = evaluator.exec_custom_func(connection=conn, engine=engine)
 
                 # write to results
@@ -126,7 +103,7 @@ class Evaluate():
 
             temp_meta.create(engine)
 
-            for evaluator in evaluators:
+            for evaluator in self.evaluators:
                 temp_tbl = Table(
                     str(evaluator.name), meta,
                     Column('date', String(8)),
