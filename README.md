@@ -58,9 +58,7 @@ Enable Kubernetes in Docker Desktop under `Settings` > `Kubernetes`
 
 Before building the metro2 helm charts, run `build-images.sh`
 
-Additionally, you will need to set up binami postgres databases for running helm locally
-- `helm install metro2-data bitnami/postgresql --set persistence.enabled=false`
-- `helm install metro2-results bitnami/postgresql --set persistence.enabled=false`
+Additionally, you will need to set up binami postgres databases for running helm locally. This is handled by the `helm-install.sh` script.
 
 After building images, run `helm-install.sh`
 
