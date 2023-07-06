@@ -1,6 +1,6 @@
 from unittest import TestCase, mock 
 
-from metro2.secret import SecretsManagerSecret, getClient, deleteSecret, get_secret, writeSecret
+from secret import SecretsManagerSecret, getClient, deleteSecret, get_secret, writeSecret
 
 class TestSecret(TestCase):
 
