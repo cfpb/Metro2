@@ -6,11 +6,21 @@ import botocore.session
 from botocore.exceptions import ClientError
 
 class SecretsManagerSecret:
+    """Encapsulates Secrets Manager functions."""
     def __init__(self, secretsmanager_client):
+        """
+        :param secretsmanager_client: A Boto3 Secrets Manager client.
+        """
         self.secretsmanager_client = secretsmanager_client
         self.name = None
 
     def create(self, name, secret_value):
+        """
+        Creates a new secret. The secret value can be a string or bytes.
+        :param name: The name of the secret to create.
+        :param secret_value: The value of the secret.
+        :return: Metadata about the newly created secret.
+        """
         try:
             kwargs = {'Name': name}
             if isinstance(secret_value, str):
