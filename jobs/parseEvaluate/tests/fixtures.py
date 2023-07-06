@@ -168,7 +168,7 @@ class Base(Dec_Base):
 
     def __repr__(self):
         return (
-            "<Header('{self.col_id}', '{self.file}', '{self.proc_ind}', \
+            "<Base('{self.col_id}', '{self.file}', '{self.proc_ind}', \
                 '{self.id_num}', '{self.cycle_id}', '{self.cons_acct_num}', \
                 '{self.port_type}', '{self.acct_type}', '{self.date_open}', \
                 '{self.credit_limit}', '{self.hcola}', '{self.terms_dur}', \
