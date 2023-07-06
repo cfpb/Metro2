@@ -1,8 +1,8 @@
 import json
 import os
-from tables import connect
-from evaluator import evaluators
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
+from tables import connect
+from m2_evaluators import evaluators
 
 # check if tool is set to run locally
 try:
@@ -20,9 +20,10 @@ if METRO2ENV != 'local':
         Quitting...")
     exit(1)
 
+
 class Evaluate():
     def __init__(self):
-        self.evaluators = dict()
+        self.evaluators = evaluators
         self.results = dict()
         self.exam_number = 9999
         self.industry_type = ''
@@ -40,23 +41,13 @@ class Evaluate():
             conn = engine.connect()
 
             # set exam globals
-            if len(evaluators) > 0:
-                evaluators[0].set_globals(self.industry_type, self.exam_number)
+            # TODO: Test that this works. We might need to find another way to set these.
+            if len(self.evaluators) > 0:
+                self.evaluators[0].set_globals(self.industry_type, self.exam_number)
 
             # run evaluators
-            for evaluator in evaluators:
-                # execute evaluator code
-                results = list()
-                res = None
-                if evaluator.longitudinal_func:
-                    res = evaluator.exec_custom_func(connection=conn, engine=engine)
-                    results = res
-                else:
-                    sel = evaluator.exec_custom_func()
-                    if sel is not None:
-                        res = conn.execute(sel)
-                        for row in res:
-                            results.append(list(row))
+            for evaluator in self.evaluators:
+                results = evaluator.exec_custom_func(connection=conn, engine=engine)
 
                 # write to results
                 if len(results) > 0:
@@ -112,7 +103,7 @@ class Evaluate():
 
             temp_meta.create(engine)
 
-            for evaluator in evaluators:
+            for evaluator in self.evaluators:
                 temp_tbl = Table(
                     str(evaluator.name), meta,
                     Column('date', String(8)),
