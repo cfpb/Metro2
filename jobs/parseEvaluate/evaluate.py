@@ -1,4 +1,3 @@
-import json
 import os
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
 from tables import connect
@@ -31,8 +30,8 @@ class Evaluate():
         self.statements = list()
         self.metadata_statements = list()
 
-    # outputs evaluators to json
-    def run_evaluators(self, outpath):
+    # runs evaluators to produce results
+    def run_evaluators(self):
         engine = None
 
         print("Connecting to PostgreSQL database...")

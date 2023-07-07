@@ -6,25 +6,36 @@ from sqlalchemy.ext.declarative import declarative_base
 
 # fixtures for testing
 
-class Cursor():
-    def execute(self, *_):
-        return [("expected", "sample", "data")]
+class Engine():
+    def __init__(self, connect_return=None, dispose_return=None):
+        self.connect_return = connect_return
+        self.dispose_return = dispose_return
 
-    def fetchall(self):
-        return [("test", "success")]
+    def connect(self):
+        return self.connect_return
 
-    def close(self):
-        return None
+    def dispose(self):
+        return self.dispose_return
 
-class Connect():
-    def cursor(self):
-        return Cursor()
+class ExpectedException(Exception):
+    def __init__(self, msg=None):
+        self.msg = msg
 
-    def execute(self, *_):
-        return [('a', 'b', 'c', 'd')]
+class Evaluator():
+    def __init__(self, set_globals_return=None, custom_func_return=None,
+        name="my_eval", description="Test evaluator", fields=None
+    ):
+        self.set_globals_return = set_globals_return
+        self.custom_func_return = custom_func_return
+        self.name = name
+        self.description = description
+        self.fields = fields
 
-    def close(self):
-        return None
+    def set_globals(self):
+        return self.set_globals_return
+
+    def exec_custom_func(self):
+        return self.custom_func_return
 
 Dec_Base = declarative_base()
 
