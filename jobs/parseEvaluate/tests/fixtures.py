@@ -185,3 +185,37 @@ class Base(Dec_Base):
                 '{self.col_zip}', '{self.addr_ind}', '{self.res_cd}', \
                 )>".format(self=self)
         )
+
+class K2(Dec_Base):
+    __tablename__ = 'k2'
+
+    col_id = Column('id', String(24), primary_key=True)
+    file = Column(String(24))
+    k2_seg_id = Column(String(2))
+    k2_purch_sold_ind = Column(String(1))
+    k2_purch_sold_name = Column(String(30))
+    reserved_k2 = Column(String(1))
+
+    def __init__(
+        self,
+        col_id="0001",
+        file="file_hash",
+        k2_seg_id="K2",
+        k2_purch_sold_ind="1",
+        k2_purch_sold_name="Bank Bank",
+        reserved_k2="0",
+    ):
+        self.col_id = col_id
+        self.file = file
+        self.k2_seg_id = k2_seg_id
+        self.k2_purch_sold_ind = k2_purch_sold_ind
+        self.k2_purch_sold_name = k2_purch_sold_name
+        self.reserved_k2 = reserved_k2
+
+    def __repr__(self):
+        return (
+            "<K2('{self.col_id}', '{self.file}', '{self.k2_seg_id}', \
+                '{self.purch_sold_ind}', '{self.k2_purch_sold_name}', \
+                '{self.reserved_k2}', \
+                )>".format(self=self)
+        )
