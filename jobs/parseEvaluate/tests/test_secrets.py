@@ -43,8 +43,8 @@ class TestSecret(TestCase):
         getClient()
         mock_client.assert_called_once_with(service_name=self.service, region_name=self.region)
 
-    @mock.patch('metro2.secret.getClient')
-    @mock.patch('metro2.secret.SecretsManagerSecret.create')
+    @mock.patch('secret.getClient')
+    @mock.patch('secret.SecretsManagerSecret.create')
     def test_write_secret(self, mock_mgr_create, mock_client):
         writeSecret(self.team, self.label, self.secret)
         mock_client.assert_called_once()
@@ -59,7 +59,7 @@ class TestSecret(TestCase):
     #     deleteSecret(self.team, self.label)
     #     mock_get_client.assert_called_once()
 
-    @mock.patch('metro2.secret.getClient')
+    @mock.patch('secret.getClient')
     def test_get_secret_string(self, mock_get_client):
         mock_secret_value = {'SecretString': 'fake'}
         mock_client = mock.MagicMock()
@@ -69,7 +69,7 @@ class TestSecret(TestCase):
         result = get_secret(self.team, self.label)
         self.assertEqual(result, 'fake')
 
-    @mock.patch('metro2.secret.getClient')
+    @mock.patch('secret.getClient')
     def test_get_secret_binary(self, mock_get_client):
         mock_secret_value = {'SecretBinary': b'fake'}
         mock_client = mock.MagicMock()
