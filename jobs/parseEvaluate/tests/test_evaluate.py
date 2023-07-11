@@ -2,11 +2,18 @@ import unittest
 import evaluate
 
 from evaluate import evaluator
-from fixtures import Engine, ExpectedException, Evaluator
+from fixtures import Engine, ExpectedException, Evaluator, Connection
 from unittest.mock import patch
 
 class TestEvaluate(unittest.TestCase):
-    def test_run_evaluators_no_evals(self):
+
+    ###########################################################################
+    # Tests for evaluate.py
+    ###########################################################################
+
+    @patch(evaluate.create_engine)
+    def test_run_evaluators_no_evals(self, mock_create_engine):
+        mock_create_engine.return_value = Engine()
         # set empty evaluators list (should not run any evaluators)
         evaluator.evaluators = []
         evaluator.run_evaluators()
@@ -39,7 +46,7 @@ class TestEvaluate(unittest.TestCase):
         self.assertEqual(1, len(evaluator.metadata_statements))
 
     @partch(evaluate.create_engine)
-    def test_run_evaluators_produces_results(self, mock_create_engine):
+    def test_run_evaluators_invalid_results_raises_exception(self, mock_create_engine):
         # should raise an exception when there are less than 3 fields in
         # results
         mock_create_engine.return_value = Engine(
@@ -50,3 +57,30 @@ class TestEvaluate(unittest.TestCase):
             fields=["Field 1", "Field 2"]
         )]
         self.assertRaises(ExpectedException, evaluator.run_evaluators)
+
+    @patch(evaluate.create_engine)
+    @patch(evaluate.Table.create)
+    def test_write_results_executes_statements(self, mock_create_engine, _):
+        mock_create_engine.return_value = Engine(
+            dispose_return=ExpectedException(),
+            connect_return=Connection(
+                execute_return=Exception()
+            )
+        )
+        # tests that evaluate statements are executed
+        evaluator.statements = ["a valid statement"]
+        self.assertRaises(ExpectedException, evaluator.write_results)
+
+    @patch(evaluate.create_engine)
+    @patch(evaluate.Table.create)
+    def test_write_results_executes_metadata_statements(self, mock_create_engine, _):
+        mock_create_engine.return_value = Engine(
+            dispose_return=ExpectedException(),
+            connect_return=Connection(
+                execute_return=Exception()
+            )
+        )
+        # tests that evaluate metadata statements are executed (these are executed after non-metadata statements)
+        evaluator.metadata_statements = ["a valid metadata statement"]
+        self.assertRaises(ExpectedException, evaluator.write_results)
+

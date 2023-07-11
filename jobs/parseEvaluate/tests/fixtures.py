@@ -17,6 +17,13 @@ class Engine():
     def dispose(self):
         return self.dispose_return
 
+class Connection():
+    def __init__(self, execute_return=None):
+        self.execute_return = execute_return
+
+    def execute(self):
+        return self.execute_return
+
 class ExpectedException(Exception):
     def __init__(self, msg=None):
         self.msg = msg
