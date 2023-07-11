@@ -17,20 +17,10 @@ class TestEvaluate(unittest.TestCase):
         self.assertListEqual(expected, evaluator.metadata_statements)
 
     @patch(evaluate.create_engine)
-    def test_run_evaluators_engine_exception(self, mock_create_engine):
-        # mocks calls that happen within the run_evaluators function to 
-        # trigger an exception and assert that dispose was called by 
-        # having it return ExpectedException
-        mock_create_engine.return_value = Engine(connect_return=Exception(),
-            dispose_return=ExpectedException()
-        )
-        evaluator.evaluators = []
-        self.assertRaises(ExpectedException, evaluator.run_evaluators)
-
-    @patch(evaluate.create_engine)
     def test_run_evaluators_set_globals_called(self, mock_create_engine):
         # mocks calls that happen within the run_evaluators function to
-        # trigger an exception and assert that set_globals was called
+        # trigger an exception and assert that set_globals and dispose were
+        # called
         mock_create_engine.return_value = Engine(
             dispose_return=ExpectedException()
         )
