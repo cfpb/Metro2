@@ -11,7 +11,7 @@ class Engine():
         self.connect_return = connect_return
         self.dispose_return = dispose_return
 
-    def connect(self):
+    def connect(self, creator):
         return self.connect_return
 
     def dispose(self):
@@ -21,7 +21,7 @@ class Connection():
     def __init__(self, execute_return=None):
         self.execute_return = execute_return
 
-    def execute(self):
+    def execute(self, *_):
         return self.execute_return
 
 class ExpectedException(Exception):
@@ -38,10 +38,10 @@ class Evaluator():
         self.description = description
         self.fields = fields
 
-    def set_globals(self):
+    def set_globals(self, *_):
         return self.set_globals_return
 
-    def exec_custom_func(self):
+    def exec_custom_func(self, connection, engine):
         return self.custom_func_return
 
 Dec_Base = declarative_base()

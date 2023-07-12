@@ -84,8 +84,10 @@ class Evaluate():
 
     # connect to results database and write results
     def write_results(self):
+        engine = None
+        
         try:
-            engine = create_engine('postgresql+psycopg2://', creator=connect('metro2-results', 'results-db-postgresql', 5432))
+            engine = create_engine('postgresql+psycopg2://', creator=connect(database='metro2-results', host='results-db-postgresql', port=5432))
             conn = engine.connect()
 
             # create tables in results database
