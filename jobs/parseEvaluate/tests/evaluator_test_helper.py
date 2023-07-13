@@ -24,17 +24,13 @@ class TestM2Evaluators(unittest.TestCase):
         self.engine.dispose()
 
     def add_records_to_database(self, records):
-        # Helper for preparing the test database. To be run in the context
-        #   of a unit test. Assumes the existence of self.session.
+        # Helper for preparing the test database
         for record in records:
             self.session.add(record)
 
         self.session.commit()
 
     def assert_evaluator_correct(self, eval_name: str, expected_result: list[tuple]):
-        # Helper for preparing the test database. To be run in the context
-        #   of a unit test. Assumes the existence of self.session.
-
         # Test that the evaluator:
         # 1. Name matches an evaluator in evaluators.py
         # 2. Is included in the list of evaluators to run
