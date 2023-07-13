@@ -42,6 +42,7 @@ except:
     exit(1)
 
 meta = MetaData()
+res_meta = MetaData()
 
 header = Table(
     'header', meta,
@@ -286,7 +287,7 @@ trailer = Table(
 )
 
 meta_tbl = Table(
-    'evaluator_metadata', meta,
+    'evaluator_metadata', res_meta,
     Column('evaluator_name', String(30)),
     Column('short_description', String(400)),
     Column('fields', String(400)),
@@ -294,7 +295,7 @@ meta_tbl = Table(
 )
 
 res_tbl = Table(
-    'evaluator_results', meta,
+    'evaluator_results', res_meta,
     Column('evaluator_name', String(30)),
     Column('date', String(8)),
     Column('field_values', String()),
@@ -331,13 +332,7 @@ def create():
     try:
         engine = create_engine('postgresql+psycopg2://', creator=connect(database='metro2-results', host='results-db-postgresql', port=5432))
 
-        meta = MetaData()
-
-        # create metadata table if it doesn't exist
-        meta_tbl.create(engine)
-
-        # create evaluator table if it doesn't exist
-        res_tbl.create(engine)
+        res_meta.create_all(engine)
 
     except Exception as e:
         print("There was a problem establishing the connection: ", e)

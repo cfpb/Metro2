@@ -1,6 +1,6 @@
 import os
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
-from tables import connect
+from tables import connect, meta_tbl, res_tbl
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
 
 # check if tool is set to run locally

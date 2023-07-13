@@ -2,6 +2,7 @@
 from sqlalchemy import  MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from iterator_file import IteratorFile
+from tables import connect
 
 
 class Evaluator():
