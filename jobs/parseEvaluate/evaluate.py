@@ -1,6 +1,6 @@
 import os
-from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
-from tables import connect
+from sqlalchemy import create_engine, insert
+from tables import connect, res_tbl, meta_tbl
 from m2_evaluators import evaluators
 
 # check if tool is set to run locally
@@ -54,8 +54,9 @@ class Evaluate():
                         for row_data in results:
                             vals = ','.join(row_data[i] for i in range(3, len(evaluator.fields)))
                             self.statements.append(
-                                insert(str(evaluator.name)).
+                                insert(res_tbl).
                                 values(
+                                    evaluator_name=evaluator.name,
                                     date=row_data[1],
                                     record_id=row_data[0],
                                     acct_num=row_data[2],
@@ -64,7 +65,7 @@ class Evaluate():
                             )
                         # write to metadata table
                         self.metadata_statements.append(
-                            insert('evaluator_metadata').
+                            insert(meta_tbl).
                             values(
                                 evaluator_name=evaluator.name,
                                 short_description=evaluator.description,
@@ -89,31 +90,6 @@ class Evaluate():
         try:
             engine = create_engine('postgresql+psycopg2://', creator=connect(database='metro2-results', host='results-db-postgresql', port=5432))
             conn = engine.connect()
-
-            # create tables in results database
-            meta = MetaData()
-
-            # create metadata table
-            temp_meta = Table(
-                'evaluator_metadata', meta,
-                Column('evaluator_name', String(30)),
-                Column('short_description', String(400)),
-                Column('fields', String(400)),
-                Column('hits', Integer)
-            )
-
-            temp_meta.create(engine)
-
-            for evaluator in self.evaluators:
-                temp_tbl = Table(
-                    str(evaluator.name), meta,
-                    Column('date', String(8)),
-                    Column('field_values', String()),
-                    Column('record_id', String(24)),
-                    Column('acct_num', String(30))
-                )
-
-                temp_tbl.create(engine)
 
             # write to results database
             for stmt in self.statements:

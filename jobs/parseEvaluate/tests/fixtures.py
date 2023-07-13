@@ -7,39 +7,42 @@ from sqlalchemy.ext.declarative import declarative_base
 # fixtures for testing
 
 class Engine():
-    def __init__(self, connect_return=None, dispose_return=None):
+    def __init__(self, connect_return=None, dispose_exception=None):
         self.connect_return = connect_return
-        self.dispose_return = dispose_return
+        self.dispose_exception = dispose_exception
 
-    def connect(self, creator):
+    def connect(self, creator=None):
         return self.connect_return
 
     def dispose(self):
-        return self.dispose_return
+        if self.dispose_exception:
+            raise self.dispose_exception
 
 class Connection():
-    def __init__(self, execute_return=None):
-        self.execute_return = execute_return
+    def __init__(self, execute_exception=None):
+        self.execute_exception = execute_exception
 
     def execute(self, *_):
-        return self.execute_return
+        if self.execute_exception:
+            raise self.execute_exception
 
 class ExpectedException(Exception):
     def __init__(self, msg=None):
         self.msg = msg
 
 class Evaluator():
-    def __init__(self, set_globals_return=None, custom_func_return=None,
+    def __init__(self, set_globals_exception=None, custom_func_return=None,
         name="my_eval", description="Test evaluator", fields=None
     ):
-        self.set_globals_return = set_globals_return
+        self.set_globals_exception = set_globals_exception
         self.custom_func_return = custom_func_return
         self.name = name
         self.description = description
         self.fields = fields
 
     def set_globals(self, *_):
-        return self.set_globals_return
+        if self.set_globals_exception:
+            raise self.set_globals_exception
 
     def exec_custom_func(self, connection, engine):
         return self.custom_func_return

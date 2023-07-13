@@ -285,6 +285,23 @@ trailer = Table(
     Column('reserved_trailer_3', String(19))
 )
 
+meta_tbl = Table(
+    'evaluator_metadata', meta,
+    Column('evaluator_name', String(30)),
+    Column('short_description', String(400)),
+    Column('fields', String(400)),
+    Column('hits', Integer)
+)
+
+res_tbl = Table(
+    'evaluator_results', meta,
+    Column('evaluator_name', String(30)),
+    Column('date', String(8)),
+    Column('field_values', String()),
+    Column('record_id', String(24)),
+    Column('acct_num', String(30))
+)
+
 # establishes a database connection using psycopg2. Can pass arguments to override any value.
 def connect(database=PGDATABASE, host=PGHOST, port=PGPORT, user=PGUSER, password=PGPASSWORD):
     return psycopg2.connect(
@@ -297,10 +314,30 @@ def connect(database=PGDATABASE, host=PGHOST, port=PGPORT, user=PGUSER, password
 
 # creates tables defined above
 def create():
+    engine = None
+
     try:
         engine = create_engine('postgresql+psycopg2://', creator=connect)
         # create all tables defined above
         meta.create_all(engine)
+
+    except Exception as e:
+        print("There was a problem establishing the connection: ", e)
+    finally:
+        if engine is not None:
+            engine.dispose()
+    
+    # create results tables
+    try:
+        engine = create_engine('postgresql+psycopg2://', creator=connect(database='metro2-results', host='results-db-postgresql', port=5432))
+
+        meta = MetaData()
+
+        # create metadata table if it doesn't exist
+        meta_tbl.create(engine)
+
+        # create evaluator table if it doesn't exist
+        res_tbl.create(engine)
 
     except Exception as e:
         print("There was a problem establishing the connection: ", e)
