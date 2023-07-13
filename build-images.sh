@@ -18,7 +18,7 @@ case "$TAG" in
 esac
 
 echo "Building metro2_evaluator:$TAG"
-docker build . -t "metro2_evaluator:$TAG"
+docker build ./jobs/parseEvaluate/ -t "metro2_evaluator:$TAG"
 echo "Building metro2_frontend:$TAG"
 docker build ./front-end/ -t "metro2_frontend:$TAG"
 echo "Building metro2_django:$TAG"

@@ -1,4 +1,7 @@
 import Head from 'components/Head'
+
+import { Link } from 'react-router-dom'
+
 import type { ReactElement } from 'react'
 
 export default function HomePage(): ReactElement {
@@ -7,6 +10,7 @@ export default function HomePage(): ReactElement {
 			<Head title='Metro 2' />
 			<div data-testid='header'>
 				<h2>Your cases</h2>
+				<Link to='test'>Test</Link>
 			</div>
 		</>
 	)

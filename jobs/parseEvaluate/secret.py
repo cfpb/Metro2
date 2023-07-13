@@ -17,7 +17,6 @@ class SecretsManagerSecret:
     def create(self, name, secret_value):
         """
         Creates a new secret. The secret value can be a string or bytes.
-
         :param name: The name of the secret to create.
         :param secret_value: The value of the secret.
         :return: Metadata about the newly created secret.
@@ -48,8 +47,8 @@ def writeSecret(team, label, secret_string) -> None:
     mgr = SecretsManagerSecret(client)
 
     try:
-        mgr.create(f'cfpb/team/{team}/{label}', secret_string)
-        print(f'cfpb/team/{team}/{label} successfully added') 
+        return mgr.create(f'cfpb/team/{team}/{label}', secret_string)
+    
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceExistsException':
             print('The desired secret ' + f'cfpb/team/{team}/{label}' + ' already exists.')

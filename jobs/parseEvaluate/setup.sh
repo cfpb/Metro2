@@ -30,4 +30,4 @@ mkdir results
 ./ingest-data.sh
 ./unzip.sh
 # run parsing and evaluators
-python3 -c "import metro2.run"
+python3 -c "import run"

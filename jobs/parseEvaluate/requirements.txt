@@ -3,3 +3,4 @@ sqlalchemy==1.4.0
 openpyxl==3.0.10
 python-dateutil==2.8.2
 coverage==7.2.2
+boto3==1.28.2

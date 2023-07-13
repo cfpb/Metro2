@@ -1,7 +1,7 @@
 import os
-from sqlalchemy import create_engine, insert
-from tables import connect, res_tbl, meta_tbl
-from m2_evaluators import evaluators
+from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
+from tables import connect
+from m2_evaluators.cat7_evals import evaluators as cat7_evals
 
 # check if tool is set to run locally
 try:
@@ -22,7 +22,8 @@ if METRO2ENV != 'local':
 
 class Evaluate():
     def __init__(self):
-        self.evaluators = evaluators
+        self.evaluators = cat7_evals  #  When evaluators are provided by additional files, add them here
+                                      #   e.g. self.evaluators = cat7_evals + cat9_evals + ...
         self.results = dict()
         self.exam_number = 9999
         self.industry_type = ''
