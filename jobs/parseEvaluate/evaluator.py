@@ -5,9 +5,8 @@ from iterator_file import IteratorFile
 
 
 class Evaluator():
-    def __init__(self, name, description, fields, func=None, longitudinal_func=None):
+    def __init__(self, name, fields, func=None, longitudinal_func=None):
         self.name = name
-        self.description = description
         self.fields = fields
         self.func = func
         self.longitudinal_func = longitudinal_func
