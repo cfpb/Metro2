@@ -53,7 +53,7 @@ class Evaluate():
                 if len(results) > 0:
                     try:
                         for row_data in results:
-                            vals = ','.join(row_data[i] for i in range(3, len(evaluator.fields)))
+                            vals = ','.join(str(row_data[i]) for i in range(3, len(evaluator.fields)))
                             self.statements.append(
                                 insert(res_tbl).
                                 values(
@@ -69,7 +69,6 @@ class Evaluate():
                             insert(meta_tbl).
                             values(
                                 evaluator_name=evaluator.name,
-                                short_description=evaluator.description,
                                 fields=evaluator.fields,
                                 hits=len(results)
                             )

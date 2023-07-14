@@ -10,7 +10,7 @@ import multiprocessing as mp
 import openpyxl as xl
 
 from iterator_file import IteratorFile
-from tables import create, connect
+from tables import create, connect, create_res
 
 # check if tool is set to run locally
 try:
@@ -327,6 +327,7 @@ class Parser():
     # creates database tables
     def create_tables(self):
         create()
+        create_res()
 
 # create instance of parser
 parser = Parser()

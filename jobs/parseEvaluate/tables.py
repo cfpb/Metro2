@@ -289,7 +289,6 @@ trailer = Table(
 meta_tbl = Table(
     'evaluator_metadata', res_meta,
     Column('evaluator_name', String(30)),
-    Column('short_description', String(400)),
     Column('fields', String(400)),
     Column('hits', Integer)
 )
@@ -327,7 +326,10 @@ def create():
     finally:
         if engine is not None:
             engine.dispose()
-    
+
+def create_res():
+    engine = None
+
     # create results tables
     try:
         engine = create_engine('postgresql+psycopg2://', creator=connect(database='metro2-results', host='results-db-postgresql', port=5432))
