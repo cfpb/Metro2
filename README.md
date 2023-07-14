@@ -52,9 +52,11 @@ TODO: add documentation about how to deploy, how to upload data in a deployed en
 # Running the project
 
 Choose the way to run the project that best suits your needs:
-1. Helm is the way the project will run in deployed environments. Use this when you need a production-like setup and you don't need the code to reload when there are local changes.
-2. Docker-compose is best for local development. It allows dynamically reloading code while still providing all parts of the project setup.
+1. **Helm** is the way the project will run in deployed environments. Use this when you need a production-like setup and you don't need the code to reload when there are local changes.
+2. **Docker-compose** is best for local development. It allows dynamically reloading code while still providing all parts of the project setup.
 3. It is also possible to run some of the sub-projects locally, but this is usually only practical for active development on a specific aspect of the codebase.
+
+For both the Helm and Docker-compose setup, first you'll need to prepare data for the evaluator:
 
 ## Prepare your environment
 
@@ -64,13 +66,13 @@ If you need to download the sample files, ask a team member where they are saved
 
 When the job runs locally, it expects to find the following files to copy from a local directory located at `[project-root]/jobs/parseEvaluate/temp`. The files in the `data` directory should be Metro2 data files. The `sample-map.xlsx` should be a Metro2 data mapping file, as described in [parseEvaluate/README.md](/jobs/parseEvaluate/README.md)
 
-- jobs/parseEvaluate/temp/
-  - data/
-    - data-file.txt (can be named anything as long as the file extension is .txt)
-    - data-file2.txt (can be named anything as long as the file extension is .txt)
+- `jobs/parseEvaluate/temp/`
+  - `data/`
+    - `data-file.txt` (can be named anything as long as the file extension is .txt)
+    - `data-file2.txt` (can be named anything as long as the file extension is .txt)
     - ...
-  - jobs/parseEvaluate/reference/
-    - sample-map.xlsx (keep this name consistent)
+  - `jobs/parseEvaluate/reference/`
+    - `sample-map.xlsx` (keep this name consistent)
 
 TODO: In future releases, replace the reference file with in-code data dictionary.
 
