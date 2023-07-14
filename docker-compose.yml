@@ -38,11 +38,13 @@ services:
     env_file:
       - .env
     environment:
-      PGDATABASE: metro2
+      PGDATABASE: metro2-data
+      RESDATABASE: metro2-results
       PGUSER: postgres
       PGPASSWORD: cfpb
       POSTGRES_USER: postgres
       PGHOST: postgres
+      RESHOST: postgres
       PGPORT: 5432
       METRO2ENV: local
   frontend:

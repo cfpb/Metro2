@@ -1,6 +1,7 @@
 import os
+
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
-from tables import connect, meta_tbl, res_tbl
+from tables import connect, meta_tbl, res_tbl, connect_res
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
 
 # check if tool is set to run locally
@@ -88,7 +89,7 @@ class Evaluate():
         engine = None
         
         try:
-            engine = create_engine('postgresql+psycopg2://', creator=connect(database='metro2-results', host='results-db-postgresql', port=5432))
+            engine = create_engine('postgresql+psycopg2://', creator=connect_res)
             conn = engine.connect()
 
             # write to results database

@@ -34,6 +34,8 @@ try:
     PGDATABASE = os.environ['PGDATABASE']
     PGUSER = os.environ['PGUSER']
     PGPASSWORD = os.environ['PGPASSWORD']
+    RESDATABASE = os.environ['RESDATABASE']
+    RESHOST = os.environ['RESHOST']
 except KeyError as e:
     print("Postgres connection variable(s) not found: ", e)
     exit(1)
@@ -288,14 +290,14 @@ trailer = Table(
 
 meta_tbl = Table(
     'evaluator_metadata', res_meta,
-    Column('evaluator_name', String(30)),
+    Column('evaluator_name', String(200)),
     Column('fields', String(400)),
     Column('hits', Integer)
 )
 
 res_tbl = Table(
     'evaluator_results', res_meta,
-    Column('evaluator_name', String(30)),
+    Column('evaluator_name', String(200)),
     Column('date', String(8)),
     Column('field_values', String()),
     Column('record_id', String(24)),
@@ -304,6 +306,16 @@ res_tbl = Table(
 
 # establishes a database connection using psycopg2. Can pass arguments to override any value.
 def connect(database=PGDATABASE, host=PGHOST, port=PGPORT, user=PGUSER, password=PGPASSWORD):
+    return psycopg2.connect(
+        host=host,
+        port=port,
+        database=database,
+        user=user,
+        password=password
+    )
+
+# establishes a database connection using psycopg2. Can pass arguments to override any value.
+def connect_res(database=RESDATABASE, host=RESHOST, port=PGPORT, user=PGUSER, password=PGPASSWORD):
     return psycopg2.connect(
         host=host,
         port=port,
@@ -332,7 +344,7 @@ def create_res():
 
     # create results tables
     try:
-        engine = create_engine('postgresql+psycopg2://', creator=connect(database='metro2-results', host='results-db-postgresql', port=5432))
+        engine = create_engine('postgresql+psycopg2://', creator=connect_res)
 
         res_meta.create_all(engine)
 
