@@ -26,14 +26,15 @@ class TestEvaluate(unittest.TestCase):
     @patch('evaluate.connect')
     @patch('evaluate.create_engine')
     def test_run_evaluators_set_globals_called(self, mock_create_engine, mock_connect):
-        # mocks calls that happen within the run_evaluators function to
-        # trigger an exception and assert that set_globals and dispose were
-        # called
-        mock_create_engine.return_value = Engine(
-            dispose_exception=ExpectedException()
-        )
-        evaluator.evaluators = [Evaluator(set_globals_exception=Exception())]
-        self.assertRaises(ExpectedException, evaluator.run_evaluators)
+        # mocks call to set_globals that happens within the run_evaluators function to
+        # ensure it is called with the correct arguments
+        mock_create_engine.return_value = Engine()
+        evaluator.evaluators = [Evaluator()]
+        with patch.object(Evaluator, 'set_globals') as mock:
+            evaluator.run_evaluators()
+            mock.assert_called_with(
+                evaluator.industry_type, evaluator.exam_number
+            )
 
     @patch('evaluate.connect')
     @patch('evaluate.create_engine')
