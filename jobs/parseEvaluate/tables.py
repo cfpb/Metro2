@@ -324,12 +324,13 @@ def connect_res():
         password=PGPASSWORD
     )
 
-# creates tables defined above
-def create():
+# creates tables defined above. If no creator is specified, sqlalchemy will
+# use the connect method for PGDATABASE.
+def create(creator=connect):
     engine = None
 
     try:
-        engine = create_engine('postgresql+psycopg2://', creator=connect)
+        engine = create_engine('postgresql+psycopg2://', creator=creator)
         # create all tables defined above
         meta.create_all(engine)
 
@@ -339,17 +340,3 @@ def create():
         if engine is not None:
             engine.dispose()
 
-def create_res():
-    engine = None
-
-    # create results tables
-    try:
-        engine = create_engine('postgresql+psycopg2://', creator=connect_res)
-
-        res_meta.create_all(engine)
-
-    except Exception as e:
-        print("There was a problem establishing the connection: ", e)
-    finally:
-        if engine is not None:
-            engine.dispose()
