@@ -50,7 +50,7 @@ class Evaluate():
             for evaluator in self.evaluators:
                 results = evaluator.exec_custom_func(connection=conn, engine=engine)
 
-                # write to results
+                # Generate insert statements for results, to be executed in write_results()
                 if len(results) > 0:
                     try:
                         for row_data in results:
