@@ -305,23 +305,23 @@ res_tbl = Table(
 )
 
 # establishes a database connection using psycopg2. Can pass arguments to override any value.
-def connect(database=PGDATABASE, host=PGHOST, port=PGPORT, user=PGUSER, password=PGPASSWORD):
+def connect():
     return psycopg2.connect(
-        host=host,
-        port=port,
-        database=database,
-        user=user,
-        password=password
+        host=PGHOST,
+        port=PGPORT,
+        database=PGDATABASE,
+        user=PGUSER,
+        password=PGPASSWORD
     )
 
 # establishes a database connection using psycopg2. Can pass arguments to override any value.
-def connect_res(database=RESDATABASE, host=RESHOST, port=PGPORT, user=PGUSER, password=PGPASSWORD):
+def connect_res():
     return psycopg2.connect(
-        host=host,
-        port=port,
-        database=database,
-        user=user,
-        password=password
+        host=RESHOST,
+        port=PGPORT,
+        database=RESDATABASE,
+        user=PGUSER,
+        password=PGPASSWORD
     )
 
 # creates tables defined above
