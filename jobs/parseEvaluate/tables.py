@@ -304,7 +304,7 @@ res_tbl = Table(
     Column('acct_num', String(30))
 )
 
-# establishes a database connection using psycopg2. Can pass arguments to override any value.
+# establishes a database connection using psycopg2.
 def connect():
     return psycopg2.connect(
         host=PGHOST,
@@ -314,7 +314,7 @@ def connect():
         password=PGPASSWORD
     )
 
-# establishes a database connection using psycopg2. Can pass arguments to override any value.
+# establishes a database connection using psycopg2.
 def connect_res():
     return psycopg2.connect(
         host=RESHOST,
@@ -326,13 +326,13 @@ def connect_res():
 
 # creates tables defined above. If no creator is specified, sqlalchemy will
 # use the connect method for PGDATABASE.
-def create(creator=connect):
+def create(metadata, creator=connect):
     engine = None
 
     try:
         engine = create_engine('postgresql+psycopg2://', creator=creator)
         # create all tables defined above
-        meta.create_all(engine)
+        metadata.create_all(engine)
 
     except Exception as e:
         print("There was a problem establishing the connection: ", e)

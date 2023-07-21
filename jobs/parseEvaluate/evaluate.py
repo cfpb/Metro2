@@ -1,4 +1,5 @@
 import os
+import sys
 
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
 from tables import connect, meta_tbl, res_tbl, connect_res
@@ -76,7 +77,10 @@ class Evaluate():
                         )
                     except Exception as e:
                         print("Unable to add result to results: ", e)
-                        continue
+                        # this exception should only be raised as a result of
+                        # something a developer broke, so we don't want to
+                        # continue execution.
+                        sys.exit(1)
 
         except Exception as e:
             print("There was a problem establishing the connection: ", e)

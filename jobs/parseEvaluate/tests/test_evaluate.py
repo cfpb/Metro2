@@ -12,6 +12,8 @@ class TestEvaluate(unittest.TestCase):
 
     @patch('evaluate.connect')
     @patch('evaluate.create_engine')
+    # mock connect returns None. Did not use an underscore in the interest of
+    # readibility.
     def test_run_evaluators_no_evals(self, mock_create_engine, mock_connect):
         mock_create_engine.return_value = Engine()
         # set empty evaluators list (should not run any evaluators)
