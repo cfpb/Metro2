@@ -7,42 +7,30 @@ from sqlalchemy.ext.declarative import declarative_base
 # fixtures for testing
 
 class Engine():
-    def __init__(self, connect_return=None, dispose_exception=None):
+    def __init__(self, connect_return=None):
         self.connect_return = connect_return
-        self.dispose_exception = dispose_exception
 
     def connect(self, creator=None):
         return self.connect_return
 
     def dispose(self):
-        if self.dispose_exception:
-            raise self.dispose_exception
+        return
 
 class Connection():
-    def __init__(self, execute_exception=None):
-        self.execute_exception = execute_exception
-
     def execute(self, *_):
-        if self.execute_exception:
-            raise self.execute_exception
-
-class ExpectedException(Exception):
-    def __init__(self, msg=None):
-        self.msg = msg
+        return
 
 class Evaluator():
-    def __init__(self, set_globals_exception=None, custom_func_return=None,
+    def __init__(self, custom_func_return=None,
         name="my_eval", description="Test evaluator", fields=None
     ):
-        self.set_globals_exception = set_globals_exception
         self.custom_func_return = custom_func_return
         self.name = name
         self.description = description
         self.fields = fields
 
     def set_globals(self, *_):
-        if self.set_globals_exception:
-            raise self.set_globals_exception
+        return
 
     def exec_custom_func(self, connection, engine):
         return self.custom_func_return

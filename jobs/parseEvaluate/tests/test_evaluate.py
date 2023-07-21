@@ -1,7 +1,7 @@
 import unittest
 
 from evaluate import evaluator
-from tests.fixtures import Engine, ExpectedException, Evaluator, Connection
+from tests.fixtures import Engine, Evaluator, Connection
 from unittest.mock import patch
 
 class TestEvaluate(unittest.TestCase):
@@ -32,6 +32,7 @@ class TestEvaluate(unittest.TestCase):
         # ensure it is called with the correct arguments
         mock_create_engine.return_value = Engine()
         evaluator.evaluators = [Evaluator()]
+        evaluator.results = dict()
         with patch.object(Evaluator, 'set_globals') as mock:
             evaluator.run_evaluators()
             mock.assert_called_with(
@@ -43,7 +44,7 @@ class TestEvaluate(unittest.TestCase):
     def test_run_evaluators_produces_results(self, mock_create_engine, mock_connect):
         # should correctly insert one statement and one metadata statement
         mock_create_engine.return_value = Engine()
-        results = [(1, 2, 3, [1, 2])]
+        results = [("id", "date", "acct_num", "field1", "field2")]
         evaluator.evaluators = [Evaluator(custom_func_return=results,
             fields=["Field 1", "Field 2"]
         )]
@@ -55,39 +56,40 @@ class TestEvaluate(unittest.TestCase):
     @patch('evaluate.create_engine')
     def test_run_evaluators_invalid_results_raises_exception(self, mock_create_engine, mock_connect):
         # should raise an exception when there are less than 3 fields in
-        # results
-        mock_create_engine.return_value = Engine(
-            dispose_exception=ExpectedException()
-        )
+        # results and terminate the program with exit code 1
+        mock_create_engine.return_value = Engine()
         results = [(1, 2)]
         evaluator.evaluators = [Evaluator(custom_func_return=results,
             fields=["Field 1", "Field 2"]
         )]
-        self.assertRaises(ExpectedException, evaluator.run_evaluators)
+        with self.assertRaises(SystemExit) as cm:
+            evaluator.run_evaluators()
+
+        self.assertEqual(cm.exception.code, 1)
 
     @patch('evaluate.connect')
     @patch('evaluate.create_engine')
     def test_write_results_executes_statements(self, mock_create_engine, mock_connect):
         mock_create_engine.return_value = Engine(
-            dispose_exception=ExpectedException(),
-            connect_return=Connection(
-                execute_exception=Exception()
-            )
+            connect_return=Connection()
         )
         # tests that evaluate statements are executed
         evaluator.statements = ["a valid statement"]
-        self.assertRaises(ExpectedException, evaluator.write_results)
+        evaluator.metadata_statements = list()
+        with patch.object(Connection, 'execute') as mock:
+            evaluator.write_results()
+            mock.assert_called_with("a valid statement")
 
     @patch('evaluate.connect')
     @patch('evaluate.create_engine')
     def test_write_results_executes_metadata_statements(self, mock_create_engine, mock_connect):
         mock_create_engine.return_value = Engine(
-            dispose_exception=ExpectedException(),
-            connect_return=Connection(
-                execute_exception=Exception()
-            )
+            connect_return=Connection()
         )
         # tests that evaluate metadata statements are executed (these are executed after non-metadata statements)
+        evaluator.statements = list()
         evaluator.metadata_statements = ["a valid metadata statement"]
-        self.assertRaises(ExpectedException, evaluator.write_results)
+        with patch.object(Connection, 'execute') as mock:
+            evaluator.write_results()
+            mock.assert_called_with("a valid metadata statement")
 

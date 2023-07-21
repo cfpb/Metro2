@@ -13,7 +13,7 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     environment:
       POSTGRES_PASSWORD: cfpb
-      POSTGRES_DB: metro2
+      POSTGRES_DB: metro2-data
     ports:
       - 127.0.0.1:5432:5432
     healthcheck:
@@ -39,7 +39,7 @@ services:
       - .env
     environment:
       PGDATABASE: metro2-data
-      RESDATABASE: metro2-results
+      RESDATABASE: metro2-data
       PGUSER: postgres
       PGPASSWORD: cfpb
       POSTGRES_USER: postgres

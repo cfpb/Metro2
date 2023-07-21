@@ -53,7 +53,7 @@ class Evaluate():
                 results = evaluator.exec_custom_func(connection=conn, engine=engine)
 
                 # Generate insert statements for results, to be executed in write_results()
-                if len(results) > 0:
+                if results:
                     try:
                         for row_data in results:
                             vals = ','.join(str(row_data[i]) for i in range(3, len(evaluator.fields)))
