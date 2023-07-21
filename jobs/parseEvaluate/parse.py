@@ -11,6 +11,7 @@ import openpyxl as xl
 
 from iterator_file import IteratorFile
 from tables import create, connect, connect_res, meta, res_meta
+from psycopg2 import OperationalError
 
 # check if tool is set to run locally
 try:
@@ -180,7 +181,7 @@ class Parser():
                 str_pos = str(pos)
                 guid = hash(f'{file_name}-{str_pos}')
 
-        except Exception as e:
+        except FileNotFoundError as e:
             print("encountered an error opening file", e)
             exit(1)
         finally:
@@ -221,7 +222,7 @@ class Parser():
             
             # add the last chunk
             chunk_endpoints.append((chunk_start, file_size - 1))
-        except Exception as e:
+        except FileNotFoundError as e:
             print("encountered an error opening file: ", e)
             exit(1)
         finally:
@@ -318,7 +319,7 @@ class Parser():
                 # persist changes
                 conn.commit()
 
-        except Exception as e:
+        except OperationalError as e:
             print("There was a problem establishing the connection: ", e)
         finally:
             if conn is not None:

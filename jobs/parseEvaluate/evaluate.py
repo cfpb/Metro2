@@ -4,6 +4,7 @@ import sys
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
 from tables import connect, meta_tbl, res_tbl, connect_res
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
+from psycopg2 import OperationalError
 
 # check if tool is set to run locally
 try:
@@ -75,14 +76,14 @@ class Evaluate():
                                 hits=len(results)
                             )
                         )
-                    except Exception as e:
+                    except IndexError as e:
                         print("Unable to add result to results: ", e)
                         # this exception should only be raised as a result of
                         # something a developer broke, so we don't want to
                         # continue execution.
                         sys.exit(1)
 
-        except Exception as e:
+        except OperationalError as e:
             print("There was a problem establishing the connection: ", e)
         finally:
             if engine is not None:
@@ -102,7 +103,7 @@ class Evaluate():
             for meta in self.metadata_statements:
                 conn.execute(meta)
 
-        except Exception as e:
+        except OperationalError as e:
             print("There was a problem establishing the connection: ", e)
         finally:
             if engine is not None:

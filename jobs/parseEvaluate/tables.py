@@ -324,8 +324,9 @@ def connect_res():
         password=PGPASSWORD
     )
 
-# creates tables defined above. If no creator is specified, sqlalchemy will
-# use the connect method for PGDATABASE.
+# creates tables defined above. Medatadata must be specified.
+# If no creator is specified, sqlalchemy will use the connect
+# method for PGDATABASE.
 def create(metadata, creator=connect):
     engine = None
 
