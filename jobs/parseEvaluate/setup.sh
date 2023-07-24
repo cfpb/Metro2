@@ -25,9 +25,9 @@ export EXAM_ROOT="exam-${EXAM_NUMBER}"
 
 # create required directory structure
 mkdir -p $EXAM_ROOT/{data,reference}
-mkdir results
 
 ./ingest-data.sh
-./unzip.sh
+# unzip zipped files if necessary
+# ./unzip.sh
 # run parsing and evaluators
 python3 -c "import run"

@@ -1,8 +1,10 @@
-import json
 import os
+import sys
+
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
-from tables import connect
+from tables import connect, meta_tbl, res_tbl, connect_res
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
+from psycopg2 import OperationalError
 
 # check if tool is set to run locally
 try:
@@ -32,8 +34,8 @@ class Evaluate():
         self.statements = list()
         self.metadata_statements = list()
 
-    # outputs evaluators to json
-    def run_evaluators(self, outpath):
+    # runs evaluators to produce results
+    def run_evaluators(self):
         engine = None
 
         print("Connecting to PostgreSQL database...")
@@ -50,14 +52,15 @@ class Evaluate():
             for evaluator in self.evaluators:
                 results = evaluator.exec_custom_func(connection=conn, engine=engine)
 
-                # write to results
-                if len(results) > 0:
+                # Generate insert statements for results, to be executed in write_results()
+                if results:
                     try:
                         for row_data in results:
-                            vals = ','.join(row_data[i] for i in range(3, len(evaluator.fields)))
+                            vals = ','.join(str(row_data[i]) for i in range(3, len(evaluator.fields)))
                             self.statements.append(
-                                insert(str(evaluator.name)).
+                                insert(res_tbl).
                                 values(
+                                    evaluator_name=evaluator.name,
                                     date=row_data[1],
                                     record_id=row_data[0],
                                     acct_num=row_data[2],
@@ -66,19 +69,21 @@ class Evaluate():
                             )
                         # write to metadata table
                         self.metadata_statements.append(
-                            insert('evaluator_metadata').
+                            insert(meta_tbl).
                             values(
                                 evaluator_name=evaluator.name,
-                                short_description=evaluator.description,
                                 fields=evaluator.fields,
                                 hits=len(results)
                             )
                         )
-                    except Exception as e:
+                    except IndexError as e:
                         print("Unable to add result to results: ", e)
-                        continue
+                        # this exception should only be raised as a result of
+                        # something a developer broke, so we don't want to
+                        # continue execution.
+                        sys.exit(1)
 
-        except Exception as e:
+        except OperationalError as e:
             print("There was a problem establishing the connection: ", e)
         finally:
             if engine is not None:
@@ -86,34 +91,11 @@ class Evaluate():
 
     # connect to results database and write results
     def write_results(self):
+        engine = None
+        
         try:
-            engine = create_engine('postgresql+psycopg2://', creator=connect('metro2-results', 'results-db-postgresql', 5432))
+            engine = create_engine('postgresql+psycopg2://', creator=connect_res)
             conn = engine.connect()
-
-            # create tables in results database
-            meta = MetaData()
-
-            # create metadata table
-            temp_meta = Table(
-                'evaluator_metadata', meta,
-                Column('evaluator_name', String(30)),
-                Column('short_description', String(400)),
-                Column('fields', String(400)),
-                Column('hits', Integer)
-            )
-
-            temp_meta.create(engine)
-
-            for evaluator in self.evaluators:
-                temp_tbl = Table(
-                    str(evaluator.name), meta,
-                    Column('date', String(8)),
-                    Column('field_values', String()),
-                    Column('record_id', String(24)),
-                    Column('acct_num', String(30))
-                )
-
-                temp_tbl.create(engine)
 
             # write to results database
             for stmt in self.statements:
@@ -121,7 +103,7 @@ class Evaluate():
             for meta in self.metadata_statements:
                 conn.execute(meta)
 
-        except Exception as e:
+        except OperationalError as e:
             print("There was a problem establishing the connection: ", e)
         finally:
             if engine is not None:

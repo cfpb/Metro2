@@ -34,6 +34,8 @@ try:
     PGDATABASE = os.environ['PGDATABASE']
     PGUSER = os.environ['PGUSER']
     PGPASSWORD = os.environ['PGPASSWORD']
+    RESDATABASE = os.environ['RESDATABASE']
+    RESHOST = os.environ['RESHOST']
 except KeyError as e:
     print("Postgres connection variable(s) not found: ", e)
     exit(1)
@@ -42,6 +44,7 @@ except:
     exit(1)
 
 meta = MetaData()
+res_meta = MetaData()
 
 header = Table(
     'header', meta,
@@ -285,25 +288,56 @@ trailer = Table(
     Column('reserved_trailer_3', String(19))
 )
 
-# establishes a database connection using psycopg2. Can pass arguments to override any value.
-def connect(database=PGDATABASE, host=PGHOST, port=PGPORT, user=PGUSER, password=PGPASSWORD):
+meta_tbl = Table(
+    'evaluator_metadata', res_meta,
+    Column('evaluator_name', String(200)),
+    Column('fields', String(400)),
+    Column('hits', Integer)
+)
+
+res_tbl = Table(
+    'evaluator_results', res_meta,
+    Column('evaluator_name', String(200)),
+    Column('date', String(8)),
+    Column('field_values', String()),
+    Column('record_id', String(24)),
+    Column('acct_num', String(30))
+)
+
+# establishes a database connection using psycopg2.
+def connect():
     return psycopg2.connect(
-        host=host,
-        port=port,
-        database=database,
-        user=user,
-        password=password
+        host=PGHOST,
+        port=PGPORT,
+        database=PGDATABASE,
+        user=PGUSER,
+        password=PGPASSWORD
     )
 
-# creates tables defined above
-def create():
+# establishes a database connection using psycopg2.
+def connect_res():
+    return psycopg2.connect(
+        host=RESHOST,
+        port=PGPORT,
+        database=RESDATABASE,
+        user=PGUSER,
+        password=PGPASSWORD
+    )
+
+# creates tables defined above. Medatadata must be specified.
+# If no creator is specified, sqlalchemy will use the connect
+# method for PGDATABASE.
+def create(metadata, creator=connect):
+    engine = None
+
     try:
-        engine = create_engine('postgresql+psycopg2://', creator=connect)
+        engine = create_engine('postgresql+psycopg2://', creator=creator)
         # create all tables defined above
-        meta.create_all(engine)
+        metadata.create_all(engine)
 
     except Exception as e:
         print("There was a problem establishing the connection: ", e)
     finally:
         if engine is not None:
             engine.dispose()
+

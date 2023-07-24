@@ -30,7 +30,6 @@ except:
     print("Unexpected error, quitting...")
     exit(1)
 
-RESULTFILE_PATH = os.path.join("results", "results.json")
 DATAFILE_PATH = os.path.join(EXAM_ROOT, "data")
 MAPFILE_PATH = os.path.join(EXAM_ROOT, "reference", "sample-map.xlsx")
 SHEET_NAME = "Mapping"
@@ -99,7 +98,8 @@ def run():
     evaluator.exam_number = EXAM_NUMBER
     evaluator.industry_type = IND_TYPE_CODE
     print("Running evaluators...")
-    evaluator.run_evaluators(RESULTFILE_PATH)
+    evaluator.run_evaluators()
+    evaluator.write_results()
     print("Done!")
 
 run()
