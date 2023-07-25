@@ -27,20 +27,6 @@ class TestEvaluate(unittest.TestCase):
 
     @patch('evaluate.connect')
     @patch('evaluate.create_engine')
-    def test_run_evaluators_set_globals_called(self, mock_create_engine, mock_connect):
-        # mocks call to set_globals that happens within the run_evaluators function to
-        # ensure it is called with the correct arguments
-        mock_create_engine.return_value = Engine()
-        evaluator.evaluators = [Evaluator()]
-        evaluator.results = dict()
-        with patch.object(Evaluator, 'set_globals') as mock:
-            evaluator.run_evaluators()
-            mock.assert_called_with(
-                evaluator.industry_type, evaluator.exam_number
-            )
-
-    @patch('evaluate.connect')
-    @patch('evaluate.create_engine')
     def test_run_evaluators_produces_results(self, mock_create_engine, mock_connect):
         # should correctly insert one statement and one metadata statement
         mock_create_engine.return_value = Engine()

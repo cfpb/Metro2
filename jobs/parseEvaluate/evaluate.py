@@ -43,11 +43,6 @@ class Evaluate():
             engine = create_engine('postgresql+psycopg2://', creator=connect)
             conn = engine.connect()
 
-            # set exam globals
-            # TODO: Test that this works. We might need to find another way to set these.
-            if len(self.evaluators) > 0:
-                self.evaluators[0].set_globals(self.industry_type, self.exam_number)
-
             # run evaluators
             for evaluator in self.evaluators:
                 results = evaluator.exec_custom_func(connection=conn, engine=engine)

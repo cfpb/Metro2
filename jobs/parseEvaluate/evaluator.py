@@ -12,10 +12,6 @@ class Evaluator():
         self.func = func
         self.longitudinal_func = longitudinal_func
 
-    def set_globals(self, ind_type, exam_num):
-        exam_number = exam_num
-        industry_type = ind_type
-
     def exec_custom_func(self, connection=None, engine=None):
         # returns a list of results from running a query
         if self.longitudinal_func:
