@@ -14,7 +14,7 @@ including the purpose of each segment, the list of fields in each segment, and t
 Basic structure of M2 data:
 - Each file contains a collection of records from the same reporting period.
 - Each file has one `header` and one `trailer` segment, which contain high-level information about the records in the file.
-- Besides the `header` and `base`, all other lines of the file are records of consumer account information.
+- Besides the `header` and `trailer`, all other lines of the file are records of consumer account information.
 - Every record contains a `base` segment. It can also contain optional additional segments. The possible additional segments are `j1`, `j2`, `k1`, `k2`, `k3`, `k4`, `l1`, and `n1`.
 - An individual record may have multiple extra segments, such as two `j2` segments, or a `k2` and a `l1`, etc.
 
@@ -28,8 +28,7 @@ Notes on our implementation of M2 data:
 
 The results database has two tables:
 - `evaluator_metadata` contains one record per evaluator. The `fields` column contains an ordered list of the field names (in plain language) that are included in the evaluator output.
-- `evaluator_results` contains one record for each line of M2 data that the evaluator found as a "hit". The `field_values` column contains the values of the M2 record that are relevant to the evaluator, matching the field names in the `fields` column.
-
+- `evaluator_results` contains one record for each line of M2 data that each evaluator found as a "hit". The `field_values` column contains the values of the M2 record that are relevant to the evaluator, matching the field names in the `fields` column.
 
 
 ---
