@@ -1,4 +1,8 @@
-TODO: update this README with the most up-to-date information
+The parseEvaluate job uses two separate databases:
+- **parsed database** - data ingested from M2 data files, on which we run the evaluators
+- **results database** - the results of the evaluators
+
+Both databases are described in tables.py.
 
 ## Metro2 data
 
@@ -16,11 +20,21 @@ Basic structure of M2 data:
 
 Notes on our implementation of M2 data:
 - In this tool, the code refers to each field by the name that was used in the legacy version of this tool. This allows us to more easliy translate evaluator logic from the legacy system to this one.
+- Each different type of segment is stored in a separate table.
 - In each segment of the m2 data, `id` is a hash of the file name and the data point's location in memory. `id` is the foreign key that ties all extra segments back to their `base` segment.
 - In each segment of the data, `file` is the foreign key that ties each segment to the `header` of the file.
 
+## Results data
+
+The results database has two tables:
+- `evaluator_metadata` contains one record per evaluator. The `fields` column contains an ordered list of the field names (in plain language) that are included in the evaluator output.
+- `evaluator_results` contains one record for each line of M2 data that the evaluator found as a "hit". The `field_values` column contains the values of the M2 record that are relevant to the evaluator, matching the field names in the `fields` column.
 
 
+
+---
+
+TODO: update below this line with the most up-to-date information
 
 ## Starting a New Exam
 ## Define Exam Parameters
