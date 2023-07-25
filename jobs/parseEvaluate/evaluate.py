@@ -28,7 +28,6 @@ class Evaluate():
         self.evaluators = cat7_evals  #  When evaluators are provided by additional files, add them here
                                       #   e.g. self.evaluators = cat7_evals + cat9_evals + ...
         self.results = dict()
-        self.exam_number = 9999
         self.date_format = '%m%d%Y'
         self.statements = list()
         self.metadata_statements = list()
