@@ -29,7 +29,6 @@ class Evaluate():
                                       #   e.g. self.evaluators = cat7_evals + cat9_evals + ...
         self.results = dict()
         self.exam_number = 9999
-        self.industry_type = ''
         self.date_format = '%m%d%Y'
         self.statements = list()
         self.metadata_statements = list()
@@ -87,7 +86,7 @@ class Evaluate():
     # connect to results database and write results
     def write_results(self):
         engine = None
-        
+
         try:
             engine = create_engine('postgresql+psycopg2://', creator=connect_res)
             conn = engine.connect()

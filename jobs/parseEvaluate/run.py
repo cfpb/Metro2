@@ -22,7 +22,6 @@ if METRO2ENV != 'local':
 try:
     EXAM_ROOT = os.environ['EXAM_ROOT']
     EXAM_NUMBER = os.environ['EXAM_NUMBER']
-    IND_TYPE_CODE = os.environ['INDUSTRY_TYPE_CODE']
 except KeyError as e:
     print("Postgres connection variable(s) not found: ", e)
     exit(1)
@@ -96,7 +95,6 @@ def run():
             parse(filename, file)
 
     evaluator.exam_number = EXAM_NUMBER
-    evaluator.industry_type = IND_TYPE_CODE
     print("Running evaluators...")
     evaluator.run_evaluators()
     evaluator.write_results()
