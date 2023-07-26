@@ -22,7 +22,7 @@ Notes on our implementation of M2 data:
 - In this tool, the code refers to each field by the name that was used in the legacy version of this tool. This allows us to more easliy translate evaluator logic from the legacy system to this one.
 - Each different type of segment is stored in a separate table.
 - In each segment of the m2 data, `id` is a hash of the file name and the location of that line of data in memory. `id` is the foreign key that ties all extra segments back to their `base` segment, and is shared among all segments on a single record.
-- In each segment of the data, `file` is the foreign key that ties each segment to the `header` of the file.
+- In each segment of the data, `file` is the foreign key that ties each segment to the `header` of the file, and is shared among all record segments in a file.
 
 ## Results data
 
