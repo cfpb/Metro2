@@ -192,6 +192,140 @@ class Base(Dec_Base):
                 )>".format(self=self)
         )
 
+class J1(Dec_Base):
+    __tablename__ = 'j1'
+
+    col_id = Column('id', String(24), primary_key=True)
+    file = Column(String(24))
+    segment_identifier_j1 = Column(String(2))
+    reserved_j1 = Column(String(1))
+    surname_j1 = Column(String(25))
+    first_name_j1 = Column(String(20))
+    middle_name_j1 = Column(String(20))
+    gen_code_j1 = Column(String(1))
+    ssn_j1 = Column(String(9))
+    dob_j1 = Column(String(8))
+    phone_num_j1 = Column(String(10))
+    ecoa_j1 = Column(String(1))
+    cons_info_ind_j1 = Column(String(2))
+    reserved_j1_2 = Column(String(1))
+
+    def __init__(
+        self,
+        col_id="0001",
+        file="file_hash",
+        segment_identifier_j1="J1",
+        reserved_j1="0",
+        surname_j1="Doe",
+        first_name_j1="Jane",
+        middle_name_j1="A",
+        gen_code_j1="0",
+        ssn_j1="012345678",
+        dob_j1="01012000",
+        phone_num_j1="0123456789",
+        ecoa_j1="0",
+        cons_info_ind_j1="X",
+        reserved_j1_2="1"
+
+    ):
+        self.col_id = col_id,
+        self.file = file,
+        self.segment_identifier_j1 = segment_identifier_j1,
+        self.reserved_j1 = reserved_j1,
+        self.surname_j1 = surname_j1,
+        self.first_name_j1 = first_name_j1,
+        self.middle_name_j1 = middle_name_j1,
+        self.gen_code_j1 = gen_code_j1,
+        self.ssn_j1 = ssn_j1,
+        self.dob_j1 = dob_j1,
+        self.phone_num_j1 = phone_num_j1,
+        self.ecoa_j1 = ecoa_j1,
+        self.cons_info_ind_j1 = cons_info_ind_j1,
+        self.reserved_j1_2 = reserved_j1_2
+
+    def __repr__(self):
+        return (
+            "<J1('{self.col_id}', '{self.file}', '{self.segment_identifier_j1}', \
+                '{self.reserved_j1}', '{self.surname_j1}', '{self.first_name_j1}', \
+                '{self.middle_name_j1}', '{self.gen_code_j1}', '{self.ssn_j1}', \
+                '{self.dob_j1}', '{self.phone_num_j1}', '{self.ecoa_j1}', \
+                '{self.cons_info_ind_j1}', '{self.reserved_j1_2}', \
+                )>".format(self=self)
+        )
+
+class J2(Dec_Base):
+    __tablename__ = 'j2'
+
+    col_id = Column('id', String(24), primary_key=True)
+    file = Column(String(24))
+    segment_identifier_j2 = Column(String(2))
+    reserved_j2 = Column(String(1))
+    surname_j2 = Column(String(25))
+    first_name_j2 = Column(String(20))
+    middle_name_j2 = Column(String(20))
+    gen_code_j2 = Column(String(1))
+    ssn_j2 = Column(String(9))
+    dob_j2 = Column(String(8))
+    phone_num_j2 = Column(String(10))
+    ecoa_j2 = Column(String(1))
+    cons_info_ind_j2 = Column(String(2))
+    country_cd_j2 = Column(String(2))
+    addr_line_1_j2 = Column(String(32))
+    addr_line_2_j2 = Column(String(32))
+    city_j2 = Column(String(20))
+    state_j2 = Column(String(2))
+    col_zip_j2 = Column("zip", String(9))
+    addr_ind_j2 = Column(String(1))
+    res_cd_j2 = Column(String(1))
+    reserved_j2_2 = Column(String(2))
+
+    def __init__(
+        self, col_id="0001", file="file_hash",
+        segment_identifier_j2="J2", reserved_j2="0",
+        surname_j2="Doe", first_name_j2="Jane",
+        middle_name_j2="A", gen_code_j2="0", ssn_j2="012345678",
+        dob_j2="01012000", phone_num_j2="0123456789", ecoa_j2="0",
+        cons_info_ind_j2="X", country_cd_j2="US",
+        addr_line_1_j2="123 Fake St", addr_line_2_j2="Apt 1",
+        city_j2="DC", state_j2="MD", col_zip_j2="12345",
+        addr_ind_j2="X", res_cd_j2="X", reserved_j2_2="2"
+    ):
+        self.col_id = col_id,
+        self.file = file,
+        self.segment_identifier_j2 = segment_identifier_j2,
+        self.reserved_j2 = reserved_j2,
+        self.surname_j2 = surname_j2,
+        self.first_name_j2 = first_name_j2,
+        self.middle_name_j2 = middle_name_j2,
+        self.gen_code_j2 = gen_code_j2,
+        self.ssn_j2 = ssn_j2,
+        self.dob_j2 = dob_j2,
+        self.phone_num_j2 = phone_num_j2,
+        self.ecoa_j2 = ecoa_j2,
+        self.cons_info_ind_j2 = cons_info_ind_j2,
+        self.country_cd_j2 = country_cd_j2
+        self.addr_line_1_j2 = addr_line_1_j2
+        self.addr_line_2_j2 = addr_line_2_j2
+        self.city_j2 = city_j2
+        self.state_j2 = state_j2
+        self.col_zip_j2 = col_zip_j2
+        self.addr_ind_j2 = addr_ind_j2
+        self.res_cd_j2 = res_cd_j2
+        self.reserved_j2_2 = reserved_j2_2
+
+    def __repr__(self):
+        return (
+            "<J2('{self.col_id}', '{self.file}', '{self.segment_identifier_j2}', \
+                '{self.reserved_j2}', '{self.surname_j2}', '{self.first_name_j2}', \
+                '{self.middle_name_j2}', '{self.gen_code_j2}', '{self.ssn_j2}', \
+                '{self.dob_j2}', '{self.phone_num_j2}', '{self.ecoa_j2}', \
+                '{self.cons_info_ind_j2}', '{self.country_cd_j2}', \
+                '{self.addr_line_1_j2}', '{self.addr_line_2_j2}', '{self.city_j2}', \
+                '{self.state_j2}', '{self.col_zip_j2}', '{self.addr_ind_j2}', \
+                '{self.res_cd_j2}', '{self.reserved_j2_2}', \
+                )>".format(self=self)
+        )
+
 class K2(Dec_Base):
     __tablename__ = 'k2'
 
@@ -223,5 +357,42 @@ class K2(Dec_Base):
             "<K2('{self.col_id}', '{self.file}', '{self.k2_seg_id}', \
                 '{self.purch_sold_ind}', '{self.k2_purch_sold_name}', \
                 '{self.reserved_k2}', \
+                )>".format(self=self)
+        )
+
+class L1(Dec_Base):
+    __tablename__ = 'l1'
+
+    col_id = Column('id', String(24), primary_key=True)
+    file = Column(String(24))
+    l1_seg_id = Column(String(2))
+    l1_change_ind = Column(String(1))
+    l1_new_acc_num = Column(String(30))
+    l1_new_id_num = Column(String(20))
+    reserved_l1 = Column(String(1))
+
+    def __init__(
+        self,
+        col_id="0001",
+        file="file_hash",
+        l1_seg_id="L1",
+        l1_change_ind="1",
+        l1_new_acc_num="9876543210",
+        l1_new_id_num="1234567890",
+        reserved_l1="0",
+    ):
+        self.col_id = col_id
+        self.file = file
+        self.l1_seg_id = l1_seg_id
+        self.l1_change_ind = l1_change_ind
+        self.l1_new_acc_num = l1_new_acc_num
+        self.l1_new_id_num = l1_new_id_num
+        self.reserved_l1 = reserved_l1
+
+    def __repr__(self):
+        return (
+            "<L1('{self.col_id}', '{self.file}', '{self.l1_seg_id}', \
+                '{self.l1_change_ind}', '{self.l1_new_acc_num}', \
+                '{self.l1_new_id_num}', '{self.reserved_l1}', \
                 )>".format(self=self)
         )
