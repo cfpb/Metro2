@@ -28,8 +28,6 @@ class Evaluate():
         self.evaluators = cat7_evals  #  When evaluators are provided by additional files, add them here
                                       #   e.g. self.evaluators = cat7_evals + cat9_evals + ...
         self.results = dict()
-        self.exam_number = 9999
-        self.industry_type = ''
         self.date_format = '%m%d%Y'
         self.statements = list()
         self.metadata_statements = list()
@@ -42,11 +40,6 @@ class Evaluate():
         try:
             engine = create_engine('postgresql+psycopg2://', creator=connect)
             conn = engine.connect()
-
-            # set exam globals
-            # TODO: Test that this works. We might need to find another way to set these.
-            if len(self.evaluators) > 0:
-                self.evaluators[0].set_globals(self.industry_type, self.exam_number)
 
             # run evaluators
             for evaluator in self.evaluators:
@@ -92,7 +85,7 @@ class Evaluate():
     # connect to results database and write results
     def write_results(self):
         engine = None
-        
+
         try:
             engine = create_engine('postgresql+psycopg2://', creator=connect_res)
             conn = engine.connect()

@@ -29,9 +29,6 @@ class Evaluator():
         self.description = description
         self.fields = fields
 
-    def set_globals(self, *_):
-        return
-
     def exec_custom_func(self, connection, engine):
         return self.custom_func_return
 
