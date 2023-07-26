@@ -394,7 +394,7 @@ class L1(Dec_Base):
 
     def __repr__(self):
         return (
-            "<K2('{self.col_id}', '{self.file}', '{self.l1_seg_id}', \
+            "<L1('{self.col_id}', '{self.file}', '{self.l1_seg_id}', \
                 '{self.l1_change_ind}', '{self.l1_new_acc_num}', \
                 '{self.l1_new_id_num}', '{self.reserved_l1}', \
                 )>".format(self=self)
