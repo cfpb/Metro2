@@ -3,6 +3,7 @@ import sys
 
 from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
 from tables import connect, meta_tbl, res_tbl, connect_res
+from m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
 from psycopg2 import OperationalError
 
@@ -25,8 +26,9 @@ if METRO2ENV != 'local':
 
 class Evaluate():
     def __init__(self):
-        self.evaluators = cat7_evals  #  When evaluators are provided by additional files, add them here
-                                      #   e.g. self.evaluators = cat7_evals + cat9_evals + ...
+        #  When evaluators are provided by additional files, add them here
+        #   e.g. self.evaluators = cat7_evals + cat9_evals + ...
+        self.evaluators = addl_dofd_evals + cat7_evals
         self.results = dict()
         self.date_format = '%m%d%Y'
         self.statements = list()
