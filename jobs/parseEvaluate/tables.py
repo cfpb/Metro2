@@ -43,8 +43,10 @@ except:
     print("Unexpected error, quitting...")
     exit(1)
 
+##############################################
+# Parsed data
+##############################################
 meta = MetaData()
-res_meta = MetaData()
 
 header = Table(
     'header', meta,
@@ -288,6 +290,22 @@ trailer = Table(
     Column('reserved_trailer_3', String(19))
 )
 
+# establishes a database connection using psycopg2.
+def connect():
+    return psycopg2.connect(
+        host=PGHOST,
+        port=PGPORT,
+        database=PGDATABASE,
+        user=PGUSER,
+        password=PGPASSWORD
+    )
+
+
+##############################################
+# Results data
+##############################################
+res_meta = MetaData()
+
 meta_tbl = Table(
     'evaluator_metadata', res_meta,
     Column('evaluator_name', String(200)),
@@ -305,16 +323,6 @@ res_tbl = Table(
 )
 
 # establishes a database connection using psycopg2.
-def connect():
-    return psycopg2.connect(
-        host=PGHOST,
-        port=PGPORT,
-        database=PGDATABASE,
-        user=PGUSER,
-        password=PGPASSWORD
-    )
-
-# establishes a database connection using psycopg2.
 def connect_res():
     return psycopg2.connect(
         host=RESHOST,
@@ -324,6 +332,9 @@ def connect_res():
         password=PGPASSWORD
     )
 
+##############################################
+# Shared helper methods
+##############################################
 # creates tables defined above. Medatadata must be specified.
 # If no creator is specified, sqlalchemy will use the connect
 # method for PGDATABASE.
