@@ -1,8 +1,10 @@
 from sqlalchemy import(
     Column,
+    ForeignKey,
     String,
 )
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 # fixtures for testing
 
@@ -39,7 +41,7 @@ class Header(Dec_Base):
 
     col_id = Column("id", String(24), primary_key=True)
     date_created = Column(String(8))
-    file = Column(String(24))
+    file = Column(String(24), unique=True)
     reporter_name = Column(String(40))
 
     def __init__(
@@ -61,7 +63,7 @@ class Base(Dec_Base):
     __tablename__ = 'base'
 
     col_id = Column("id", String(24), primary_key=True)
-    file = Column(String(24))
+    file = Column(String(24), ForeignKey("header.file"))
     proc_ind = Column(String(1))
     id_num = Column(String(20))
     cycle_id = Column(String(2))
@@ -106,6 +108,9 @@ class Base(Dec_Base):
     col_zip = Column("zip", String(9))
     addr_ind = Column(String(1))
     res_cd = Column(String(1))
+
+    # Relationship
+    header = relationship('Header', backref='Header.file', foreign_keys='Base.file')
 
     def __init__(
         self, col_id="001", file="test.txt", proc_ind="0",
@@ -195,8 +200,8 @@ class Base(Dec_Base):
 class J1(Dec_Base):
     __tablename__ = 'j1'
 
-    col_id = Column('id', String(24), primary_key=True)
-    file = Column(String(24))
+    col_id = Column('id', String(24), ForeignKey("base.id"), primary_key=True)
+    file = Column(String(24), ForeignKey("header.file"))
     segment_identifier_j1 = Column(String(2))
     reserved_j1 = Column(String(1))
     surname_j1 = Column(String(25))
@@ -209,6 +214,10 @@ class J1(Dec_Base):
     ecoa_j1 = Column(String(1))
     cons_info_ind_j1 = Column(String(2))
     reserved_j1_2 = Column(String(1))
+
+    # Relationship
+    base = relationship('Base', foreign_keys='J1.col_id')
+    header = relationship('Header', foreign_keys='J1.file')
 
     def __init__(
         self,
@@ -256,8 +265,8 @@ class J1(Dec_Base):
 class J2(Dec_Base):
     __tablename__ = 'j2'
 
-    col_id = Column('id', String(24), primary_key=True)
-    file = Column(String(24))
+    col_id = Column('id', String(24), ForeignKey("base.id"), primary_key=True)
+    file = Column(String(24), ForeignKey("header.file"))
     segment_identifier_j2 = Column(String(2))
     reserved_j2 = Column(String(1))
     surname_j2 = Column(String(25))
@@ -278,6 +287,10 @@ class J2(Dec_Base):
     addr_ind_j2 = Column(String(1))
     res_cd_j2 = Column(String(1))
     reserved_j2_2 = Column(String(2))
+
+    # Relationship
+    base = relationship('Base', foreign_keys='J2.col_id')
+    header = relationship('Header', foreign_keys='J2.file')
 
     def __init__(
         self, col_id="0001", file="file_hash",
@@ -329,12 +342,16 @@ class J2(Dec_Base):
 class K2(Dec_Base):
     __tablename__ = 'k2'
 
-    col_id = Column('id', String(24), primary_key=True)
-    file = Column(String(24))
+    col_id = Column('id', String(24), ForeignKey("base.id"), primary_key=True)
+    file = Column(String(24), ForeignKey("header.file"))
     k2_seg_id = Column(String(2))
     k2_purch_sold_ind = Column(String(1))
     k2_purch_sold_name = Column(String(30))
     reserved_k2 = Column(String(1))
+
+    # Relationship
+    base = relationship('Base', foreign_keys='K2.col_id')
+    header = relationship('Header', foreign_keys='K2.file')
 
     def __init__(
         self,
@@ -355,7 +372,7 @@ class K2(Dec_Base):
     def __repr__(self):
         return (
             "<K2('{self.col_id}', '{self.file}', '{self.k2_seg_id}', \
-                '{self.purch_sold_ind}', '{self.k2_purch_sold_name}', \
+                '{self.k2_purch_sold_ind}', '{self.k2_purch_sold_name}', \
                 '{self.reserved_k2}', \
                 )>".format(self=self)
         )
@@ -363,13 +380,17 @@ class K2(Dec_Base):
 class L1(Dec_Base):
     __tablename__ = 'l1'
 
-    col_id = Column('id', String(24), primary_key=True)
-    file = Column(String(24))
+    col_id = Column('id', String(24), ForeignKey("base.id"), primary_key=True)
+    file = Column(String(24), ForeignKey("header.file"))
     l1_seg_id = Column(String(2))
     l1_change_ind = Column(String(1))
     l1_new_acc_num = Column(String(30))
     l1_new_id_num = Column(String(20))
     reserved_l1 = Column(String(1))
+
+    # Relationship
+    base = relationship('Base', foreign_keys='L1.col_id')
+    header = relationship('Header', foreign_keys='L1.file')
 
     def __init__(
         self,
