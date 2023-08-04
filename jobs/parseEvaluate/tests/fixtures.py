@@ -206,7 +206,7 @@ class J1(Dec_Base):
     __tablename__ = 'j1'
 
     col_id = Column('id', String(24), ForeignKey("base.id"), primary_key=True)
-    file = Column(String(24), ForeignKey("header.file"))
+    file = Column(String(24))
     segment_identifier_j1 = Column(String(2))
     reserved_j1 = Column(String(1))
     surname_j1 = Column(String(25))
@@ -270,7 +270,7 @@ class J2(Dec_Base):
     __tablename__ = 'j2'
 
     col_id = Column('id', String(24), ForeignKey("base.id"), primary_key=True)
-    file = Column(String(24), ForeignKey("header.file"))
+    file = Column(String(24))
     segment_identifier_j2 = Column(String(2))
     reserved_j2 = Column(String(1))
     surname_j2 = Column(String(25))
@@ -346,7 +346,7 @@ class K2(Dec_Base):
     __tablename__ = 'k2'
 
     col_id = Column('id', String(24), ForeignKey("base.id"), primary_key=True)
-    file = Column(String(24), ForeignKey("header.file"))
+    file = Column(String(24))
     k2_seg_id = Column(String(2))
     k2_purch_sold_ind = Column(String(1))
     k2_purch_sold_name = Column(String(30))
@@ -383,7 +383,7 @@ class L1(Dec_Base):
     __tablename__ = 'l1'
 
     col_id = Column('id', String(24), ForeignKey("base.id"), primary_key=True)
-    file = Column(String(24), ForeignKey("header.file"))
+    file = Column(String(24))
     l1_seg_id = Column(String(2))
     l1_change_ind = Column(String(1))
     l1_new_acc_num = Column(String(30))
