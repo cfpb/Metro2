@@ -6,6 +6,7 @@ from sqlalchemy import(
     MetaData,
     Table,
     Column,
+    ForeignKey,
     Integer,
     SmallInteger,
     String
@@ -51,7 +52,7 @@ meta = MetaData()
 header = Table(
     'header', meta,
     Column('id', String(24)),
-    Column('file', String(24)),
+    Column('file', String(24), unique=True),
     Column('rdw_header', SmallInteger),
     Column('record_identifer_header', String(6)),
     Column('cycle_identifier_header', String(2)),
@@ -74,8 +75,8 @@ header = Table(
 
 base = Table(
     'base', meta,
-    Column('id', String(24)),
-    Column('file', String(24)),
+    Column('id', String(24),  unique=True),
+    Column('file', String(24), ForeignKey("header.file")),
     Column('rdw', SmallInteger),
     Column('proc_ind', String(1)),
     Column('time_stamp', String(8)),
@@ -128,7 +129,7 @@ base = Table(
 
 j1 = Table(
     'j1', meta,
-    Column('id', String(24)),
+    Column('id', String(24), ForeignKey("base.id")),
     Column('file', String(24)),
     Column('segment_identifier_j1', String(2)),
     Column('reserved_j1', String(1)),
@@ -146,7 +147,7 @@ j1 = Table(
 
 j2 = Table(
     'j2', meta,
-    Column('id', String(24)),
+    Column('id', String(24), ForeignKey("base.id")),
     Column('file', String(24)),
     Column('segment_identifier_j2', String(2)),
     Column('reserved_j2', String(1)),
@@ -172,7 +173,7 @@ j2 = Table(
 
 k1 = Table(
     'k1', meta,
-    Column('id', String(24)),
+    Column('id', String(24), ForeignKey("base.id")),
     Column('file', String(24)),
     Column('K1_seg_id', String(2)),
     Column('K1_orig_creditor_name', String(30)),
@@ -181,7 +182,7 @@ k1 = Table(
 
 k2 = Table(
     'k2', meta,
-    Column('id', String(24)),
+    Column('id', String(24), ForeignKey("base.id")),
     Column('file', String(24)),
     Column('k2_seg_id', String(2)),
     Column('k2_purch_sold_ind', String(1)),
@@ -191,7 +192,7 @@ k2 = Table(
 
 k3 = Table(
     'k3', meta,
-    Column('id', String(24)),
+    Column('id', String(24), ForeignKey("base.id")),
     Column('file', String(24)),
     Column('k3_seg_id', String(2)),
     Column('k3_agcy_id', String(2)),
@@ -201,7 +202,7 @@ k3 = Table(
 
 k4 = Table(
     'k4', meta,
-    Column('id', String(24)),
+    Column('id', String(24), ForeignKey("base.id")),
     Column('file', String(24)),
     Column('k4_seg_id', String(2)),
     Column('k4_spc_pmt_ind', String(2)),
@@ -213,7 +214,7 @@ k4 = Table(
 
 l1 = Table(
     'l1', meta,
-    Column('id', String(24)),
+    Column('id', String(24), ForeignKey("base.id")),
     Column('file', String(24)),
     Column('l1_seg_id', String(2)),
     Column('l1_change_ind', String(1)),
@@ -224,7 +225,7 @@ l1 = Table(
 
 n1 = Table(
     'n1', meta,
-    Column('id', String(24)),
+    Column('id', String(24), ForeignKey("base.id")),
     Column('file', String(24)),
     Column('n1_seg_id', String(2)),
     Column('n1_employer_name', String(30)),
@@ -240,7 +241,7 @@ n1 = Table(
 trailer = Table(
     'trailer', meta,
     Column('id', String(24)),
-    Column('file', String(24)),
+    Column('file', String(24), ForeignKey("header.file")),
     Column('rdw_trailer', Integer),
     Column('record_identifer_trailer', String(7)),
     Column('total_base_records', String(9)),
