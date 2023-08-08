@@ -30,9 +30,9 @@ class TestEvaluate(unittest.TestCase):
     def test_run_evaluators_produces_results(self, mock_create_engine, mock_connect):
         # should correctly insert one statement and one metadata statement
         mock_create_engine.return_value = Engine()
-        results = [("id", "date", "acct_num", "field1", "field2")]
+        results = [{"id": "32", "date_created": "12312019",  "cons_acct_num": "0032", "field1": "value1", "field2": "value2", "field3": "value3"}]
         evaluator.evaluators = [Evaluator(custom_func_return=results,
-            fields=["Field 1", "Field 2"]
+            fields=["ID", "Date", "Acct", "Field 1", "Field 2", "Field 3"]
         )]
         evaluator.run_evaluators()
         self.assertEqual(1, len(evaluator.statements))
@@ -44,7 +44,7 @@ class TestEvaluate(unittest.TestCase):
         # should raise an exception when there are less than 3 fields in
         # results and terminate the program with exit code 1
         mock_create_engine.return_value = Engine()
-        results = [(1, 2)]
+        results = [{"id": 1, "date_created": 2}]
         evaluator.evaluators = [Evaluator(custom_func_return=results,
             fields=["Field 1", "Field 2"]
         )]

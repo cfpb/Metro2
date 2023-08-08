@@ -41,11 +41,11 @@ class TestM2Evaluators(unittest.TestCase):
             if eval.name == eval_name:
                 evaluators_matching += 1
                 output = eval.exec_custom_func(connection=self.session, engine=self.engine)
-                results = output
+                results = sorted(output, key=lambda x: x['id'])
         self.session.close()  # session.close must come before any assertions
 
         # Exactly one evaluator should have run
         self.assertEqual(evaluators_matching, 1)
 
         # compare expected result with actual result
-        self.assertEqual(sorted(expected_result), sorted(results))
+        self.assertEqual(expected_result, results)
