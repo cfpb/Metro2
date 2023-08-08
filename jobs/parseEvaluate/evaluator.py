@@ -16,18 +16,6 @@ class Evaluator():
         # returns a list of results from running a query
         if self.longitudinal_func:
             res_set = self.longitudinal_func(connection, engine)
-
-            # if a temporary table was created in getting results, delete it here.
-            try:
-                base = declarative_base()
-                metadata = MetaData(engine, reflect=True)
-                table = metadata.tables.get('temp_tbl')
-                if table is not None:
-                    print("Deleting temp table...")
-                    base.metadata.drop_all(engine, [table], checkfirst=True)
-            except Exception as e:
-                print("There was an issue getting or deleting temp table: ", e)
-
         else:
             res = connection.execute(self.func())
 
