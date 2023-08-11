@@ -1,5 +1,7 @@
 import psycopg2
 import os
+import sys
+import logging
 
 from sqlalchemy import(
     create_engine,
@@ -16,17 +18,17 @@ from sqlalchemy import(
 try:
     METRO2ENV = os.environ['METRO2ENV']
 except KeyError as e:
-    print("Environment (local, prod, etc.) not found: %s", e)
-    exit(1)
+    logging.error("Environment (local, prod, etc.) not found: %s", e)
+    sys.exit(1)
 except:
-    print("Unexpected error, quitting...")
-    exit(1)
+    logging.error("Unexpected error, quitting...")
+    sys.exit(1)
 
 # quit if not local
 if METRO2ENV != 'local':
-    print("Metro2 evaluator tool is not configured to run in production. \
+    logging.error("Metro2 evaluator tool is not configured to run in production. \
         Quitting...")
-    exit(1)
+    sys.exit(1)
 
 # retrieve environment variables. Throw exception if not found.
 try:
@@ -38,11 +40,11 @@ try:
     RESDATABASE = os.environ['RESDATABASE']
     RESHOST = os.environ['RESHOST']
 except KeyError as e:
-    print("Postgres connection variable(s) not found: ", e)
-    exit(1)
+    logging.error("Postgres connection variable(s) not found: ", e)
+    sys.exit(1)
 except:
-    print("Unexpected error, quitting...")
-    exit(1)
+    logging.error("Unexpected error, quitting...")
+    sys.exit(1)
 
 ##############################################
 # Parsed data
@@ -348,7 +350,7 @@ def create(metadata, creator=connect):
         metadata.create_all(engine)
 
     except Exception as e:
-        print("There was a problem establishing the connection: ", e)
+        logging.error("There was a problem establishing the connection: ", e)
     finally:
         if engine is not None:
             engine.dispose()

@@ -1,6 +1,7 @@
 import argparse
 import boto3
 import botocore.session
+import logging
 
 
 from botocore.exceptions import ClientError
@@ -51,15 +52,15 @@ def writeSecret(team, label, secret_string) -> None:
     
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceExistsException':
-            print('The desired secret ' + f'cfpb/team/{team}/{label}' + ' already exists.')
+            logging.error('The desired secret ' + f'cfpb/team/{team}/{label}' + ' already exists.')
         elif e.response['Error']['Code'] == 'InvalidRequestException':
-            print('The request was invalid due to:', e)
+            logging.error('The request was invalid due to:', e)
         elif e.response['Error']['Code'] == 'InvalidParameterException':
-            print('The request had invalid params:', e)
+            logging.error('The request had invalid params:', e)
         elif e.response['Error']['Code'] == 'InternalServiceError':
-            print('An error occurred on service side:', e)
+            logging.error('An error occurred on service side:', e)
         elif e.response['Error']['Code'] == 'ExpiredTokenException': 
-            print('Your AWS session is expired.  Re-run gimme-aws-creds.')
+            logging.error('Your AWS session is expired.  Re-run gimme-aws-creds.')
 
 def deleteSecret(team, label) -> None:
     client = getClient()
@@ -68,20 +69,20 @@ def deleteSecret(team, label) -> None:
         client.delete_secret(
             SecretId=f'cfpb/team/{team}/{label}'
         )
-        print(f'cfpb/team/{team}/{label} successfully deleted')
+        logging.info(f'cfpb/team/{team}/{label} successfully deleted')
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceNotFoundException':
-            print('The requested secret ' + f'cfpb/team/{team}/{label}' + ' was not found')
+            logging.error('The requested secret ' + f'cfpb/team/{team}/{label}' + ' was not found')
         elif e.response['Error']['Code'] == 'InvalidRequestException':
-            print('The request was invalid due to:', e)
+            logging.error('The request was invalid due to:', e)
         elif e.response['Error']['Code'] == 'InvalidParameterException':
-            print('The request had invalid params:', e)
+            logging.error('The request had invalid params:', e)
         elif e.response['Error']['Code'] == 'DecryptionFailure':
-            print('The requested secret can\'t be decrypted using the provided KMS key:', e)
+            logging.error('The requested secret can\'t be decrypted using the provided KMS key:', e)
         elif e.response['Error']['Code'] == 'InternalServiceError':
-            print('An error occurred on service side:', e)
+            logging.error('An error occurred on service side:', e)
         elif e.response['Error']['Code'] == 'ExpiredTokenException': 
-            print('Your AWS session is expired.  Re-run gimme-aws-creds.')
+            logging.error('Your AWS session is expired.  Re-run gimme-aws-creds.')
 
 def get_secret(team, label) -> str:
     client = getClient()
@@ -93,17 +94,17 @@ def get_secret(team, label) -> str:
         )
     except ClientError as e:
         if e.response['Error']['Code'] == 'ResourceNotFoundException':
-            print('The requested secret ' + secret_name + ' was not found')
+            logging.error('The requested secret ' + secret_name + ' was not found')
         elif e.response['Error']['Code'] == 'InvalidRequestException':
-            print('The request was invalid due to:', e)
+            logging.error('The request was invalid due to:', e)
         elif e.response['Error']['Code'] == 'InvalidParameterException':
-            print('The request had invalid params:', e)
+            logging.error('The request had invalid params:', e)
         elif e.response['Error']['Code'] == 'DecryptionFailure':
-            print('The requested secret can\'t be decrypted using the provided KMS key:', e)
+            logging.error('The requested secret can\'t be decrypted using the provided KMS key:', e)
         elif e.response['Error']['Code'] == 'InternalServiceError':
-            print('An error occurred on service side:', e)
+            logging.error('An error occurred on service side:', e)
         elif e.response['Error']['Code'] == 'ExpiredTokenException': 
-            print('Your AWS session is expired.  Re-run gimme-aws-creds.')
+            logging.error('Your AWS session is expired.  Re-run gimme-aws-creds.')
     else:
         # Secrets Manager decrypts the secret value using the associated KMS CMK
         # Depending on whether the secret was a string or binary, only one of these fields will be populated
