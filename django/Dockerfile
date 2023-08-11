@@ -17,11 +17,22 @@ RUN echo 'export PATH=$HOME/.local/bin:$PATH' >> /etc/profile
 
 COPY . .
 
-RUN pip install --upgrade pip &&\
-    pip install -r ./requirements.txt
+# upgrade apk and pip, add build dependencies to .build-deps virtual to be
+# deleted later
+RUN apk update --no-cache && \
+    apk upgrade --no-cache && \
+    apk add libpq && \
+    apk add --virtual .build-deps gcc python3-dev musl-dev postgresql-dev && \
+    apk add --no-cache bash && \
+    pip install --upgrade pip && \
+    adduser -u $USER_UID -D $USERNAME
+    
+RUN pip install -r ./requirements.txt
 
-RUN adduser -u $USER_UID -D $USERNAME && \
-    chown -R $USERNAME:$USERNAME $APP_HOME
+# Delete build dependencies
+RUN apk del .build-deps
+
+RUN chown -R $USERNAME:$USERNAME $APP_HOME
 
 # Create the user
 USER $USERNAME
