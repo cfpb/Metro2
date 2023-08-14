@@ -7,6 +7,7 @@ from sqlalchemy import(
     Table,
     Column,
     ForeignKey,
+    JSON,
     Integer,
     SmallInteger,
     String
@@ -309,7 +310,7 @@ res_meta = MetaData()
 
 meta_tbl = Table(
     'evaluator_metadata', res_meta,
-    Column('evaluator_name', String(200)),
+    Column('evaluator_name', String(200), unique=True),
     Column('fields', String(400)),
     Column('hits', Integer)
 )
@@ -318,8 +319,8 @@ res_tbl = Table(
     'evaluator_results', res_meta,
     Column('evaluator_name', String(200)),
     Column('date', String(8)),
-    Column('field_values', String()),
-    Column('record_id', String(24)),
+    Column('field_values', JSON),
+    Column('record_id', String(24), unique=True),
     Column('acct_num', String(30))
 )
 

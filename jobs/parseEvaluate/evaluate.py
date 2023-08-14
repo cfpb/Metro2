@@ -53,12 +53,6 @@ class Evaluate():
                             self.prepare_statements(evaluator, row_data)
                         # write to metadata table
                         self.prepare_metadata_statements(evaluator, results)
-                    except IndexError as e:
-                        print("Unable to add result to results: ", e)
-                        # this exception should only be raised as a result of
-                        # something a developer broke, so we don't want to
-                        # continue execution.
-                        sys.exit(1)
                     except KeyError as e:
                         print("Unable to add result to results: ", e)
                         sys.exit(1)
@@ -89,7 +83,6 @@ class Evaluate():
                 engine.dispose()
 
     def prepare_statements(self, evaluator, data):
-        vals = ','.join(v for k,v in data.items() if k not in ['id','date_created','cons_acct_num'])
         self.statements.append(
         insert(res_tbl).
         values(
@@ -97,7 +90,7 @@ class Evaluate():
             date=data['date_created'],
             record_id=data['id'],
             acct_num=data['cons_acct_num'],
-            field_values=vals
+            field_values=data
             )
         )
 
@@ -111,5 +104,6 @@ class Evaluate():
                 hits=len(data)
             )
         )
+
 # create instance of evaluator
 evaluator = Evaluate()
