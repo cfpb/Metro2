@@ -311,7 +311,6 @@ res_meta = MetaData()
 meta_tbl = Table(
     'evaluator_metadata', res_meta,
     Column('evaluator_name', String(200), unique=True),
-    Column('fields', String(400)),
     Column('hits', Integer)
 )
 
