@@ -100,7 +100,6 @@ class Evaluate():
             insert(meta_tbl).
             values(
                 evaluator_name=evaluator.name,
-                fields=evaluator.fields,
                 hits=len(data)
             )
         )
