@@ -1,7 +1,7 @@
 import unittest
 
 from evaluate import evaluator
-from tests.fixtures import Engine, Evaluator, Connection
+from tests.fixtures import Engine, Evaluator, Connect
 from unittest.mock import patch
 
 class TestEvaluate(unittest.TestCase):
@@ -75,12 +75,12 @@ class TestEvaluate(unittest.TestCase):
     @patch('evaluate.create_engine')
     def test_write_results_executes_metadata_statements(self, mock_create_engine, mock_connect):
         mock_create_engine.return_value = Engine(
-            connect_return=Connection()
+            connect_return=Connect()
         )
         # tests that evaluate statements are executed
         evaluator.statements = ["a valid statement"]
         evaluator.metadata_statements = list()
-        with patch.object(Connection, 'execute') as mock:
+        with patch.object(Connect, 'execute') as mock:
             evaluator.write_results()
             mock.assert_called_with("a valid statement")
 
@@ -88,12 +88,12 @@ class TestEvaluate(unittest.TestCase):
     @patch('evaluate.create_engine')
     def test_write_results_executes_statements(self, mock_create_engine, mock_connect):
         mock_create_engine.return_value = Engine(
-            connect_return=Connection()
+            connect_return=Connect()
         )
         # tests that evaluate metadata statements are executed (these are executed after non-metadata statements)
         evaluator.statements = list()
         evaluator.metadata_statements = ["a valid metadata statement"]
-        with patch.object(Connection, 'execute') as mock:
+        with patch.object(Connect, 'execute') as mock:
             evaluator.write_results()
             mock.assert_called_with("a valid metadata statement")
 

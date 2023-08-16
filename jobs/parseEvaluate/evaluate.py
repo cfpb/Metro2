@@ -1,7 +1,7 @@
 import os
 import sys
 
-from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
+from sqlalchemy import create_engine, insert
 from tables import connect, meta_tbl, res_tbl, connect_res
 from m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
@@ -33,6 +33,7 @@ class Evaluate():
         self.date_format = '%m%d%Y'
         self.statements = list()
         self.metadata_statements = list()
+
 
     # runs evaluators to produce results
     def run_evaluators(self):

@@ -10,5 +10,4 @@ fi
 
 if [ $METRO2ENV == "local" ]; then
     cp -a $APP_HOME/temp/data/. $EXAM_ROOT/data/
-    cp -a $APP_HOME/temp/reference/. $EXAM_ROOT/reference/
 fi

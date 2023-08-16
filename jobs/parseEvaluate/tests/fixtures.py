@@ -12,14 +12,61 @@ class Engine():
     def __init__(self, connect_return=None):
         self.connect_return = connect_return
 
+    def copy_from(self, *_, columns):
+        return
+
+    def close(self):
+        return
+      
     def connect(self, creator=None):
         return self.connect_return
 
     def dispose(self):
         return
-
-class Connection():
+      
+class Cursor():
     def execute(self, *_):
+        return [("expected", "sample", "data")]
+
+    def fetchall(self):
+        return [("test", "success")]
+
+    def copy_from(self, *_, columns):
+        return
+
+    def close(self):
+        return
+
+class Connect():
+    def cursor(self):
+        return Cursor()
+
+    def execute(self, *_):
+        return
+
+    def commit(self):
+        return
+
+    def close(self):
+        return
+
+class Pool():
+    def __init__(self):
+        self.function = None
+        self.args = None
+
+    def apply_async(self, function, args):
+        self.function = function
+        self.args = args
+        return self
+
+    def get(self):
+        return self.function(self.args)
+
+    def close(self):
+        return
+
+    def join(self):
         return
 
 class Evaluator():
@@ -30,7 +77,7 @@ class Evaluator():
         self.name = name
         self.description = description
         self.fields = fields
-
+        
     def exec_custom_func(self, connection, engine):
         return self.custom_func_return
 
