@@ -1,4 +1,4 @@
 django==4.2.1
 ruff
 coverage==7.2.7
-psycopg2-binary
+psycopg2==2.9.5
