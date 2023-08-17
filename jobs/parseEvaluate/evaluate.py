@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, insert
 from tables import connect, meta_tbl, res_tbl, connect_res
 from m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
+from m2_evaluators.cat12_evals import evaluators as cat12_evals
 from psycopg2 import OperationalError
 
 # check if tool is set to run locally
@@ -28,7 +29,7 @@ class Evaluate():
     def __init__(self):
         #  When evaluators are provided by additional files, add them here
         #   e.g. self.evaluators = cat7_evals + cat9_evals + ...
-        self.evaluators = addl_dofd_evals + cat7_evals
+        self.evaluators = addl_dofd_evals + cat7_evals + cat12_evals
         self.results = dict()
         self.date_format = '%m%d%Y'
         self.statements = list()
