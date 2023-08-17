@@ -14,15 +14,14 @@ class Evaluator():
 
     def exec_custom_func(self, connection=None, engine=None):
         # returns a list of results from running a query
+        res = list()
         if self.longitudinal_func:
-            res_set = self.longitudinal_func(connection, engine)
+            res = self.longitudinal_func(connection, engine)
         else:
             res = connection.execute(self.func())
 
-            res_set = list()
-
-            for result in res:
-                res_set.append(result)
+        # returns a list of dicts from the results
+        res_set = [dict(zip(row.keys(), row)) for row in res]
 
         return res_set
 

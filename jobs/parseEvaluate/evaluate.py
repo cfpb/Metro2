@@ -1,7 +1,7 @@
 import os
 import sys
 
-from sqlalchemy import create_engine, insert, Integer, Table, Column, String, MetaData
+from sqlalchemy import create_engine, insert
 from tables import connect, meta_tbl, res_tbl, connect_res
 from m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
@@ -35,6 +35,7 @@ class Evaluate():
         self.statements = list()
         self.metadata_statements = list()
 
+
     # runs evaluators to produce results
     def run_evaluators(self):
         engine = None
@@ -47,38 +48,16 @@ class Evaluate():
             # run evaluators
             for evaluator in self.evaluators:
                 results = evaluator.exec_custom_func(connection=conn, engine=engine)
-
                 # Generate insert statements for results, to be executed in write_results()
                 if results:
                     try:
                         for row_data in results:
-                            vals = ','.join(str(row_data[i]) for i in range(3, len(evaluator.fields)))
-                            self.statements.append(
-                                insert(res_tbl).
-                                values(
-                                    evaluator_name=evaluator.name,
-                                    date=row_data[1],
-                                    record_id=row_data[0],
-                                    acct_num=row_data[2],
-                                    field_values=vals
-                                )
-                            )
+                            self.prepare_statements(evaluator, row_data)
                         # write to metadata table
-                        self.metadata_statements.append(
-                            insert(meta_tbl).
-                            values(
-                                evaluator_name=evaluator.name,
-                                fields=evaluator.fields,
-                                hits=len(results)
-                            )
-                        )
-                    except IndexError as e:
+                        self.prepare_metadata_statements(evaluator, results)
+                    except KeyError as e:
                         print("Unable to add result to results: ", e)
-                        # this exception should only be raised as a result of
-                        # something a developer broke, so we don't want to
-                        # continue execution.
                         sys.exit(1)
-
         except OperationalError as e:
             print("There was a problem establishing the connection: ", e)
         finally:
@@ -104,6 +83,28 @@ class Evaluate():
         finally:
             if engine is not None:
                 engine.dispose()
+
+    def prepare_statements(self, evaluator, data):
+        self.statements.append(
+        insert(res_tbl).
+        values(
+            evaluator_name=evaluator.name,
+            date=data['date_created'],
+            record_id=data['id'],
+            acct_num=data['cons_acct_num'],
+            field_values=data
+            )
+        )
+
+    def prepare_metadata_statements(self, evaluator, data):
+        # write to metadata table
+        self.metadata_statements.append(
+            insert(meta_tbl).
+            values(
+                evaluator_name=evaluator.name,
+                hits=len(data)
+            )
+        )
 
 # create instance of evaluator
 evaluator = Evaluate()

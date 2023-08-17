@@ -1,5 +1,7 @@
 from parse import Parser
 from evaluate import evaluator
+from tables import create, meta, res_meta
+import logging
 import os
 
 # check if tool is set to run locally
@@ -30,74 +32,59 @@ except:
     exit(1)
 
 DATAFILE_PATH = os.path.join(EXAM_ROOT, "data")
-MAPFILE_PATH = os.path.join(EXAM_ROOT, "reference", "sample-map.xlsx")
-SHEET_NAME = "Mapping"
-COL_SEGMENT = "B"
-COL_START = "F"
-COL_END = "G"
-COL_FIELDS = "I"
-# This is included to give users the option to include or exclude these fields.
-PII_FIELDS = list([
-    "surname",
-    "surname_j1",
-    "surname_j2",
-    "middle_name",
-    "middle_name_j1",
-    "middle_name_j2",
-    "ssn",
-    "ssn_j1",
-    "ssn_j2",
-    "dob",
-    "dob_j1",
-    "dob_j2",
-    "addr_line_1",
-    "addr_line_1_j2",
-    "addr_line_2",
-    "addr_line_2_j2",
-    "zip",
-    "zip_j2",
-])
 
 def init_db():
     # init database tables
-    print(f'Initializing database tables for exam {EXAM_NUMBER}')
-    temp_parser = Parser()
-    temp_parser.create_tables()
+    create(meta)
+    create(res_meta)
+    logging.info(f'Initialized database tables for exam {EXAM_NUMBER}')
 
-def parse(filename, file):
+def parse(fstream):
     # create a temporary parser for each file
     temp_parser = Parser()
-    temp_parser.map_fields(MAPFILE_PATH, SHEET_NAME, COL_SEGMENT, COL_START, COL_END, COL_FIELDS, PII_FIELDS)
     # write file contents to database
-    print(f'Parsing file {filename}')
-    temp_parser.construct_commands(file)
-    print(f'Writing file {filename} to database')
-    temp_parser.exec_commands(temp_parser.header_values, "header")
-    temp_parser.exec_commands(temp_parser.trailer_values, "trailer")
-    temp_parser.exec_commands(temp_parser.base_values, "base")
-    temp_parser.exec_commands(temp_parser.J1_values, "j1")
-    temp_parser.exec_commands(temp_parser.J2_values, "j2")
-    temp_parser.exec_commands(temp_parser.K1_values, "k1")
-    temp_parser.exec_commands(temp_parser.K2_values, "k2")
-    temp_parser.exec_commands(temp_parser.K3_values, "k3")
-    temp_parser.exec_commands(temp_parser.K4_values, "k4")
-    temp_parser.exec_commands(temp_parser.L1_values, "l1")
-    temp_parser.exec_commands(temp_parser.N1_values, "n1")
-    print(f'File {filename} written to database')
+    temp_parser.construct_commands(fstream)
+    temp_parser.exec_commands()
+    logging.info(f'File {os.path.basename(fstream.name)} written to database')
+
+def evaluate():
+    evaluator.exam_number = EXAM_NUMBER
+    evaluator.run_evaluators()
+    logging.info(f'Evaluators run for exam {EXAM_NUMBER}. Hits written to database.')
 
 def run():
+    logging.basicConfig(
+        # output file
+        filename=os.path.join(EXAM_ROOT, 'info.log'),
+        # append instead of overwrite
+        filemode='a',
+        # message format
+        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+        # date format (removed, to specify, uncomment the next line)
+        # datefmt=
+        # minimum message level that will be written
+        # levels are: 
+        # DEBUG,
+        # INFO,
+        # WARN,
+        # ERROR,
+        # FATAL
+        level=logging.DEBUG
+    )
     init_db()
     # iterate over data directory
     for filename in os.listdir(DATAFILE_PATH):
         file = os.path.join(DATAFILE_PATH, filename)
         # checking if it is a file
         if os.path.isfile(file):
-            parse(filename, file)
-
-    evaluator.exam_number = EXAM_NUMBER
-    print("Running evaluators...")
-    evaluator.run_evaluators()
-    evaluator.write_results()
-    print("Done!")
+            try:
+                fstream = open(file, 'r')
+                parse(fstream)
+            except FileNotFoundError as e:
+                print("There was an error opening the file: ", e)
+            finally:
+                if fstream:
+                    fstream.close()
+    evaluate()
 
 run()
