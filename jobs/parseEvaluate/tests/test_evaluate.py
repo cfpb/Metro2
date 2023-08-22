@@ -48,7 +48,7 @@ class TestEvaluate(unittest.TestCase):
     def test_run_evaluators_produces_results(self, mock_create_engine, mock_connect):
         mock_create_engine.return_value = Engine()
         # should correctly insert one statement and one metadata statement
-        results = [{"id": "32", "date_created": "12312019",  "cons_acct_num": "0032", "field1": "value1", "field2": "value2", "field3": "value3"}]
+        results = [{"id": "32", "activity_date": "12312019",  "cons_acct_num": "0032", "field1": "value1", "field2": "value2", "field3": "value3"}]
         evaluator.evaluators = [Evaluator(custom_func_return=results,
             fields=["ID", "Date", "Acct", "Field 1", "Field 2", "Field 3"]
         )]
@@ -62,7 +62,7 @@ class TestEvaluate(unittest.TestCase):
         # should raise an exception when there are less than 3 fields in
         # results and terminate the program with exit code 1
         mock_create_engine.return_value = Engine()
-        results = [{"id": 1, "date_created": 2}]
+        results = [{"id": 1, "activity_date": 2}]
         evaluator.evaluators = [Evaluator(custom_func_return=results,
             fields=["Field 1", "Field 2"]
         )]
@@ -99,7 +99,7 @@ class TestEvaluate(unittest.TestCase):
 
     def test_run_prepare_statements_adds_a_statement(self):
         # should correctly insert one statement
-        results = [{"id": "32", "date_created": "12312019",  "cons_acct_num": "0032", "field1": "value1", "field2": "value2", "field3": "value3"}]
+        results = [{"id": "32", "activity_date": "12312019",  "cons_acct_num": "0032", "field1": "value1", "field2": "value2", "field3": "value3"}]
         expected = str("INSERT INTO evaluator_results (evaluator_name, date, field_values, record_id, acct_num) VALUES (:evaluator_name, :date, :field_values, :record_id, :acct_num)")
         evaluator.evaluators = [Evaluator(custom_func_return=results,
             fields=["ID", "Date", "Acct", "Field 1", "Field 2", "Field 3"]
@@ -117,7 +117,7 @@ class TestEvaluate(unittest.TestCase):
 
     def test_run_prepare_metadata_statements_adds_a_metadata_statement(self):
         # should correctly insert one metadata statement
-        results = [{"id": "32", "date_created": "12312019",  "cons_acct_num": "0032", "field1": "value1", "field2": "value2", "field3": "value3"}]
+        results = [{"id": "32", "activity_date": "12312019",  "cons_acct_num": "0032", "field1": "value1", "field2": "value2", "field3": "value3"}]
         expected = str("INSERT INTO evaluator_metadata (evaluator_name, hits) VALUES (:evaluator_name, :hits)")
         evaluator.evaluators = [Evaluator(custom_func_return=results,
             fields=["ID", "Date", "Acct", "Field 1", "Field 2", "Field 3"]
