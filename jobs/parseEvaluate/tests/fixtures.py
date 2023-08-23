@@ -87,6 +87,7 @@ class Header(Dec_Base):
     __tablename__ = 'header'
 
     col_id = Column("id", String(24), primary_key=True)
+    activity_date = Column(String(8))
     date_created = Column(String(8))
     file = Column(String(24), unique=True)
     reporter_name = Column(String(40))
@@ -94,18 +95,18 @@ class Header(Dec_Base):
     base = relationship('Base', backref='header', uselist=False)
 
     def __init__(
-        self, col_id="hash001", date_created="01012000", file="hash002",
+        self, col_id="hash001", activity_date="01012000", date_created="01012000", file="hash002",
         reporter_name="Test Entity"
     ):
         self.col_id = col_id
-        self.date_created = date_created
+        self.activity_date = activity_date
         self.file = file
         self.reporter_name = reporter_name
 
     def __repr__(self):
         return (
-            "<Header('{self.col_id}', '{self.file}', '{self.date_created}', \
-                '{self.reporter_name}')>".format(self=self)
+            "<Header('{self.col_id}', '{self.file}', '{self.activity_date}', \
+                '{self.date_created}', '{self.reporter_name}')>".format(self=self)
         )
 
 class Base(Dec_Base):

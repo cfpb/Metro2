@@ -89,7 +89,7 @@ class Evaluate():
         insert(res_tbl).
         values(
             evaluator_name=evaluator.name,
-            date=data['date_created'],
+            date=data['activity_date'],
             record_id=data['id'],
             acct_num=data['cons_acct_num'],
             field_values=data
