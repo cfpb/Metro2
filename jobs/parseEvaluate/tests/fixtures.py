@@ -12,14 +12,61 @@ class Engine():
     def __init__(self, connect_return=None):
         self.connect_return = connect_return
 
+    def copy_from(self, *_, columns):
+        return
+
+    def close(self):
+        return
+      
     def connect(self, creator=None):
         return self.connect_return
 
     def dispose(self):
         return
-
-class Connection():
+      
+class Cursor():
     def execute(self, *_):
+        return [("expected", "sample", "data")]
+
+    def fetchall(self):
+        return [("test", "success")]
+
+    def copy_from(self, *_, columns):
+        return
+
+    def close(self):
+        return
+
+class Connect():
+    def cursor(self):
+        return Cursor()
+
+    def execute(self, *_):
+        return
+
+    def commit(self):
+        return
+
+    def close(self):
+        return
+
+class Pool():
+    def __init__(self):
+        self.function = None
+        self.args = None
+
+    def apply_async(self, function, args):
+        self.function = function
+        self.args = args
+        return self
+
+    def get(self):
+        return self.function(self.args)
+
+    def close(self):
+        return
+
+    def join(self):
         return
 
 class Evaluator():
@@ -30,7 +77,7 @@ class Evaluator():
         self.name = name
         self.description = description
         self.fields = fields
-
+        
     def exec_custom_func(self, connection, engine):
         return self.custom_func_return
 
@@ -40,6 +87,7 @@ class Header(Dec_Base):
     __tablename__ = 'header'
 
     col_id = Column("id", String(24), primary_key=True)
+    activity_date = Column(String(8))
     date_created = Column(String(8))
     file = Column(String(24), unique=True)
     reporter_name = Column(String(40))
@@ -47,18 +95,18 @@ class Header(Dec_Base):
     base = relationship('Base', backref='header', uselist=False)
 
     def __init__(
-        self, col_id="hash001", date_created="01012000", file="hash002",
+        self, col_id="hash001", activity_date="01012000", date_created="01012000", file="hash002",
         reporter_name="Test Entity"
     ):
         self.col_id = col_id
-        self.date_created = date_created
+        self.activity_date = activity_date
         self.file = file
         self.reporter_name = reporter_name
 
     def __repr__(self):
         return (
-            "<Header('{self.col_id}', '{self.file}', '{self.date_created}', \
-                '{self.reporter_name}')>".format(self=self)
+            "<Header('{self.col_id}', '{self.file}', '{self.activity_date}', \
+                '{self.date_created}', '{self.reporter_name}')>".format(self=self)
         )
 
 class Base(Dec_Base):

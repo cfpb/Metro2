@@ -1,115 +1,153 @@
+import tempfile
+import os
+
 from unittest import TestCase
 from unittest.mock import patch
 from parse import parser
+from tests.fixtures import Pool, Connect
 
 class TestParse(TestCase):
-    @classmethod
-    def set_up_class(cls):
-        cls.valid_xlsx = "metro2/tests/test.xlsx"
-        cls.valid_sheet = "test"
-        cls.valid_sheet_with_data = "test2"
-        cls.valid_colsegment = "A"
-        cls.valid_colstart = "B"
-        cls.valid_colend = "C"
-        cls.valid_colfield = "D"
-        cls.num_segments = 2
-        cls.num_fields = 5
-        cls.segment = "header"
-        cls.problem = "There was a problem establishing the connection"
+    def setUp(self):
+        self.temp = tempfile.NamedTemporaryFile(mode='w+')
 
-    # map fields should raise an exception if incorrect values are provided
-    def test_map_fields_raises_exception_invalid_filename(self):
-        self.assertRaises(
-            FileNotFoundError,
-            parser.map_fields,
-            "fail.xlsx", "fail", "fail", "fail", "fail", "fail", "fail"
-        )
+    def tearDown(self):
+        self.temp.close()
 
-    def test_map_fields_raises_exception_invalid_sheetname(self):
-        self.assertRaises(
-            KeyError,
-            parser.map_fields,
-            self.valid_xlsx, "fail", "fail", "fail", "fail", "fail", "fail"
-        )
-
-    def test_map_fields_raises_exception_invalid_column_name(self):
-        self.assertRaises(
-            ValueError,
-            parser.map_fields,
-            self.valid_xlsx, self.valid_sheet, "fail", "fail", "fail", "fail", "fail"
-        )
-
-    def test_map_fields_sets_values_on_empty_sheet(self):
-        parser.mapping = dict()
-        parser.map_fields(self.valid_xlsx, self.valid_sheet, self.valid_colsegment, self.valid_colstart, self.valid_colend, self.valid_colfield, None)
-        self.assertEqual(0, len(parser.mapping))
-
-    def test_map_fields_pass_with_valid_data(self):
-        parser.mapping = dict()
-        parser.map_fields(self.valid_xlsx, self.valid_sheet_with_data, self.valid_colsegment, self.valid_colstart, self.valid_colend, self.valid_colfield, None)
-        self.assertEqual(self.num_segments, len(parser.mapping))
-        self.assertEqual(self.num_fields, len(parser.mapping[self.segment]))
-
-    # test that peek does not advance file pointer, and returns correct character
     def test_peek(self):
-        valid_char = 't'
-        seek_pos = 7
-        file_to_read = "metro2/tests/test.txt"
+        # writes 'test' to a temp file, then uses peek to get the first
+        # two characters, and makes sure the position in the file has
+        # not advanced.
+        self.temp.write('test')
+        self.temp.seek(0)
+        expected_pos = self.temp.tell()
+        expected_res = 'te'
+        actual_res = parser.peek(self.temp, 2)
+        self.assertEqual(expected_pos, self.temp.tell())
+        self.assertEqual(expected_res, actual_res)
 
-        # open file and seek to byte 7
-        fstream = open(file_to_read, 'r')
-        fstream.seek(seek_pos)
-        # peek byte 8
-        peeked_char = parser.peek(fstream, 1)
+    def test_parse_chunk(self):
+        self.temp.write('00000'.ljust(426, '0'))
+        self.temp.write('\nJ1'.ljust(101, '0'))
+        self.temp.write('\n0000HEADER'.ljust(427, '0'))
+        self.temp.write('\n0000TRAILER'.ljust(427, '0'))
+        self.temp.seek(0)
 
-        self.assertEqual(seek_pos, fstream.tell())
-        fstream.close()
+        # four value lists should be created. The base value list should
+        # contain 51 fields. The J1 value list should contain 15 fields.
+        # The header value list should contain 21 fields. The trailer value
+        # list should contain 50 fields.
+        expected_elements = 4
+        expected_base_fields = 51
+        expected_J1_fields = 15
+        expected_header_fields = 21
+        expected_trailer_fields = 50
 
-        self.assertEqual(valid_char, peeked_char)
+        # result will be a list of value lists
+        result = parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
 
-    # test parsing a chunk of a file
-    def test_parse_chunk_raises_exception_with_bad_filename(self):
-        file_length = 10
-        with self.assertRaises(SystemExit) as cm:
-            parser.parse_chunk(0, file_length, "fail.json")
+        self.assertEqual(len(result), expected_elements)
+        self.assertEqual(len(result[0]), expected_base_fields)
+        self.assertEqual(len(result[1]), expected_J1_fields)
+        self.assertEqual(len(result[2]), expected_header_fields)
+        self.assertEqual(len(result[3]), expected_trailer_fields)
 
-        self.assertEqual(cm.exception.code, 1)
+    def test_parse_chunk_unreadable(self):
+        # unreadable line
+        self.temp.write('test')
+        self.temp.seek(0)
 
-    def test_parse_chunk_with_invalid_line(self):
-        parser.mapping = dict()
-        file_length = 45
-        num_segments = 4
-        file_to_read = "metro2/tests/test.txt"
-        parser.mapping["header"] = [(1, 10)]
-        parser.mapping["base"] = [(1, 5)]
-        parser.mapping["J1"] = [(1, 2)]
-        parser.mapping["trailer"] = [(1, 11)]
-        parser.seg_length["header"] = 10
-        parser.seg_length["base"] = 5
-        parser.seg_length["J1"] = 2
-        parser.seg_length["trailer"] = 11
+        with patch('parse.logging.warn') as mock:
+            parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
+            mock.assert_called_with('unread data: ', 'test')
 
-        res = parser.parse_chunk(0, file_length, file_to_read)
-        self.assertEqual(num_segments, len(res))
+    @patch('parse.mp.Pool')
+    @patch.object(parser, 'parse_chunk')
+    def test_construct_commands(self, mock_parse_chunk, mock_pool):
+        mock_pool.return_value = Pool()
+        # write something to the file so we're not trying to read an empty file
+        self.temp.write('\n')
+        self.temp.seek(0)
+        
+        # expected value is what we should see from parser.header_values
+        expected = tuple(('success',))
 
-    # test files are broken down into chunks
-    def test_construct_commands_raises_exception_with_bad_filename(self):
-        self.assertRaises(FileNotFoundError, parser.construct_commands, "fail.txt")
+        # make sure each segment's values contain the expected value
+        return_val = list([['success', 'header']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        # parsed_values is a dict where each entry is a list of values for
+        # the corresponding segment. Therefore, when we access
+        # parsed_values["segment"][0], we are accessing the first element
+        # of the values list for that segment. We expect that to be
+        # a tuple of just the string 'success'.
+        self.assertEqual(parser.parsed_values["header"][0], expected)
+        return_val = list([['success', 'trailer']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["trailer"][0], expected)
+        return_val = list([['success', 'base']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["base"][0], expected)
+        return_val = list([['success', 'J1']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["j1"][0], expected)
+        return_val = list([['success', 'J2']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["j2"][0], expected)
+        return_val = list([['success', 'K1']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["k1"][0], expected)
+        return_val = list([['success', 'K2']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["k2"][0], expected)
+        return_val = list([['success', 'K3']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["k3"][0], expected)
+        return_val = list([['success', 'K4']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["k4"][0], expected)
+        return_val = list([['success', 'L1']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["l1"][0], expected)
+        return_val = list([['success', 'N1']])
+        mock_parse_chunk.return_value = return_val
+        parser.construct_commands(self.temp)
+        self.assertEqual(parser.parsed_values["n1"][0], expected)
 
-    def test_construct_commands_adds_commands(self):
-        parser.mapping = dict()
-        file_to_read = "metro2/tests/test.txt"
-        parser.mapping["header"] = [(1, 10)]
-        parser.mapping["base"] = [(1, 5)]
-        parser.mapping["J1"] = [(1, 2)]
-        parser.mapping["trailer"] = [(1, 11)]
-        parser.seg_length["header"] = 10
-        parser.seg_length["base"] = 5
-        parser.seg_length["J1"] = 2
-        parser.seg_length["trailer"] = 11
+    def test_construct_commands_empty_file(self):
+        # if the program encounters an empty file, it should log the file
+        # as an error.
+        with patch('parse.logging.error') as mock:
+            parser.construct_commands(self.temp)
+            mock.assert_called_with('Encountered empty file: ' + self.temp.name)
 
-        parser.construct_commands(file_to_read)
-        self.assertEqual(1, len(parser.header_values))
-        self.assertEqual(1, len(parser.base_values))
-        self.assertEqual(1, len(parser.J1_values))
-        self.assertEqual(1, len(parser.trailer_values))
+    def test_write_to_database(self):
+        # asserts that the list of values triggers the while loop twice
+        # and then a final call is made to IteratorFile. It would be more
+        # useful to test the contents of IteratorFile, but what we pass
+        # to that is an iterator, not a string, so it's hard to do a
+        # comparison.
+        conn = Connect()
+        cur = conn.cursor()
+
+        expected_command = "{}\t{}"
+        parser.commands['header'] = expected_command
+
+        values = [
+            tuple(['value1', 'value2']),
+            tuple(['value3', 'value4']),
+            tuple(['value5', 'value6']),
+            tuple(['value7', 'value8']),
+            tuple(['value9', 'value10'])
+        ]
+        with patch('parse.IteratorFile') as mock:
+            parser.write_to_database(values, 'header', conn, cur, 2)
+            self.assertEqual(3, mock.call_count)
