@@ -150,10 +150,10 @@ Both the **django** and **front-end** code bases can be run locally. See the REA
 - Switch helm charts to use single database **
 - Ensure that helm charts create database correctly if it doesn't already exist **
 - Modify code to use secrets when connecting to the database ***
-- Modify parse-evaluate code to use case / exam specific tables ***
-- Modify django code to pull secrets (maybe pull `secrets.py` out of parseEvaluate?) ***
-- Update libraries to latest versions ***
-- Add integration tests ***
+- Modify parse-evaluate code to use case / exam specific tables *** / +
+- Modify django code to pull secrets (maybe pull `secrets.py` out of parseEvaluate?) *** / +
+- Update libraries to latest versions *** / +
+- Add integration tests *** / +
 - Separate S3 by case / exam **
 - Get Lamin's bot running again ***
 - Add smoke tests once we have a frontend +
