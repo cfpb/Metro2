@@ -154,6 +154,8 @@ Both the **django** and **front-end** code bases can be run locally. See the REA
 - Modify django code to pull secrets (maybe pull `secrets.py` out of parseEvaluate?)
 - Update libraries to latest versions
 - Add integration tests
+- Separate S3 by case / exam
+- Get Lamin's bot running again
 - Add smoke tests once we have a frontend
 - Do we need our own ECR or is that shared? Provision ECR if we need our own.
 - Create build-deploy pipeline for DEV
