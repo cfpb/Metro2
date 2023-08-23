@@ -145,20 +145,21 @@ Both the **django** and **front-end** code bases can be run locally. See the REA
 
 ## TODO
 
-- Ingest files from S3
-- Provision RDS
-- Switch helm charts to use single database
-- Ensure that helm charts create database correctly if it doesn't already exist
-- Modify code to use secrets when connecting to the database
-- Modify parse-evaluate code to use case / exam specific tables
-- Modify django code to pull secrets (maybe pull `secrets.py` out of parseEvaluate?)
-- Update libraries to latest versions
-- Add integration tests
-- Separate S3 by case / exam
-- Get Lamin's bot running again
-- Add smoke tests once we have a frontend
-- Do we need our own ECR or is that shared? Provision ECR if we need our own.
-- Create build-deploy pipeline for DEV
+- Ingest files from S3 *
+- Provision RDS *
+- Switch helm charts to use single database **
+- Ensure that helm charts create database correctly if it doesn't already exist **
+- Modify code to use secrets when connecting to the database ***
+- Modify parse-evaluate code to use case / exam specific tables ***
+- Modify django code to pull secrets (maybe pull `secrets.py` out of parseEvaluate?) ***
+- Update libraries to latest versions ***
+- Add integration tests ***
+- Separate S3 by case / exam **
+- Get Lamin's bot running again ***
+- Add smoke tests once we have a frontend +
+- Update environment variable tag code ***
+- Do we need our own ECR or is that shared? Provision ECR if we need our own. *
+- Create build-deploy pipeline for DEV *
   - checkout code
   - run unit and integration tests
   - run code scan for vulnerabilities
@@ -168,3 +169,8 @@ Both the **django** and **front-end** code bases can be run locally. See the REA
   - pull images
   - deploy to EKS cluster
   - run smoke tests (not currently written)
+
+- (*) This is a Troy thing needed to get deployed in Alto DEV
+- (**) Anyone can handle this (Still needed to get deployed in Alto DEV)
+- (***) Developer task (Still needed to get deployed in Alto DEV)
+- (+) Something for down the road
