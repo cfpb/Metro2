@@ -4,6 +4,7 @@
 
 import io
 import sys
+import logging
 
 class IteratorFile(io.TextIOBase):
     """ given an iterator which yields strings,
@@ -25,7 +26,7 @@ class IteratorFile(io.TextIOBase):
             pass
 
         except Exception as e:
-            print("uncaught exception: {}".format(e))
+            logging.error(f"uncaught exception: {e}", exc_info=True)
             
         finally:
             self._f.seek(0)

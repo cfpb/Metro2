@@ -1,6 +1,6 @@
 # defines the evaluator class and list of evaluators
-from sqlalchemy import  MetaData
-from sqlalchemy.ext.declarative import declarative_base
+import logging
+
 from iterator_file import IteratorFile
 from tables import connect
 
@@ -69,7 +69,7 @@ def copy_to_temp(res_set):
         conn.commit()
 
     except Exception as e:
-        print("An exception occurred while trying to create a cursor: ", e)
+        logging.error(f"An exception occurred while trying to create a cursor: {e}")
     finally:
         if conn is not None:
             conn.close()

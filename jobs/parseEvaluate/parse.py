@@ -6,6 +6,7 @@
 
 import os
 import re
+import sys
 import logging
 import multiprocessing as mp
 
@@ -18,17 +19,17 @@ from psycopg2 import OperationalError
 try:
     METRO2ENV = os.environ['METRO2ENV']
 except KeyError as e:
-    print("Environment (local, prod, etc.) not found: %s", e)
-    exit(1)
+    logging.error(f"Environment (local, prod, etc.) not found: {e}")
+    sys.exit(1)
 except:
-    print("Unexpected error, quitting...")
-    exit(1)
+    logging.error("Unexpected error, quitting...")
+    sys.exit(1)
 
 # quit if not local
 if METRO2ENV != 'local':
-    print("Metro2 evaluator tool is not configured to run in production. \
+    logging.error("Metro2 evaluator tool is not configured to run in production. \
         Quitting...")
-    exit(1)
+    sys.exit(1)
 
 # add any fields to be removed to this list. To skip these fields, import this
 # and pass it as the skip argument to initializing the parser.
@@ -329,7 +330,7 @@ class Parser():
             self.write_to_database(self.parsed_values["n1"], "n1", conn, cur)
                 
         except OperationalError as e:
-            print("There was a problem establishing the connection: ", e)
+            logging.error(f"There was a problem establishing the connection: {e}")
         finally:
             if conn is not None:
                 conn.close()
