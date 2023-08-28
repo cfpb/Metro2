@@ -69,7 +69,7 @@ def copy_to_temp(res_set):
         conn.commit()
 
     except Exception as e:
-        logging.error("An exception occurred while trying to create a cursor: ", e)
+        logging.error(f"An exception occurred while trying to create a cursor: {e}")
     finally:
         if conn is not None:
             conn.close()

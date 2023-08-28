@@ -10,7 +10,7 @@ from tables import create, meta, res_meta
 try:
     METRO2ENV = os.environ['METRO2ENV']
 except KeyError as e:
-    logging.error("Environment (local, prod, etc.) not found: %s", e)
+    logging.error(f"Environment (local, prod, etc.) not found: {e}")
     sys.exit(1)
 except:
     logging.error("Unexpected error, quitting...")
@@ -27,7 +27,7 @@ try:
     EXAM_ROOT = os.environ['EXAM_ROOT']
     EXAM_NUMBER = os.environ['EXAM_NUMBER']
 except KeyError as e:
-    logging.error("Postgres connection variable(s) not found: ", e)
+    logging.error(f"Postgres connection variable(s) not found: {e}")
     sys.exit(1)
 except:
     logging.error("Unexpected error, quitting...")
@@ -83,7 +83,7 @@ def run():
                 fstream = open(file, 'r')
                 parse(fstream)
             except FileNotFoundError as e:
-                logging.error("There was an error opening the file: ", e)
+                logging.error(f"There was an error opening the file: {e}")
             finally:
                 if fstream:
                     fstream.close()

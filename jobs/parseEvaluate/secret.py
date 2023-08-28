@@ -54,11 +54,11 @@ def writeSecret(team, label, secret_string) -> None:
         if e.response['Error']['Code'] == 'ResourceExistsException':
             logging.error('The desired secret ' + f'cfpb/team/{team}/{label}' + ' already exists.')
         elif e.response['Error']['Code'] == 'InvalidRequestException':
-            logging.error('The request was invalid due to:', e)
+            logging.error(f'The request was invalid due to: {e}')
         elif e.response['Error']['Code'] == 'InvalidParameterException':
-            logging.error('The request had invalid params:', e)
+            logging.error(f'The request had invalid params: {e}')
         elif e.response['Error']['Code'] == 'InternalServiceError':
-            logging.error('An error occurred on service side:', e)
+            logging.error(f'An error occurred on service side: {e}')
         elif e.response['Error']['Code'] == 'ExpiredTokenException': 
             logging.error('Your AWS session is expired.  Re-run gimme-aws-creds.')
 
@@ -74,13 +74,13 @@ def deleteSecret(team, label) -> None:
         if e.response['Error']['Code'] == 'ResourceNotFoundException':
             logging.error('The requested secret ' + f'cfpb/team/{team}/{label}' + ' was not found')
         elif e.response['Error']['Code'] == 'InvalidRequestException':
-            logging.error('The request was invalid due to:', e)
+            logging.error(f'The request was invalid due to: {e}')
         elif e.response['Error']['Code'] == 'InvalidParameterException':
-            logging.error('The request had invalid params:', e)
+            logging.error(f'The request had invalid params: {e}')
         elif e.response['Error']['Code'] == 'DecryptionFailure':
-            logging.error('The requested secret can\'t be decrypted using the provided KMS key:', e)
+            logging.error(f'The requested secret can\'t be decrypted using the provided KMS key: {e}')
         elif e.response['Error']['Code'] == 'InternalServiceError':
-            logging.error('An error occurred on service side:', e)
+            logging.error(f'An error occurred on service side: {e}')
         elif e.response['Error']['Code'] == 'ExpiredTokenException': 
             logging.error('Your AWS session is expired.  Re-run gimme-aws-creds.')
 
@@ -96,13 +96,13 @@ def get_secret(team, label) -> str:
         if e.response['Error']['Code'] == 'ResourceNotFoundException':
             logging.error('The requested secret ' + secret_name + ' was not found')
         elif e.response['Error']['Code'] == 'InvalidRequestException':
-            logging.error('The request was invalid due to:', e)
+            logging.error(f'The request was invalid due to: {e}')
         elif e.response['Error']['Code'] == 'InvalidParameterException':
-            logging.error('The request had invalid params:', e)
+            logging.error(f'The request had invalid params: {e}')
         elif e.response['Error']['Code'] == 'DecryptionFailure':
-            logging.error('The requested secret can\'t be decrypted using the provided KMS key:', e)
+            logging.error(f'The requested secret can\'t be decrypted using the provided KMS key: {e}')
         elif e.response['Error']['Code'] == 'InternalServiceError':
-            logging.error('An error occurred on service side:', e)
+            logging.error(f'An error occurred on service side: {e}')
         elif e.response['Error']['Code'] == 'ExpiredTokenException': 
             logging.error('Your AWS session is expired.  Re-run gimme-aws-creds.')
     else:

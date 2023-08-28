@@ -19,7 +19,7 @@ from psycopg2 import OperationalError
 try:
     METRO2ENV = os.environ['METRO2ENV']
 except KeyError as e:
-    logging.error("Environment (local, prod, etc.) not found: %s", e)
+    logging.error(f"Environment (local, prod, etc.) not found: {e}")
     sys.exit(1)
 except:
     logging.error("Unexpected error, quitting...")
@@ -330,7 +330,7 @@ class Parser():
             self.write_to_database(self.parsed_values["n1"], "n1", conn, cur)
                 
         except OperationalError as e:
-            logging.error("There was a problem establishing the connection: ", e)
+            logging.error(f"There was a problem establishing the connection: {e}")
         finally:
             if conn is not None:
                 conn.close()

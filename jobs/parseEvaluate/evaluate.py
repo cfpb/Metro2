@@ -13,7 +13,7 @@ from psycopg2 import OperationalError
 try:
     METRO2ENV = os.environ['METRO2ENV']
 except KeyError as e:
-    logging.error("Environment (local, prod, etc.) not found: %s", e)
+    logging.error(f"Environment (local, prod, etc.) not found: {e}")
     sys.exit(1)
 except:
     logging.error("Unexpected error, quitting...")
@@ -58,13 +58,13 @@ class Evaluate():
                         self.prepare_metadata_statements(evaluator, results)
                         
                     except KeyError as e:
-                        logging.error("Unable to add result to results: ", e)
+                        logging.error(f"Unable to add result to results: {e}")
                         # this should only be raised by a developer error
                         # so we want to exit.
                         sys.exit(1)
   
         except OperationalError as e:
-            logging.error("There was a problem establishing the connection: ", e)
+            logging.error(f"There was a problem establishing the connection: {e}")
         finally:
             if engine is not None:
                 engine.dispose()
@@ -84,7 +84,7 @@ class Evaluate():
                 conn.execute(meta)
 
         except OperationalError as e:
-            logging.error("There was a problem establishing the connection: ", e)
+            logging.error(f"There was a problem establishing the connection: {e}")
         finally:
             if engine is not None:
                 engine.dispose()
