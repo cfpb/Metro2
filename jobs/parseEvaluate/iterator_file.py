@@ -26,7 +26,7 @@ class IteratorFile(io.TextIOBase):
             pass
 
         except Exception as e:
-            logging.error("uncaught exception: {}".format(e))
+            logging.error(f"uncaught exception: {e}", exc_info=True)
             
         finally:
             self._f.seek(0)
