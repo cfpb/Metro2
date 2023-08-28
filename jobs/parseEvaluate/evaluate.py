@@ -58,7 +58,7 @@ class Evaluate():
                         self.prepare_metadata_statements(evaluator, results)
                         
                     except KeyError as e:
-                        print("Unable to add result to results: ", e)
+                        logging.error("Unable to add result to results: ", e)
                         # this should only be raised by a developer error
                         # so we want to exit.
                         sys.exit(1)

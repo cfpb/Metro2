@@ -1,35 +1,37 @@
+import os
+import sys
+import logging
+
 from parse import Parser
 from evaluate import evaluator
 from tables import create, meta, res_meta
-import logging
-import os
 
 # check if tool is set to run locally
 try:
     METRO2ENV = os.environ['METRO2ENV']
 except KeyError as e:
-    print("Environment (local, prod, etc.) not found: %s", e)
-    exit(1)
+    logging.error("Environment (local, prod, etc.) not found: %s", e)
+    sys.exit(1)
 except:
-    print("Unexpected error, quitting...")
-    exit(1)
+    logging.error("Unexpected error, quitting...")
+    sys.exit(1)
 
 # quit if not local
 if METRO2ENV != 'local':
-    print("Metro2 evaluator tool is not configured to run in production. \
+    logging.error("Metro2 evaluator tool is not configured to run in production. \
         Quitting...")
-    exit(1)
+    sys.exit(1)
 
 # retrieve environment variables. Throw exception if not found.
 try:
     EXAM_ROOT = os.environ['EXAM_ROOT']
     EXAM_NUMBER = os.environ['EXAM_NUMBER']
 except KeyError as e:
-    print("Postgres connection variable(s) not found: ", e)
-    exit(1)
+    logging.error("Postgres connection variable(s) not found: ", e)
+    sys.exit(1)
 except:
-    print("Unexpected error, quitting...")
-    exit(1)
+    logging.error("Unexpected error, quitting...")
+    sys.exit(1)
 
 DATAFILE_PATH = os.path.join(EXAM_ROOT, "data")
 
@@ -81,7 +83,7 @@ def run():
                 fstream = open(file, 'r')
                 parse(fstream)
             except FileNotFoundError as e:
-                print("There was an error opening the file: ", e)
+                logging.error("There was an error opening the file: ", e)
             finally:
                 if fstream:
                     fstream.close()
