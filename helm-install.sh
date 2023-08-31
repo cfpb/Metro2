@@ -96,16 +96,11 @@ for i in $ARGS; do
 done
 
 # Execute
-# install dbs for local releases
+# install db for local releases
 if [ "$TAG" == "--set image.tag=local" ]; then
   helm install metro2-db \
   --set auth.postgresPassword='cfpb' \
   --set auth.database='metro2-data' \
-  bitnami/postgresql --set persistence.enabled=false
-
-  helm install results-db \
-  --set auth.postgresPassword='cfpb' \
-  --set auth.database='metro2-results' \
   bitnami/postgresql --set persistence.enabled=false
 
   # wait for postgres to be in ready state

@@ -3,7 +3,7 @@ import sys
 import logging
 
 from sqlalchemy import create_engine, insert
-from tables import connect, meta_tbl, res_tbl, connect_res
+from tables import connect, meta_tbl, res_tbl
 from m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
 from m2_evaluators.cat12_evals import evaluators as cat12_evals
@@ -74,7 +74,7 @@ class Evaluate():
         engine = None
 
         try:
-            engine = create_engine('postgresql+psycopg2://', creator=connect_res)
+            engine = create_engine('postgresql+psycopg2://', creator=connect)
             conn = engine.connect()
 
             # write to results database
