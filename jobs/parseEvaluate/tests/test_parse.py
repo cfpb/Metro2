@@ -44,22 +44,25 @@ class TestParse(TestCase):
             self.assertEqual(parser.determine_segment(t3), 'j1')
 
         with tempfile.TemporaryFile(mode='w+') as t4:
-            t4.write('N3xxxxxxxxxxxx')
+            # A base segment must meet both criteria: first four characters are digits, and
+            # fifth character is a 1
+            t4.write('87761xxxxxxxxx')
             t4.seek(0)
-            # N3 looks like an extra segment name but it isn't valid. Return None.
-            self.assertEqual(parser.determine_segment(t4), None)
+            self.assertEqual(parser.determine_segment(t4), 'base')
 
+        # When none of the patterns match, it's unparseable; return none.
         with tempfile.TemporaryFile(mode='w+') as t5:
-            # When the first five characters are all digits, it's a base segment
-            t5.write('87766xxxxxxxxx')
+            t5.write('12345xxxxxxxxx')
             t5.seek(0)
-            self.assertEqual(parser.determine_segment(t5), 'base')
+            # 12345 looks like a base segment but it isn't valid. Return None.
+            self.assertEqual(parser.determine_segment(t5), None)
 
         with tempfile.TemporaryFile(mode='w+') as t6:
-            # When none of the patterns match, it's unparseable; return none.
-            t6.write('NNxxxxxxxxxxxx')
+            t6.write('N3xxxxxxxxxxxx')
             t6.seek(0)
+            # N3 looks like an extra segment name but it isn't valid. Return None.
             self.assertEqual(parser.determine_segment(t6), None)
+
 
     def test_parse_segment_values_with_header_segment(self):
         # header_segment_1.txt is a one-line test file with a realistic header segment
@@ -162,7 +165,7 @@ class TestParse(TestCase):
             self.assertEqual(result[7][-1], 'trailer')
 
     def test_parse_chunk(self):
-        self.temp.write('00000'.ljust(426, '0'))
+        self.temp.write('00001'.ljust(426, '0'))
         self.temp.write('\nJ1'.ljust(101, '0'))
         self.temp.write('\n0000HEADER'.ljust(427, '0'))
         self.temp.write('\n0000TRAILER'.ljust(427, '0'))

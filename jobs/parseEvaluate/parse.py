@@ -124,7 +124,7 @@ class Parser():
         # base will be the most common segment in any file so we want to test that first
         # extra segments will be the next most common, so we want to test those second
         # header and trailer are one per file, so we test those last
-        if re.match(r'\d{5}', self.peek(fstream, 5)):
+        if re.match(r'\d{4}1', self.peek(fstream, 5)):
             segment = "base"
         elif re.match(r'J1|J2|K1|K2|K3|K4|L1|N1', self.peek(fstream, 2)):
             # convert segment name to lowercase to match fields.py
