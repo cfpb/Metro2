@@ -198,7 +198,7 @@ class Parser():
                 # determine what kind of segment is next
                 segment = self.determine_segment(fstream)
                 if not segment:
-                    logging.warn("unread data: ", fstream.readline())
+                    logging.warning(f"unread data: {fstream.readline()}")
                     pos = fstream.tell()
                     # seek back one for the newline
                     fstream.seek(pos - 1)

@@ -193,9 +193,9 @@ class TestParse(TestCase):
         self.temp.write(str)
         self.temp.seek(0)
 
-        with patch('parse.logging.warn') as mock:
+        with patch('parse.logging.warning') as mock:
             parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
-            mock.assert_called_with('unread data: ', str)
+            mock.assert_called_with(f'unread data: {str}')
 
     @patch('parse.mp.Pool')
     @patch.object(parser, 'parse_chunk')
