@@ -62,6 +62,65 @@ class TestParse(TestCase):
             t6.seek(0)
             self.assertEqual(parser.determine_segment(t6), None)
 
+    def test_parse_segment_values_with_header_segment(self):
+        # header_segment_1.txt is a one-line test file with a realistic header segment
+        with open(os.path.join('tests','sample_files', 'header_segment_1.txt')) as file:
+            result = parser.parse_segment_values(file, 'header')
+            expected_values = [
+                '1xxx', 'HEADER', '3C', '4INNOVISID',
+                '5EQUIFAXID', '6EXPE', '7TRANSUNIO', '12312023',
+                '01012022', '07042020', '07052020',
+                '12REPORTERNAME                          ',
+                '13REPORTERADDRESS                                                                               ',
+                '14TELEPHON',
+                '15VENDORNAME                            ',
+                '16VER', '17MBPRBCID', ''
+            ]
+            self.assertEqual(result['values'], expected_values)
+
+            expected_names = [
+                'rdw_header', 'record_identifier_header', 'cycle_identifier_header',
+                'innovis_program_identifier', 'equifax_program_identifier',
+                'experian_program_identifier', 'transunion_program_identifier',
+                'activity_date', 'date_created', 'program_date',
+                'program_revision_date', 'reporter_name', 'reporter_address',
+                'reporter_telephone_number', 'software_vendor_name', 'software_version_number',
+                'microbilt_prbc_program_identifier', 'reserved_header'
+            ]
+            self.assertEqual(result['names'], expected_names)
+
+    def test_parse_segment_values_with_base_segment(self):
+        # base_segment_1.txt is a one-line test file with a realistic base segment
+        with open(os.path.join('tests','sample_files', 'base_segment_1.txt')) as f:
+            expected_values = [
+                '0006', '1', '12312022', '235958', '0', 'FURNISHERID         ',
+                'CY', 'ACCTNUMBER1                   ', 'C', '47', '11302017',
+                '000210000', '000019123', 'LOC', 'M', '000000200', '000000190',
+                '71', '1', '222211000000000000010100', '  ', 'XG', '000000498',
+                '000000198', '000000000', '03312023', '09292022', '00000000',
+                '10312023', 'V', '                 ', 'SURNAME1                 ',
+                'FIRSTNAME1          ', 'MIDDLENAME1         ', 'J', '333224444',
+                '05221967', '3333334444', '1', '  ', 'US', '123 EXAMPLE ST. N.              ',
+                'APT. 200                        ', 'HOUSTON             ',
+                'TX', '    77000', 'C', 'R',
+            ]
+            result = parser.parse_segment_values(f, 'base')
+            self.assertEqual(result['values'], expected_values)
+
+            expected_names = [
+                'rdw', 'proc_ind', 'time_stamp', 'throw_out_hms', 'reserved_base',
+                'id_num', 'cycle_id', 'cons_acct_num', 'port_type', 'acct_type',
+                'date_open', 'credit_limit', 'hcola', 'terms_dur', 'terms_freq',
+                'smpa', 'actual_pmt_amt', 'acct_stat', 'pmt_rating', 'php',
+                'spc_com_cd', 'compl_cond_cd', 'current_bal', 'amt_past_due',
+                'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp',
+                'int_type_ind', 'reserved_base_2', 'surname', 'first_name',
+                'middle_name', 'gen_code', 'ssn', 'dob', 'phone_num', 'ecoa',
+                'cons_info_ind', 'country_cd', 'addr_line_1', 'addr_line_2', 'city',
+                'state', 'zip', 'addr_ind', 'res_cd',
+            ]
+            self.assertEqual(result['names'], expected_names)
+
     def test_parse_chunk(self):
         self.temp.write('00000'.ljust(426, '0'))
         self.temp.write('\nJ1'.ljust(101, '0'))

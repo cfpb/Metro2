@@ -9,6 +9,7 @@
 !jobs/parseEvaluate/*
 !jobs/parseEvaluate/m2_evaluators/*
 !jobs/parseEvaluate/tests/*
+!jobs/parseEvaluate/tests/sample_files/*
 !front-end/
 !front-end/**
 !helm/

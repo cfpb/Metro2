@@ -140,6 +140,34 @@ class Parser():
         return segment
 
 
+    def parse_segment_values(self, fstream, segment, default_values=None):
+        values = list()
+        if default_values:
+            values += default_values
+        names = list()
+
+        prev_field_end = 0
+        for field_name, (field_start, field_end) in self.mapping[segment].items():
+            if field_name not in self.skip:
+                names.append(field_name)
+
+            # if field skipped, skip that many characters in the stream
+            skip = (int(field_start) - 1) - int(prev_field_end)
+            if skip > 0:
+                fstream.read(skip)
+
+            length = int(field_end) - (int(field_start) - 1)
+            values.append(fstream.read(length))
+            # update prev_field_end
+            prev_field_end = field_end
+
+        # in case the last field is skipped
+        if prev_field_end != self.seg_length[segment]:
+            skip_last = self.seg_length[segment] - prev_field_end
+            fstream.read(skip_last)
+
+        return {'values': values, 'names': names}
+
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, fstream):
         values_list = list()
@@ -165,32 +193,9 @@ class Parser():
 
 
                 # read in entire segment
-                values = list()
-                names = list()
-
-                # add guid and file to beginning of values list
-                values.append(guid)
-                values.append(file)
-
-                prev_field_end = 0
-                for key, value in self.mapping[segment].items():
-                    if key not in self.skip:
-                        names.append(key)
-                    (field_start, field_end) = value
-                    # in case there's a segment that was skipped
-                    skip = (int(field_start) - 1) - int(prev_field_end)
-                    if skip > 0:
-                        fstream.read(skip)
-                    
-                    length = int(field_end) - (int(field_start) - 1)
-                    values.append(fstream.read(length))
-                    # update prev_field_end
-                    prev_field_end = field_end
-
-                # in case the last field is skipped
-                if prev_field_end != self.seg_length[segment]:
-                    skip_last = self.seg_length[segment] - prev_field_end
-                    fstream.read(skip_last)
+                parsed_segment = self.parse_segment_values(fstream, segment, default_values=[guid, file])
+                values = parsed_segment['values']
+                names = parsed_segment['names']
 
                 # update commands
                 sub = list()
