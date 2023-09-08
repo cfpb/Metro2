@@ -120,6 +120,33 @@ class TestParse(TestCase):
             ]
             self.assertEqual(result['names'], expected_names)
 
+    def test_parse_chunk_finds_all_segments_in_chunk(self):
+        with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
+            file_size = os.path.getsize(f.name)
+            result = parser.parse_chunk(start=0, end=file_size, fstream=f)
+
+            # The test file has 8 total segments in it
+            self.assertEqual(len(result), 8)
+
+    def test_parse_chunk_adds_segment_name_to_parsed_values(self):
+        with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
+            file_size = os.path.getsize(f.name)
+            result = parser.parse_chunk(start=0, end=file_size, fstream=f)
+            # parse_chunk appends the segment name to the end of each parsed segment
+            # In our test file, the first segment is a header
+            self.assertEqual(result[0][-1], 'header')
+            # The next segment is a base without any extra segments
+            self.assertEqual(result[1][-1], 'base')
+            # Next segment is a base with a K1 and K2 segment
+            self.assertEqual(result[2][-1], 'base')
+            self.assertEqual(result[3][-1], 'k1')
+            self.assertEqual(result[4][-1], 'k2')
+            # next segment is a base with a L1 segment
+            self.assertEqual(result[5][-1], 'base')
+            self.assertEqual(result[6][-1], 'l1')
+            # last is a trailer
+            self.assertEqual(result[7][-1], 'trailer')
+
     def test_parse_chunk(self):
         self.temp.write('00000'.ljust(426, '0'))
         self.temp.write('\nJ1'.ljust(101, '0'))
