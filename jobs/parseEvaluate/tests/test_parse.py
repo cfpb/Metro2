@@ -137,6 +137,16 @@ class TestParse(TestCase):
             expected_names = ['k1_seg_id', 'k1_orig_creditor_name', 'k1_creditor_classification',]
             self.assertEqual(result['names'], expected_names)
 
+        with tempfile.TemporaryFile(mode='w+') as tf2:
+            # Write a K1 segment where "creditor name" is blank
+            tf2.write('K1CREDITOR                      09')
+            tf2.seek(0)
+            result = parser.parse_segment_values(tf2, 'k1')
+
+            # The "creditor name" field should have no empty spaces at the end.
+            expected_values = ['K1', 'CREDITOR', '09']
+            self.assertEqual(result['values'], expected_values)
+
     def test_parse_chunk_finds_all_segments_in_chunk(self):
         with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
             file_size = os.path.getsize(f.name)
