@@ -25,6 +25,43 @@ class TestParse(TestCase):
         self.assertEqual(expected_pos, self.temp.tell())
         self.assertEqual(expected_res, actual_res)
 
+    def test_determine_segment(self):
+        # For this test, all characters that don't matter for
+        # determine_segment are filled in with x.
+        with tempfile.TemporaryFile(mode='w+') as t1:
+            t1.write('xxxxHEADERxxxxxxx')
+            t1.seek(0)  # return the filestream position to the start of the string
+            self.assertEqual(parser.determine_segment(t1), 'header')
+
+        with tempfile.TemporaryFile(mode='w+') as t2:
+            t2.write('xxxxTRAILERxxxxx')
+            t2.seek(0)
+            self.assertEqual(parser.determine_segment(t2), 'trailer')
+
+        with tempfile.TemporaryFile(mode='w+') as t3:
+            t3.write('J1xxxxxxxxxxxx')
+            t3.seek(0)
+            # For extra segments, return the segment name in lower case
+            self.assertEqual(parser.determine_segment(t3), 'j1')
+
+        with tempfile.TemporaryFile(mode='w+') as t4:
+            t4.write('N3xxxxxxxxxxxx')
+            t4.seek(0)
+            # N3 looks like an extra segment name but it isn't valid. Return None.
+            self.assertEqual(parser.determine_segment(t4), None)
+
+        with tempfile.TemporaryFile(mode='w+') as t5:
+            # When the first five characters are all digits, it's a base segment
+            t5.write('87766xxxxxxxxx')
+            t5.seek(0)
+            self.assertEqual(parser.determine_segment(t5), 'base')
+
+        with tempfile.TemporaryFile(mode='w+') as t6:
+            # When none of the patterns match, it's unparseable; return none.
+            t6.write('NNxxxxxxxxxxxx')
+            t6.seek(0)
+            self.assertEqual(parser.determine_segment(t6), None)
+
     def test_parse_chunk(self):
         self.temp.write('00000'.ljust(426, '0'))
         self.temp.write('\nJ1'.ljust(101, '0'))

@@ -119,6 +119,27 @@ class Parser():
     def file_identifier(self, file_name):
         return hash(f'{file_name}')
 
+    def determine_segment(self, fstream):
+        # the order here is very important since regex is expensive.
+        # base will be the most common segment in any file so we want to test that first
+        # extra segments will be the next most common, so we want to test those second
+        # header and trailer are one per file, so we test those last
+        if re.match(r'\d{5}', self.peek(fstream, 5)):
+            segment = "base"
+        elif re.match(r'J1|J2|K1|K2|K3|K4|L1|N1', self.peek(fstream, 2)):
+            # convert segment name to lowercase to match fields.py
+            segment = self.peek(fstream, 2).lower()
+        elif re.match(r'.{4}HEADER$', self.peek(fstream, 10)):
+            segment = "header"
+        elif re.match(r'.{4}TRAILER$', self.peek(fstream, 11)):
+            segment = "trailer"
+        else:
+            # catch unreadable lines
+            segment = None
+
+        return segment
+
+
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, fstream):
         values_list = list()
@@ -133,30 +154,15 @@ class Parser():
         # read until the end of the chunk is reached
         while pos < end:
             while pos < end and self.peek(fstream, 1) != '\n':
-                segment = ""
-                # determine segment
-                # the order here is very important since regex is expensive.
-                # base will be the most common segment in any file so we want to test that first
-                # extra segments will be the next most common, so we want to test those second
-                # header and trailer are one per file, so we test those last
-                if re.match(r'\d{5}', self.peek(fstream, 5)):
-                    segment = "base"
-                elif re.match(r'[A-Z][1-4]', self.peek(fstream, 2)):
-                    segment = self.peek(fstream, 2)
-                elif re.match(r'.*HEADER$', self.peek(fstream, 10)):
-                    segment = "header"
-                elif re.match(r'.*TRAILER$', self.peek(fstream, 11)):
-                    segment = "trailer"
-                # catch unreadable lines
-                else:
+                # determine what kind of segment is next
+                segment = self.determine_segment(fstream)
+                if not segment:
                     logging.warn("unread data: ", fstream.readline())
                     pos = fstream.tell()
                     # seek back one for the newline
                     fstream.seek(pos - 1)
                     break
 
-                # convert segment name to lowercase to match fields.py
-                segment = segment.lower()
 
                 # read in entire segment
                 values = list()
