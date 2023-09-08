@@ -163,7 +163,7 @@ class TestParse(TestCase):
         # write something to the file so we're not trying to read an empty file
         self.temp.write('\n')
         self.temp.seek(0)
-        
+
         # expected value is what we should see from parser.header_values
         expected = tuple(('success',))
 

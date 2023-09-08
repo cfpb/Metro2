@@ -181,6 +181,7 @@ class Parser():
 
         # read until the end of the chunk is reached
         while pos < end:
+            # read to the end of this line
             while pos < end and self.peek(fstream, 1) != '\n':
                 # determine what kind of segment is next
                 segment = self.determine_segment(fstream)
@@ -290,7 +291,7 @@ class Parser():
         block_end = max_block_size
         commands = self.commands[segment]
         cols = list(self.field_names[segment])
-        
+
         # process statements in blocks
         while block_end < len(values):
             # split values
@@ -344,7 +345,7 @@ class Parser():
             self.write_to_database(self.parsed_values["k4"], "k4", conn, cur)
             self.write_to_database(self.parsed_values["l1"], "l1", conn, cur)
             self.write_to_database(self.parsed_values["n1"], "n1", conn, cur)
-                
+
         except OperationalError as e:
             logging.error(f"There was a problem establishing the connection: {e}")
         finally:
