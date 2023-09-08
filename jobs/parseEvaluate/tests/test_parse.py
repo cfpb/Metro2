@@ -69,10 +69,10 @@ class TestParse(TestCase):
                 '1xxx', 'HEADER', '3C', '4INNOVISID',
                 '5EQUIFAXID', '6EXPE', '7TRANSUNIO', '12312023',
                 '01012022', '07042020', '07052020',
-                '12REPORTERNAME                          ',
-                '13REPORTERADDRESS                                                                               ',
+                '12REPORTERNAME',
+                '13REPORTERADDRESS',
                 '14TELEPHON',
-                '15VENDORNAME                            ',
+                '15VENDORNAME',
                 '16VER', '17MBPRBCID', ''
             ]
             self.assertEqual(result['values'], expected_values)
@@ -92,16 +92,16 @@ class TestParse(TestCase):
         # base_segment_1.txt is a one-line test file with a realistic base segment
         with open(os.path.join('tests','sample_files', 'base_segment_1.txt')) as f:
             expected_values = [
-                '0006', '1', '12312022', '235958', '0', 'FURNISHERID         ',
-                'CY', 'ACCTNUMBER1                   ', 'C', '47', '11302017',
+                '0006', '1', '12312022', '235958', '0', 'FURNISHERID',
+                'CY', 'ACCTNUMBER1', 'C', '47', '11302017',
                 '000210000', '000019123', 'LOC', 'M', '000000200', '000000190',
-                '71', '1', '222211000000000000010100', '  ', 'XG', '000000498',
+                '71', '1', '222211000000000000010100', '', 'XG', '000000498',
                 '000000198', '000000000', '03312023', '09292022', '00000000',
-                '10312023', 'V', '                 ', 'SURNAME1                 ',
-                'FIRSTNAME1          ', 'MIDDLENAME1         ', 'J', '333224444',
-                '05221967', '3333334444', '1', '  ', 'US', '123 EXAMPLE ST. N.              ',
-                'APT. 200                        ', 'HOUSTON             ',
-                'TX', '77000    ', 'C', 'R',
+                '10312023', 'V', '', 'SURNAME1',
+                'FIRSTNAME1', 'MIDDLENAME1', 'J', '333224444',
+                '05221967', '3333334444', '1', '', 'US', '123 EXAMPLE ST. N.',
+                'APT. 200', 'HOUSTON',
+                'TX', '77000', 'C', 'R',
             ]
             result = parser.parse_segment_values(f, 'base')
             self.assertEqual(result['values'], expected_values)
@@ -118,6 +118,20 @@ class TestParse(TestCase):
                 'cons_info_ind', 'country_cd', 'addr_line_1', 'addr_line_2', 'city',
                 'state', 'zip', 'addr_ind', 'res_cd',
             ]
+            self.assertEqual(result['names'], expected_names)
+
+    def test_parse_segment_values_removes_whitespace(self):
+        with tempfile.TemporaryFile(mode='w+') as tf:
+            # Write a K1 segment where "creditor name" is blank
+            tf.write('K1                              09')
+            tf.seek(0)
+            result = parser.parse_segment_values(tf, 'k1')
+
+            # The "creditor name" field should be an empty string,
+            # not a string of 30 blank spaces.
+            expected_values = ['K1', '', '09']
+            self.assertEqual(result['values'], expected_values)
+            expected_names = ['k1_seg_id', 'k1_orig_creditor_name', 'k1_creditor_classification',]
             self.assertEqual(result['names'], expected_names)
 
     def test_parse_chunk_finds_all_segments_in_chunk(self):

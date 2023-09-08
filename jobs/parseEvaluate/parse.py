@@ -157,7 +157,8 @@ class Parser():
                 fstream.read(skip)
 
             length = int(field_end) - (int(field_start) - 1)
-            values.append(fstream.read(length))
+            found_value = fstream.read(length).strip()
+            values.append(found_value)
             # update prev_field_end
             prev_field_end = field_end
 
