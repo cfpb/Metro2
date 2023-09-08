@@ -20,10 +20,9 @@ class TestParse(TestCase):
         self.temp.write('test')
         self.temp.seek(0)
         expected_pos = self.temp.tell()
-        expected_res = 'te'
-        actual_res = parser.peek(self.temp, 2)
+        result = parser.peek(self.temp, 2)
         self.assertEqual(expected_pos, self.temp.tell())
-        self.assertEqual(expected_res, actual_res)
+        self.assertEqual(result, 'te')
 
     def test_determine_segment(self):
         # For this test, all characters that don't matter for
@@ -149,12 +148,13 @@ class TestParse(TestCase):
 
     def test_parse_chunk_unreadable(self):
         # unreadable line
-        self.temp.write('test')
+        str = 'bogus segment that does not match a metro2 segment type'
+        self.temp.write(str)
         self.temp.seek(0)
 
         with patch('parse.logging.warn') as mock:
             parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
-            mock.assert_called_with('unread data: ', 'test')
+            mock.assert_called_with('unread data: ', str)
 
     @patch('parse.mp.Pool')
     @patch.object(parser, 'parse_chunk')
