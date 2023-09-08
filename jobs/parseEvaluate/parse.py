@@ -111,6 +111,14 @@ class Parser():
 
         return result
 
+    # TODO: This method is not tested.
+    def generate_guid(self, file_name, file_position):
+        # generate GUID that will be unique between chunks and files
+        return hash(f'{file_name}-{file_position}')
+
+    def file_identifier(self, file_name):
+        return hash(f'{file_name}')
+
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, fstream):
         values_list = list()
@@ -118,11 +126,9 @@ class Parser():
         file_name = os.path.basename(fstream.name)
         fstream.seek(start)
         pos = fstream.tell()
-        # generate GUID that will be unique between chunks and files
-        str_pos = str(pos)
-        guid = hash(f'{file_name}-{str_pos}')
+        guid = self.generate_guid(file_name, str(pos))
         # this remains consistent for the chunk
-        file = hash(f'{file_name}')
+        file = self.file_identifier(file_name)
 
         # read until the end of the chunk is reached
         while pos < end:
@@ -201,9 +207,8 @@ class Parser():
             fstream.read(1)
             pos = fstream.tell()
             # update guid
-            str_pos = str(pos)
-            guid = hash(f'{file_name}-{str_pos}')
-        
+            guid = self.generate_guid(file_name, str(pos))
+
         return values_list
 
     # constructs commands to feed to exec_commands method with parallel processing
