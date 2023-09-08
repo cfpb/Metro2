@@ -168,6 +168,17 @@ class Parser():
 
         return {'values': values, 'names': names}
 
+
+    # TODO: This method is not tested.
+    def create_commands(self, values, segment):
+        sub = list()
+        sub.append('{}')
+        # add two to values for the guid and file
+        command = '\t'.join(sub * (len(values) + 2))
+        # segment needs to be lower so it matches table names
+        self.commands[segment.lower()] = command
+
+
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, fstream):
         values_list = list()
@@ -199,12 +210,7 @@ class Parser():
                 names = parsed_segment['names']
 
                 # update commands
-                sub = list()
-                sub.append('{}')
-                # add two to values for the guid and file
-                command = '\t'.join(sub * (len(values) + 2))
-                # segment needs to be lower so it matches table names
-                self.commands[segment.lower()] = command
+                self.create_commands(values, segment)
 
                 # add names to field_names dict
                 self.field_names[segment] = names
@@ -223,8 +229,8 @@ class Parser():
 
         return values_list
 
-    # constructs commands to feed to exec_commands method with parallel processing
-    def construct_commands(self, fstream):
+    # TODO: This method is not tested.
+    def break_file_into_chunks(self, fstream):
         file_size = os.path.getsize(fstream.name)
         if file_size == 0:
             logging.error(f'Encountered empty file: {fstream.name}')
@@ -233,7 +239,6 @@ class Parser():
         # seek to the beginning of the file stream
         fstream.seek(0)
 
-        # break down file into chunks
         num_workers = mp.cpu_count()
         logging.info(f'{num_workers} workers available to parse data')
         # doesn't matter if we lose a decimal value here since the last chunk is "the rest"
@@ -257,32 +262,39 @@ class Parser():
                 chunk_endpoints.append((chunk_start, offset))
                 # next chunk will start at the next byte
                 chunk_start = offset
-        
+
         # just in case we have less lines than workers
         if chunk_start < file_size:
             # add the last chunk
             chunk_endpoints.append((chunk_start, file_size - 1))
 
-        # using chunk endpoints here in case we have more workers than endpoints
-        pool = mp.Pool(len(chunk_endpoints))
-        async_results = list(pool.apply_async(self.parse_chunk, args=(start, endpoint, fstream,)) for start, endpoint in chunk_endpoints)
-        completed_results = [result.get() for result in async_results]
+        return chunk_endpoints
 
-        # combine results
-        for result in completed_results:
-            for values in result:
-                # pop segment off the end of the values list
-                segment = values.pop()
+    # constructs commands to feed to exec_commands method with parallel processing
+    def construct_commands(self, fstream):
+        chunk_endpoints = self.break_file_into_chunks(fstream)
 
-                # convert segment name to lowercase to match fields.py
-                segment = segment.lower()
-                
-                # add to values
-                val_tup = tuple(values)
-                self.parsed_values[segment].append(val_tup)
+        if chunk_endpoints:
+            # using chunk endpoints here in case we have more workers than endpoints
+            pool = mp.Pool(len(chunk_endpoints))
+            async_results = list(pool.apply_async(self.parse_chunk, args=(start, endpoint, fstream,)) for start, endpoint in chunk_endpoints)
+            completed_results = [result.get() for result in async_results]
 
-        pool.close()
-        pool.join()
+            # combine results
+            for result in completed_results:
+                for values in result:
+                    # pop segment off the end of the values list
+                    segment = values.pop()
+
+                    # convert segment name to lowercase to match fields.py
+                    segment = segment.lower()
+
+                    # add to values
+                    val_tup = tuple(values)
+                    self.parsed_values[segment].append(val_tup)
+
+            pool.close()
+            pool.join()
 
     def write_to_database(self, values, segment, connection, cursor, max_block_size=2000):
         # Gives good performance relative to other potential block sizes.
