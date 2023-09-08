@@ -101,7 +101,7 @@ class TestParse(TestCase):
                 'FIRSTNAME1          ', 'MIDDLENAME1         ', 'J', '333224444',
                 '05221967', '3333334444', '1', '  ', 'US', '123 EXAMPLE ST. N.              ',
                 'APT. 200                        ', 'HOUSTON             ',
-                'TX', '    77000', 'C', 'R',
+                'TX', '77000    ', 'C', 'R',
             ]
             result = parser.parse_segment_values(f, 'base')
             self.assertEqual(result['values'], expected_values)
