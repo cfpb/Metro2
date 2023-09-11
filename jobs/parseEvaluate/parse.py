@@ -230,8 +230,7 @@ class Parser():
 
         return values_list
 
-    # TODO: This method is not tested.
-    def break_file_into_chunks(self, fstream):
+    def break_file_into_chunks(self, fstream, max_chunks):
         file_size = os.path.getsize(fstream.name)
         if file_size == 0:
             logging.error(f'Encountered empty file: {fstream.name}')
@@ -240,20 +239,19 @@ class Parser():
         # seek to the beginning of the file stream
         fstream.seek(0)
 
-        num_workers = mp.cpu_count()
-        logging.info(f'{num_workers} workers available to parse data')
         # doesn't matter if we lose a decimal value here since the last chunk is "the rest"
-        chunk_size = int(file_size / num_workers)
+        chunk_size = int(file_size / max_chunks)
 
         # find first newline after each chunk size
         chunk_endpoints = list()
         offset = 0
         chunk_start = 0
-        for _ in range(num_workers - 1):
+        for _ in range(max_chunks - 1):
             # just in case we have less lines than workers
             if chunk_start < file_size:
-                # 1 for the second argument means we are starting from the current read position
-                fstream.seek(chunk_size, 1)
+                # Position the cursor {chunk_size} characters after {chunk_start}
+                fstream.seek(chunk_start + chunk_size)
+
                 offset += chunk_size
                 # find the first newline after offset and append the position to chunk_endpoints
                 while fstream.read(1) != '\n':
@@ -267,13 +265,16 @@ class Parser():
         # just in case we have less lines than workers
         if chunk_start < file_size:
             # add the last chunk
-            chunk_endpoints.append((chunk_start, file_size - 1))
+            chunk_endpoints.append((chunk_start, file_size))
 
         return chunk_endpoints
 
     # constructs commands to feed to exec_commands method with parallel processing
     def construct_commands(self, fstream):
-        chunk_endpoints = self.break_file_into_chunks(fstream)
+        num_workers = mp.cpu_count()
+        logging.info(f'{num_workers} workers available to parse data')
+
+        chunk_endpoints = self.break_file_into_chunks(fstream, num_workers)
 
         if chunk_endpoints:
             # using chunk endpoints here in case we have more workers than endpoints

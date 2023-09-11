@@ -210,6 +210,26 @@ class TestParse(TestCase):
             parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
             mock.assert_called_with(f'unread data: {str}')
 
+    def test_break_file_into_chunks(self):
+        with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
+            # TODO: When this number is 4 or 5, this method becomes nonresponsive. WTF.
+            chunk_endpoints = parser.break_file_into_chunks(f, 2)
+
+            # break_file_into_chunks shouldn't break up lines of the file,
+            # so each chunk should end with a \n
+            _, first_chunk_endpoint = chunk_endpoints[0]
+            f.seek(first_chunk_endpoint - 1)
+            self.assertEqual(f.read(1), "\n")
+
+            _, second_chunk_endpoint = chunk_endpoints[1]
+            f.seek(second_chunk_endpoint - 1)
+            self.assertEqual(f.read(1), "\n")
+
+            # Test that the actual chunks match what's expected.
+            # If the test file changes, this will need to change.
+            expected = [(0, 1349), (1349, 2238)]
+            self.assertEqual(chunk_endpoints, expected)
+
     @patch('parse.mp.Pool')
     @patch.object(parser, 'parse_chunk')
     def test_construct_commands(self, mock_parse_chunk, mock_pool):
