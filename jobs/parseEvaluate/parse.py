@@ -111,6 +111,75 @@ class Parser():
 
         return result
 
+    # TODO: This method is not tested.
+    def generate_guid(self, file_name, file_position):
+        # generate GUID that will be unique between chunks and files
+        return hash(f'{file_name}-{file_position}')
+
+    def file_identifier(self, file_name):
+        return hash(f'{file_name}')
+
+    def determine_segment(self, fstream):
+        # the order here is very important since regex is expensive.
+        # base will be the most common segment in any file so we want to test that first
+        # extra segments will be the next most common, so we want to test those second
+        # header and trailer are one per file, so we test those last
+        if re.match(r'\d{4}1', self.peek(fstream, 5)):
+            segment = "base"
+        elif re.match(r'J1|J2|K1|K2|K3|K4|L1|N1', self.peek(fstream, 2)):
+            # convert segment name to lowercase to match fields.py
+            segment = self.peek(fstream, 2).lower()
+        elif re.match(r'.{4}HEADER$', self.peek(fstream, 10)):
+            segment = "header"
+        elif re.match(r'.{4}TRAILER$', self.peek(fstream, 11)):
+            segment = "trailer"
+        else:
+            # catch unreadable lines
+            segment = None
+
+        return segment
+
+
+    def parse_segment_values(self, fstream, segment, default_values=None):
+        values = list()
+        if default_values:
+            values += default_values
+        names = list()
+
+        prev_field_end = 0
+        for field_name, (field_start, field_end) in self.mapping[segment].items():
+            if field_name not in self.skip:
+                names.append(field_name)
+
+            # if field skipped, skip that many characters in the stream
+            skip = (int(field_start) - 1) - int(prev_field_end)
+            if skip > 0:
+                fstream.read(skip)
+
+            length = int(field_end) - (int(field_start) - 1)
+            found_value = fstream.read(length).strip()
+            values.append(found_value)
+            # update prev_field_end
+            prev_field_end = field_end
+
+        # in case the last field is skipped
+        if prev_field_end != self.seg_length[segment]:
+            skip_last = self.seg_length[segment] - prev_field_end
+            fstream.read(skip_last)
+
+        return {'values': values, 'names': names}
+
+
+    # TODO: This method is not tested.
+    def create_commands(self, values, segment):
+        sub = list()
+        sub.append('{}')
+        # add two to values for the guid and file
+        command = '\t'.join(sub * (len(values) + 2))
+        # segment needs to be lower so it matches table names
+        self.commands[segment.lower()] = command
+
+
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, fstream):
         values_list = list()
@@ -118,75 +187,31 @@ class Parser():
         file_name = os.path.basename(fstream.name)
         fstream.seek(start)
         pos = fstream.tell()
-        # generate GUID that will be unique between chunks and files
-        str_pos = str(pos)
-        guid = hash(f'{file_name}-{str_pos}')
+        guid = self.generate_guid(file_name, str(pos))
         # this remains consistent for the chunk
-        file = hash(f'{file_name}')
+        file = self.file_identifier(file_name)
 
         # read until the end of the chunk is reached
         while pos < end:
+            # read to the end of this line
             while pos < end and self.peek(fstream, 1) != '\n':
-                segment = ""
-                # determine segment
-                # the order here is very important since regex is expensive.
-                # base will be the most common segment in any file so we want to test that first
-                # extra segments will be the next most common, so we want to test those second
-                # header and trailer are one per file, so we test those last
-                if re.match(r'\d{5}', self.peek(fstream, 5)):
-                    segment = "base"
-                elif re.match(r'[A-Z][1-4]', self.peek(fstream, 2)):
-                    segment = self.peek(fstream, 2)
-                elif re.match(r'.*HEADER$', self.peek(fstream, 10)):
-                    segment = "header"
-                elif re.match(r'.*TRAILER$', self.peek(fstream, 11)):
-                    segment = "trailer"
-                # catch unreadable lines
-                else:
-                    logging.warn("unread data: ", fstream.readline())
+                # determine what kind of segment is next
+                segment = self.determine_segment(fstream)
+                if not segment:
+                    logging.warning(f"unread data: {fstream.readline()}")
                     pos = fstream.tell()
                     # seek back one for the newline
                     fstream.seek(pos - 1)
                     break
 
-                # convert segment name to lowercase to match fields.py
-                segment = segment.lower()
 
                 # read in entire segment
-                values = list()
-                names = list()
-
-                # add guid and file to beginning of values list
-                values.append(guid)
-                values.append(file)
-
-                prev_field_end = 0
-                for key, value in self.mapping[segment].items():
-                    if key not in self.skip:
-                        names.append(key)
-                    (field_start, field_end) = value
-                    # in case there's a segment that was skipped
-                    skip = (int(field_start) - 1) - int(prev_field_end)
-                    if skip > 0:
-                        fstream.read(skip)
-                    
-                    length = int(field_end) - (int(field_start) - 1)
-                    values.append(fstream.read(length))
-                    # update prev_field_end
-                    prev_field_end = field_end
-
-                # in case the last field is skipped
-                if prev_field_end != self.seg_length[segment]:
-                    skip_last = self.seg_length[segment] - prev_field_end
-                    fstream.read(skip_last)
+                parsed_segment = self.parse_segment_values(fstream, segment, default_values=[guid, file])
+                values = parsed_segment['values']
+                names = parsed_segment['names']
 
                 # update commands
-                sub = list()
-                sub.append('{}')
-                # add two to values for the guid and file
-                command = '\t'.join(sub * (len(values) + 2))
-                # segment needs to be lower so it matches table names
-                self.commands[segment.lower()] = command
+                self.create_commands(values, segment)
 
                 # add names to field_names dict
                 self.field_names[segment] = names
@@ -201,13 +226,12 @@ class Parser():
             fstream.read(1)
             pos = fstream.tell()
             # update guid
-            str_pos = str(pos)
-            guid = hash(f'{file_name}-{str_pos}')
-        
+            guid = self.generate_guid(file_name, str(pos))
+
         return values_list
 
-    # constructs commands to feed to exec_commands method with parallel processing
-    def construct_commands(self, fstream):
+    # TODO: This method is not tested.
+    def break_file_into_chunks(self, fstream):
         file_size = os.path.getsize(fstream.name)
         if file_size == 0:
             logging.error(f'Encountered empty file: {fstream.name}')
@@ -216,7 +240,6 @@ class Parser():
         # seek to the beginning of the file stream
         fstream.seek(0)
 
-        # break down file into chunks
         num_workers = mp.cpu_count()
         logging.info(f'{num_workers} workers available to parse data')
         # doesn't matter if we lose a decimal value here since the last chunk is "the rest"
@@ -240,32 +263,39 @@ class Parser():
                 chunk_endpoints.append((chunk_start, offset))
                 # next chunk will start at the next byte
                 chunk_start = offset
-        
+
         # just in case we have less lines than workers
         if chunk_start < file_size:
             # add the last chunk
             chunk_endpoints.append((chunk_start, file_size - 1))
 
-        # using chunk endpoints here in case we have more workers than endpoints
-        pool = mp.Pool(len(chunk_endpoints))
-        async_results = list(pool.apply_async(self.parse_chunk, args=(start, endpoint, fstream,)) for start, endpoint in chunk_endpoints)
-        completed_results = [result.get() for result in async_results]
+        return chunk_endpoints
 
-        # combine results
-        for result in completed_results:
-            for values in result:
-                # pop segment off the end of the values list
-                segment = values.pop()
+    # constructs commands to feed to exec_commands method with parallel processing
+    def construct_commands(self, fstream):
+        chunk_endpoints = self.break_file_into_chunks(fstream)
 
-                # convert segment name to lowercase to match fields.py
-                segment = segment.lower()
-                
-                # add to values
-                val_tup = tuple(values)
-                self.parsed_values[segment].append(val_tup)
+        if chunk_endpoints:
+            # using chunk endpoints here in case we have more workers than endpoints
+            pool = mp.Pool(len(chunk_endpoints))
+            async_results = list(pool.apply_async(self.parse_chunk, args=(start, endpoint, fstream,)) for start, endpoint in chunk_endpoints)
+            completed_results = [result.get() for result in async_results]
 
-        pool.close()
-        pool.join()
+            # combine results
+            for result in completed_results:
+                for values in result:
+                    # pop segment off the end of the values list
+                    segment = values.pop()
+
+                    # convert segment name to lowercase to match fields.py
+                    segment = segment.lower()
+
+                    # add to values
+                    val_tup = tuple(values)
+                    self.parsed_values[segment].append(val_tup)
+
+            pool.close()
+            pool.join()
 
     def write_to_database(self, values, segment, connection, cursor, max_block_size=2000):
         # Gives good performance relative to other potential block sizes.
@@ -274,7 +304,7 @@ class Parser():
         block_end = max_block_size
         commands = self.commands[segment]
         cols = list(self.field_names[segment])
-        
+
         # process statements in blocks
         while block_end < len(values):
             # split values
@@ -328,7 +358,7 @@ class Parser():
             self.write_to_database(self.parsed_values["k4"], "k4", conn, cur)
             self.write_to_database(self.parsed_values["l1"], "l1", conn, cur)
             self.write_to_database(self.parsed_values["n1"], "n1", conn, cur)
-                
+
         except OperationalError as e:
             logging.error(f"There was a problem establishing the connection: {e}")
         finally:
