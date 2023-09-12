@@ -1,6 +1,6 @@
 The M2 database is populated in two separate phases: parsing and evaluators.
-- **parser results** - data ingested from M2 data files, on which we run the evaluators
-- **evaluator restults** - data produced by the evaluators, which check for inconsistencies in the data
+- **parser**: The application reads Metro2 data files from an S3 bucket or the local file system (when running locally), then saves the data in the database.
+- **evaluators**: The application runs lots of evaluators to check for inconsistencies in the data, then saves the results to the database.
 
 ## Background: Metro2 data
 
@@ -26,7 +26,7 @@ Notes on our implementation of M2 data:
 - In each segment of the m2 data, `id` is a hash of the file name and the location of that line of data in memory. `id` is the foreign key that ties all extra segments back to their `base` segment, and is shared among all segments on a single record.
 - In each segment of the data, `file` is the foreign key that ties each segment to the `header` of the file, and is shared among all record segments in a file.
 - If a field in the M2 data file is blank (i.e. filled with blank spaces), the parser will save that field as an empty string.
-- If a field is filled with zeros--which can be valid, for instance, when a numeric field is not applicable in a record, the parser currently saves that field without modifying it, so it would stay a string of zeros. We could choose to modify this behavior if we wish.
+- If a field is filled with zeros--which can be valid, for instance, when a numeric field is not applicable in a record--the parser currently saves that field without modifying it, so it would stay a string of zeros. We could choose to modify this behavior if we wish.
 
 ## Evaluator results
 
