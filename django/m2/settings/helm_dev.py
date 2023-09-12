@@ -8,10 +8,10 @@ DEBUG = True
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "metro2-results",
+        "NAME": "metro2-data",
         "USER": "postgres",
         "PASSWORD": "cfpb",
-        "HOST": "results-db-postgresql",
+        "HOST": "metro2-db-postgresql",
         "PORT": "5432",
     }
 }

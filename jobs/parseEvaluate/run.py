@@ -4,7 +4,7 @@ import logging
 
 from parse import Parser
 from evaluate import evaluator
-from tables import create, meta, res_meta
+from tables import create, meta
 
 # check if tool is set to run locally
 try:
@@ -38,7 +38,6 @@ DATAFILE_PATH = os.path.join(EXAM_ROOT, "data")
 def init_db():
     # init database tables
     create(meta)
-    create(res_meta)
     logging.info(f'Initialized database tables for exam {EXAM_NUMBER}')
 
 def parse(fstream):

@@ -38,8 +38,6 @@ try:
     PGDATABASE = os.environ['PGDATABASE']
     PGUSER = os.environ['PGUSER']
     PGPASSWORD = os.environ['PGPASSWORD']
-    RESDATABASE = os.environ['RESDATABASE']
-    RESHOST = os.environ['RESHOST']
 except KeyError as e:
     logging.error(f"Postgres connection variable(s) not found: {e}")
     sys.exit(1)
@@ -294,30 +292,18 @@ trailer = Table(
     Column('reserved_trailer_3', String(19))
 )
 
-# establishes a database connection using psycopg2.
-def connect():
-    return psycopg2.connect(
-        host=PGHOST,
-        port=PGPORT,
-        database=PGDATABASE,
-        user=PGUSER,
-        password=PGPASSWORD
-    )
-
-
 ##############################################
 # Results data
 ##############################################
-res_meta = MetaData()
 
 meta_tbl = Table(
-    'evaluator_metadata', res_meta,
+    'evaluator_metadata', meta,
     Column('evaluator_name', String(200), unique=True),
     Column('hits', Integer)
 )
 
 res_tbl = Table(
-    'evaluator_results', res_meta,
+    'evaluator_results', meta,
     Column('evaluator_name', String(200)),
     Column('date', String(8)),
     Column('field_values', JSON),
@@ -326,11 +312,11 @@ res_tbl = Table(
 )
 
 # establishes a database connection using psycopg2.
-def connect_res():
+def connect():
     return psycopg2.connect(
-        host=RESHOST,
+        host=PGHOST,
         port=PGPORT,
-        database=RESDATABASE,
+        database=PGDATABASE,
         user=PGUSER,
         password=PGPASSWORD
     )
@@ -354,4 +340,3 @@ def create(metadata, creator=connect):
     finally:
         if engine is not None:
             engine.dispose()
-
