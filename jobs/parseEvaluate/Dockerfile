@@ -37,7 +37,7 @@ RUN pip install -r ./requirements.txt
 RUN apk del .build-deps
 
 # allow setup shell scripts to run in container
-RUN chmod +x ./setup.sh ./unzip.sh ./ingest-data.sh && \
+RUN chmod +x ./setup.sh ./unzip.sh && \
     chown -R $USERNAME:$USERNAME $APP_HOME
 
 # Create the user

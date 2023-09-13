@@ -21,7 +21,6 @@
 !.dockerignore
 !.env_SAMPLE
 !.gitignore
-!ingest-data.sh
 !README.md
 !setup.sh
 !unzip.sh

@@ -11,5 +11,4 @@
 # ...and these files
 !setup.sh
 !unzip.sh
-!ingest-data.sh
 !.env
