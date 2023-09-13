@@ -82,6 +82,7 @@ def run():
             # checking if it is a file
             if os.path.isfile(file):
                 try:
+                    logging.debug(f"Parsing local file: {filename}")
                     fstream = open(file, 'r')
                     parse(fstream)
                 except FileNotFoundError as e:
