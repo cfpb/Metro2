@@ -18,12 +18,9 @@ fi
 CLEANED_EXAM_NUMBER=${EXAM_NUMBER//[^0-9]/}
 # replace env variables with cleaned versions
 export EXAM_NUMBER=$CLEANED_EXAM_NUMBER
-export EXAM_ROOT="exam-${EXAM_NUMBER}"
+# the file system location(local) where M2 data files are located, will be updated for s3 bucket
+export EXAM_ROOT="temp"
 
-# create required directory structure
-mkdir -p $EXAM_ROOT/{data,reference}
-
-./ingest-data.sh
 # unzip zipped files if necessary
 # ./unzip.sh
 # run parsing and evaluators
