@@ -35,8 +35,6 @@ RUN apk del .build-deps
 
 RUN chown -R $USERNAME:$USERNAME $APP_HOME
 
-RUN echo hello
-
 # Create the user
 USER $USERNAME
 
