@@ -64,7 +64,7 @@ def run():
         # date format (removed, to specify, uncomment the next line)
         # datefmt=
         # minimum message level that will be written
-        # levels are: 
+        # levels are:
         # DEBUG,
         # INFO,
         # WARN,
@@ -75,17 +75,21 @@ def run():
     init_db()
     # iterate over data directory
     for filename in os.listdir(DATAFILE_PATH):
-        file = os.path.join(DATAFILE_PATH, filename)
-        # checking if it is a file
-        if os.path.isfile(file):
-            try:
-                fstream = open(file, 'r')
-                parse(fstream)
-            except FileNotFoundError as e:
-                logging.error(f"There was an error opening the file: {e}")
-            finally:
-                if fstream:
-                    fstream.close()
+        logging.debug(f"Encountered file in local data path: {filename}")
+        # checking if the file is a .txt before proceeding
+        if filename.lower().endswith('.txt'):
+            file = os.path.join(DATAFILE_PATH, filename)
+            # checking if it is a file
+            if os.path.isfile(file):
+                try:
+                    logging.debug(f"Parsing local file: {filename}")
+                    fstream = open(file, 'r')
+                    parse(fstream)
+                except FileNotFoundError as e:
+                    logging.error(f"There was an error opening the file: {e}")
+                finally:
+                    if fstream:
+                        fstream.close()
     evaluate()
 
 run()
