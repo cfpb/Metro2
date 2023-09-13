@@ -75,6 +75,7 @@ def run():
     init_db()
     # iterate over data directory
     for filename in os.listdir(DATAFILE_PATH):
+        logging.debug(f"Encountered file in local data path: {filename}")
         # checking if the file is a .txt before proceeding
         if filename.lower().endswith('.txt'):
             file = os.path.join(DATAFILE_PATH, filename)
