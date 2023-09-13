@@ -79,7 +79,6 @@ def run():
         # checking if the file is a .txt before proceeding
         if filename.lower().endswith('.txt'):
             file = os.path.join(DATAFILE_PATH, filename)
-            print('current file: ', file, '\n\n\n')
             # checking if it is a file
             if os.path.isfile(file):
                 try:
