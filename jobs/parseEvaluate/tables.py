@@ -15,22 +15,6 @@ from sqlalchemy import(
     String
 )
 
-# check if tool is set to run locally
-try:
-    METRO2ENV = os.environ['METRO2ENV']
-except KeyError as e:
-    logging.error(f"Environment (local, prod, etc.) not found: {e}")
-    sys.exit(1)
-except:
-    logging.error("Unexpected error, quitting...")
-    sys.exit(1)
-
-# quit if not local
-if METRO2ENV != 'local':
-    logging.error("Metro2 evaluator tool is not configured to run in production. \
-        Quitting...")
-    sys.exit(1)
-
 # retrieve environment variables. Throw exception if not found.
 try:
     PGHOST = os.environ['PGHOST']
