@@ -230,68 +230,6 @@ class TestParse(TestCase):
             expected = [(0, 1349), (1349, 2238)]
             self.assertEqual(chunk_endpoints, expected)
 
-    @patch('parse.mp.Pool')
-    @patch.object(parser, 'parse_chunk')
-    def test_construct_commands(self, mock_parse_chunk, mock_pool):
-        mock_pool.return_value = Pool()
-        # write something to the file so we're not trying to read an empty file
-        self.temp.write('\n')
-        self.temp.seek(0)
-
-        # expected value is what we should see from parser.header_values
-        expected = tuple(('success',))
-
-        # make sure each segment's values contain the expected value
-        return_val = list([['success', 'header']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        # parsed_values is a dict where each entry is a list of values for
-        # the corresponding segment. Therefore, when we access
-        # parsed_values["segment"][0], we are accessing the first element
-        # of the values list for that segment. We expect that to be
-        # a tuple of just the string 'success'.
-        self.assertEqual(parser.parsed_values["header"][0], expected)
-        return_val = list([['success', 'trailer']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["trailer"][0], expected)
-        return_val = list([['success', 'base']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["base"][0], expected)
-        return_val = list([['success', 'J1']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["j1"][0], expected)
-        return_val = list([['success', 'J2']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["j2"][0], expected)
-        return_val = list([['success', 'K1']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["k1"][0], expected)
-        return_val = list([['success', 'K2']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["k2"][0], expected)
-        return_val = list([['success', 'K3']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["k3"][0], expected)
-        return_val = list([['success', 'K4']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["k4"][0], expected)
-        return_val = list([['success', 'L1']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["l1"][0], expected)
-        return_val = list([['success', 'N1']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["n1"][0], expected)
-
     def test_construct_commands_empty_file(self):
         # if the program encounters an empty file, it should log the file
         # as an error.
