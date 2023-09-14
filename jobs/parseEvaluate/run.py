@@ -90,6 +90,7 @@ def run():
                 finally:
                     if fstream:
                         fstream.close()
-    evaluate()
+    # TODO: uncomment the evaluate command when we are ready to troubleshoot evaluators
+    # evaluate()
 
 run()
