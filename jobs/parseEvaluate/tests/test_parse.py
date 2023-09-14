@@ -237,6 +237,34 @@ class TestParse(TestCase):
             parser.construct_commands(self.temp)
             mock.assert_called_with('Encountered empty file: ' + self.temp.name)
 
+    def test_construct_commands_small_file(self):
+        # Start this test with a clean slate
+        parser.parsed_values = {
+            "header": list(),
+            "trailer": list(),
+            "base": list(),
+            "j1": list(),
+            "j2": list(),
+            "k1": list(),
+            "k2": list(),
+            "k3": list(),
+            "k4": list(),
+            "l1": list(),
+            "n1": list(),
+        }
+
+        with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
+            parser.construct_commands(f)
+            # construct_commands doesn't return any values, but it sets parser.parsed_values
+            parsed_base_segments = parser.parsed_values['base']
+
+            # Since the test file has 3 base segments, parser.parsed_values['base'] should contain 3 tuples
+            self.assertEqual(len(parsed_base_segments), 3)
+
+            # Each tuple should have the same number of values as described in fields.py
+            self.assertEqual(len(parsed_base_segments[0]), 50)
+
+
     def test_write_to_database(self):
         with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
             file_size = os.path.getsize(f.name)
