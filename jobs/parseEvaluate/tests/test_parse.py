@@ -300,24 +300,28 @@ class TestParse(TestCase):
             mock.assert_called_with('Encountered empty file: ' + self.temp.name)
 
     def test_write_to_database(self):
-        # asserts that the list of values triggers the while loop twice
-        # and then a final call is made to IteratorFile. It would be more
-        # useful to test the contents of IteratorFile, but what we pass
-        # to that is an iterator, not a string, so it's hard to do a
-        # comparison.
-        conn = Connect()
-        cur = conn.cursor()
+        with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
+            file_size = os.path.getsize(f.name)
+            parser.parse_chunk(start=0, end=file_size, fstream=f)
 
-        expected_command = "{}\t{}"
-        parser.commands['header'] = expected_command
+            # asserts that the list of values triggers the while loop twice
+            # and then a final call is made to IteratorFile. It would be more
+            # useful to test the contents of IteratorFile, but what we pass
+            # to that is an iterator, not a string, so it's hard to do a
+            # comparison.
+            conn = Connect()
+            cur = conn.cursor()
 
-        values = [
-            tuple(['value1', 'value2']),
-            tuple(['value3', 'value4']),
-            tuple(['value5', 'value6']),
-            tuple(['value7', 'value8']),
-            tuple(['value9', 'value10'])
-        ]
-        with patch('parse.IteratorFile') as mock:
-            parser.write_to_database(values, 'header', conn, cur, 2)
-            self.assertEqual(3, mock.call_count)
+            expected_command = "{}\t{}"
+            parser.commands['header'] = expected_command
+
+            values = [
+                tuple(['value1', 'value2']),
+                tuple(['value3', 'value4']),
+                tuple(['value5', 'value6']),
+                tuple(['value7', 'value8']),
+                tuple(['value9', 'value10'])
+            ]
+            with patch('parse.IteratorFile') as mock:
+                parser.write_to_database(values, 'header', conn, cur, 2)
+                self.assertEqual(3, mock.call_count)
