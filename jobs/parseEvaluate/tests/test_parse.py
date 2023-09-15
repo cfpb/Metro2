@@ -267,7 +267,7 @@ class TestParse(TestCase):
             parser.construct_commands(f)
             # construct_commands doesn't return any values, but it sets parser.parsed_values
             vals = parser.parsed_values
-            # Since the test file has 1998 base segments, parser.parsed_values['base'] should contain 3 tuples
+            # Since the test file has 1998 base segments, parser.parsed_values['base'] should contain 1998 tuples
             self.assertEqual(len(vals['base']), 1998)
             # Teset file has 1 header and 1 trailer segment
             self.assertEqual(len(vals['header']), 1)
