@@ -93,9 +93,9 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / STATIC_URL
 
-STATICFILES_DIRS = [
-    FRONTEND_DIR / "dist",
-]
+# STATICFILES_DIRS = [
+#     FRONTEND_DIR / "dist",
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

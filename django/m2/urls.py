@@ -22,10 +22,10 @@ from m2 import views
 
 
 urlpatterns = [
+    path("", TemplateView.as_view(template_name="m2/index.html")),
     path('admin/', admin.site.urls),
     path('unsecured/', views.unsecured_view),
     path('secured/', views.secured_view),
     path('datasets/', views.datasets),
     path('datasets/<int:dataset_id>/', views.dataset),
-    path("", TemplateView.as_view(template_name="index.html")),
 ]
