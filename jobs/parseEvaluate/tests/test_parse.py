@@ -230,68 +230,6 @@ class TestParse(TestCase):
             expected = [(0, 1349), (1349, 2238)]
             self.assertEqual(chunk_endpoints, expected)
 
-    @patch('parse.mp.Pool')
-    @patch.object(parser, 'parse_chunk')
-    def test_construct_commands(self, mock_parse_chunk, mock_pool):
-        mock_pool.return_value = Pool()
-        # write something to the file so we're not trying to read an empty file
-        self.temp.write('\n')
-        self.temp.seek(0)
-
-        # expected value is what we should see from parser.header_values
-        expected = tuple(('success',))
-
-        # make sure each segment's values contain the expected value
-        return_val = list([['success', 'header']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        # parsed_values is a dict where each entry is a list of values for
-        # the corresponding segment. Therefore, when we access
-        # parsed_values["segment"][0], we are accessing the first element
-        # of the values list for that segment. We expect that to be
-        # a tuple of just the string 'success'.
-        self.assertEqual(parser.parsed_values["header"][0], expected)
-        return_val = list([['success', 'trailer']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["trailer"][0], expected)
-        return_val = list([['success', 'base']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["base"][0], expected)
-        return_val = list([['success', 'J1']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["j1"][0], expected)
-        return_val = list([['success', 'J2']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["j2"][0], expected)
-        return_val = list([['success', 'K1']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["k1"][0], expected)
-        return_val = list([['success', 'K2']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["k2"][0], expected)
-        return_val = list([['success', 'K3']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["k3"][0], expected)
-        return_val = list([['success', 'K4']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["k4"][0], expected)
-        return_val = list([['success', 'L1']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["l1"][0], expected)
-        return_val = list([['success', 'N1']])
-        mock_parse_chunk.return_value = return_val
-        parser.construct_commands(self.temp)
-        self.assertEqual(parser.parsed_values["n1"][0], expected)
-
     def test_construct_commands_empty_file(self):
         # if the program encounters an empty file, it should log the file
         # as an error.
@@ -299,25 +237,65 @@ class TestParse(TestCase):
             parser.construct_commands(self.temp)
             mock.assert_called_with('Encountered empty file: ' + self.temp.name)
 
+    def test_construct_commands_small_file(self):
+        # Start this test with a clean slate
+        parser.parsed_values = {
+            "header": list(), "trailer": list(), "base": list(),
+            "j1": list(), "j2": list(), "k1": list(), "k2": list(),
+            "k3": list(), "k4": list(), "l1": list(), "n1": list(),
+        }
+
+        with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
+            parser.construct_commands(f)
+            # construct_commands doesn't return any values, but it sets parser.parsed_values
+            parsed_base_segments = parser.parsed_values['base']
+
+            # Since the test file has 3 base segments, parser.parsed_values['base'] should contain 3 tuples
+            self.assertEqual(len(parsed_base_segments), 3)
+
+            # Each tuple should have the same number of values as described in fields.py
+            self.assertEqual(len(parsed_base_segments[0]), 50)
+
+    def test_construct_commands_deidentified_full_file(self):
+        # Start this test with a clean slate
+        parser.parsed_values = {
+            "header": list(), "trailer": list(), "base": list(),
+            "j1": list(), "j2": list(), "k1": list(), "k2": list(),
+            "k3": list(), "k4": list(), "l1": list(), "n1": list(),
+        }
+        with open(os.path.join('tests','sample_files', 'm2_2k_lines_deidentified.TXT')) as f:
+            parser.construct_commands(f)
+            # construct_commands doesn't return any values, but it sets parser.parsed_values
+            vals = parser.parsed_values
+            # Since the test file has 1998 base segments, parser.parsed_values['base'] should contain 1998 tuples
+            self.assertEqual(len(vals['base']), 1998)
+            # Teset file has 1 header and 1 trailer segment
+            self.assertEqual(len(vals['header']), 1)
+            self.assertEqual(len(vals['trailer']), 1)
+
     def test_write_to_database(self):
-        # asserts that the list of values triggers the while loop twice
-        # and then a final call is made to IteratorFile. It would be more
-        # useful to test the contents of IteratorFile, but what we pass
-        # to that is an iterator, not a string, so it's hard to do a
-        # comparison.
-        conn = Connect()
-        cur = conn.cursor()
+        with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
+            file_size = os.path.getsize(f.name)
+            parser.parse_chunk(start=0, end=file_size, fstream=f)
 
-        expected_command = "{}\t{}"
-        parser.commands['header'] = expected_command
+            # asserts that the list of values triggers the while loop twice
+            # and then a final call is made to IteratorFile. It would be more
+            # useful to test the contents of IteratorFile, but what we pass
+            # to that is an iterator, not a string, so it's hard to do a
+            # comparison.
+            conn = Connect()
+            cur = conn.cursor()
 
-        values = [
-            tuple(['value1', 'value2']),
-            tuple(['value3', 'value4']),
-            tuple(['value5', 'value6']),
-            tuple(['value7', 'value8']),
-            tuple(['value9', 'value10'])
-        ]
-        with patch('parse.IteratorFile') as mock:
-            parser.write_to_database(values, 'header', conn, cur, 2)
-            self.assertEqual(3, mock.call_count)
+            expected_command = "{}\t{}"
+            parser.commands['header'] = expected_command
+
+            values = [
+                tuple(['value1', 'value2']),
+                tuple(['value3', 'value4']),
+                tuple(['value5', 'value6']),
+                tuple(['value7', 'value8']),
+                tuple(['value9', 'value10'])
+            ]
+            with patch('parse.IteratorFile') as mock:
+                parser.write_to_database(values, 'header', conn, cur, 2)
+                self.assertEqual(3, mock.call_count)

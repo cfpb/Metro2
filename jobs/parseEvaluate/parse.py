@@ -271,32 +271,25 @@ class Parser():
 
     # constructs commands to feed to exec_commands method with parallel processing
     def construct_commands(self, fstream):
-        num_workers = mp.cpu_count()
-        logging.info(f'{num_workers} workers available to parse data')
+        # TODO: use an async processing library to parallelize the parsing process
+        # For now, I'm leaving this code here, in case it's useful in the future:
+        # num_workers = mp.cpu_count()
+        # logging.info(f'{num_workers} workers available to parse data')
 
+        num_workers = 3
         chunk_endpoints = self.break_file_into_chunks(fstream, num_workers)
 
-        if chunk_endpoints:
-            # using chunk endpoints here in case we have more workers than endpoints
-            pool = mp.Pool(len(chunk_endpoints))
-            async_results = list(pool.apply_async(self.parse_chunk, args=(start, endpoint, fstream,)) for start, endpoint in chunk_endpoints)
-            completed_results = [result.get() for result in async_results]
+        # If the file is empty, stop processing this file.
+        if not chunk_endpoints:
+            return
 
-            # combine results
-            for result in completed_results:
-                for values in result:
-                    # pop segment off the end of the values list
-                    segment = values.pop()
-
-                    # convert segment name to lowercase to match fields.py
-                    segment = segment.lower()
-
-                    # add to values
-                    val_tup = tuple(values)
-                    self.parsed_values[segment].append(val_tup)
-
-            pool.close()
-            pool.join()
+        for chunk in chunk_endpoints:
+            start, end = chunk
+            parsed_result = self.parse_chunk(start, end, fstream)
+            for parsed_segment in parsed_result:
+                segment_name = parsed_segment.pop()  # get the segment name from the end of the list of values
+                # Add the segment's parsed values as a tuple to self.parsed_values
+                self.parsed_values[segment_name].append(tuple(parsed_segment))
 
     def write_to_database(self, values, segment, connection, cursor, max_block_size=2000):
         # Gives good performance relative to other potential block sizes.
