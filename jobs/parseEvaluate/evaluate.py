@@ -9,22 +9,6 @@ from m2_evaluators.cat7_evals import evaluators as cat7_evals
 from m2_evaluators.cat12_evals import evaluators as cat12_evals
 from psycopg2 import OperationalError
 
-# check if tool is set to run locally
-try:
-    METRO2ENV = os.environ['METRO2ENV']
-except KeyError as e:
-    logging.error(f"Environment (local, prod, etc.) not found: {e}")
-    sys.exit(1)
-except:
-    logging.error("Unexpected error, quitting...")
-    sys.exit(1)
-
-# quit if not local
-if METRO2ENV != 'local':
-    logging.error("Metro2 evaluator tool is not configured to run in production. \
-        Quitting...")
-    sys.exit(1)
-
 
 class Evaluate():
     def __init__(self):
@@ -53,16 +37,16 @@ class Evaluate():
                     try:
                         for row_data in results:
                             self.prepare_statements(evaluator, row_data)
-                            
+
                         # prepare metadata
                         self.prepare_metadata_statements(evaluator, results)
-                        
+
                     except KeyError as e:
                         logging.error(f"Unable to add result to results: {e}")
                         # this should only be raised by a developer error
                         # so we want to exit.
                         sys.exit(1)
-  
+
         except OperationalError as e:
             logging.error(f"There was a problem establishing the connection: {e}")
         finally:
