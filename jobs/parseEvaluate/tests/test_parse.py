@@ -212,8 +212,7 @@ class TestParse(TestCase):
 
     def test_break_file_into_chunks(self):
         with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
-            # TODO: When this number is 4 or 5, this method becomes nonresponsive. WTF.
-            chunk_endpoints = parser.break_file_into_chunks(f, 2)
+            chunk_endpoints = parser.break_file_into_chunks(f, 4)
 
             # break_file_into_chunks shouldn't break up lines of the file,
             # so each chunk should end with a \n

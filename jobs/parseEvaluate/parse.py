@@ -253,8 +253,10 @@ class Parser():
                 fstream.seek(chunk_start + chunk_size)
 
                 offset += chunk_size
-                # find the first newline after offset and append the position to chunk_endpoints
-                while fstream.read(1) != '\n':
+                # find the first newline or empty string after offset and append the
+                #  position to chunk_endpoints
+                while self.peek(fstream, 1) != '\n' and self.peek(fstream, 1) != '':
+                    fstream.read(1)
                     offset+=1
                 # add one more to offset for the newline we found
                 offset+=1
