@@ -226,7 +226,7 @@ class TestParse(TestCase):
 
             # Test that the actual chunks match what's expected.
             # If the test file changes, this will need to change.
-            expected = [(0, 1349), (1349, 2238)]
+            expected = [(0, 854), (854, 1830), (1830, 2238)]
             self.assertEqual(chunk_endpoints, expected)
 
     @patch('parse.mp.Pool')
