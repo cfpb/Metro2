@@ -25,9 +25,6 @@ try:
 except KeyError as e:
     logging.error(f"Postgres connection variable(s) not found: {e}")
     sys.exit(1)
-except:
-    logging.error("Unexpected error, quitting...")
-    sys.exit(1)
 
 ##############################################
 # Parsed data
