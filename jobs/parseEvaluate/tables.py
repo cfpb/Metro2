@@ -35,7 +35,7 @@ header = Table(
     'header', meta,
     Column('id', String(24)),
     Column('file', String(24), unique=True),
-    Column('rdw_header', SmallInteger),
+    Column('rdw_header', String(4)),
     Column('record_identifer_header', String(6)),
     Column('cycle_identifier_header', String(2)),
     Column('innovis_program_identifier', String(10)),
