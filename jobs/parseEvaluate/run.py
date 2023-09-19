@@ -4,7 +4,7 @@ import logging
 
 from parse import Parser
 from evaluate import evaluator
-from tables import create_tables, meta, engine
+from tables import create_tables, engine
 
 # retrieve environment variables. Throw exception if not found.
 try:
