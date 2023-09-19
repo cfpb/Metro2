@@ -247,19 +247,18 @@ class Parser():
         offset = 0
         chunk_start = 0
         for _ in range(max_chunks - 1):
-            # just in case we have less lines than workers
-            if chunk_start < file_size:
+            # just in case we have less lines than workers and the
+            # position set on the stream is less than the file size
+            if (chunk_start + chunk_size) < file_size:
                 # Position the cursor {chunk_size} characters after {chunk_start}
                 fstream.seek(chunk_start + chunk_size)
 
                 offset += chunk_size
-                # find the first newline or empty string after offset and append the
-                #  position to chunk_endpoints
-                while self.peek(fstream, 1) != '\n' and self.peek(fstream, 1) != '':
-                    fstream.read(1)
-                    offset+=1
-                # add one more to offset for the newline we found
-                offset+=1
+                # read the line from the position with the newline char (\n) at the end
+                fstream.readline()
+                # the current positioon in the file
+                offset = fstream.tell()
+
                 chunk_endpoints.append((chunk_start, offset))
                 # next chunk will start at the next byte
                 chunk_start = offset
