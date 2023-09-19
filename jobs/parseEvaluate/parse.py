@@ -286,6 +286,3 @@ class Parser():
         self.write_to_database(self.parsed_values["k4"], "k4", cursor)
         self.write_to_database(self.parsed_values["l1"], "l1", cursor)
         self.write_to_database(self.parsed_values["n1"], "n1", cursor)
-
-# create instance of parser
-parser = Parser()

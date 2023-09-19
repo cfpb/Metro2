@@ -3,7 +3,7 @@ import os
 
 from unittest import TestCase
 from unittest.mock import patch
-from parse import parser
+from parse import Parser
 from tests import fixtures
 
 from sqlalchemy import create_engine, func
@@ -14,6 +14,7 @@ from tables import meta, header, k1, k2, base, header, trailer, j1, j2, k3, k4, 
 
 class TestParse(TestCase):
     def setUp(self):
+        self.parser = Parser()
         self.temp = tempfile.NamedTemporaryFile(mode='w+')
 
     def tearDown(self):
@@ -26,7 +27,7 @@ class TestParse(TestCase):
         self.temp.write('test')
         self.temp.seek(0)
         expected_pos = self.temp.tell()
-        result = parser.peek(self.temp, 2)
+        result = self.parser.peek(self.temp, 2)
         self.assertEqual(expected_pos, self.temp.tell())
         self.assertEqual(result, 'te')
 
@@ -36,44 +37,44 @@ class TestParse(TestCase):
         with tempfile.TemporaryFile(mode='w+') as t1:
             t1.write('xxxxHEADERxxxxxxx')
             t1.seek(0)  # return the filestream position to the start of the string
-            self.assertEqual(parser.determine_segment(t1), 'header')
+            self.assertEqual(self.parser.determine_segment(t1), 'header')
 
         with tempfile.TemporaryFile(mode='w+') as t2:
             t2.write('xxxxTRAILERxxxxx')
             t2.seek(0)
-            self.assertEqual(parser.determine_segment(t2), 'trailer')
+            self.assertEqual(self.parser.determine_segment(t2), 'trailer')
 
         with tempfile.TemporaryFile(mode='w+') as t3:
             t3.write('J1xxxxxxxxxxxx')
             t3.seek(0)
             # For extra segments, return the segment name in lower case
-            self.assertEqual(parser.determine_segment(t3), 'j1')
+            self.assertEqual(self.parser.determine_segment(t3), 'j1')
 
         with tempfile.TemporaryFile(mode='w+') as t4:
             # A base segment must meet both criteria: first four characters are digits, and
             # fifth character is a 1
             t4.write('87761xxxxxxxxx')
             t4.seek(0)
-            self.assertEqual(parser.determine_segment(t4), 'base')
+            self.assertEqual(self.parser.determine_segment(t4), 'base')
 
         # When none of the patterns match, it's unparseable; return none.
         with tempfile.TemporaryFile(mode='w+') as t5:
             t5.write('12345xxxxxxxxx')
             t5.seek(0)
             # 12345 looks like a base segment but it isn't valid. Return None.
-            self.assertEqual(parser.determine_segment(t5), None)
+            self.assertEqual(self.parser.determine_segment(t5), None)
 
         with tempfile.TemporaryFile(mode='w+') as t6:
             t6.write('N3xxxxxxxxxxxx')
             t6.seek(0)
             # N3 looks like an extra segment name but it isn't valid. Return None.
-            self.assertEqual(parser.determine_segment(t6), None)
+            self.assertEqual(self.parser.determine_segment(t6), None)
 
 
     def test_parse_segment_values_with_header_segment(self):
         # header_segment_1.txt is a one-line test file with a realistic header segment
         with open(os.path.join('tests','sample_files', 'header_segment_1.txt')) as file:
-            result = parser.parse_segment_values(file, 'header')
+            result = self.parser.parse_segment_values(file, 'header')
             expected_values = [
                 '1xxx', 'HEADER', '3C', '4INNOVISID',
                 '5EQUIFAXID', '6EXPE', '7TRANSUNIO', '12312023',
@@ -113,7 +114,7 @@ class TestParse(TestCase):
                 'APT. 200', 'HOUSTON',
                 'TX', '77000', 'C', 'R',
             ]
-            result = parser.parse_segment_values(f, 'base')
+            result = self.parser.parse_segment_values(f, 'base')
             self.assertEqual(result['values'], expected_values)
 
             expected_names = [
@@ -136,7 +137,7 @@ class TestParse(TestCase):
             # Write a K1 segment where "creditor name" is blank
             tf.write('K1                              09')
             tf.seek(0)
-            result = parser.parse_segment_values(tf, 'k1')
+            result = self.parser.parse_segment_values(tf, 'k1')
 
             # The "creditor name" field should be an empty string,
             # not a string of 30 blank spaces.
@@ -149,7 +150,7 @@ class TestParse(TestCase):
             # Write a K1 segment where "creditor name" is blank
             tf2.write('K1CREDITOR                      09')
             tf2.seek(0)
-            result = parser.parse_segment_values(tf2, 'k1')
+            result = self.parser.parse_segment_values(tf2, 'k1')
 
             # The "creditor name" field should have no empty spaces at the end.
             expected_values = ['K1', 'CREDITOR', '09']
@@ -158,7 +159,7 @@ class TestParse(TestCase):
     def test_parse_chunk_finds_all_segments_in_chunk(self):
         with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
             file_size = os.path.getsize(f.name)
-            result = parser.parse_chunk(start=0, end=file_size, fstream=f)
+            result = self.parser.parse_chunk(start=0, end=file_size, fstream=f)
 
             # The test file has 8 total segments in it
             self.assertEqual(len(result), 8)
@@ -166,7 +167,7 @@ class TestParse(TestCase):
     def test_parse_chunk_adds_segment_name_to_parsed_values(self):
         with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
             file_size = os.path.getsize(f.name)
-            result = parser.parse_chunk(start=0, end=file_size, fstream=f)
+            result = self.parser.parse_chunk(start=0, end=file_size, fstream=f)
             # parse_chunk appends the segment name to the end of each parsed segment
             # In our test file, the first segment is a header
             self.assertEqual(result[0][-1], 'header')
@@ -200,7 +201,7 @@ class TestParse(TestCase):
         expected_trailer_fields = 50
 
         # result will be a list of value lists
-        result = parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
+        result = self.parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
 
         self.assertEqual(len(result), expected_elements)
         self.assertEqual(len(result[0]), expected_base_fields)
@@ -215,12 +216,12 @@ class TestParse(TestCase):
         self.temp.seek(0)
 
         with patch('parse.logging.warning') as mock:
-            parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
+            self.parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
             mock.assert_called_with(f'unread data: {str}')
 
     def test_break_file_into_chunks(self):
         with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
-            chunk_endpoints = parser.break_file_into_chunks(f, 4)
+            chunk_endpoints = self.parser.break_file_into_chunks(f, 4)
 
             # break_file_into_chunks shouldn't break up lines of the file,
             # so each chunk should end with a \n
@@ -241,21 +242,21 @@ class TestParse(TestCase):
         # if the program encounters an empty file, it should log the file
         # as an error.
         with patch('parse.logging.error') as mock:
-            parser.construct_commands(self.temp)
+            self.parser.construct_commands(self.temp)
             mock.assert_called_with('Encountered empty file: ' + self.temp.name)
 
     def test_construct_commands_small_file(self):
         # Start this test with a clean slate
-        parser.parsed_values = {
+        self.parser.parsed_values = {
             "header": list(), "trailer": list(), "base": list(),
             "j1": list(), "j2": list(), "k1": list(), "k2": list(),
             "k3": list(), "k4": list(), "l1": list(), "n1": list(),
         }
 
         with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
-            parser.construct_commands(f)
+            self.parser.construct_commands(f)
             # construct_commands doesn't return any values, but it sets parser.parsed_values
-            parsed_base_segments = parser.parsed_values['base']
+            parsed_base_segments = self.parser.parsed_values['base']
 
             # Since the test file has 3 base segments, parser.parsed_values['base'] should contain 3 tuples
             self.assertEqual(len(parsed_base_segments), 3)
@@ -265,15 +266,15 @@ class TestParse(TestCase):
 
     def test_construct_commands_deidentified_full_file(self):
         # Start this test with a clean slate
-        parser.parsed_values = {
+        self.parser.parsed_values = {
             "header": list(), "trailer": list(), "base": list(),
             "j1": list(), "j2": list(), "k1": list(), "k2": list(),
             "k3": list(), "k4": list(), "l1": list(), "n1": list(),
         }
         with open(os.path.join('tests','sample_files', 'm2_2k_lines_deidentified.TXT')) as f:
-            parser.construct_commands(f)
+            self.parser.construct_commands(f)
             # construct_commands doesn't return any values, but it sets parser.parsed_values
-            vals = parser.parsed_values
+            vals = self.parser.parsed_values
             # Since the test file has 1998 base segments, parser.parsed_values['base'] should contain 1998 tuples
             self.assertEqual(len(vals['base']), 1998)
             # Teset file has 1 header and 1 trailer segment
@@ -284,6 +285,7 @@ class TestParse(TestCase):
 # Integration tests
 class TestParseWithDatabase(TestCase):
     def setUp(self):
+        self.parser = Parser()
         self.engine = create_engine('postgresql+psycopg2://', creator=fixtures.connect)
         # Delete all test data, in case previous tests didn't exit cleanly
         meta.drop_all(self.engine)
@@ -306,7 +308,7 @@ class TestParseWithDatabase(TestCase):
 
         with self.connection.begin():
             # First, write the (one) header segment to the database
-            parser.write_to_database([header_data], 'header', self.cursor)
+            self.parser.write_to_database([header_data], 'header', self.cursor)
 
         # When it's saved to the DB, int values are turned into strings, so we expect
         # the same data that went in, but as strings
@@ -327,7 +329,7 @@ class TestParseWithDatabase(TestCase):
             self.assertTrue(result.closed)
 
     def test_execute_commands(self):
-        parser.parsed_values = {
+        self.parser.parsed_values = {
             "header": list(), "trailer": list(), "base": list(),
             "j1": list(), "j2": list(), "k1": list(), "k2": list(),
             "k3": list(), "k4": list(), "l1": list(), "n1": list(),
@@ -335,11 +337,11 @@ class TestParseWithDatabase(TestCase):
 
         # Prepare the parser by ingesting a small file
         with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
-            parser.construct_commands(f)
+            self.parser.construct_commands(f)
 
         # Use exec_commands to insert the parsed data into the database
         with self.connection.begin():
-            parser.exec_commands(self.cursor)
+            self.parser.exec_commands(self.cursor)
 
         # Check that the database now contains all of the expected records
         with self.connection.begin():
@@ -371,17 +373,17 @@ class TestParseWithDatabase(TestCase):
             self.assertEqual(n1s, 0)
 
     def test_parse_and_save_deidentified_full_file(self):
-        parser.parsed_values = {
+        self.parser.parsed_values = {
             "header": list(), "trailer": list(), "base": list(),
             "j1": list(), "j2": list(), "k1": list(), "k2": list(),
             "k3": list(), "k4": list(), "l1": list(), "n1": list(),
         }
 
         with open(os.path.join('tests','sample_files', 'm2_2k_lines_deidentified.TXT')) as f:
-            parser.construct_commands(f)
+            self.parser.construct_commands(f)
 
         with self.connection.begin():
-            parser.exec_commands(self.cursor)
+            self.parser.exec_commands(self.cursor)
 
         with self.connection.begin():
             bases = self.connection.execute(select(func.count()).select_from(base)).scalar()
