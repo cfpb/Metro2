@@ -4,7 +4,13 @@ import os
 from unittest import TestCase
 from unittest.mock import patch
 from parse import parser
-from tests.fixtures import Pool, Connect
+from tests import fixtures
+
+from sqlalchemy import create_engine, func
+from sqlalchemy.sql import select
+
+from tables import meta, header, k1, k2, base, header, trailer, j1, j2, k3, k4, l1, n1
+
 
 class TestParse(TestCase):
     def setUp(self):
@@ -272,29 +278,109 @@ class TestParse(TestCase):
             self.assertEqual(len(vals['header']), 1)
             self.assertEqual(len(vals['trailer']), 1)
 
-    def test_write_to_database(self):
+
+# Integration tests
+class TestParseWithDatabase(TestCase):
+    def setUp(self):
+        self.engine = create_engine('postgresql+psycopg2://', creator=fixtures.connect)
+        # Delete all test data, in case previous tests didn't exit cleanly
+        meta.drop_all(self.engine)
+        # Set up a test database
+        meta.create_all(self.engine)
+        self.connection = self.engine.connect()
+        self.cursor = self.connection.connection.cursor()
+
+    def tearDown(self):
+        meta.drop_all(self.engine)
+        self.engine.dispose()
+
+    def test_write_header_to_database(self):
+        # values for a single parsed header segment
+        header_data = (-1608807599190216931, -8137555397690791135, '0006', 'HEADER',
+                        '3C', '4INNOVISID', '5EQUIFAXID', '6EXPE', '7TRANSUNIO',
+                        '12312023', '01012022', '07042020', '07052020', '12REPORTERNAME',
+                        '13REPORTERADDRESS', '14TELEPHON', '15VENDORNAME', '16VER',
+                        '17MBPRBCID', '')
+
+        with self.connection.begin():
+            # First, write the (one) header segment to the database
+            parser.write_to_database([header_data], 'header', self.cursor)
+
+        # When it's saved to the DB, int values are turned into strings, so we expect
+        # the same data that went in, but as strings
+        expected_res = ('-1608807599190216931', '-8137555397690791135', '0006', 'HEADER',
+                        '3C', '4INNOVISID', '5EQUIFAXID', '6EXPE', '7TRANSUNIO',
+                        '12312023', '01012022', '07042020', '07052020', '12REPORTERNAME',
+                        '13REPORTERADDRESS', '14TELEPHON', '15VENDORNAME', '16VER',
+                        '17MBPRBCID', '')
+
+        with self.connection.begin():
+            # select * from header;
+            result = self.connection.execute(select(header))
+
+            # Get one record; check that it is what we expect
+            self.assertEqual(result.one(), expected_res)
+
+            # There should be no more records, since we only saved one
+            self.assertTrue(result.closed)
+
+    def test_execute_commands(self):
+        parser.parsed_values = {
+            "header": list(), "trailer": list(), "base": list(),
+            "j1": list(), "j2": list(), "k1": list(), "k2": list(),
+            "k3": list(), "k4": list(), "l1": list(), "n1": list(),
+        }
+
+        # Prepare the parser by ingesting a small file
         with open(os.path.join('tests','sample_files', 'm2_file_small.txt')) as f:
-            file_size = os.path.getsize(f.name)
-            parser.parse_chunk(start=0, end=file_size, fstream=f)
+            parser.construct_commands(f)
 
-            # asserts that the list of values triggers the while loop twice
-            # and then a final call is made to IteratorFile. It would be more
-            # useful to test the contents of IteratorFile, but what we pass
-            # to that is an iterator, not a string, so it's hard to do a
-            # comparison.
-            conn = Connect()
-            cur = conn.cursor()
+        # Use exec_commands to insert the parsed data into the database
+        with self.connection.begin():
+            parser.exec_commands(self.cursor)
 
-            expected_command = "{}\t{}"
-            parser.commands['header'] = expected_command
+        # Check that the database now contains all of the expected records
+        with self.connection.begin():
+            headers = self.connection.execute(select(func.count()).select_from(header)).scalar()
+            bases = self.connection.execute(select(func.count()).select_from(base)).scalar()
+            trailers = self.connection.execute(select(func.count()).select_from(trailer)).scalar()
+            j1s = self.connection.execute(select(func.count()).select_from(j1)).scalar()
+            j2s = self.connection.execute(select(func.count()).select_from(j2)).scalar()
+            k1s = self.connection.execute(select(func.count()).select_from(k1)).scalar()
+            k2s = self.connection.execute(select(func.count()).select_from(k2)).scalar()
+            k3s = self.connection.execute(select(func.count()).select_from(k3)).scalar()
+            k4s = self.connection.execute(select(func.count()).select_from(k4)).scalar()
+            l1s = self.connection.execute(select(func.count()).select_from(l1)).scalar()
+            n1s = self.connection.execute(select(func.count()).select_from(n1)).scalar()
 
-            values = [
-                tuple(['value1', 'value2']),
-                tuple(['value3', 'value4']),
-                tuple(['value5', 'value6']),
-                tuple(['value7', 'value8']),
-                tuple(['value9', 'value10'])
-            ]
-            with patch('parse.IteratorFile') as mock:
-                parser.write_to_database(values, 'header', conn, cur, 2)
-                self.assertEqual(3, mock.call_count)
+            # The number of segments of each type should match m2_file_small.txt
+            self.assertEqual(headers, 1)
+            self.assertEqual(trailers, 1)
+            self.assertEqual(bases, 3)
+            self.assertEqual(k1s, 1)
+            self.assertEqual(k2s, 1)
+            self.assertEqual(l1s, 1)
+
+            # The file has none of the segments below:
+            self.assertEqual(j1s, 0)
+            self.assertEqual(j2s, 0)
+            self.assertEqual(k3s, 0)
+            self.assertEqual(k4s, 0)
+            self.assertEqual(n1s, 0)
+
+    def test_parse_and_save_deidentified_full_file(self):
+        parser.parsed_values = {
+            "header": list(), "trailer": list(), "base": list(),
+            "j1": list(), "j2": list(), "k1": list(), "k2": list(),
+            "k3": list(), "k4": list(), "l1": list(), "n1": list(),
+        }
+
+        with open(os.path.join('tests','sample_files', 'm2_2k_lines_deidentified.TXT')) as f:
+            parser.construct_commands(f)
+
+        with self.connection.begin():
+            parser.exec_commands(self.cursor)
+
+        with self.connection.begin():
+            bases = self.connection.execute(select(func.count()).select_from(base)).scalar()
+            self.assertEqual(bases, 1998)
