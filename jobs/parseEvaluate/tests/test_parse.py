@@ -96,6 +96,7 @@ class TestParse(TestCase):
                 'microbilt_prbc_program_identifier', 'reserved_header'
             ]
             self.assertEqual(result['names'], expected_names)
+            self.assertEqual(len(result['values']), len(result['names']))
 
     def test_parse_segment_values_with_base_segment(self):
         # base_segment_1.txt is a one-line test file with a realistic base segment
@@ -128,6 +129,7 @@ class TestParse(TestCase):
                 'state', 'zip', 'addr_ind', 'res_cd',
             ]
             self.assertEqual(result['names'], expected_names)
+            self.assertEqual(len(result['values']), len(result['names']))
 
     def test_parse_segment_values_removes_whitespace(self):
         with tempfile.TemporaryFile(mode='w+') as tf:

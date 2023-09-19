@@ -265,7 +265,10 @@ class Parser():
     def write_to_database(self, values, segment_type, cursor):
         # A fast way to transfer ordered tuples into the database:
         # First convert the tuples into a temporary CSV file, then
-        # use SQL's copy_from method to copy them into database tables
+        # use SQL's copy_from method to copy them into database tables.
+
+        # The CSV has no header. copy_from assumes the fields in the
+        # CSV are in the same order as the declaration in tables.py
         temporary_csv = self.write_data_to_temp_csv(values)
         with open(temporary_csv.name) as f:
             cursor.copy_from(f, segment_type, sep=",")
