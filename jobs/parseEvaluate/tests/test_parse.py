@@ -286,6 +286,7 @@ class TestParse(TestCase):
 class TestParseWithDatabase(TestCase):
     def setUp(self):
         self.parser = Parser()
+        # TODO: this uses the real database as the test database. Don't do that!
         self.engine = create_engine('postgresql+psycopg2://', creator=fixtures.connect)
         # Delete all test data, in case previous tests didn't exit cleanly
         meta.drop_all(self.engine)
