@@ -4,7 +4,7 @@ import logging
 
 from parse import Parser
 from evaluate import evaluator
-from tables import create, meta
+from tables import create_tables, engine
 
 # retrieve environment variables. Throw exception if not found.
 try:
@@ -16,17 +16,23 @@ except KeyError as e:
 
 DATAFILE_PATH = os.path.join(EXAM_ROOT, "data")
 
-def init_db():
+def init_db(db_engine):
     # init database tables
-    create(meta)
+    create_tables(db_engine)
     logging.info(f'Initialized database tables for exam {EXAM_NUMBER}')
 
-def parse(fstream):
+def parse(fstream, db_connection):
     # create a temporary parser for each file
     temp_parser = Parser()
-    # write file contents to database
+
+    # parse file contents to working memory
     temp_parser.construct_commands(fstream)
-    temp_parser.exec_commands()
+
+    # write parsed data to database
+    with db_connection.begin():
+        cursor = db_connection.connection.cursor()
+        temp_parser.exec_commands(cursor)
+
     logging.info(f'File {os.path.basename(fstream.name)} written to database')
 
 def evaluate():
@@ -53,7 +59,10 @@ def run():
         # FATAL
         level=logging.DEBUG
     )
-    init_db()
+    db_engine = engine()
+    init_db(db_engine)
+    db_connection = db_engine.connect()
+
     # iterate over data directory
     for filename in os.listdir(DATAFILE_PATH):
         logging.debug(f"Encountered file in local data path: {filename}")
@@ -65,7 +74,7 @@ def run():
                 try:
                     logging.debug(f"Parsing local file: {filename}")
                     fstream = open(file, 'r')
-                    parse(fstream)
+                    parse(fstream, db_connection)
                 except FileNotFoundError as e:
                     logging.error(f"There was an error opening the file: {e}")
                 finally:
@@ -73,5 +82,8 @@ def run():
                         fstream.close()
     # TODO: uncomment the evaluate command when we are ready to troubleshoot evaluators
     # evaluate()
+
+    # After all DB transactions are finished, close the DB engine.
+    db_engine.dispose()
 
 run()

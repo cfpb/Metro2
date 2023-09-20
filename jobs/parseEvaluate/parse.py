@@ -4,16 +4,13 @@
 # Secrets should be used in a production or prod-like environment.
 ##############################################################################
 
+import csv
+import tempfile
 import os
 import re
-import sys
 import logging
-import multiprocessing as mp
 
 from fields import fields, seg_length
-from iterator_file import IteratorFile
-from tables import connect
-from psycopg2 import OperationalError
 
 
 # add any fields to be removed to this list. To skip these fields, import this
@@ -69,7 +66,6 @@ class Parser():
         if skip:
             self.skip = skip
         self.mapping = fields
-        self.commands = dict()
         self.parsed_values = {
             "header": list(),
             "trailer": list(),
@@ -83,7 +79,6 @@ class Parser():
             "l1": list(),
             "n1": list(),
         }
-        self.field_names = dict()
         self.seg_length = seg_length
 
     # returns the requested bytes without advancing the iterator
@@ -155,16 +150,6 @@ class Parser():
         return {'values': values, 'names': names}
 
 
-    # TODO: This method is not tested.
-    def create_commands(self, values, segment):
-        sub = list()
-        sub.append('{}')
-        # add two to values for the guid and file
-        command = '\t'.join(sub * (len(values) + 2))
-        # segment needs to be lower so it matches table names
-        self.commands[segment.lower()] = command
-
-
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, fstream):
         values_list = list()
@@ -189,17 +174,8 @@ class Parser():
                     fstream.seek(pos - 1)
                     break
 
-
-                # read in entire segment
                 parsed_segment = self.parse_segment_values(fstream, segment, default_values=[guid, file])
                 values = parsed_segment['values']
-                names = parsed_segment['names']
-
-                # update commands
-                self.create_commands(values, segment)
-
-                # add names to field_names dict
-                self.field_names[segment] = names
 
                 # add segment to the end of the values list
                 values.append(segment)
@@ -277,73 +253,36 @@ class Parser():
                 # Add the segment's parsed values as a tuple to self.parsed_values
                 self.parsed_values[segment_name].append(tuple(parsed_segment))
 
-    def write_to_database(self, values, segment, connection, cursor, max_block_size=2000):
-        # Gives good performance relative to other potential block sizes.
+    def write_data_to_temp_csv(self, data):
+        file = tempfile.NamedTemporaryFile(mode='r+', delete=False)
+        with file as csv_file:
+            csv_writer = csv.writer(csv_file)
+            for row in data:
+                csv_writer.writerow(row)
+        file.close()
+        return file
 
-        block_start = 0
-        block_end = max_block_size
-        commands = self.commands[segment]
-        cols = list(self.field_names[segment])
+    def write_to_database(self, values, segment_type, cursor):
+        # A fast way to transfer ordered tuples into the database:
+        # First convert the tuples into a temporary CSV file, then
+        # use SQL's copy_from method to copy them into database tables.
 
-        # process statements in blocks
-        while block_end < len(values):
-            # split values
-            val_list = values[block_start:block_end]
+        # The CSV has no header. copy_from assumes the fields in the
+        # CSV are in the same order as the declaration in tables.py
+        temporary_csv = self.write_data_to_temp_csv(values)
+        with open(temporary_csv.name) as f:
+            cursor.copy_from(f, segment_type, sep=",")
 
-            copy_str = IteratorFile((commands.format(*vals) for vals in val_list))
-
-            # execute block
-            cursor.copy_from(copy_str, segment, columns=cols)
-
-            # persist changes
-            connection.commit()
-
-            # update block start and block end
-            block_start += max_block_size
-            block_end += max_block_size
-
-        # execute final command
-        # split values
-        val_list = values[block_start:len(values)]
-
-        copy_str = IteratorFile((commands.format(*vals) for vals in val_list))
-
-        # execute block
-        cursor.copy_from(copy_str, segment, columns=cols)
-
-        cursor.close()
-
-        # persist changes
-        connection.commit()
-
-    # establish connection to postgres database
-    def exec_commands(self):
-        conn = None
-
-        try:
-            conn = connect()
-
-            # create a cursor
-            cur = conn.cursor()
-
-            # write each segment to database
-            self.write_to_database(self.parsed_values["header"], "header", conn, cur)
-            self.write_to_database(self.parsed_values["trailer"], "trailer", conn, cur)
-            self.write_to_database(self.parsed_values["base"], "base", conn, cur)
-            self.write_to_database(self.parsed_values["j1"], "j1", conn, cur)
-            self.write_to_database(self.parsed_values["j2"], "j2", conn, cur)
-            self.write_to_database(self.parsed_values["k1"], "k1", conn, cur)
-            self.write_to_database(self.parsed_values["k2"], "k2", conn, cur)
-            self.write_to_database(self.parsed_values["k3"], "k3", conn, cur)
-            self.write_to_database(self.parsed_values["k4"], "k4", conn, cur)
-            self.write_to_database(self.parsed_values["l1"], "l1", conn, cur)
-            self.write_to_database(self.parsed_values["n1"], "n1", conn, cur)
-
-        except OperationalError as e:
-            logging.error(f"There was a problem establishing the connection: {e}")
-        finally:
-            if conn is not None:
-                conn.close()
-
-# create instance of parser
-parser = Parser()
+    def exec_commands(self, cursor):
+        # Write each segment to database
+        self.write_to_database(self.parsed_values["header"], "header", cursor)
+        self.write_to_database(self.parsed_values["trailer"], "trailer", cursor)
+        self.write_to_database(self.parsed_values["base"], "base", cursor)
+        self.write_to_database(self.parsed_values["j1"], "j1", cursor)
+        self.write_to_database(self.parsed_values["j2"], "j2", cursor)
+        self.write_to_database(self.parsed_values["k1"], "k1", cursor)
+        self.write_to_database(self.parsed_values["k2"], "k2", cursor)
+        self.write_to_database(self.parsed_values["k3"], "k3", cursor)
+        self.write_to_database(self.parsed_values["k4"], "k4", cursor)
+        self.write_to_database(self.parsed_values["l1"], "l1", cursor)
+        self.write_to_database(self.parsed_values["n1"], "n1", cursor)

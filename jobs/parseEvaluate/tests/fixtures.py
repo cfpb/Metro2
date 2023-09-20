@@ -1,3 +1,5 @@
+import psycopg2
+import os
 from sqlalchemy import(
     Column,
     ForeignKey,
@@ -7,6 +9,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 # fixtures for testing
+def connect():
+    return psycopg2.connect(
+        host='postgres',
+        port=5432,
+        database='metro2-data',
+        user=os.environ['PGUSER'],
+        password=os.environ['PGPASSWORD']
+    )
 
 class Engine():
     def __init__(self, connect_return=None):

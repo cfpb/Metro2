@@ -35,7 +35,7 @@ header = Table(
     'header', meta,
     Column('id', String(24)),
     Column('file', String(24), unique=True),
-    Column('rdw_header', SmallInteger),
+    Column('rdw_header', String(4)),
     Column('record_identifer_header', String(6)),
     Column('cycle_identifier_header', String(2)),
     Column('innovis_program_identifier', String(10)),
@@ -302,22 +302,11 @@ def connect():
         password=PGPASSWORD
     )
 
-##############################################
-# Shared helper methods
-##############################################
-# creates tables defined above. Medatadata must be specified.
 # If no creator is specified, sqlalchemy will use the connect
 # method for PGDATABASE.
-def create(metadata, creator=connect):
-    engine = None
+def engine(creator=connect):
+    return create_engine('postgresql+psycopg2://', creator=creator)
 
-    try:
-        engine = create_engine('postgresql+psycopg2://', creator=creator)
-        # create all tables defined above
-        metadata.create_all(engine)
-
-    except Exception as e:
-        logging.error(f"There was a problem establishing the connection: {e}")
-    finally:
-        if engine is not None:
-            engine.dispose()
+# creates tables defined above.
+def create_tables(engine, metadata=meta):
+    metadata.create_all(engine)
