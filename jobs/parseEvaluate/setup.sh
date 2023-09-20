@@ -8,8 +8,6 @@ if [ -f .env ]; then
   source .env
 fi
 
-export EXAM_ROOT="temp"
-
 # unzip zipped files if necessary
 # ./unzip.sh
 # run parsing and evaluators
