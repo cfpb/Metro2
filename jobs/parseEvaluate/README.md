@@ -44,8 +44,6 @@ TODO: update below this line with the most up-to-date information
 
 The following need to be updated for a different exam:
 
-  - `EXAM_NUMBER` all other paths will be generated based on that exam number and the directory structure created above.
-
   - `INDUSTRY_TYPE_CODE` will be a constant for the exam, used in evaluators. This is provided by the OSP or ENF POCs.
 
 These can be modified in the .env file before starting docker containers.

@@ -9,7 +9,6 @@ from tables import create_tables, engine
 # retrieve environment variables. Throw exception if not found.
 try:
     EXAM_ROOT = os.environ['EXAM_ROOT']
-    EXAM_NUMBER = os.environ['EXAM_NUMBER']
 except KeyError as e:
     logging.error(f"Postgres connection variable(s) not found: {e}")
     sys.exit(1)
@@ -19,7 +18,6 @@ DATAFILE_PATH = os.path.join(EXAM_ROOT, "data")
 def init_db(db_engine):
     # init database tables
     create_tables(db_engine)
-    logging.info(f'Initialized database tables for exam {EXAM_NUMBER}')
 
 def parse(fstream, db_connection):
     # create a temporary parser for each file
@@ -36,9 +34,8 @@ def parse(fstream, db_connection):
     logging.info(f'File {os.path.basename(fstream.name)} written to database')
 
 def evaluate():
-    evaluator.exam_number = EXAM_NUMBER
     evaluator.run_evaluators()
-    logging.info(f'Evaluators run for exam {EXAM_NUMBER}. Hits written to database.')
+    logging.info(f'Evaluators run for exam. Hits written to database.')
 
 def run():
     logging.basicConfig(
