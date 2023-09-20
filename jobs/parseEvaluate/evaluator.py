@@ -6,6 +6,9 @@ from tables import connect
 
 
 class Evaluator():
+    date_format = "MMDDYYYY"
+    strptime_format = "%m%d%Y"
+
     def __init__(self, name, fields, func=None, longitudinal_func=None):
         self.name = name
         self.fields = fields
