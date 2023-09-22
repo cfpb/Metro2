@@ -5,6 +5,7 @@ import logging
 from parse import Parser
 from evaluate import evaluator
 from tables import create_tables, engine
+from envvar import fetch_env_var
 
 # retrieve environment variables. Throw exception if not found.
 try:
@@ -14,6 +15,8 @@ except KeyError as e:
     sys.exit(1)
 
 DATAFILE_PATH = os.path.join(EXAM_ROOT, "data")
+LOGFILE_LOCATION = fetch_env_var('LOGFILE_LOCATION', "")
+
 
 def init_db(db_engine):
     # init database tables
@@ -40,7 +43,7 @@ def evaluate():
 def run():
     logging.basicConfig(
         # output file
-        filename=os.path.join(EXAM_ROOT, 'info.log'),
+        filename=os.path.join(LOGFILE_LOCATION, 'info.log'),
         # append instead of overwrite
         filemode='a',
         # message format
@@ -48,12 +51,7 @@ def run():
         # date format (removed, to specify, uncomment the next line)
         # datefmt=
         # minimum message level that will be written
-        # levels are:
-        # DEBUG,
-        # INFO,
-        # WARN,
-        # ERROR,
-        # FATAL
+        # levels are: DEBUG, INFO, WARN, ERROR, FATAL
         level=logging.DEBUG
     )
     db_engine = engine()
