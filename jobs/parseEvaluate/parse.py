@@ -270,8 +270,11 @@ class Parser():
         # The CSV has no header. copy_from assumes the fields in the
         # CSV are in the same order as the declaration in tables.py
         temporary_csv = self.write_data_to_temp_csv(values)
-        with open(temporary_csv.name) as f:
-            cursor.copy_from(f, segment_type, sep=",")
+        try:
+            with open(temporary_csv.name) as f:
+                cursor.copy_from(f, segment_type, sep=",")
+        finally:
+            os.remove(temporary_csv.name)
 
     def exec_commands(self, cursor):
         # Write each segment to database
