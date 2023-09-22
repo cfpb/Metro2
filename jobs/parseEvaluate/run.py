@@ -10,7 +10,7 @@ from tables import create_tables, engine
 from envvar import fetch_env_var
 
 
-ENABLE_S3 = fetch_env_var('ENABLE_S3', False)
+S3_ENABLED = fetch_env_var('S3_ENABLED', False)
 LOGFILE_LOCATION = fetch_env_var('LOGFILE_LOCATION', "")
 
 
@@ -102,11 +102,11 @@ def run():
     init_db(db_engine)
     db_connection = db_engine.connect()
 
-    if ENABLE_S3:
-        logging.info("ENABLE_S3 set. Reading files from S3 bucket.")
+    if S3_ENABLED:
+        logging.info("S3_ENABLED set. Reading files from S3 bucket.")
         parse_files_from_s3_bucket(db_connection)
     else:
-        logging.info("ENABLE_S3 env var not set. Reading files from local data directory.")
+        logging.info("S3_ENABLED env var not set. Reading files from local data directory.")
         parse_files_from_local_filesystem(db_connection)
 
     # TODO: uncomment the evaluate command when we are ready to troubleshoot evaluators
