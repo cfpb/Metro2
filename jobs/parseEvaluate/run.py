@@ -95,7 +95,7 @@ def run():
         # date format (removed, to specify, uncomment the next line)
         # datefmt=
         # minimum message level that will be written
-        # levels are: DEBUG, INFO, WARN, ERROR, FATAL
+        # levels are: DEBUG, INFO, WARN, ERROR, CRITICAL
         level=logging.DEBUG
     )
     db_engine = engine()
