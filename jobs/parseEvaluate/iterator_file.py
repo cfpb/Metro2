@@ -4,7 +4,8 @@
 
 import io
 import sys
-import logging
+from logger import getLogger
+
 
 class IteratorFile(io.TextIOBase):
     """ given an iterator which yields strings,
@@ -16,18 +17,19 @@ class IteratorFile(io.TextIOBase):
 
     def read(self, length=sys.maxsize):
 
+        logger = getLogger('iterator_file.read')
         try:
             while self._f.tell() < length:
                 self._f.write(next(self._it) + "\n")
-                
+
         except StopIteration as e:
             # soak up StopIteration. this block is not necessary because
             # of finally, but just to be explicit
             pass
 
         except Exception as e:
-            logging.error(f"uncaught exception: {e}", exc_info=True)
-            
+            logger.error(f"uncaught exception: {e}", exc_info=True)
+
         finally:
             self._f.seek(0)
             data = self._f.read(length)

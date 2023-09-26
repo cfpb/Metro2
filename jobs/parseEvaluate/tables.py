@@ -1,8 +1,8 @@
 import psycopg2
 import os
 import sys
-import logging
 
+from logger import getLogger
 from sqlalchemy import(
     create_engine,
     MetaData,
@@ -15,6 +15,8 @@ from sqlalchemy import(
     String
 )
 
+LOGGER = getLogger('tables')
+
 # retrieve environment variables. Throw exception if not found.
 try:
     PGHOST = os.environ['PGHOST']
@@ -23,7 +25,7 @@ try:
     PGUSER = os.environ['PGUSER']
     PGPASSWORD = os.environ['PGPASSWORD']
 except KeyError as e:
-    logging.error(f"Postgres connection variable(s) not found: {e}")
+    LOGGER.error(f"Postgres connection variable(s) not found: {e}")
     sys.exit(1)
 
 ##############################################

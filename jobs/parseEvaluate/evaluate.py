@@ -1,6 +1,5 @@
 import os
 import sys
-import logging
 
 from sqlalchemy import create_engine, insert
 from tables import connect, meta_tbl, res_tbl
@@ -8,6 +7,7 @@ from m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
 from m2_evaluators.cat12_evals import evaluators as cat12_evals
 from psycopg2 import OperationalError
+from logger import getLogger
 
 
 class Evaluate():
@@ -23,6 +23,7 @@ class Evaluate():
 
     # runs evaluators to produce results
     def run_evaluators(self):
+        logger = getLogger('evaluate.run_evaluators')
         engine = None
 
         try:
@@ -42,19 +43,20 @@ class Evaluate():
                         self.prepare_metadata_statements(evaluator, results)
 
                     except KeyError as e:
-                        logging.error(f"Unable to add result to results: {e}")
+                        logger.error(f"Unable to add result to results: {e}")
                         # this should only be raised by a developer error
                         # so we want to exit.
                         sys.exit(1)
 
         except OperationalError as e:
-            logging.error(f"There was a problem establishing the connection: {e}")
+            logger.error(f"There was a problem establishing the connection: {e}")
         finally:
             if engine is not None:
                 engine.dispose()
 
     # connect to results database and write results
     def write_results(self):
+        logger = getLogger('evaluate.write_results')
         engine = None
 
         try:
@@ -68,7 +70,7 @@ class Evaluate():
                 conn.execute(meta)
 
         except OperationalError as e:
-            logging.error(f"There was a problem establishing the connection: {e}")
+            logger.error(f"There was a problem establishing the connection: {e}")
         finally:
             if engine is not None:
                 engine.dispose()
