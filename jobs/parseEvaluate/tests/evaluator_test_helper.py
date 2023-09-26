@@ -20,6 +20,9 @@ class TestM2Evaluators(unittest.TestCase):
         Dec_Base.metadata.create_all(self.engine)
 
     def tearDown(self):
+        # Loads all available table definitions so that when deleting all
+        # there is no issue with foreign key constraints
+        Dec_Base.metadata.reflect(self.engine)
         Dec_Base.metadata.drop_all(self.engine)
         self.engine.dispose()
 
