@@ -1,8 +1,6 @@
 import psycopg2
-import os
-import sys
-import logging
 
+from envvar import fetch_env_var
 from sqlalchemy import(
     create_engine,
     MetaData,
@@ -15,16 +13,12 @@ from sqlalchemy import(
     String
 )
 
-# retrieve environment variables. Throw exception if not found.
-try:
-    PGHOST = os.environ['PGHOST']
-    PGPORT = os.environ['PGPORT']
-    PGDATABASE = os.environ['PGDATABASE']
-    PGUSER = os.environ['PGUSER']
-    PGPASSWORD = os.environ['PGPASSWORD']
-except KeyError as e:
-    logging.error(f"Postgres connection variable(s) not found: {e}")
-    sys.exit(1)
+
+PGHOST = fetch_env_var('PGHOST', '')
+PGPORT = fetch_env_var('PGPORT', '')
+PGDATABASE = fetch_env_var('PGDATABASE', '')
+PGUSER = fetch_env_var('PGUSER', '')
+PGPASSWORD = fetch_env_var('PGPASSWORD', '')
 
 ##############################################
 # Parsed data
