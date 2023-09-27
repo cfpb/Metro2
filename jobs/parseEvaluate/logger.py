@@ -11,7 +11,8 @@ CONSOLE_LOGGING_LEVEL = fetch_env_var('CONSOLE_LOGGING_LEVEL', "INFO")
 def getLogger(name):
     # set up logging to file - see previous section for more details
     logging.basicConfig(level=logging.getLevelName(LOGFILE_LOGGING_LEVEL.upper()),
-                    format='%(asctime)s, %(name)-12s: %(levelname)-8s %(message)s',
+                    format='%(asctime)s.%(msecs)03d, %(name)-12s: %(levelname)-8s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S',
                     filename=os.path.join(LOGFILE_LOCATION, 'info.log'),
                     filemode='a')
     logger = logging.getLogger(name)
@@ -20,7 +21,9 @@ def getLogger(name):
     ch = logging.StreamHandler(sys.stdout)
     ch.setLevel(logging.getLevelName(CONSOLE_LOGGING_LEVEL.upper()))
     # create formatter and add it to the handlers
-    ch_formatter = logging.Formatter('%(asctime)s, %(name)-12s: %(levelname)-8s %(message)s')
+    ch_formatter = logging.Formatter(
+        fmt='%(asctime)s.%(msecs)03d, %(name)-12s: %(levelname)-8s %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S')
 
     ch.setFormatter(ch_formatter)
     # add the handlers to logger
