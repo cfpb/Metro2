@@ -20,7 +20,7 @@ def getLogger(name):
     ch = logging.StreamHandler(sys.stdout)
     ch.setLevel(logging.getLevelName(CONSOLE_LOGGING_LEVEL.upper()))
     # create formatter and add it to the handlers
-    ch_formatter = logging.Formatter('stream %(asctime)s, %(name)-12s: %(levelname)-8s %(message)s')
+    ch_formatter = logging.Formatter('%(asctime)s, %(name)-12s: %(levelname)-8s %(message)s')
 
     ch.setFormatter(ch_formatter)
     # add the handlers to logger
