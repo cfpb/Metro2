@@ -1,4 +1,5 @@
 import os
+import logging
 from unittest import TestCase, mock
 from envvar import fetch_env_var
 
@@ -7,7 +8,7 @@ class TestEnvvar(TestCase):
         self.assertEqual(fetch_env_var("FAVORITE_PLANET", "earth"), "earth")
 
     def test_fetch_env_var_errors_if_unset_and_no_default(self):
-        with mock.patch('envvar.logging.error') as log:
+        with mock.patch.object(logging.getLogger('envvar.fetch_env_var'), 'error') as log:
             self.assertRaises(KeyError, fetch_env_var, "FAVORITE_PLANET")
             log.assert_called_with("Required env var not set: FAVORITE_PLANET. Exiting.")
 

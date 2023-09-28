@@ -27,13 +27,13 @@ class Engine():
 
     def close(self):
         return
-      
+
     def connect(self, creator=None):
         return self.connect_return
 
     def dispose(self):
         return
-      
+
 class Cursor():
     def execute(self, *_):
         return [("expected", "sample", "data")]
@@ -87,7 +87,7 @@ class Evaluator():
         self.name = name
         self.description = description
         self.fields = fields
-        
+
     def exec_custom_func(self, connection, engine):
         return self.custom_func_return
 
@@ -102,7 +102,7 @@ class Header(Dec_Base):
     file = Column(String(24), unique=True)
     reporter_name = Column(String(40))
 
-    base = relationship('Base', backref='header', uselist=False)
+    base = relationship('Base', backref='header', uselist=False, cascade="all,delete")
 
     def __init__(
         self, col_id="hash001", activity_date="01012000", date_created="01012000", file="hash002",
@@ -170,10 +170,10 @@ class Base(Dec_Base):
     res_cd = Column(String(1))
 
     # Relationships
-    j1 = relationship('J1', back_populates='base')
-    j2 = relationship('J2', back_populates='base')
-    k2 = relationship('K2', back_populates='base')
-    l1 = relationship('L1', back_populates='base')
+    j1 = relationship('J1', back_populates='base', cascade="all,delete")
+    j2 = relationship('J2', back_populates='base', cascade="all,delete")
+    k2 = relationship('K2', back_populates='base', cascade="all,delete")
+    l1 = relationship('L1', back_populates='base', cascade="all,delete")
 
     def __init__(
         self, col_id="001", file="test.txt", proc_ind="0",
@@ -279,7 +279,7 @@ class J1(Dec_Base):
     reserved_j1_2 = Column(String(1))
 
     # Relationship
-    base = relationship("Base", back_populates="j1")
+    base = relationship("Base", back_populates="j1", cascade="all,delete")
 
     def __init__(
         self,
@@ -351,7 +351,7 @@ class J2(Dec_Base):
     reserved_j2_2 = Column(String(2))
 
     # Relationship
-    base = relationship("Base", back_populates="j2")
+    base = relationship("Base", back_populates="j2", cascade="all,delete")
 
     def __init__(
         self, col_id="0001", file="file_hash",
@@ -411,7 +411,7 @@ class K2(Dec_Base):
     reserved_k2 = Column(String(1))
 
     # Relationship
-    base = relationship("Base", back_populates="k2")
+    base = relationship("Base", back_populates="k2", cascade="all,delete")
 
     def __init__(
         self,
@@ -449,7 +449,7 @@ class L1(Dec_Base):
     reserved_l1 = Column(String(1))
 
     # Relationship
-    base = relationship("Base", back_populates="l1")
+    base = relationship("Base", back_populates="l1", cascade="all,delete")
 
     def __init__(
         self,

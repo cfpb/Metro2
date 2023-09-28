@@ -152,6 +152,7 @@ class Parser():
 
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, fstream):
+        logger = logging.getLogger('parse.parse_chunk')
         values_list = list()
         # get just the file name from the stream
         file_name = os.path.basename(fstream.name)
@@ -168,7 +169,7 @@ class Parser():
                 # determine what kind of segment is next
                 segment = self.determine_segment(fstream)
                 if not segment:
-                    logging.warning(f"unread data: {fstream.readline()}")
+                    logger.warning(f"unread data: {fstream.readline()}")
                     pos = fstream.tell()
                     # seek back one for the newline
                     fstream.seek(pos - 1)
@@ -192,9 +193,10 @@ class Parser():
         return values_list
 
     def break_file_into_chunks(self, fstream, max_chunks):
+        logger = logging.getLogger('parse.break_file_into_chunks')
         file_size = os.path.getsize(fstream.name)
         if file_size == 0:
-            logging.error(f'Encountered empty file: {fstream.name}')
+            logger.error(f'Encountered empty file: {fstream.name}')
             return
 
         # seek to the beginning of the file stream
@@ -235,8 +237,9 @@ class Parser():
     def construct_commands(self, fstream):
         # TODO: use an async processing library to parallelize the parsing process
         # For now, I'm leaving this code here, in case it's useful in the future:
+        # logger = logging.getLogger('parse.construct_commands')
         # num_workers = mp.cpu_count()
-        # logging.info(f'{num_workers} workers available to parse data')
+        # logger.info(f'{num_workers} workers available to parse data')
 
         num_workers = 3
         chunk_endpoints = self.break_file_into_chunks(fstream, num_workers)

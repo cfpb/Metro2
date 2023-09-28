@@ -1,4 +1,3 @@
-import os
 import sys
 import logging
 
@@ -23,6 +22,7 @@ class Evaluate():
 
     # runs evaluators to produce results
     def run_evaluators(self):
+        logger = logging.getLogger('evaluate.run_evaluators')
         engine = None
 
         try:
@@ -42,19 +42,20 @@ class Evaluate():
                         self.prepare_metadata_statements(evaluator, results)
 
                     except KeyError as e:
-                        logging.error(f"Unable to add result to results: {e}")
+                        logger.error(f"Unable to add result to results: {e}")
                         # this should only be raised by a developer error
                         # so we want to exit.
                         sys.exit(1)
 
         except OperationalError as e:
-            logging.error(f"There was a problem establishing the connection: {e}")
+            logger.error(f"There was a problem establishing the connection: {e}")
         finally:
             if engine is not None:
                 engine.dispose()
 
     # connect to results database and write results
     def write_results(self):
+        logger = logging.getLogger('evaluate.write_results')
         engine = None
 
         try:
@@ -68,7 +69,7 @@ class Evaluate():
                 conn.execute(meta)
 
         except OperationalError as e:
-            logging.error(f"There was a problem establishing the connection: {e}")
+            logger.error(f"There was a problem establishing the connection: {e}")
         finally:
             if engine is not None:
                 engine.dispose()

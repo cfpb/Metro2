@@ -1,5 +1,6 @@
 import tempfile
 import os
+import logging
 
 from unittest import TestCase
 from unittest.mock import patch
@@ -215,7 +216,7 @@ class TestParse(TestCase):
         self.temp.write(str)
         self.temp.seek(0)
 
-        with patch('parse.logging.warning') as mock:
+        with patch.object(logging.getLogger('parse.parse_chunk'), 'warning') as mock:
             self.parser.parse_chunk(0, os.path.getsize(self.temp.name), self.temp)
             mock.assert_called_with(f'unread data: {str}')
 
@@ -241,7 +242,7 @@ class TestParse(TestCase):
     def test_construct_commands_empty_file(self):
         # if the program encounters an empty file, it should log the file
         # as an error.
-        with patch('parse.logging.error') as mock:
+        with patch.object(logging.getLogger('parse.break_file_into_chunks'), 'error') as mock:
             self.parser.construct_commands(self.temp)
             mock.assert_called_with('Encountered empty file: ' + self.temp.name)
 

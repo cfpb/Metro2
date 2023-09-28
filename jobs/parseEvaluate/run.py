@@ -1,24 +1,23 @@
 import os
-import sys
 import logging
 import tempfile
-
 import s3
+
 from parse import Parser
 from evaluate import evaluator
 from tables import create_tables, engine
 from envvar import fetch_env_var
 
 
+LOGGING_LEVEL = fetch_env_var('LOGGING_LEVEL', "INFO")
 S3_ENABLED = fetch_env_var('S3_ENABLED', False)
-LOGFILE_LOCATION = fetch_env_var('LOGFILE_LOCATION', "")
-
 
 def init_db(db_engine):
     # init database tables
     create_tables(db_engine)
 
 def parse(fstream, db_connection):
+    logger = logging.getLogger('run.parse')
     # create a temporary parser for each file
     temp_parser = Parser()
 
@@ -31,12 +30,13 @@ def parse(fstream, db_connection):
         temp_parser.exec_commands(cursor)
 
 def parse_files_from_s3_bucket(db_connection):
+    logger = logging.getLogger('run.parse_files_from_local_filesystem')
     exam_root = fetch_env_var('S3_EXAM_ROOT')
     bucket = s3.getBucket()
     files = s3.list_objects(bucket, exam_root)
-    logging.info(f"Finding all files in bucket matching prefix '{exam_root}'")
+    logger.info(f"Finding all files in bucket matching prefix '{exam_root}'")
     for f in files:
-        logging.debug(f"Encountered file in S3: {f.key}")
+        logger.debug(f"Encountered file in S3: {f.key}")
         try:
             # Unforunately, we can't stream files directly from S3 into the parser,
             # because S3 streambody objects don't have the seek() function, which
@@ -48,65 +48,62 @@ def parse_files_from_s3_bucket(db_connection):
             temporary_file = tempfile.NamedTemporaryFile(mode='w+b', delete=False)
             with temporary_file as tf:
                 bucket.Object(f.key).download_fileobj(tf)
-            logging.debug(f"Downloaded file {f.key} successfully.")
+            logger.debug(f"Downloaded file {f.key} successfully.")
 
             # Open the file in 'text' mode for parsing
             with open(temporary_file.name, mode='r') as tf:
                 parse(tf, db_connection)
-            logging.info(f'File {f.key} written to database.')
+            logger.info(f'File {f.key} written to database.')
         finally:
             os.remove(temporary_file.name)
 
 def parse_files_from_local_filesystem(db_connection):
+    logger = logging.getLogger('run.parse_files_from_local_filesystem')
     local_exam_root = fetch_env_var('LOCAL_EXAM_ROOT')
     datafile_path = os.path.join(local_exam_root, "data")
 
     # iterate over files in [local_exam_root]/data/
     for filename in os.listdir(datafile_path):
-        logging.debug(f"Encountered file in local data path: {filename}")
+        logger.debug(f"Encountered file in local data path: {filename}")
         # checking if the file is a .txt before proceeding
         if filename.lower().endswith('.txt'):
             file = os.path.join(datafile_path, filename)
             # checking if it is a file
             if os.path.isfile(file):
                 try:
-                    logging.debug(f"Parsing local file: {filename}")
+                    logger.debug(f"Parsing local file: {filename}")
                     fstream = open(file, 'r')
                     parse(fstream, db_connection)
-                    logging.info(f'File {os.path.basename(fstream.name)} written to database.')
+                    logger.info(f'File {os.path.basename(fstream.name)} written to database.')
                 except FileNotFoundError as e:
-                    logging.error(f"There was an error opening the file: {e}")
+                    logger.error(f"There was an error opening the file: {e}")
                 finally:
                     if fstream:
                         fstream.close()
 
 def evaluate():
+    logger = logging.getLogger('run.evaluate')
     evaluator.run_evaluators()
-    logging.info(f'Evaluators run for exam. Hits written to database.')
+    logger.info(f'Evaluators run for exam. Hits written to database.')
 
 def run():
     logging.basicConfig(
-        # output file
-        filename=os.path.join(LOGFILE_LOCATION, 'info.log'),
-        # append instead of overwrite
-        filemode='a',
-        # message format
-        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-        # date format (removed, to specify, uncomment the next line)
-        # datefmt=
-        # minimum message level that will be written
-        # levels are: DEBUG, INFO, WARN, ERROR, CRITICAL
-        level=logging.DEBUG
+        level=logging.getLevelName(LOGGING_LEVEL.upper()),
+        format='%(asctime)s.%(msecs)03d, %(name)s: %(levelname)-8s %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
     )
+
+    logger = logging.getLogger('run.run')
+
     db_engine = engine()
     init_db(db_engine)
     db_connection = db_engine.connect()
 
     if S3_ENABLED:
-        logging.info("S3_ENABLED set. Reading files from S3 bucket.")
+        logger.info("S3_ENABLED set. Reading files from S3 bucket.")
         parse_files_from_s3_bucket(db_connection)
     else:
-        logging.info("S3_ENABLED env var not set. Reading files from local data directory.")
+        logger.info("S3_ENABLED env var not set. Reading files from local data directory.")
         parse_files_from_local_filesystem(db_connection)
 
     # TODO: uncomment the evaluate command when we are ready to troubleshoot evaluators

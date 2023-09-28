@@ -1,3 +1,4 @@
+import logging
 import psycopg2
 
 from envvar import fetch_env_var
