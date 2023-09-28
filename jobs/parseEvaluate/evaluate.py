@@ -1,5 +1,5 @@
-import os
 import sys
+import logging
 
 from sqlalchemy import create_engine, insert
 from tables import connect, meta_tbl, res_tbl
@@ -7,7 +7,6 @@ from m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from m2_evaluators.cat7_evals import evaluators as cat7_evals
 from m2_evaluators.cat12_evals import evaluators as cat12_evals
 from psycopg2 import OperationalError
-from logger import getLogger
 
 
 class Evaluate():
@@ -23,7 +22,7 @@ class Evaluate():
 
     # runs evaluators to produce results
     def run_evaluators(self):
-        logger = getLogger('evaluate.run_evaluators')
+        logger = logging.getLogger('evaluate.run_evaluators')
         engine = None
 
         try:
@@ -56,7 +55,7 @@ class Evaluate():
 
     # connect to results database and write results
     def write_results(self):
-        logger = getLogger('evaluate.write_results')
+        logger = logging.getLogger('evaluate.write_results')
         engine = None
 
         try:

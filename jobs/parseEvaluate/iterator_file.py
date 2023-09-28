@@ -4,7 +4,7 @@
 
 import io
 import sys
-from logger import getLogger
+import logging
 
 
 class IteratorFile(io.TextIOBase):
@@ -17,7 +17,7 @@ class IteratorFile(io.TextIOBase):
 
     def read(self, length=sys.maxsize):
 
-        logger = getLogger('iterator_file.read')
+        logger = logging.getLogger('iterator_file.read')
         try:
             while self._f.tell() < length:
                 self._f.write(next(self._it) + "\n")

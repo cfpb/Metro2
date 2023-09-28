@@ -1,16 +1,15 @@
 import os
-import sys
 import logging
 import tempfile
-
 import s3
+
 from parse import Parser
 from evaluate import evaluator
 from tables import create_tables, engine
 from envvar import fetch_env_var
-from logger import getLogger
 
 
+LOGGING_LEVEL = fetch_env_var('LOGGING_LEVEL', "INFO")
 S3_ENABLED = fetch_env_var('S3_ENABLED', False)
 
 def init_db(db_engine):
@@ -18,7 +17,8 @@ def init_db(db_engine):
     create_tables(db_engine)
 
 def parse(fstream, db_connection):
-    logger = getLogger('run.parse')    # create a temporary parser for each file
+    logger = logging.getLogger('run.parse')
+    # create a temporary parser for each file
     temp_parser = Parser()
 
     # parse file contents to working memory
@@ -30,7 +30,7 @@ def parse(fstream, db_connection):
         temp_parser.exec_commands(cursor)
 
 def parse_files_from_s3_bucket(db_connection):
-    logger = getLogger('run.parse_files_from_local_filesystem')
+    logger = logging.getLogger('run.parse_files_from_local_filesystem')
     exam_root = fetch_env_var('S3_EXAM_ROOT')
     bucket = s3.getBucket()
     files = s3.list_objects(bucket, exam_root)
@@ -58,7 +58,7 @@ def parse_files_from_s3_bucket(db_connection):
             os.remove(temporary_file.name)
 
 def parse_files_from_local_filesystem(db_connection):
-    logger = getLogger('run.parse_files_from_local_filesystem')
+    logger = logging.getLogger('run.parse_files_from_local_filesystem')
     local_exam_root = fetch_env_var('LOCAL_EXAM_ROOT')
     datafile_path = os.path.join(local_exam_root, "data")
 
@@ -82,12 +82,18 @@ def parse_files_from_local_filesystem(db_connection):
                         fstream.close()
 
 def evaluate():
-    logger = getLogger('run.evaluate')
+    logger = logging.getLogger('run.evaluate')
     evaluator.run_evaluators()
     logger.info(f'Evaluators run for exam. Hits written to database.')
 
 def run():
-    logger = getLogger('run.run')
+    logging.basicConfig(
+        level=logging.getLevelName(LOGGING_LEVEL.upper()),
+        format='%(asctime)s.%(msecs)03d, %(name)s: %(levelname)-8s %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
+    logger = logging.getLogger('run.run')
 
     db_engine = engine()
     init_db(db_engine)

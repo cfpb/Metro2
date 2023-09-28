@@ -1,9 +1,6 @@
-import argparse
 import boto3
 import botocore.session
-
-from logger import getLogger
-
+import logging
 
 from botocore.exceptions import ClientError
 
@@ -45,7 +42,7 @@ def getClient():
     return client
 
 def writeSecret(team, label, secret_string) -> None:
-    logger = getLogger('secret.writeSecret')
+    logger = logging.getLogger('secret.writeSecret')
     client = getClient()
     mgr = SecretsManagerSecret(client)
 
@@ -65,7 +62,7 @@ def writeSecret(team, label, secret_string) -> None:
             logger.error('Your AWS session is expired.  Re-run gimme-aws-creds.')
 
 def deleteSecret(team, label) -> None:
-    logger = getLogger('secret.deleteSecret')
+    logger = logging.getLogger('secret.deleteSecret')
     client = getClient()
 
     try:
@@ -88,7 +85,7 @@ def deleteSecret(team, label) -> None:
             logger.error('Your AWS session is expired.  Re-run gimme-aws-creds.')
 
 def get_secret(team, label) -> str:
-    logger = getLogger('secret.get_secret')
+    logger = logging.getLogger('secret.get_secret')
     client = getClient()
     secret_name=f'cfpb/team/{team}/{label}'
 

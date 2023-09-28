@@ -8,9 +8,9 @@ import csv
 import tempfile
 import os
 import re
+import logging
 
 from fields import fields, seg_length
-from logger import getLogger
 
 
 # add any fields to be removed to this list. To skip these fields, import this
@@ -152,7 +152,7 @@ class Parser():
 
     # parse a chunk of a file given the byte offset and endpoint
     def parse_chunk(self, start, end, fstream):
-        logger = getLogger('parse.parse_chunk')
+        logger = logging.getLogger('parse.parse_chunk')
         values_list = list()
         # get just the file name from the stream
         file_name = os.path.basename(fstream.name)
@@ -193,7 +193,7 @@ class Parser():
         return values_list
 
     def break_file_into_chunks(self, fstream, max_chunks):
-        logger = getLogger('parse.break_file_into_chunks')
+        logger = logging.getLogger('parse.break_file_into_chunks')
         file_size = os.path.getsize(fstream.name)
         if file_size == 0:
             logger.error(f'Encountered empty file: {fstream.name}')
@@ -237,7 +237,7 @@ class Parser():
     def construct_commands(self, fstream):
         # TODO: use an async processing library to parallelize the parsing process
         # For now, I'm leaving this code here, in case it's useful in the future:
-        # logger = getLogger('parse.construct_commands')
+        # logger = logging.getLogger('parse.construct_commands')
         # num_workers = mp.cpu_count()
         # logger.info(f'{num_workers} workers available to parse data')
 

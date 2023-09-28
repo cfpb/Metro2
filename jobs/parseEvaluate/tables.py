@@ -1,8 +1,9 @@
+import logging
 import psycopg2
 import os
 import sys
 
-from logger import getLogger
+
 from sqlalchemy import(
     create_engine,
     MetaData,
@@ -15,7 +16,7 @@ from sqlalchemy import(
     String
 )
 
-LOGGER = getLogger('tables')
+LOGGER = logging.getLogger('tables')
 
 # retrieve environment variables. Throw exception if not found.
 try:

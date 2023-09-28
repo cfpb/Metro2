@@ -1,8 +1,8 @@
 # defines the evaluator class and list of evaluators
+import logging
 
 from iterator_file import IteratorFile
 from tables import connect
-from logger import getLogger
 
 
 class Evaluator():
@@ -30,7 +30,7 @@ class Evaluator():
 
 # copy to previously created temp table
 def copy_to_temp(res_set):
-    logger = getLogger('evaluator.copy_to_temp')
+    logger = logging.getLogger('evaluator.copy_to_temp')
     conn = None
     # create a new connection and cursor using just psycopg2 (not SQLAlchemy)
     # use copy from function to copy results to temp_tbl
