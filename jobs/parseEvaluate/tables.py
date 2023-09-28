@@ -14,11 +14,11 @@ from sqlalchemy import(
 )
 
 
-PGHOST = fetch_env_var('PGHOST', '')
-PGPORT = fetch_env_var('PGPORT', '')
-PGDATABASE = fetch_env_var('PGDATABASE', '')
-PGUSER = fetch_env_var('PGUSER', '')
-PGPASSWORD = fetch_env_var('PGPASSWORD', '')
+PGHOST = fetch_env_var('PGHOST')
+PGPORT = fetch_env_var('PGPORT')
+PGDATABASE = fetch_env_var('PGDATABASE')
+PGUSER = fetch_env_var('PGUSER')
+PGPASSWORD = fetch_env_var('PGPASSWORD')
 
 ##############################################
 # Parsed data
