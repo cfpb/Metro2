@@ -33,17 +33,3 @@ Notes on our implementation of M2 data:
 The results data are stored in two tables:
 - `evaluator_metadata` contains one record per evaluator. The `fields` column contains an ordered list of the field names (in plain language) that are included in the evaluator output.
 - `evaluator_results` contains one record for each line of M2 data that each evaluator found as a "hit". The `field_values` column contains the values of the M2 record that are relevant to the evaluator, matching the field names in the `fields` column.
-
-
----
-
-TODO: update below this line with the most up-to-date information
-
-## Starting a New Exam
-## Define Exam Parameters
-
-The following need to be updated for a different exam:
-
-  - `INDUSTRY_TYPE_CODE` will be a constant for the exam, used in evaluators. This is provided by the OSP or ENF POCs.
-
-These can be modified in the .env file before starting docker containers.
