@@ -60,21 +60,7 @@ For both the Helm and Docker-compose setup, first you'll need to prepare data fo
 
 ## Prepare your environment
 
-In order to run the parseEvaluate job locally, sample data needs to be present in your local environment.
-We use a set of sample de-identified data (data with all PII removed) provided by SEFL.
-If you need to download the sample files, ask a team member where they are saved.
-
-When the job runs locally, it expects to find the following files to copy from a local directory located at `[project-root]/jobs/parseEvaluate/temp`. The files in the `data` directory should be Metro2 data files. The `sample-map.xlsx` should be a Metro2 data mapping file, as described in [parseEvaluate/README.md](/jobs/parseEvaluate/README.md)
-
-- `jobs/parseEvaluate/temp/`
-  - `data/`
-    - `data-file.txt` (can be named anything as long as the file extension is .txt)
-    - `data-file2.txt` (can be named anything as long as the file extension is .txt)
-    - ...
-  - `jobs/parseEvaluate/reference/`
-    - `sample-map.xlsx` (keep this name consistent)
-
-TODO: In future releases, replace the reference file with in-code data dictionary.
+See the [parseEvaluate readme](jobs/parseEvaluate/README.md) for information on preparing to ingest Metro2 files.
 
 ## Running in Helm
 
