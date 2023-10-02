@@ -3,10 +3,10 @@
 The purpose of the Metro2 evaluator tool is to automate as much as possible in regard to parsing, evaluating, and analyzing Metro2 data. The tool will be used by SEFL to assist with cases and exams.
 
 The application consists of three main components:
-- The **evaluator** job ingests and saves Metro2 data, then runs a set of evaluators on the data and saves the results
+- The **Parse Evaluate** job ingests and saves Metro2 data, then runs a set of evaluators on the data and saves the results
 - The two components of the user-facing portion of the application:
     - The **Django** container handles internal permissions and retrieves data from the results database to populate the front end
-    - The **front-end** container provides a visual interface for authenticated and authorized users and allows them to interact with the data
+    - The **Front-end** provides a visual interface for authenticated and authorized users and allows them to interact with the data
 
 ## Sections
 - [Deployments](#deployments)

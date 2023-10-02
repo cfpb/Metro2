@@ -51,7 +51,7 @@ The M2 database is populated in two separate phases: parsing and evaluators.
 - **parser**: The application reads Metro2 data files from an S3 bucket or the local file system (when running locally), then saves the data in the database.
 - **evaluators**: The application runs lots of evaluators to check for inconsistencies in the data, then saves the results to the database.
 
-## Background: Metro2 data
+### Background: The Metro2 data standard
 
 The CRRG (Credit Reporting Resource Guide) contains a complete description of the Metro2 data format.
 Ask a teammate for a shared copy of the CRRG.
@@ -67,7 +67,7 @@ Basic structure of M2 data:
 - For alphanumeric fields, the M2 standard says the field should be left-justified and blank filled. That is, if a field width is 10 characters and the value in it is "example", the file will contain `example   `.
 - For numeric fields, the standard says the field should be right-justified and zero filled. That is, if a field width is 10 characters and the value in it is 12,345, the file will contain `0000012345`.
 
-## Parser results
+### Parser results
 
 Notes on our implementation of M2 data:
 - In this tool, the code refers to each field by the name that was used in the legacy version of this tool. This allows us to more easliy translate evaluator logic from the legacy system to this one.
@@ -77,7 +77,7 @@ Notes on our implementation of M2 data:
 - If a field in the M2 data file is blank (i.e. filled with blank spaces), the parser will save that field as an empty string.
 - If a field is filled with zeros--which can be valid, for instance, when a numeric field is not applicable in a record--the parser currently saves that field without modifying it, so it would stay a string of zeros. We could choose to modify this behavior if we wish.
 
-## Evaluator results
+### Evaluator results
 
 The results data are stored in two tables:
 - `evaluator_metadata` contains one record per evaluator. The `fields` column contains an ordered list of the field names (in plain language) that are included in the evaluator output.
