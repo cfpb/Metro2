@@ -3,10 +3,10 @@
 The purpose of the Metro2 evaluator tool is to automate as much as possible in regard to parsing, evaluating, and analyzing Metro2 data. The tool will be used by SEFL to assist with cases and exams.
 
 The application consists of three main components:
-- The **evaluator** job ingests and saves Metro2 data, then runs a set of evaluators on the data and saves the results
+- The **Parse Evaluate** job ingests and saves Metro2 data, then runs a set of evaluators on the data and saves the results
 - The two components of the user-facing portion of the application:
     - The **Django** container handles internal permissions and retrieves data from the results database to populate the front end
-    - The **front-end** container provides a visual interface for authenticated and authorized users and allows them to interact with the data
+    - The **Front-end** provides a visual interface for authenticated and authorized users and allows them to interact with the data
 
 ## Sections
 - [Deployments](#deployments)
@@ -25,7 +25,8 @@ The application consists of three main components:
 # Deployments
 ## Alto Dev
 
-Not currently available
+Quick links:
+- [Jenkins](https://INTERNAL) for Metro2 Dev
 
 |Server|IP Address|Name|
 |------|----------|----|
@@ -60,21 +61,7 @@ For both the Helm and Docker-compose setup, first you'll need to prepare data fo
 
 ## Prepare your environment
 
-In order to run the parseEvaluate job locally, sample data needs to be present in your local environment.
-We use a set of sample de-identified data (data with all PII removed) provided by SEFL.
-If you need to download the sample files, ask a team member where they are saved.
-
-When the job runs locally, it expects to find the following files to copy from a local directory located at `[project-root]/jobs/parseEvaluate/temp`. The files in the `data` directory should be Metro2 data files. The `sample-map.xlsx` should be a Metro2 data mapping file, as described in [parseEvaluate/README.md](/jobs/parseEvaluate/README.md)
-
-- `jobs/parseEvaluate/temp/`
-  - `data/`
-    - `data-file.txt` (can be named anything as long as the file extension is .txt)
-    - `data-file2.txt` (can be named anything as long as the file extension is .txt)
-    - ...
-  - `jobs/parseEvaluate/reference/`
-    - `sample-map.xlsx` (keep this name consistent)
-
-TODO: In future releases, replace the reference file with in-code data dictionary.
+See the [parseEvaluate readme](jobs/parseEvaluate/README.md) for information on preparing to ingest Metro2 files.
 
 ## Running in Helm
 
