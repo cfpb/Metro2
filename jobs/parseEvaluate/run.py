@@ -30,7 +30,7 @@ def parse(fstream, db_connection):
         temp_parser.exec_commands(cursor)
 
 def parse_files_from_s3_bucket(db_connection):
-    logger = logging.getLogger('run.parse_files_from_local_filesystem')
+    logger = logging.getLogger('run.parse_files_from_s3_bucket')
     exam_root = fetch_env_var('S3_EXAM_ROOT')
     bucket = s3.getBucket()
     files = s3.list_objects(bucket, exam_root)
