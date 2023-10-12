@@ -27,7 +27,7 @@ done
 if [[ $TARGET_ENV == "local" ]]; 
 then
   TAG="local"
-  echo "With local development selected, TAG is overriden with value 'latest'"
+  echo "With TARGET_ENV set to 'local', images will be tagged with value 'local'"
   echo "Building metro2_evaluator:$TAG"
   docker build ./jobs/parseEvaluate/ -t "metro2_evaluator:$TAG"
   echo "Building metro2_frontend:$TAG"
