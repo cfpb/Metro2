@@ -7,13 +7,13 @@ while getopts ":e:" opt; do
       TARGET_ENV="$OPTARG"
       if [ "$TARGET_ENV" != "local" ] && [ "$TARGET_ENV" != "eks" ];
       then
-        echo "-d flag must be 'local' or 'eks'"
+        echo "-e flag must be 'local' or 'eks'"
         echo "Invalid flag value: $TARGET_ENV" 
         exit 1
       fi
       ;;
     \?)
-      echo "Valid flags: -d"
+      echo "Valid flags: -e"
       echo "Invalid option: -$OPTARG"
       exit 1
       ;;
