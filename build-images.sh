@@ -59,6 +59,6 @@ then
   echo $DOCKER_IMAGE
   docker build ./django/ -t "$DOCKER_IMAGE:$TAG"
 else 
-  echo "-d flag required.  Please see readme. Exiting."  
+  echo "-d flag must be 'local' or 'eks'"  
   exit 1
 fi
