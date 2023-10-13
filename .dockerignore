@@ -7,6 +7,7 @@
 !jobs/parseEvaluate
 !jobs/parseEvaluate/temp
 !jobs/parseEvaluate/sample
+!jobs/parseEvaluate/sample/data
 !front-end
 
 # ...and these files
