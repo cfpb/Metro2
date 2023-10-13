@@ -42,5 +42,3 @@ RUN chmod +x ./setup.sh ./unzip.sh && \
 
 # Create the user
 USER $USERNAME
-
-CMD ["sleep", "10000"]
