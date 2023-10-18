@@ -101,6 +101,7 @@ def run():
     db_engine = engine()
     init_db(db_engine)
     db_connection = db_engine.connect()
+    print("is this running?")
 
     if S3_ENABLED:
         logger.info("S3_ENABLED set. Reading files from S3 bucket.")
