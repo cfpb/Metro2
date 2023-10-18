@@ -24,7 +24,7 @@ class Evaluator():
             res = connection.execute(self.func())
 
         # returns a list of dicts from the results
-        res_set = [dict(zip(row.keys(), row)) for row in res]
+        res_set = [dict(zip(row._mapping.keys(), row)) for row in res]
 
         return res_set
 
