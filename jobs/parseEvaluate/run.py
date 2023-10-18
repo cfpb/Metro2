@@ -60,7 +60,7 @@ def parse_files_from_s3_bucket(db_connection):
 def parse_files_from_local_filesystem(db_connection):
     logger = logging.getLogger('run.parse_files_from_local_filesystem')
     local_exam_root = fetch_env_var('LOCAL_EXAM_ROOT')
-    datafile_path = os.path.join("sample222", "data")
+    datafile_path = os.path.join(local_exam_root, "data")
     print(datafile_path)
 
 
