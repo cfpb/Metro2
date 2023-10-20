@@ -35,6 +35,7 @@ def parse_files_from_s3_bucket(db_connection):
     bucket = s3.getBucket()
     files = s3.list_objects(bucket, exam_root)
     logger.info(f"Finding all files in bucket matching prefix '{exam_root}'")
+
     for f in files:
         logger.debug(f"Encountered file in S3: {f.key}")
         try:
@@ -59,17 +60,12 @@ def parse_files_from_s3_bucket(db_connection):
 
 def parse_files_from_local_filesystem(db_connection):
     logger = logging.getLogger('run.parse_files_from_local_filesystem')
-    logger.info('In parse_files_from_local_filesystem()')
 
     local_exam_root = fetch_env_var('LOCAL_EXAM_ROOT')
     datafile_path = os.path.join(local_exam_root, "data")
-    logger.info(f'Data File Path: {datafile_path}')
-
 
     # iterate over files in [local_exam_root]/data/
     for filename in os.listdir(datafile_path):
-        print(filename)
-        logger.info(f'File: {filename}')
         logger.debug(f"Encountered file in local data path: {filename}")
         # checking if the file is a .txt before proceeding
         if filename.lower().endswith('.txt'):
@@ -104,7 +100,6 @@ def run():
     db_engine = engine()
     init_db(db_engine)
     db_connection = db_engine.connect()
-    logger.info("is this running?")
 
     if S3_ENABLED:
         logger.info("S3_ENABLED set. Reading files from S3 bucket.")
