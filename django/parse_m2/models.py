@@ -56,13 +56,14 @@ class AccountHolder(Person, Address):
 
 class AccountActivity(models.Model):
     # Note: Numeric fields are using models.IntegerField, which
-    # has a limit of +/- 2.4 billion. Since each of these numeric fields is limited
-    # to 9 characters in the source file, that size should be sufficient.
-    # Also, the CRRG limits each numeric field to whole numbers only,
+    # has a limit of +/- 2.4 billion. Since the Metro2 format limits each of
+    # these numeric fields to 9 characters, that size should be sufficient.
+    # Also, it limits each numeric field to whole numbers only,
     # so no precision will be lost.
 
-    # Note: Date fields that are not required use the option null=True.
-    # All required fields default to null=False, so nulls are not allowed.
+    # Note: Date fields that are not required in the CRRG use the option
+    # null=True. For all required fields, this option defaults to null=False,
+    # so they must have a value.
 
     account_holder = models.OneToOneField(AccountHolder, on_delete=models.CASCADE)
     activity_date = models.DateField()
