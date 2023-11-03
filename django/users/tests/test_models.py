@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group, User
 from django.test import TestCase
-from m2.models import Dataset
+from users.models import Dataset
 
 
 class TestDatasetAccess(TestCase):

@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render
 
-from m2.models import Dataset
+from users.models import Dataset
 
 
 def unsecured_view(request):

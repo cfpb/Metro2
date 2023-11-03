@@ -8,9 +8,9 @@ exclude = [
     "/templates",
 
     # Generated migration files will throw errors.
-    "m2/migrations/*.py",
+    "users/migrations/*.py",
 
     # Our settings files might need to conform to different readability
     # standards
-    "m2/settings",
+    "django_application/settings",
 ]
