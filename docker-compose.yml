@@ -63,7 +63,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DJANGO_SETTINGS_MODULE: django_application.settings.local
+      DJANGO_SETTINGS_MODULE: django_application.settings.docker-compose
       PGDATABASE: metro2-data
       PGUSER: postgres
       PGPASSWORD: cfpb
