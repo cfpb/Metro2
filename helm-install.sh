@@ -41,7 +41,7 @@ if [[ "$CLUSTER" == "docker-desktop" ]]; then
   VALUES="values.yaml"
 
 else 
-
+  helm repo add bitnami https://charts.bitnami.com/bitnami
   VALUES="values-eks.yaml"
 
 fi
