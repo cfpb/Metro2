@@ -41,7 +41,9 @@ if [[ "$CLUSTER" == "docker-desktop" ]]; then
   VALUES="values.yaml"
 
 else 
+ 
   helm repo add bitnami https://charts.bitnami.com/bitnami
+  helm dependency build ./helm/metro2
   VALUES="values-eks.yaml"
 
 fi
