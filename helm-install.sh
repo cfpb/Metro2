@@ -42,7 +42,7 @@ if [[ "$CLUSTER" == "docker-desktop" ]]; then
 
 else 
 
-  VALUES="eks-values.yaml"
+  VALUES="values-eks.yaml"
 
 fi
 
