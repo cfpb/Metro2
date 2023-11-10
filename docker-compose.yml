@@ -63,11 +63,20 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DJANGO_SETTINGS_MODULE: django_application.settings.local
+      DJANGO_SETTINGS_MODULE: django_application.settings.docker-compose
+      PGDATABASE: metro2-data
+      PGUSER: postgres
+      PGPASSWORD: cfpb
+      POSTGRES_USER: postgres
+      PGHOST: postgres
+      PGPORT: 5432
+      METRO2ENV: local
     ports:
       - 127.0.0.1:8000:8000
     stdin_open: true
     tty: true
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .env
     volumes:
       - ./django:/src/metro2/django
