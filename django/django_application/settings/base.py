@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'parse_m2.apps.ParseM2Config',
+    'evaluate_m2.apps.EvaluateM2Config',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +57,7 @@ ROOT_URLCONF = 'django_application.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ 
+        'DIRS': [
             Path(BASE_DIR) / 'templates',
             FRONTEND_DIR / "dist",
          ],
