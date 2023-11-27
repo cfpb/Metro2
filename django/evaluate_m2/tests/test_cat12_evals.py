@@ -11,7 +11,7 @@ class TestCat12Evals(TransactionTestCase, EvaluatorTestHelper):
         self.data_file = M2DataFile(id=1, exam_identifier='test_exam', file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
-        self.account_holders = self.create_bulk_account_holders(self.data_file, ['Z','Y','X','W','V','U','T'])
+        self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V','U','T'))
 
     ############################
     # Tests for the category 12 evaluators
@@ -26,10 +26,10 @@ class TestCat12Evals(TransactionTestCase, EvaluatorTestHelper):
         # hcola cannot be an empty string or NULL by constraints
 
         # Create the Account Activities data
-        activities = {'id':[32,33,34,35,36,37,38],
-                      'account_holder':['Z','Y','X','W','V','U','T'],
-                      'acct_type':['00','3A','12','91','00','3A','20'],
-                      'cons_acct_num':['0032','0033','0034','0035','0036','0037','0038'], 'credit_limit':[10,20,30,40,50,60,70], 'hcola':[-1,-1,-5,-5,0,5,-5], 'port_type':['I','M','I','I','I','I','I'], 'terms_dur':['5','10','15','20','25','30','35'], 'terms_freq':['P','W','P','D','P','P','W']}
+        activities = {'id':(32,33,34,35,36,37,38),
+                      'account_holder':('Z','Y','X','W','V','U','T'),
+                      'acct_type':('00','3A','12','91','00','3A','20'),
+                      'cons_acct_num':('0032','0033','0034','0035','0036','0037','0038'), 'credit_limit':(10,20,30,40,50,60,70), 'hcola':(-1,-1,-5,-5,0,5,-5), 'port_type':('I','M','I','I','I','I','I'), 'terms_dur':('5','10','15','20','25','30','35'), 'terms_freq':('P','W','P','D','P','P','W')}
         # 1: HIT, 2: NO-port_type=M, 3: NO-acct_type=12, 4: NO-terms_freq=D,
         # 5: NO-hcola=0, 6: NO-hcola=5, 7: HIT
         self.account_activity = self.create_bulk_activities(activities, 7)
@@ -52,10 +52,10 @@ class TestCat12Evals(TransactionTestCase, EvaluatorTestHelper):
         # hcola cannot be an empty string or NULL by constraints
 
         # Create the Account Activities data
-        activities = {'id':[32,33,34,35,36,37,38],
-                      'account_holder':['Z','Y','X','W','V','U','T'],
-                      'acct_type':['08','19','11','25','01','26','2C'],
-                      'cons_acct_num':['0032','0033','0034','0035','0036','0037','0038'], 'credit_limit':[10,20,30,40,50,60,70], 'hcola':[-1,-1,-5,-5,0,5,-5], 'port_type':['M','I','M','M','M','M','M'], 'terms_dur':['5','10','15','20','25','30','35'], 'terms_freq':['P','W','P','D','P','P','W']}
+        activities = {'id':(32,33,34,35,36,37,38),
+                      'account_holder':('Z','Y','X','W','V','U','T'),
+                      'acct_type':('08','19','11','25','01','26','2C'),
+                      'cons_acct_num':('0032','0033','0034','0035','0036','0037','0038'), 'credit_limit':(10,20,30,40,50,60,70), 'hcola':(-1,-1,-5,-5,0,5,-5), 'port_type':('M','I','M','M','M','M','M'), 'terms_dur':('5','10','15','20','25','30','35'), 'terms_freq':('P','W','P','D','P','P','W')}
         # 1: HIT, 2: NO-port_type=I, 3: NO-acct_type=11, 4: NO-terms_freq=D,
         # 5: NO-hcola=0, 6: NO-hcola=5, 7: HIT
         self.account_activity = self.create_bulk_activities(activities, 7)
@@ -78,10 +78,10 @@ class TestCat12Evals(TransactionTestCase, EvaluatorTestHelper):
         # hcola cannot be an empty string or NULL by constraints
 
         # Create the Account Activities data
-        activities = {'id':[32,33,34,35,36,37,38],
-                      'account_holder':['Z','Y','X','W','V','U','T'],
-                      'acct_type':['0C','48','11','77','0C','48','77'],
-                      'cons_acct_num':['0032','0033','0034','0035','0036','0037','0038'], 'credit_limit':[10,20,30,40,50,60,70], 'hcola':[-1,-1,-5,-5,0,5,-5], 'port_type':['O','I','O','O','O','O','O'], 'terms_dur':['5','10','15','20','25','30','35'], 'terms_freq':['P','W','P','D','P','P','W']}
+        activities = {'id':(32,33,34,35,36,37,38),
+                      'account_holder':('Z','Y','X','W','V','U','T'),
+                      'acct_type':('0C','48','11','77','0C','48','77'),
+                      'cons_acct_num':('0032','0033','0034','0035','0036','0037','0038'), 'credit_limit':(10,20,30,40,50,60,70), 'hcola':(-1,-1,-5,-5,0,5,-5), 'port_type':('O','I','O','O','O','O','O'), 'terms_dur':('5','10','15','20','25','30','35'), 'terms_freq':('P','W','P','D','P','P','W')}
         # 1: HIT, 2: NO-port_type=I, 3: NO-acct_type=11, 4: NO-terms_freq=D,
         # 5: NO-hcola=0, 6: NO-hcola=5, 7: HIT
         self.account_activity = self.create_bulk_activities(activities, 7)
