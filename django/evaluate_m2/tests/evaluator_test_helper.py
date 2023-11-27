@@ -1,14 +1,12 @@
 from django.test import TransactionTestCase
 from datetime import datetime
-from evaluate_m2.m2_evaluators.cat7_evals import evaluators as cat7_evals
 from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
-from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from parse_m2.models import AccountActivity, AccountHolder, J1, J2, K2
 
 class EvaluatorTestHelper():
     activity_date=datetime(2019, 12, 31)
     date=datetime(2020, 1, 1)
-    evaluators = cat7_evals + cat12_evals + addl_dofd_evals
+    evaluators = cat12_evals
 
     def create_bulk_account_holders(self, file, cons_info_ind_list):
         # Create bulk account holder data
