@@ -122,6 +122,12 @@ class K4(models.Model):
     balloon_pmt_due_dt = models.DateField(null=True)
     balloon_pmt_amt = models.IntegerField()
 
+class L1(models.Model):
+    account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE)
+    change_ind = models.CharField(max_length=200)
+    new_acc_num = models.CharField(max_length=200)
+    new_id_num = models.CharField(max_length=200)
+
 class N1(models.Model):
     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE)
     employer_name = models.CharField(max_length=200)

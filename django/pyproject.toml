@@ -9,6 +9,7 @@ exclude = [
 
     # Generated migration files will throw errors.
     "users/migrations/*.py",
+    "parse_m2/migrations/*.py",
 
     # Our settings files might need to conform to different readability
     # standards
