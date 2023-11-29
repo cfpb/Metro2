@@ -20,8 +20,7 @@ class Evaluator():
             res = self.longitudinal_func
         else:
             res = self.func
-        print(res)
         # returns a list of dicts from the results
         res_set = [dict(zip(row._mapping.keys(), row)) for row in res]
-        print(res_set)
+
         return res_set
