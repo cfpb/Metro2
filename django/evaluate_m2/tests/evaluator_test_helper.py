@@ -70,7 +70,11 @@ class EvaluatorTestHelper():
         return AccountActivity(
             id=id, account_holder=account_holder, acct_stat=acct_stat, acct_type=acct_type,
             activity_date=self.activity_date, amt_past_due=amt_past_due, actual_pmt_amt=actual_pmt_amt,
-            cons_acct_num=cons_acct_num, credit_limit=credit_limit, current_bal=current_bal, date_closed=self.date, date_open=self.date, doai=self.date, hcola=hcola, orig_chg_off_amt=orig_chg_off_amt, port_type=port_type, smpa=smpa, spc_com_cd=spc_com_cd, terms_dur=terms_dur, terms_freq=terms_freq, dofd=dofd, pmt_rating=pmt_rating)
+            cons_acct_num=cons_acct_num, credit_limit=credit_limit,current_bal=current_bal,
+            date_closed=self.date, date_open=self.date,
+            doai=self.date, hcola=hcola, orig_chg_off_amt=orig_chg_off_amt,
+            port_type=port_type, smpa=smpa, spc_com_cd=spc_com_cd, terms_dur=terms_dur,
+            terms_freq=terms_freq, dofd=dofd, pmt_rating=pmt_rating)
 
     def create_jsegment(self, id: int, j_type: str, cons_info_ind: str):
         if j_type == 'j1':
@@ -79,7 +83,8 @@ class EvaluatorTestHelper():
             return  J2(account_activity=AccountActivity.objects.get(id=id), cons_info_ind=cons_info_ind)
 
     def create_k2(self, id: int, purch_sold_ind: str, purch_sold_name: str):
-        return  K2(account_activity=AccountActivity.objects.get(id=id), purch_sold_ind=purch_sold_ind, purch_sold_name=purch_sold_name)
+        return  K2(account_activity=AccountActivity.objects.get(id=id), purch_sold_ind=purch_sold_ind,
+                   purch_sold_name=purch_sold_name)
 
 
     def create_l1(self, id=1, change_ind='1', new_acc_num='9876543210',
