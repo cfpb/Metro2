@@ -1,13 +1,13 @@
 from datetime import datetime
 from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
-from parse_m2.models import AccountActivity, AccountHolder, J1, J2, K2
+from parse_m2.models import AccountActivity, AccountHolder, J1, J2, K2, L1, M2DataFile
 
 class EvaluatorTestHelper():
     activity_date=datetime(2019, 12, 31)
     date=datetime(2020, 1, 1)
     evaluators = cat12_evals
 
-    def create_bulk_account_holders(self, file: str, cons_info_ind_list: tuple):
+    def create_bulk_account_holders(self, file: M2DataFile, cons_info_ind_list: tuple):
         # Create bulk account holder data
         account_holders=[]
         for i in range(0, len(cons_info_ind_list)):
@@ -53,7 +53,7 @@ class EvaluatorTestHelper():
                 ))
         return AccountActivity.objects.bulk_create(account_activities)
 
-    def create_acct_holder(self, file: str, cons_info_ind='X'):
+    def create_acct_holder(self, file: M2DataFile, cons_info_ind='X'):
         return AccountHolder(data_file=file, activity_date=self.activity_date,
             surname='Doe', first_name='Jane', middle_name='A', gen_code='F',
             ssn='012345678', dob='01012000', phone_num='0123456789', ecoa='0',
@@ -87,8 +87,8 @@ class EvaluatorTestHelper():
         else:
             return default
 
-    # def create_l1(self, id=1, change_ind='1', new_acc_num='9876543210', new_id_num='1234567890'):
-    #     return  L1(account_activity=AccountActivity.objects.get(id=id), change_ind=change_ind, new_acc_num=new_acc_num, new_id_num=new_id_num)
+    def create_l1(self, id=1, change_ind='1', new_acc_num='9876543210', new_id_num='1234567890'):
+        return  L1(account_activity=AccountActivity.objects.get(id=id), change_ind=change_ind, new_acc_num=new_acc_num, new_id_num=new_id_num)
 
     def assert_evaluator_correct(self, eval_name: str, expected_result: list[dict]):
         # Test that the evaluator:
@@ -103,9 +103,10 @@ class EvaluatorTestHelper():
                 # print('\n\n', eval.func.query)
                 evaluators_matching += 1
                 output = eval.func
-                results = list(output)
-                expected = expected_result
-
+                results = sorted(list(output), key=lambda x: x['id'])
+                expected = sorted(expected_result, key=lambda x: x['id'])
+                # print('\n\nRESULTS: ', results, '\n\n')
+                # print('\n\nEXPECTED: ', expected, '\n\n')
         # Exactly one evaluator should have run
         self.assertEqual(evaluators_matching, 1)
 
