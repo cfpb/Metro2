@@ -202,14 +202,14 @@ class Cat7_EvalsTestCase(TransactionTestCase, EvaluatorTestHelper):
     def test_eval_7_terminated_owing_balance_but_no_APD(self):
         # Hits when both conditions met:
         # 1. spc_com_cd == 'BD', 'BG', 'BI', 'BK'
-        # 2. amt_past_due < 0
+        # 2. amt_past_due <= 0
 
         # Create the Account Activities data
         activities = {'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
             'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'acct_type':('08','26','0','0'), 'amt_past_due':(200,9,0,0),
-            'current_bal':(-1,-10,-1,0), 'spc_com_cd':('BD','BK','AI','BG')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=AI, 4: NO-current_bal=0
+            'acct_type':('08','26','0','0'), 'amt_past_due':(-200,0,-1,1),
+            'current_bal':(0,9,10,100), 'spc_com_cd':('BD','BK','AI','BG')}
+        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=AI, 4: NO-amt_past_due=1
         self.account_activity = self.create_bulk_activities(self.data_file, activities, 4)
 
         # Create the segment data
@@ -217,11 +217,11 @@ class Cat7_EvalsTestCase(TransactionTestCase, EvaluatorTestHelper):
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
-            'spc_com_cd': 'BD', 'acct_stat': '71', 'acct_type': '08','amt_past_due': 200, 'current_bal': -1,
+            'spc_com_cd': 'BD', 'acct_stat': '71', 'acct_type': '08','amt_past_due': -200, 'current_bal': 0,
             'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
-            'spc_com_cd': 'BK', 'acct_stat': '11',  'acct_type': '26','amt_past_due': 9, 'current_bal': -10,
+            'spc_com_cd': 'BK', 'acct_stat': '11',  'acct_type': '26','amt_past_due': 0, 'current_bal': 9,
             'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct('7-Terminated owing balance, but no APD', expected)
