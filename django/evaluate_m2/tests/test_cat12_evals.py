@@ -35,7 +35,7 @@ class TestCat12Evals(TransactionTestCase, EvaluatorTestHelper):
                       'terms_freq':('P','W','P','D','W','P')}
         # 1: HIT, 2: NO-port_type=M, 3: NO-acct_type=12, 4: NO-terms_freq=D,
         # 5: HIT, 6: NO-hcola=5
-        self.account_activity = self.create_bulk_activities(activities, 6)
+        self.account_activity = self.create_bulk_activities(self.data_file, activities, 6)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032', 'acct_type': '00', 'port_type': 'I', 'hcola': -1,
@@ -64,7 +64,7 @@ class TestCat12Evals(TransactionTestCase, EvaluatorTestHelper):
                       'terms_freq':('P','W','P','D','W','P')}
         # 1: HIT, 2: NO-port_type=I, 3: NO-acct_type=11, 4: NO-terms_freq=D,
         # 5: HIT, 6: NO-hcola=5
-        self.account_activity = self.create_bulk_activities(activities, 6)
+        self.account_activity = self.create_bulk_activities(self.data_file, activities, 6)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032', 'acct_type': '08', 'port_type': 'M', 'hcola': -1,
@@ -94,7 +94,7 @@ class TestCat12Evals(TransactionTestCase, EvaluatorTestHelper):
                       'terms_freq':('P','W','P','D','W','P')}
         # 1: HIT, 2: NO-port_type=I, 3: NO-acct_type=11, 4: NO-terms_freq=D,
         # 5: HIT, 6: NO-hcola=5
-        self.account_activity = self.create_bulk_activities(activities, 6)
+        self.account_activity = self.create_bulk_activities(self.data_file, activities, 6)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032', 'acct_type': '0C', 'port_type': 'O', 'hcola': -1,
