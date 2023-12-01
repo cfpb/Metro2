@@ -30,9 +30,12 @@ CLUSTER=$(kubectl config current-context)
 if [[ "$CLUSTER" == "docker-desktop" ]]; then 
 
   helm install metro2-db \
+  bitnami/postgresql --set persistence.enabled=false \
   --set auth.postgresPassword='cfpb' \
   --set auth.database='metro2-data' \
-  bitnami/postgresql --set persistence.enabled=false
+  --set auth.host='metro2-db-postgresql' \
+  --set auth.user='postgres'
+
 
   # wait for postgres to be in ready state
   kubectl wait --for=condition=ready \
