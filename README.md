@@ -23,17 +23,35 @@ The application consists of three main components:
 
 
 # Deployments
+
+The Metro2 Application is deployed differently depending on if it's a local deployment or a deployment to a cluster in ALTO.  
+
+## Local Deployment
+
+For local deployment, we use the docker-desktop cluster that comes with Docker.  You must make sure that have kubernetes enabled in Docker. 
+
+With that in place, you must do the following:
+    1. Ensure that your Docker daemon is running.
+        - Without Docker running, your docker-desktop cluster will not be running. 
+    2. Run `build-images.sh -e local`
+    3. Run `helm-install.sh` 
+
+This will deploy the Metro2 Application to the Docker Desktop Cluster and create three images:
+    1. metro2-frontend:local 
+    2. metro2-evaluator:local
+    3. metro2-django:local
+
+
 ## Alto Dev
 
-Quick links:
-- [Jenkins](https://INTERNAL) for Metro2 Dev
+- [Metro2 ALTO Dev Internal Jenkins](https://INTERNAL)
 
 |Server|IP Address|Name|
 |------|----------|----|
 
 ## Alto Staging
 
-Not currently available
+- [Metro2 ALTO Staging Internal Jenkins](https://INTERNAL)
 
 |Server|IP Address|Name|
 |------|----------|----|
