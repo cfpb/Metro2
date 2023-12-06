@@ -2,10 +2,10 @@ from django.test import TestCase
 import os
 from datetime import datetime
 
-from parse_m2 import m2_parser
+from parse_m2.m2_parser import M2FileParser
 from parse_m2 import parse_utils
 from parse_m2.models import (
-    M2DataFile, UnparseableData,
+    Metro2Event, UnparseableData,
     AccountHolder, AccountActivity,
     J1, J2, K1, K2, K3, K4, L1, N1
 )
@@ -19,11 +19,13 @@ class ParserTestCase(TestCase):
 
         self.extras_str = "K1ORIGNALCREDITORNAME           03K22SOLDTONAME                     L12NEWACCTNUMBER                                      "
 
-        self.data_file = M2DataFile(exam_identifier="test_exam", file_name="file.txt")
-        self.data_file.save()
+
+        event = Metro2Event(name='test_exam')
+        event.save()
+        self.parser = M2FileParser(event=event, filepath="file.txt")
         self.activity_date = datetime(2021, 1, 1)
         self.account_holder = AccountHolder(
-            data_file = self.data_file, activity_date = self.activity_date)
+            data_file = self.parser.file_record, activity_date = self.activity_date)
         self.account_activity = AccountActivity(
             account_holder = self.account_holder, activity_date = self.activity_date)
 
@@ -34,7 +36,7 @@ class ParserTestCase(TestCase):
         file_size = os.path.getsize(self.tiny_file)
 
         with open(self.tiny_file, mode='r') as filestream:
-            m2_parser.parse_file_contents(self.data_file, filestream, file_size)
+            self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
             self.assertEqual(AccountHolder.objects.count(), 3)
@@ -56,7 +58,7 @@ class ParserTestCase(TestCase):
         # to make it unparseable
         file_size = os.path.getsize(self.error_file)
         with open(self.error_file, mode='r') as filestream:
-            m2_parser.parse_file_contents(self.data_file, filestream, file_size)
+            self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
             self.assertEqual(UnparseableData.objects.count(), 1)
@@ -70,7 +72,7 @@ class ParserTestCase(TestCase):
     # Tests for handling unparseable data
     def test_unparseable_data_in_line(self):
         line = "this is a bad line of data"
-        result = m2_parser.parse_line(line, self.data_file, self.activity_date)
+        result = self.parser.parse_line(line, self.activity_date)
         # result contains an instance of UnparseableData
         unparseable = result["UnparseableData"]
         self.assertEqual(unparseable.unparseable_line, line)
@@ -90,7 +92,7 @@ class ParserTestCase(TestCase):
     # Tests for parsing extra segments
     def test_parsing_extra_segments(self):
         records = {"AccountActivity": self.account_activity}
-        result = m2_parser.parse_extra_segments(self.extras_str, records)
+        result = self.parser.parse_extra_segments(self.extras_str, records)
         self.assertNotIn("j1", result)
         self.assertNotIn("j2", result)
         self.assertEqual(result["k1"].orig_creditor_name, "ORIGNALCREDITORNAME")
@@ -101,41 +103,41 @@ class ParserTestCase(TestCase):
 
     def test_no_extra_segments_exist(self):
         records = {"AccountActivity": self.account_activity}
-        result = m2_parser.parse_extra_segments("", records)
+        result = self.parser.parse_extra_segments("", records)
         self.assertEqual(result, records)
 
     def test_extra_segment_too_short(self):
         records = {"AccountActivity": self.account_activity}
         str = "K2 but is too short for a k2"
         with self.assertRaises(parse_utils.UnreadableLineException):
-            m2_parser.parse_extra_segments(str, records)
+            self.parser.parse_extra_segments(str, records)
 
     def test_extra_segment_doesnt_match_any_type(self):
         records = {"AccountActivity": self.account_activity}
         str = "W2 is not a type of extra segment"
         with self.assertRaises(parse_utils.UnreadableLineException):
-            m2_parser.parse_extra_segments(str, records)
+            self.parser.parse_extra_segments(str, records)
 
     ############################
     # Tests for parsing the header
     def test_header_doesnt_match_format(self):
         bad_str = "this string is not a header segment"
         with self.assertRaises(parse_utils.UnreadableFileException):
-            m2_parser.get_activity_date_from_header(bad_str)
+            self.parser.get_activity_date_from_header(bad_str)
 
     def test_header_with_malformed_activity_date(self):
         # 99-99-2023 is not a valid date
         bad_str = "xxxxHEADERxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx99992023xxxxxxxxxxxx"
         with self.assertRaises(parse_utils.UnreadableLineException):
-            m2_parser.get_activity_date_from_header(bad_str)
+            self.parser.get_activity_date_from_header(bad_str)
 
     def test_header_too_short(self):
         bad_str = "xxxxHEADER with insufficient characters"
         with self.assertRaises(parse_utils.UnreadableLineException):
-            m2_parser.get_activity_date_from_header(bad_str)
+            self.parser.get_activity_date_from_header(bad_str)
 
     def test_get_activity_date_from_header(self):
         with open(self.header_seg, mode='r') as file:
             header_row = file.readline()
-            activity_date = m2_parser.get_activity_date_from_header(header_row)
+            activity_date = self.parser.get_activity_date_from_header(header_row)
             self.assertEqual(activity_date, datetime(2023, 12, 31, 0, 0))

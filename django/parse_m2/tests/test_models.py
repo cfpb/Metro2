@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 
 from parse_m2.models import (
+    Metro2Event,
     M2DataFile, AccountHolder, AccountActivity,
     J1, J2, K1, K2, K3, K4, L1, N1
 )
@@ -12,7 +13,9 @@ class ParserUtilsTestCase(TestCase):
     def setUp(self):
         self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')  # noqa E501
 
-        self.data_file = M2DataFile(exam_identifier="test_exam", file_name="file.txt")
+        # Create the parent records for the AccountActivity data
+        event = Metro2Event(name='test_exam')
+        self.data_file = M2DataFile(event=event, file_name='file.txt')
         self.activity_date = datetime(2021, 1, 1)
         self.account_holder = AccountHolder(
             data_file = self.data_file, activity_date = self.activity_date)
