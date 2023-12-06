@@ -1,6 +1,6 @@
 import io
 import re
-import datetime
+
 
 from parse_m2 import fields
 from parse_m2.models import (
