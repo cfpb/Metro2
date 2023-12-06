@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-while getopts ":e:" opt; do
+while getopts ":e:t:" opt; do
   case "$opt" in
     e)
       TARGET_ENV="$OPTARG"
@@ -11,6 +11,9 @@ while getopts ":e:" opt; do
         echo "Invalid flag value: $TARGET_ENV" 
         exit 1
       fi
+      ;;
+    t)
+      TAG="$OPTARG"
       ;;
     \?)
       echo "Valid flags: -e"
@@ -39,7 +42,6 @@ then
   AWS_ACCOUNT_ID="795649122172"
   AWS_REGION="us-east-1"
   DOCKER_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com" 
-  TAG="latest"
 
   echo "Building metro2_evaluator:$TAG"
   ECR_REPO="cfpb/metro2/metro2-parse-evaluate"
