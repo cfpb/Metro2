@@ -4,8 +4,11 @@ from parse_m2.parse_utils import get_field_value
 from parse_m2 import fields
 
 
+class Metro2Event(models.Model):
+    name = models.CharField(max_length=300)
+
 class M2DataFile(models.Model):
-    exam_identifier = models.CharField(max_length=200)
+    event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=200)
     timestamp = models.DateTimeField(auto_now_add=True)
 
