@@ -11,3 +11,5 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+LOCAL_EVENT_DATA = "parse_m2/local_data/"
