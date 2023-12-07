@@ -8,7 +8,8 @@ from parse_m2.models import M2DataFile, AccountHolder
 
 class InitiateParsingTestCase(TestCase):
     def setUp(self):
-        # this directory has two files: m2_file_small and m2_file_small_with_error
+        # this directory has two Metro2 files: m2_file_small and m2_file_small_with_error
+        # and one file that doesn't end in .txt, so it won't get parsed
         self.test_local_data_directory = os.path.join(
             'parse_m2', 'tests','sample_files', 'test_local_data'
             )
@@ -20,3 +21,9 @@ class InitiateParsingTestCase(TestCase):
         self.assertEqual(M2DataFile.objects.count(), 2)
         # 3 records in the first file, 2 in the second
         self.assertEqual(AccountHolder.objects.count(), 5)
+
+    def test_directory_does_not_exist(self):
+        # Since this would only happen in the event of programmer error, it's fine that
+        # this exception is uncaught.
+        with self.assertRaises(FileNotFoundError):
+            parse_files_from_local_filesystem("exam A", "/directory/that/does/not/exist")
