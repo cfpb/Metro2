@@ -183,7 +183,7 @@ class M2FileParser():
         }
         lines_parsed = 0
         while lines_parsed < chunk_size:
-            line = f.readline()
+            line = f.readline().decode('utf-8')
             if not line:
                 # If the file has ended, exit the parser
                 break
@@ -239,7 +239,7 @@ class M2FileParser():
         `file_size` - the size of the file stream in bytes
         """
         # get first line
-        header_line = f.readline()
+        header_line = f.readline().decode('utf-8')
         activity_date = self.get_activity_date_from_header(header_line)
 
         # parse the rest of the file until it is done

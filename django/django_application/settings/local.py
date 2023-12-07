@@ -13,3 +13,4 @@ DATABASES = {
 }
 
 LOCAL_EVENT_DATA = "parse_m2/local_data/"
+S3_BUCKET_NAME = "cfpb-metro2-***REMOVED***"
