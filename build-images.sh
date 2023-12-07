@@ -42,19 +42,19 @@ then
   TAG="latest"
 
   echo "Building metro2_evaluator:$TAG"
-  ECR_REPO="cfpb/appops/metro2-parse-evaluate"
+  ECR_REPO="cfpb/metro2/metro2-parse-evaluate"
   DOCKER_IMAGE=$DOCKER_REGISTRY/$ECR_REPO
   echo $DOCKER_IMAGE
   docker build ./jobs/parseEvaluate/ -t "$DOCKER_IMAGE:$TAG"
 
   echo "Building metro2_frontend:$TAG"
-  ECR_REPO="cfpb/appops/metro2-frontend"
+  ECR_REPO="cfpb/metro2/metro2-frontend"
   DOCKER_IMAGE=$DOCKER_REGISTRY/$ECR_REPO
   echo $DOCKER_IMAGE
   docker build ./front-end/ -t "$DOCKER_IMAGE:$TAG"
 
   echo "Building metro2_django:$TAG"
-  ECR_REPO="cfpb/appops/metro2-django"
+  ECR_REPO="cfpb/metro2/metro2-django"
   DOCKER_IMAGE=$DOCKER_REGISTRY/$ECR_REPO
   echo $DOCKER_IMAGE
   docker build ./django/ -t "$DOCKER_IMAGE:$TAG"

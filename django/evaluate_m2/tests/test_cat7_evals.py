@@ -2,13 +2,15 @@ from django.test import TransactionTestCase
 
 from datetime import datetime
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
-from parse_m2.models import K2, M2DataFile
+from parse_m2.models import K2, Metro2Event, M2DataFile
 
 
 class Cat7_EvalsTestCase(TransactionTestCase, EvaluatorTestHelper):
     def setUp(self):
-        # Create the M2 Data File
-        self.data_file = M2DataFile(id=1, exam_identifier='test_exam', file_name='file.txt')
+        # Create the parent records for the AccountActivity data
+        event = Metro2Event(name='test_exam')
+        event.save()
+        self.data_file = M2DataFile(event=event, file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
         self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
