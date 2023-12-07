@@ -32,10 +32,16 @@ class TestAddlDofdEvals(TransactionTestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
-            'cons_acct_num': '0032', 'acct_stat': '71', 'dofd': None
+            'cons_acct_num': '0032', 'acct_stat': '71', 'dofd': None,
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }, {
             'id': 33, 'activity_date': datetime(2019, 12, 31).date(),
-            'cons_acct_num': '0033', 'acct_stat': '97', 'dofd': None
+            'cons_acct_num': '0033', 'acct_stat': '97', 'dofd': None,
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }]
         self.assert_evaluator_correct('ADDL-DOFD-1', expected)
 
@@ -58,10 +64,18 @@ class TestAddlDofdEvals(TransactionTestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
-            'cons_acct_num': '0032', 'acct_stat': '13', 'dofd': None, 'pmt_rating':'1'
+            'cons_acct_num': '0032', 'acct_stat': '13', 'dofd': None,
+            'pmt_rating':'1', 'amt_past_due': 0, 'compl_cond_cd':'0',
+            'current_bal': 0, 'date_closed': datetime(2020, 1, 1).date(),
+            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
+            'terms_freq': '0'
         }, {
             'id': 33, 'activity_date': datetime(2019, 12, 31).date(),
-            'cons_acct_num': '0033', 'acct_stat': '13', 'dofd': None, 'pmt_rating':'2'
+            'cons_acct_num': '0033', 'acct_stat': '13', 'dofd': None,
+            'pmt_rating':'2', 'amt_past_due': 0, 'compl_cond_cd':'0',
+            'current_bal': 0, 'date_closed': datetime(2020, 1, 1).date(),
+            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
+            'terms_freq': '0'
         }]
         self.assert_evaluator_correct('ADDL-DOFD-2', expected)
 
@@ -85,10 +99,18 @@ class TestAddlDofdEvals(TransactionTestCase, EvaluatorTestHelper):
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
             'cons_acct_num': '0032', 'acct_stat': '13',
-            'dofd': datetime(2019, 12, 31).date(), 'pmt_rating':'0'
+            'dofd': datetime(2019, 12, 31).date(), 'pmt_rating':'0',
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': datetime(2020, 1, 1).date(),
+            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
+            'terms_freq': '0'
         }, {
             'id': 33, 'activity_date': datetime(2019, 12, 31).date(),
             'cons_acct_num': '0033', 'acct_stat': '13',
-            'dofd': datetime(2019, 12, 31).date(), 'pmt_rating':'0'
+            'dofd': datetime(2019, 12, 31).date(), 'pmt_rating':'0',
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': datetime(2020, 1, 1).date(),
+            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
+            'terms_freq': '0'
         }]
         self.assert_evaluator_correct('ADDL-DOFD-3', expected)
