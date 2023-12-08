@@ -4,14 +4,6 @@
 # ...except the following directories
 !django/
 !django/**
-!jobs/
-!jobs/parseEvaluate/
-!jobs/parseEvaluate/*
-!jobs/parseEvaluate/m2_evaluators/*
-!jobs/parseEvaluate/tests/*
-!jobs/parseEvaluate/tests/sample_files/*
-!jobs/parseEvaluate/sample/*
-!jobs/parseEvaluate/sample/data/*
 !front-end/
 !front-end/**
 !helm/
