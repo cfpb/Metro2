@@ -47,8 +47,6 @@ if [[ $TARGET_ENV == "local" ]];
 then
   TAG="local"
   echo "With TARGET_ENV set to 'local', images will be tagged with value 'local'"
-  echo "Building metro2_evaluator:$TAG"
-  docker build ./jobs/parseEvaluate/ -t "metro2_evaluator:$TAG"
   echo "Building metro2_frontend:$TAG"
   docker build ./front-end/ -t "metro2_frontend:$TAG"
   echo "Building metro2_django:$TAG"
@@ -58,12 +56,6 @@ then
   AWS_ACCOUNT_ID="795649122172"
   AWS_REGION="us-east-1"
   DOCKER_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com" 
-
-  echo "Building metro2_evaluator:$TAG"
-  ECR_REPO="cfpb/metro2/metro2-parse-evaluate"
-  DOCKER_IMAGE=$DOCKER_REGISTRY/$ECR_REPO
-  echo $DOCKER_IMAGE
-  docker build ./jobs/parseEvaluate/ -t "$DOCKER_IMAGE:$TAG"
 
   echo "Building metro2_frontend:$TAG"
   ECR_REPO="cfpb/metro2/metro2-frontend"
