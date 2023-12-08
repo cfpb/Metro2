@@ -22,29 +22,6 @@ services:
       timeout: 3s
       retries: 10
     shm_size: '256mb'
-  evaluator:
-    image: metro2_evaluator:local
-    build:
-      context: ./jobs/parseEvaluate
-      shm_size: '256mb'
-    shm_size: '256mb'
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - ./jobs/parseEvaluate:/src/parseEvaluate
-    stdin_open: true
-    tty: true
-    env_file:
-      - .env
-    environment:
-      PGDATABASE: metro2-data
-      PGUSER: postgres
-      PGPASSWORD: cfpb
-      POSTGRES_USER: postgres
-      PGHOST: postgres
-      PGPORT: 5432
-      METRO2ENV: local
   frontend:
     container_name: frontend
     build:
