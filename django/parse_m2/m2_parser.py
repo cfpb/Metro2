@@ -26,6 +26,19 @@ class M2FileParser():
         self.file_record: M2DataFile = M2DataFile(event=event, file_name=filepath)
         self.file_record.save()
 
+    def get_next_line(self, f) -> str:
+        """
+        Depending on whether the file is being read from the filesytem or from S3,
+        readline may return a string or a bytes-like object. Since the parser
+        expects strings, use this method to ensure a string is returned.
+        """
+        line = f.readline()
+        try:
+            line = line.decode('utf-8')
+        except (UnicodeDecodeError, AttributeError):
+            pass
+        return line
+
     def get_activity_date_from_header(self, line: str):
         if re.match(self.header_format, line[:10]):
             # If the line is a header, get the activity_date
@@ -183,7 +196,7 @@ class M2FileParser():
         }
         lines_parsed = 0
         while lines_parsed < chunk_size:
-            line = f.readline()
+            line = self.get_next_line(f)
             if not line:
                 # If the file has ended, exit the parser
                 break
@@ -239,7 +252,7 @@ class M2FileParser():
         `file_size` - the size of the file stream in bytes
         """
         # get first line
-        header_line = f.readline()
+        header_line = self.get_next_line(f)
         activity_date = self.get_activity_date_from_header(header_line)
 
         # parse the rest of the file until it is done
