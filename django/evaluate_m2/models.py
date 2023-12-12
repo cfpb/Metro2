@@ -5,7 +5,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import JSONField
 
-from parse_m2.models import AccountActivity
+from parse_m2.models import AccountActivity, Metro2Event
 
 
 class EvaluatorMetaData(models.Model):
@@ -17,9 +17,6 @@ class EvaluatorMetaData(models.Model):
         self.func = func
         self.longitudinal_func = longitudinal_func
 
-
-    # def all_account_activity(self):
-    #     return self.objects.evaluator.source_record__set.all()
     def exec_custom_func(self) -> list[dict]:
         # returns a list of results from running a query
         logger = logging.getLogger('evaluator.exec_custom_func')
@@ -32,6 +29,7 @@ class EvaluatorMetaData(models.Model):
         return res
 
 class EvaluatorResultSummary(models.Model):
+    event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     evaluator_name = models.ForeignKey(EvaluatorMetaData, on_delete=models.CASCADE)
     hits = models.IntegerField()
 
