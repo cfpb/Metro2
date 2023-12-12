@@ -24,7 +24,7 @@ class EvaluatorMetaData(models.Model):
         if self.longitudinal_func:
             res = self.longitudinal_func
         else:
-            res = list(self.func)
+            res = self.func
 
         return res
 
