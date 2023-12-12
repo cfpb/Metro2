@@ -62,7 +62,7 @@ class M2FileParser():
         acct_activity = parsed["AccountActivity"]
 
         next_segment_indicator = line[:2]
-        if re.match(r'J1', next_segment_indicator):
+        if next_segment_indicator == "J1":
             seg_length = fields.seg_length["j1"]
             j1 = J1.parse_from_segment(line[:seg_length], acct_activity)
             if "j1" in parsed:
@@ -70,7 +70,7 @@ class M2FileParser():
             else:
                 parsed["j1"] = [j1]
 
-        elif re.match(r'J2', next_segment_indicator):
+        elif next_segment_indicator == "J2":
             seg_length = fields.seg_length["j2"]
             j2 = J2.parse_from_segment(line[:seg_length], acct_activity)
             if "j2" in parsed:
@@ -78,32 +78,32 @@ class M2FileParser():
             else:
                 parsed["j2"] = [j2]
 
-        elif re.match(r'K1', next_segment_indicator):
+        elif next_segment_indicator == "K1":
             seg_length = fields.seg_length["k1"]
             k1 = K1.parse_from_segment(line[:seg_length], acct_activity)
             parsed["k1"] = k1
 
-        elif re.match(r'K2', next_segment_indicator):
+        elif next_segment_indicator == "K2":
             seg_length = fields.seg_length["k2"]
             k2 = K2.parse_from_segment(line[:seg_length], acct_activity)
             parsed["k2"] = k2
 
-        elif re.match(r'K3', next_segment_indicator):
+        elif next_segment_indicator == "K3":
             seg_length = fields.seg_length["k3"]
             k3 = K3.parse_from_segment(line[:seg_length], acct_activity)
             parsed["k3"] = k3
 
-        elif re.match(r'K4', next_segment_indicator):
+        elif next_segment_indicator == "K4":
             seg_length = fields.seg_length["k4"]
             k4 = K4.parse_from_segment(line[:seg_length], acct_activity)
             parsed["k4"] = k4
 
-        elif re.match(r'L1', next_segment_indicator):
+        elif next_segment_indicator == "L1":
             seg_length = fields.seg_length["l1"]
             l1 = L1.parse_from_segment(line[:seg_length], acct_activity)
             parsed["l1"] = l1
 
-        elif re.match(r'N1', next_segment_indicator):
+        elif next_segment_indicator == "N1":
             seg_length = fields.seg_length["n1"]
             n1 = N1.parse_from_segment(line[:seg_length], acct_activity)
             parsed["n1"] = n1
