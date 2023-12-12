@@ -46,13 +46,12 @@ Not currently available
 |------|----------|----|
 
 
-# Deploying
+# Running the project
 
-The Metro2 Application is deployed differently depending on if it's a local deployment or a deployment to a cluster in ALTO.  
+Choose the way to run the project that best suits your needs:
+1. **Helm** 
 
-## Local Deployment
-
-For local deployment, we use the docker-desktop cluster that comes with Docker.  You must make sure that have kubernetes enabled in Docker. 
+When running locally a helm deployment locally, we use the docker-desktop cluster that comes with Docker.  You must make sure that you have [kubernetes enabled in Docker](https://docs.docker.com/desktop/kubernetes/). 
 
 With that in place, you must do the following:
     1. Ensure that your Docker daemon is running.
@@ -65,10 +64,6 @@ This will deploy the Metro2 Application to the Docker Desktop Cluster and create
     2. metro2-evaluator:local
     3. metro2-django:local
 
-# Running the project
-
-Choose the way to run the project that best suits your needs:
-1. **Helm** is the way the project will run in deployed environments. Use this when you need a production-like setup and you don't need the code to reload when there are local changes.
 2. **Docker-compose** is best for local development. It allows dynamically reloading code while still providing all parts of the project setup.
 3. It is also possible to run some of the sub-projects locally, but this is usually only practical for active development on a specific aspect of the codebase.
 
