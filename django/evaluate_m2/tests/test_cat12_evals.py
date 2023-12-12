@@ -1,11 +1,11 @@
-from django.test import TransactionTestCase
+from django.test import TestCase
 
 from datetime import datetime
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import Metro2Event, M2DataFile
 
 
-class TestCat12Evals(TransactionTestCase, EvaluatorTestHelper):
+class TestCat12Evals(TestCase, EvaluatorTestHelper):
     def setUp(self):
         # Create the parent records for the AccountActivity data
         event = Metro2Event(name='test_exam')
