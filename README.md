@@ -23,17 +23,17 @@ The application consists of three main components:
 
 
 # Deployments
+
 ## Alto Dev
 
-Quick links:
-- [Jenkins](https://INTERNAL) for Metro2 Dev
+- [Metro2 ALTO Dev Internal Jenkins](https://INTERNAL)
 
 |Server|IP Address|Name|
 |------|----------|----|
 
 ## Alto Staging
 
-Not currently available
+- [Metro2 ALTO Staging Internal Jenkins](https://INTERNAL)
 
 |Server|IP Address|Name|
 |------|----------|----|
@@ -46,14 +46,24 @@ Not currently available
 |------|----------|----|
 
 
-# Deploying
-
-TODO: add documentation about how to deploy, how to upload data in a deployed environment, how to configure a deployment, etc.
-
 # Running the project
 
 Choose the way to run the project that best suits your needs:
-1. **Helm** is the way the project will run in deployed environments. Use this when you need a production-like setup and you don't need the code to reload when there are local changes.
+1. **Helm** 
+
+When running locally a helm deployment locally, we use the docker-desktop cluster that comes with Docker.  You must make sure that you have [kubernetes enabled in Docker](https://docs.docker.com/desktop/kubernetes/). 
+
+With that in place, you must do the following:
+    1. Ensure that your Docker daemon is running.
+        - Without Docker running, your docker-desktop cluster will not be running. 
+    2. Run `build-images.sh -e local`
+    3. Run `helm-install.sh` 
+
+This will deploy the Metro2 Application to the Docker Desktop Cluster and create three images:
+    1. metro2-frontend:local 
+    2. metro2-evaluator:local
+    3. metro2-django:local
+
 2. **Docker-compose** is best for local development. It allows dynamically reloading code while still providing all parts of the project setup.
 3. It is also possible to run some of the sub-projects locally, but this is usually only practical for active development on a specific aspect of the codebase.
 

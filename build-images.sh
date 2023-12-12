@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-while getopts ":e:" opt; do
+while getopts ":e:t:" opt; do
   case "$opt" in
     e)
       TARGET_ENV="$OPTARG"
@@ -12,17 +12,36 @@ while getopts ":e:" opt; do
         exit 1
       fi
       ;;
+    t)
+      TAG=$OPTARG
+      ;;
     \?)
-      echo "Valid flags: -e"
-      echo "Invalid option: -$OPTARG"
+      echo "Valid flags: -e -t"
+      echo "Invalid option: -$OPTARG" >&2
       exit 1
       ;;
     :)
-      echo "Option -$OPTARG requires an argument."
+      echo "Option -$OPTARG requires an argument." >&2
       exit 1
       ;;
   esac
 done
+
+if [ -z "$TARGET_ENV" ]; then
+  echo "Error: -e tag is required"
+  exit 1
+fi
+
+if [ -z "$TAG" ]; then
+  if [[ $TARGET_ENV == "eks" ]]; then
+    echo "Error: -t tag is requried when -e 'eks' is specified"
+    exit 1
+  else
+    echo "Waring: no -t tag specificed"
+    echo "Images will be tagged with 'local'"
+    TAG="local"
+  fi
+fi
 
 if [[ $TARGET_ENV == "local" ]]; 
 then
@@ -39,7 +58,6 @@ then
   AWS_ACCOUNT_ID="795649122172"
   AWS_REGION="us-east-1"
   DOCKER_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com" 
-  TAG="latest"
 
   echo "Building metro2_evaluator:$TAG"
   ECR_REPO="cfpb/metro2/metro2-parse-evaluate"

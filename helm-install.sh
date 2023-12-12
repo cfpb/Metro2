@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
-
 ## Ensure helm is installed and available via PATH
 if ! command -v helm &> /dev/null; then
   echo "Helm not found in PATH. Please install helm (brew install helm) or add it to PATH."
