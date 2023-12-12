@@ -22,59 +22,43 @@ The front-end provides a React-based interface for authenticated and authorized 
 
 # Deployments
 
+TODO: add documentation about how to deploy, how to upload data in a deployed environment, how to configure a deployment, etc.
+
 ## Alto Dev
 
 - [Metro2 ALTO Dev Internal Jenkins](https://INTERNAL)
-
-|Server|IP Address|Name|
-|------|----------|----|
 
 ## Alto Staging
 
 - [Metro2 ALTO Staging Internal Jenkins](https://INTERNAL)
 
-|Server|IP Address|Name|
-|------|----------|----|
-
 ## Alto Prod
 
 Not currently available
 
-|Server|IP Address|Name|
-|------|----------|----|
-
-
-# Running the project
+# Running the project locally
 
 Choose the way to run the project that best suits your needs:
-1. **Helm** 
-
-When running locally a helm deployment locally, we use the docker-desktop cluster that comes with Docker.  You must make sure that you have [kubernetes enabled in Docker](https://docs.docker.com/desktop/kubernetes/). 
-
-With that in place, you must do the following:
-    1. Ensure that your Docker daemon is running.
-        - Without Docker running, your docker-desktop cluster will not be running. 
-    2. Run `build-images.sh -e local`
-    3. Run `helm-install.sh` 
-
-This will deploy the Metro2 Application to the Docker Desktop Cluster and create three images:
-    1. metro2-frontend:local 
-    2. metro2-evaluator:local
-    3. metro2-django:local
-
+1. **Helm** is the way the project will run in deployed environments. Use this when you need a production-like setup and you don't need the code to reload when there are local changes.
 2. **Docker-compose** is best for local development. It allows dynamically reloading code while still providing all parts of the project setup.
 3. It is also possible to run some of the sub-projects locally, but this is usually only practical for active development on a specific aspect of the codebase.
 
 ## Running in Helm
 
+When running locally a helm deployment locally, we use the docker-desktop cluster that comes with Docker.
+To prepare your environment, make sure that you have [kubernetes enabled in Docker](https://docs.docker.com/desktop/kubernetes/).
 Install helm (`brew install helm`) and optionally install [OpenLens](https://github.com/MuhammedKalkan/OpenLens) for better visualization.
 
-Enable Kubernetes in Docker Desktop under `Settings` > `Kubernetes`.
+With that in place, you must do the following:
+    1. Ensure that your Docker daemon is running.
+        - Without Docker running, your docker-desktop cluster will not be running.
+    2. Run `build-images.sh -e local`
+    3. Run `helm-install.sh`
 
-Before building the metro2 helm charts, run `build-images.sh`.
-
-After building images, run `helm-install.sh`.
-
+This will deploy the Metro2 Application to the Docker Desktop Cluster and create three images:
+    1. metro2-frontend:local
+    2. metro2-evaluator:local
+    3. metro2-django:local
 
 ## Running in docker-compose
 
