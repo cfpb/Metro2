@@ -29,7 +29,7 @@ def parse_local_file(event: Metro2Event, filepath):
             fstream.close()
 
 
-def parse_files_from_local_filesystem(event_identifier: str, data_directory: str = settings.LOCAL_EVENT_DATA):
+def parse_files_from_local_filesystem(event_identifier: str, data_directory: str) -> Metro2Event:
     logger = logging.getLogger('parse_m2.parse_files_from_local_filesystem')
 
     # Create a new Metro2Event. All records parsed will be associated with this Event.
@@ -44,6 +44,8 @@ def parse_files_from_local_filesystem(event_identifier: str, data_directory: str
         # Only use files ending in .txt
         if os.path.isfile(filepath) and filename.lower().endswith('.txt'):
             parse_local_file(event, filepath)
+
+    return event
 
 
 ############################################
