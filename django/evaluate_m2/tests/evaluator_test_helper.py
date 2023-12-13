@@ -3,7 +3,7 @@ from datetime import datetime
 from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
 from evaluate_m2.m2_evaluators.cat7_evals import evaluators as cat7_evals
-from parse_m2.models import AccountActivity, AccountHolder, J1, J2, K2, L1, M2DataFile
+from parse_m2.models import AccountActivity, AccountHolder, J1, J2, K2, L1, M2DataFile, Metro2Event
 
 class EvaluatorTestHelper():
     activity_date=datetime(2019, 12, 31)
@@ -75,6 +75,21 @@ class EvaluatorTestHelper():
                 ))
         return AccountActivity.objects.bulk_create(account_activities)
 
+    def create_bulk_k2(self, value_list: dict, size):
+        k2_list=[]
+
+        for i in range(0, size):
+            k2_list.append(self.create_k2(
+                id=value_list['id'][i]
+                    if "id" in value_list else 1,
+                purch_sold_ind=value_list['purch_sold_ind'][i]
+                    if "purch_sold_ind" in value_list else '1',
+                purch_sold_name=value_list['purch_sold_name'][i]
+                    if "purch_sold_name" in value_list else 'Bank Bank',
+            ))
+        return K2.objects.bulk_create(k2_list)
+
+
     def create_acct_holder(self, file: M2DataFile, cons_info_ind='X'):
         return AccountHolder(data_file=file, activity_date=self.activity_date,
             surname='Doe', first_name='Jane', middle_name='A', gen_code='F',
@@ -115,7 +130,7 @@ class EvaluatorTestHelper():
         return  L1(account_activity=AccountActivity.objects.get(id=id),
                    change_ind=change_ind, new_acc_num=new_acc_num, new_id_num=new_id_num)
 
-    def assert_evaluator_correct(self, eval_name: str, expected_result: list[dict]):
+    def assert_evaluator_correct(self, event_name: str, eval_name: str, expected_result: list[dict]):
         # Test that the evaluator:
         # 1. Name matches an evaluator in evaluators.py
         # 2. Is included in the list of evaluators to run
@@ -124,10 +139,9 @@ class EvaluatorTestHelper():
         evaluators_matching = 0
         for eval in self.evaluators:
             if eval.name == eval_name:
-                # This is left for debugging purposes to view the query
-                # print('\n\n', eval.func.query)
+                eval.set_metro2_event(event_name)
                 evaluators_matching += 1
-                output = eval.func
+                output = eval.func()
                 results = sorted(list(output), key=lambda x: x['id'])
                 expected = sorted(expected_result, key=lambda x: x['id'])
                 # print('\n\nRESULTS: ', results, '\n\n')

@@ -1,4 +1,3 @@
-
 import logging
 
 from django.core.serializers.json import DjangoJSONEncoder
@@ -11,22 +10,22 @@ from parse_m2.models import AccountActivity, Metro2Event
 class EvaluatorMetaData(models.Model):
     name = models.CharField(max_length=200, blank=False)
     func: any
-    longitudinal_func: any
+    event: str
 
-    def set_evaluator_properties(self, func = None, longitudinal_func = None):
+    def set_func(self, func = None):
         self.func = func
-        self.longitudinal_func = longitudinal_func
 
-    def exec_custom_func(self) -> list[dict]:
-        # returns a list of results from running a query
-        logger = logging.getLogger('evaluator.exec_custom_func')
-        res = list()
-        if self.longitudinal_func:
-            res = self.longitudinal_func
-        else:
-            res = self.func
+    def set_metro2_event(self, event = None):
+        self.event = event
 
-        return res
+    @property
+    def account_activity(self):
+        return self.get_all_account_activity()
+
+    def get_all_account_activity(self) -> list[AccountActivity]:
+        if self.event:
+            return AccountActivity.objects.filter(
+                account_holder__data_file__event__name=self.event)
 
 class EvaluatorResultSummary(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)

@@ -8,9 +8,9 @@ from parse_m2.models import Metro2Event, M2DataFile
 class TestCat12Evals(TestCase, EvaluatorTestHelper):
     def setUp(self):
         # Create the parent records for the AccountActivity data
-        event = Metro2Event(name='test_exam')
-        event.save()
-        self.data_file = M2DataFile(event=event, file_name='file.txt')
+        self.event = Metro2Event(name='test_exam')
+        self.event.save()
+        self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
         self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V','U','T'))
@@ -46,7 +46,7 @@ class TestCat12Evals(TestCase, EvaluatorTestHelper):
             'id': 36, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0036', 'acct_type': '00', 'port_type': 'I', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
-        self.assert_evaluator_correct('12-Installment loan no HCOLA', expected)
+        self.assert_evaluator_correct(self.event.name, '12-Installment loan no HCOLA', expected)
 
     def test_eval_12_mortgage_no_HCOLA(self):
         # Hits when all conditions are met:
@@ -75,7 +75,7 @@ class TestCat12Evals(TestCase, EvaluatorTestHelper):
             'id': 36, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0036', 'acct_type': '2C', 'port_type': 'M', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
-        self.assert_evaluator_correct('12-Mortgage no HCOLA', expected)
+        self.assert_evaluator_correct(self.event.name, '12-Mortgage no HCOLA', expected)
 
     def test_eval_12_open_no_HCOLA(self):
         # Hits when all conditions are met:
@@ -105,4 +105,4 @@ class TestCat12Evals(TestCase, EvaluatorTestHelper):
             'id': 36, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0036', 'acct_type': '0C', 'port_type': 'O', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
-        self.assert_evaluator_correct("12-Open no HCOLA", expected)
+        self.assert_evaluator_correct(self.event.name, "12-Open no HCOLA", expected)

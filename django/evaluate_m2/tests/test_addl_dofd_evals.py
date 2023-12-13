@@ -7,9 +7,9 @@ from parse_m2.models import K2, Metro2Event, M2DataFile
 class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
     def setUp(self):
         # Create the parent records for the AccountActivity data
-        event = Metro2Event(name='test_exam')
-        event.save()
-        self.data_file = M2DataFile(event=event, file_name='file.txt')
+        self.event = Metro2Event(name='test_exam')
+        self.event.save()
+        self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
         self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V'))
@@ -24,7 +24,7 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
 
         # Create the Account Activities data
         activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W','V'),
+            'account_holder':('Z','Y','X','W'),
             'acct_stat':('71','97','11','65'),
             'dofd':(None,None,None,datetime(2019, 12, 31))}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
@@ -44,7 +44,7 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
             'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }]
-        self.assert_evaluator_correct('ADDL-DOFD-1', expected)
+        self.assert_evaluator_correct(self.event.name, 'ADDL-DOFD-1', expected)
 
     def test_eval_addl_dofd_2(self):
     # Hits when all conditions met:
@@ -78,7 +78,7 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }]
-        self.assert_evaluator_correct('ADDL-DOFD-2', expected)
+        self.assert_evaluator_correct(self.event.name, 'ADDL-DOFD-2', expected)
 
     def test_eval_addl_dofd_3(self):
     # Hits when all conditions met:
@@ -114,4 +114,4 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }]
-        self.assert_evaluator_correct('ADDL-DOFD-3', expected)
+        self.assert_evaluator_correct(self.event.name, 'ADDL-DOFD-3', expected)
