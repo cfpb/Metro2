@@ -12,8 +12,12 @@ class Command(BaseCommand):
     This command will fetch the files from the given directory, create an
     Event record, and parse the data into the database.
     """
-    help = "Starts the parse process on a directory of files in the local filesystem"
+
     default_location = settings.LOCAL_EVENT_DATA
+    help = "Starts the parse process on a directory of files in the local filesystem. " + \
+           "Creates a new Metro2Event record for these Metro2 records. If no directory " + \
+           "argument is provided, defaults to the LOCAL_EVENT_DATA setting in this " + \
+           f"env: {default_location}"
 
     def add_arguments(self, argparser):
         event_help = "A name to identify this event record"

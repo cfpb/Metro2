@@ -13,7 +13,9 @@ class Command(BaseCommand):
     environment's S3 bucket, create an Event record, parse the data into the
     database, and run the evaluators on the dataset.
     """
-    help = "Starts the parse and evaluate process on a directory of Metro2 files"
+    help = "Starts the parse and evaluate process on Metro2 files in the S3 bucket. " + \
+            "Creates a new Metro2Event record for these Metro2 records. Takes a directory " + \
+            "argument to designate where to find the files in S3."
 
     def add_arguments(self, argparser):
         event_help = "A name to identify this event record"
