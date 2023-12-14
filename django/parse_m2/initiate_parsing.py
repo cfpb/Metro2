@@ -60,12 +60,16 @@ def parse_files_from_local_filesystem(event_identifier: str, data_directory: str
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html
 
 def parse_s3_file(file, event: Metro2Event):
+    logger = logging.getLogger('parse_m2.parse_s3_file')
+    key = file.key
     # Instantiate a parser
-    parser = M2FileParser(event, f"s3:{file.key}")
+    parser = M2FileParser(event, f"s3:{key}")
 
     # Parse the file
     fstream = file.get()["Body"]
+    logger.debug(f"Successfully opened file: {key}. Now parsing...")
     parser.parse_file_contents(fstream, file.size)
+    logger.info(f'File {key} written to database.')
 
 def s3_bucket_files(bucket_directory: str, bucket_name: str = settings.S3_BUCKET_NAME):
     s3 = boto3.resource("s3")
@@ -79,6 +83,8 @@ def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, buc
     event = Metro2Event(name=event_identifier)
     event.save()
 
+    logger.info(f"Finding all files in S3 bucket with prefix: {bucket_directory}")
     for file in s3_bucket_files(bucket_directory, bucket_name):
+        logger.info(f"Encountered file: {file.key}")
         # TODO: Handle errors connecting to bucket and opening files
         parse_s3_file(file, event)
