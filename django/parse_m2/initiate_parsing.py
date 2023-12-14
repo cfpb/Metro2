@@ -76,7 +76,7 @@ def s3_bucket_files(bucket_directory: str, bucket_name: str = settings.S3_BUCKET
     bucket = s3.Bucket(bucket_name)
     return bucket.objects.filter(Prefix=bucket_directory)
 
-def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, bucket_name: str = settings.S3_BUCKET_NAME):
+def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, bucket_name: str = settings.S3_BUCKET_NAME) -> Metro2Event:
     logger = logging.getLogger('parse_m2.parse_files_from_s3_bucket')
 
     # Create a new Metro2Event. All records parsed will be associated with this Event.
@@ -88,3 +88,5 @@ def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, buc
         logger.info(f"Encountered file: {file.key}")
         # TODO: Handle errors connecting to bucket and opening files
         parse_s3_file(file, event)
+
+    return event
