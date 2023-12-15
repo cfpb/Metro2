@@ -7,6 +7,10 @@ from parse_m2 import fields
 class Metro2Event(models.Model):
     name = models.CharField(max_length=300)
 
+    def get_all_account_activity(self):
+        return AccountActivity.objects.filter(
+            account_holder__data_file__event__name=self.name)
+
 class M2DataFile(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=200)
