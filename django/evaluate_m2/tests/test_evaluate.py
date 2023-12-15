@@ -88,8 +88,10 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
 
         evaluator.evaluators = [cat7_evals[0]]
         evaluator.run_evaluators(self.event)
-        self.assertEqual(2, len(evaluator.evaluator_results))
-        self.assertEqual(1, len(evaluator.metadata))
+
+        self.assertEqual(2, EvaluatorResult.objects.count())
+        self.assertEqual(1, EvaluatorResultSummary.objects.count())
+        self.assertEqual(1, EvaluatorMetaData.objects.count())
 
     def test_run_evaluators_with_two_evaluators_produces_results(self):
         activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
@@ -103,21 +105,19 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
 
         evaluator.evaluators=cat7_evals[:2]
         evaluator.run_evaluators(self.event)
-        self.assertEqual(4, len(evaluator.evaluator_results))
-        self.assertEqual(2, len(evaluator.metadata))
+        self.assertEqual(2, EvaluatorResultSummary.objects.count())
+        self.assertEqual(2, EvaluatorMetaData.objects.count())
 
         # first evaluator metadata and results
-        self.assertEqual(evaluator.evaluators[0].name,
-            evaluator.metadata[0].name)
-        self.assertEqual(2, EvaluatorResultSummary.objects.get(evaluator=evaluator.metadata[0]).hits)
+        self.assertEqual(2, EvaluatorResultSummary.objects.get(
+            evaluator=evaluator.evaluators[0]).hits)
         self.assertEqual(2, EvaluatorResult.objects.filter(
             result_summary=EvaluatorResultSummary.objects.get(
                 id=evaluator.evaluators[0].id)).count())
 
         # second evaluator metadata and results
-        self.assertEqual(evaluator.evaluators[1].name,
-            evaluator.metadata[1].name)
-        self.assertEqual(2, EvaluatorResultSummary.objects.get(evaluator=evaluator.metadata[1]).hits)
+        self.assertEqual(2, EvaluatorResultSummary.objects.get(
+            evaluator=evaluator.evaluators[1]).hits)
         self.assertEqual(2, EvaluatorResult.objects.filter(
             result_summary=EvaluatorResultSummary.objects.get(
                 id=evaluator.evaluators[1].id)).count())
@@ -170,21 +170,6 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
         with self.assertRaises(ObjectDoesNotExist) as cm:
             evaluator.run_evaluators(Metro2Event.objects.get(name=self.event.name))
         self.assertEqual(cm.exception.args[0], 'AccountActivity matching query does not exist.')
-
-    def test_prepare_results_invalid_evaluator_raises_exception(self):
-        # should raise an exception when the evaluator does not exist
-        activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'amt_past_due':(0,9,0,0), 'current_bal':(0,9,0,0),
-            'spc_com_cd':('C','AX','WT','AU')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-acct_stat=65
-        self.create_data(activities, 4)
-
-        evl = cat7_evals[0]
-
-        with self.assertRaises(ObjectDoesNotExist) as cm:
-            evaluator.prepare_result_summary(self.event, evl, self.account_activity[0])
-        self.assertEqual(cm.exception.args[0], 'EvaluatorMetaData matching query does not exist.')
 
     def test_run_evaluators_missing_parameter_raises_exception(self):
         # should raise an exception when the source_record does not exist

@@ -13,18 +13,15 @@ class Evaluate():
         #   e.g. self.evaluators = cat7_evals + cat9_evals + ...
         self.evaluators = cat7_evals + cat12_evals + addl_dofd_evals
         self.date_format = '%m%d%Y'
-        self.evaluator_results = list()
-        self.evaluator_results_summary = list()
-        self.metadata = list()
 
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):
         logger = logging.getLogger('evaluate.run_evaluators')
+        evaluator_results = list()
         # run evaluators
         # For this event, all evaluators run on the same set of records
         record_set = event.get_all_account_activity()
         for evaluator in self.evaluators:
-            self.metadata.append(evaluator)
             # Generate evaluator metadata and save before accessed to generate
             # the evaluator results summary
             evaluator.set_metro2_event(event=event.name)
@@ -34,16 +31,14 @@ class Evaluate():
                 # generate evaluator results summary and save before accessed to generate
                 # the evaluator results
                 result_summary = self.prepare_result_summary(event, evaluator, results)
-                self.evaluator_results_summary.append(result_summary)
                 result_summary.save()
-
                 for row_data in results:
                     result=self.prepare_result(result_summary,
                         row_data)
-                    self.evaluator_results.append(result)
+                    evaluator_results.append(result)
 
-        if (len(self.evaluator_results) > 0):
-            EvaluatorResult.objects.bulk_create(self.evaluator_results)
+        if (len(evaluator_results) > 0):
+            EvaluatorResult.objects.bulk_create(evaluator_results)
 
     def prepare_result(self, result_summary: EvaluatorResultSummary,
                        data: dict) -> EvaluatorResult:
@@ -51,8 +46,7 @@ class Evaluate():
             # At the moment, this is not a problem, but in the future with many exams,
             # there is nothing differentiating one EvaluatorMetaData from another since
             # the name is not unique
-            result_summary=EvaluatorResultSummary.objects.get(
-                evaluator=result_summary.evaluator.id),
+            result_summary=result_summary,
             date=data['activity_date'],
             source_record=AccountActivity.objects.get(id=data['id']),
             acct_num=data['cons_acct_num'],
@@ -63,7 +57,7 @@ class Evaluate():
                                data: list[dict]) -> EvaluatorResultSummary:
         return EvaluatorResultSummary(
             event=event,
-            evaluator=EvaluatorMetaData.objects.get(id=evaluator.id),
+            evaluator=evaluator,
             hits=len(data)
         )
 
