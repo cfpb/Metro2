@@ -21,13 +21,15 @@ class Evaluate():
     def run_evaluators(self, event: Metro2Event):
         logger = logging.getLogger('evaluate.run_evaluators')
         # run evaluators
+        # For this event, all evaluators run on the same set of records
+        record_set = event.get_all_account_activity()
         for evaluator in self.evaluators:
             self.metadata.append(evaluator)
             # Generate evaluator metadata and save before accessed to generate
             # the evaluator results summary
             evaluator.set_metro2_event(event=event.name)
             evaluator.save()
-            results = evaluator.func()
+            results = evaluator.func(record_set)
             if results:
                 # generate evaluator results summary and save before accessed to generate
                 # the evaluator results

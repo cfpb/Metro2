@@ -60,7 +60,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event.name,
+            self.event,
             '7-1A-SCC Indicates Paid But Account Status Does Not Indicate Paid', expected)
 
     def test_eval_7_paid_but_account_has_balance(self):
@@ -90,7 +90,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event.name, '7-1B-SCC Indicates Paid But Account Has Current Balance',
+            self.event, '7-1B-SCC Indicates Paid But Account Has Current Balance',
             expected)
 
     def test_eval_7_paid_but_account_has_APD(self):
@@ -120,7 +120,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event.name, '7-1C-SCC Indicates Paid But Account Has Amount Past Due',
+            self.event, '7-1C-SCC Indicates Paid But Account Has Amount Past Due',
             expected)
 
     def test_eval_7_transferred_purchased_but_account_has_balance(self):
@@ -150,7 +150,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event.name, '7-Transferred/purchased but account has balance', expected)
+            self.event, '7-Transferred/purchased but account has balance', expected)
 
     def test_eval_7_transferred_purchased_but_account_has_APD(self):
         # Hits when both conditions met:
@@ -182,7 +182,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         }]
 
         self.assert_evaluator_correct(
-            self.event.name, '7-Transferred/purchased but account has APD', expected)
+            self.event, '7-Transferred/purchased but account has APD', expected)
 
     def test_eval_7_terminated_owing_balance_but_no_current_balance(self):
         # Hits when both conditions met:
@@ -211,7 +211,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event.name, '7-Terminated owing balance, but no current balance', expected)
+            self.event, '7-Terminated owing balance, but no current balance', expected)
 
     def test_eval_7_terminated_owing_balance_but_no_APD(self):
         # Hits when both conditions met:
@@ -240,7 +240,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event.name, '7-Terminated owing balance, but no APD', expected)
+            self.event, '7-Terminated owing balance, but no APD', expected)
 
     def test_eval_7_account_satisfied_but_has_balance(self):
         # Hits when both conditions met:
@@ -269,7 +269,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'current_bal': -9, 'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event.name, '7-Account satisfied but has balance', expected)
+            self.event, '7-Account satisfied but has balance', expected)
 
     def test_eval_7_account_satisfied_but_has_APD(self):
         # Hits when both conditions met:
@@ -298,4 +298,4 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'current_bal': 9, 'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event.name, "7-Account satisfied but has APD", expected)
+            self.event, "7-Account satisfied but has APD", expected)

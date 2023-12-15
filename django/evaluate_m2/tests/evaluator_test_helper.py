@@ -130,18 +130,19 @@ class EvaluatorTestHelper():
         return  L1(account_activity=AccountActivity.objects.get(id=id),
                    change_ind=change_ind, new_acc_num=new_acc_num, new_id_num=new_id_num)
 
-    def assert_evaluator_correct(self, event_name: str, eval_name: str, expected_result: list[dict]):
+    def assert_evaluator_correct(self, event: Metro2Event, eval_name: str, expected_result: list[dict]):
         # Test that the evaluator:
         # 1. Name matches an evaluator in evaluators.py
         # 2. Is included in the list of evaluators to run
         # 3. Produces results in the expected format
         # 4. Triggers on the correct record
         evaluators_matching = 0
+        record_set = event.get_all_account_activity()
         for eval in self.evaluators:
             if eval.name == eval_name:
-                eval.set_metro2_event(event_name)
+                eval.set_metro2_event(event.name)
                 evaluators_matching += 1
-                output = eval.func()
+                output = eval.func(record_set)
                 results = sorted(list(output), key=lambda x: x['id'])
                 expected = sorted(expected_result, key=lambda x: x['id'])
                 # print('\n\nRESULTS: ', results, '\n\n')

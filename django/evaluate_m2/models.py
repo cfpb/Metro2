@@ -18,14 +18,6 @@ class EvaluatorMetaData(models.Model):
     def set_metro2_event(self, event = None):
         self.event = event
 
-    @property
-    def account_activity(self):
-        return self.get_all_account_activity()
-
-    def get_all_account_activity(self) -> list[AccountActivity]:
-        if self.event:
-            return AccountActivity.objects.filter(
-                account_holder__data_file__event__name=self.event)
 
 class EvaluatorResultSummary(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
