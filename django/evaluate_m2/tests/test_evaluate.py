@@ -195,5 +195,6 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
         with self.assertRaises(TypeError) as cm:
             evaluator.run_evaluators()
         self.assertEqual(cm.exception.args[0], "Evaluate.run_evaluators() missing 1 required positional argument: 'event'")
-    def set_mock_function(self):
+
+    def set_mock_function(self, mock_set):
         return [self.unexpected]
