@@ -29,7 +29,7 @@ class EvaluatorMetaData(models.Model):
 
 class EvaluatorResultSummary(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
-    evaluator_name = models.ForeignKey(EvaluatorMetaData, on_delete=models.CASCADE)
+    evaluator = models.ForeignKey(EvaluatorMetaData, on_delete=models.CASCADE)
     hits = models.IntegerField()
 
 class EvaluatorResult(models.Model):

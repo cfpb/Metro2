@@ -109,7 +109,7 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
         # first evaluator metadata and results
         self.assertEqual(evaluator.evaluators[0].name,
             evaluator.metadata[0].name)
-        self.assertEqual(2, EvaluatorResultSummary.objects.get(evaluator_name=evaluator.metadata[0]).hits)
+        self.assertEqual(2, EvaluatorResultSummary.objects.get(evaluator=evaluator.metadata[0]).hits)
         self.assertEqual(2, EvaluatorResult.objects.filter(
             result_summary=EvaluatorResultSummary.objects.get(
                 id=evaluator.evaluators[0].id)).count())
@@ -117,7 +117,7 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
         # second evaluator metadata and results
         self.assertEqual(evaluator.evaluators[1].name,
             evaluator.metadata[1].name)
-        self.assertEqual(2, EvaluatorResultSummary.objects.get(evaluator_name=evaluator.metadata[1]).hits)
+        self.assertEqual(2, EvaluatorResultSummary.objects.get(evaluator=evaluator.metadata[1]).hits)
         self.assertEqual(2, EvaluatorResult.objects.filter(
             result_summary=EvaluatorResultSummary.objects.get(
                 id=evaluator.evaluators[1].id)).count())
@@ -138,7 +138,7 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
         return_value = evaluator.prepare_result(result_summary, self.expected[0])
 
         self.assertEqual(EvaluatorMetaData.objects.get(name=evl.name),
-                         return_value.result_summary.evaluator_name)
+                         return_value.result_summary.evaluator)
         self.assertEqual(self.expected[0]['activity_date'], return_value.date)
         self.assertEqual(AccountActivity.objects.get(id=self.expected[0]['id']),
                          return_value.source_record)
@@ -158,7 +158,7 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
         evl.save()
         return_value = evaluator.prepare_result_summary(self.event, evl, self.expected)
 
-        self.assertEqual( evl.name, return_value.evaluator_name.name)
+        self.assertEqual( evl.name, return_value.evaluator.name)
         self.assertEqual( 2, return_value.hits)
 
     def test_run_evaluators_invalid_source_record_raises_exception(self):

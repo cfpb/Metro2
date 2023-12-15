@@ -50,7 +50,7 @@ class Evaluate():
             # there is nothing differentiating one EvaluatorMetaData from another since
             # the name is not unique
             result_summary=EvaluatorResultSummary.objects.get(
-                evaluator_name=result_summary.evaluator_name.id),
+                evaluator=result_summary.evaluator.id),
             date=data['activity_date'],
             source_record=AccountActivity.objects.get(id=data['id']),
             acct_num=data['cons_acct_num'],
@@ -61,7 +61,7 @@ class Evaluate():
                                data: list[dict]) -> EvaluatorResultSummary:
         return EvaluatorResultSummary(
             event=event,
-            evaluator_name=EvaluatorMetaData.objects.get(id=evaluator.id),
+            evaluator=EvaluatorMetaData.objects.get(id=evaluator.id),
             hits=len(data)
         )
 
