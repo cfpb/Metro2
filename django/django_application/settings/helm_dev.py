@@ -15,3 +15,5 @@ DATABASES = {
         "PORT": "5432",
     }
 }
+
+S3_BUCKET_NAME = "cfpb-metro2-***REMOVED***"
