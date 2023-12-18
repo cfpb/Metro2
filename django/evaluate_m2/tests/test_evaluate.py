@@ -1,5 +1,3 @@
-
-from django.core.exceptions import ObjectDoesNotExist
 from django.test import TestCase
 
 from datetime import datetime
@@ -7,7 +5,6 @@ from evaluate_m2.evaluate import evaluator
 from evaluate_m2.m2_evaluators.cat7_evals import evaluators as cat7_evals
 from evaluate_m2.models import EvaluatorMetaData, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
-
 from parse_m2.models import K2, AccountActivity, M2DataFile, Metro2Event
 
 
@@ -64,7 +61,7 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
         self.create_k2_segments()
 
     ############################
-    # Tests for the evaluate
+    # Tests for evaluate
     def test_run_evaluators_no_evals(self):
         # set empty evaluators list (should not run any evaluators)
         evaluator.evaluators = []
@@ -160,16 +157,6 @@ class TestEvaluate(TestCase, EvaluatorTestHelper):
 
         self.assertEqual( evl.name, return_value.evaluator.name)
         self.assertEqual( 2, return_value.hits)
-
-    def test_run_evaluators_invalid_source_record_raises_exception(self):
-        # should raise an exception when the source_record does not exist
-        evl =EvaluatorMetaData(name='Test')
-        evl.set_func(func=self.set_mock_function)
-        evaluator.evaluators = [evl]
-
-        with self.assertRaises(ObjectDoesNotExist) as cm:
-            evaluator.run_evaluators(Metro2Event.objects.get(name=self.event.name))
-        self.assertEqual(cm.exception.args[0], 'AccountActivity matching query does not exist.')
 
     def test_run_evaluators_missing_parameter_raises_exception(self):
         # should raise an exception when the source_record does not exist

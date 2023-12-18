@@ -3,7 +3,10 @@ from datetime import datetime
 from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
 from evaluate_m2.m2_evaluators.cat7_evals import evaluators as cat7_evals
-from parse_m2.models import AccountActivity, AccountHolder, J1, J2, K2, L1, M2DataFile, Metro2Event
+from parse_m2.models import (
+    AccountActivity, AccountHolder, J1,
+    J2, K2, L1, M2DataFile, Metro2Event
+)
 
 class EvaluatorTestHelper():
     activity_date=datetime(2019, 12, 31)
@@ -140,7 +143,6 @@ class EvaluatorTestHelper():
         record_set = event.get_all_account_activity()
         for eval in self.evaluators:
             if eval.name == eval_name:
-                eval.set_metro2_event(event.name)
                 evaluators_matching += 1
                 output = eval.func(record_set)
                 results = sorted(list(output), key=lambda x: x['id'])

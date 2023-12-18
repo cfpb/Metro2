@@ -10,7 +10,7 @@ from parse_m2.models import (
 )
 
 
-class ParserUtilsTestCase(TestCase, EvaluatorTestHelper):
+class ParserModelsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self):
         self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')  # noqa E501
 
