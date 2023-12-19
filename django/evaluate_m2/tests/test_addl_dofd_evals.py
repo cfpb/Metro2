@@ -12,7 +12,7 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
-        self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V'))
+        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V'))
 
     ############################
     # Tests for the category addl dofd evaluators
@@ -28,7 +28,7 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'acct_stat':('71','97','11','65'),
             'dofd':(None,None,None,datetime(2019, 12, 31))}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
-        self.account_activity = self.create_bulk_activities(self.data_file, activities, 4)
+        self.create_bulk_activities(self.data_file, activities, 4)
 
         # Create the segment data
         expected = [{
@@ -60,7 +60,7 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'dofd':(None,None,None,None,datetime(2019, 12, 31)),
             'pmt_rating':('1','2','3','0','L')}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-pmt_rating=0, 5: NO-dofd=01012020
-        self.account_activity = self.create_bulk_activities(self.data_file, activities, 5)
+        self.create_bulk_activities(self.data_file, activities, 5)
 
         # Create the segment data
         expected = [{
@@ -94,7 +94,7 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'dofd':(datetime(2019, 12, 31),datetime(2019, 12, 31),None,None,None),
             'pmt_rating':('0','0','0','3','0')}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: pmt_rating=3, 5: NO-dofd=01012020
-        self.account_activity = self.create_bulk_activities(self.data_file, activities, 5)
+        self.create_bulk_activities(self.data_file, activities, 5)
 
         # Create the segment data
         expected = [{

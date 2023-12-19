@@ -4,6 +4,7 @@ from django.db.models import JSONField
 
 from parse_m2.models import AccountActivity, Metro2Event
 
+
 class EvaluatorMetaData(models.Model):
     name = models.CharField(max_length=200, blank=False)
     func: any

@@ -13,11 +13,10 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
-        self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
+        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
 
     def create_data(self, activities, size):
-        self.account_activity = self.create_bulk_activities(self.data_file,
-            activities, size)
+        self.create_bulk_activities(self.data_file, activities, size)
         # Create the segment data
         self.create_bulk_k2()
 

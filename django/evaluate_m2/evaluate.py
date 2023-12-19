@@ -15,6 +15,10 @@ class Evaluate():
 
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):
+        """
+        Given an event, run all evaluators on the Account Activity associated
+        to the event and save the results to the database.
+        """
         logger = logging.getLogger('evaluate.run_evaluators')
 
         # run evaluators
@@ -35,7 +39,6 @@ class Evaluate():
                     result=self.prepare_result(result_summary,
                         row_data)
                     evaluator_results.append(result)
-
                 if (len(evaluator_results) > 0):
                     EvaluatorResult.objects.bulk_create(evaluator_results)
 

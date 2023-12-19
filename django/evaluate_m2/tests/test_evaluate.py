@@ -16,7 +16,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
-        self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
+        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
         self.expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
             'cons_acct_num': '0032', 'acct_stat': '71', 'dofd': None,
@@ -41,10 +41,6 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         # Need to reset to an empty list after each test
         evaluator.evaluators = addl_dofd
 
-    def create_data(self, activities, size):
-        self.account_activity = self.create_bulk_activities(self.data_file,
-            activities, size)
-
     ############################
     # Tests for evaluate
     def test_run_evaluators_no_evals(self):
@@ -66,7 +62,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
             'acct_stat':('71','97','11','65'),
             'dofd':(None,None,None,datetime(2019, 12, 31))}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
-        self.create_data(activities, 4)
+        self.create_bulk_activities(self.data_file, activities, 4)
 
         evaluator.evaluators = [addl_dofd[0]]
         evaluator.run_evaluators(self.event)
@@ -84,8 +80,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
             'pmt_rating':('1','2','0','L')}
         # 1: Evaluator1 - HIT, 2: Evaluator2 - HIT,
         # 3: NO HIT 4: Evaluator1 - HIT
-
-        self.create_data(activities, 4)
+        self.create_bulk_activities(self.data_file, activities, 4)
 
         evaluator.evaluators=addl_dofd[:2]
         evaluator.run_evaluators(self.event)
@@ -113,8 +108,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
             'acct_stat':('71','66','65'),
             'dofd':(None,None,datetime(2019, 12, 31))}
         # 1: HIT, 2: NO-acct_stat=66, 3: NO-acct_stat=11, 4: NO-dofd=01012020
-
-        self.create_data(activities, 3)
+        self.create_bulk_activities(self.data_file, activities, 3)
 
         evl = addl_dofd[0]
         evl.save()
@@ -137,7 +131,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
             'acct_stat':('71','97','11','65'),
             'dofd':(None,None,None,datetime(2019, 12, 31))}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
-        self.create_data(activities, 4)
+        self.create_bulk_activities(self.data_file, activities, 4)
 
         evl = addl_dofd[0]
         evl.save()
