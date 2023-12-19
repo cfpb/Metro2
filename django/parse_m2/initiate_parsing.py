@@ -81,10 +81,12 @@ def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, buc
 
     if not bucket_name:
         bucket_name = settings.S3_BUCKET_NAME
+        logger.debug(f"Using S3 bucket defined in settings file: {bucket_name}")
 
     # Create a new Metro2Event. All records parsed will be associated with this Event.
     event = Metro2Event(name=event_identifier)
     event.save()
+    logger.debug(f"Created Metro2Event record with id {event.id}")
 
     logger.info(f"Finding all files in S3 bucket with prefix: {bucket_directory}")
     for file in s3_bucket_files(bucket_directory, bucket_name):
