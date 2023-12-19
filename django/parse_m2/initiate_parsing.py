@@ -71,13 +71,16 @@ def parse_s3_file(file, event: Metro2Event):
     parser.parse_file_contents(fstream, file.size)
     logger.info(f'File {key} written to database.')
 
-def s3_bucket_files(bucket_directory: str, bucket_name: str = settings.S3_BUCKET_NAME):
+def s3_bucket_files(bucket_directory: str, bucket_name: str):
     s3 = boto3.resource("s3")
     bucket = s3.Bucket(bucket_name)
     return bucket.objects.filter(Prefix=bucket_directory)
 
-def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, bucket_name: str = settings.S3_BUCKET_NAME) -> Metro2Event:
+def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, bucket_name: str = "") -> Metro2Event:
     logger = logging.getLogger('parse_m2.parse_files_from_s3_bucket')
+
+    if not bucket_name:
+        bucket_name = settings.S3_BUCKET_NAME
 
     # Create a new Metro2Event. All records parsed will be associated with this Event.
     event = Metro2Event(name=event_identifier)
