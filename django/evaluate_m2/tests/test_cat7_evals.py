@@ -15,6 +15,12 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the Account Holders
         self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
 
+    def create_data(self, activities, size):
+        self.account_activity = self.create_bulk_activities(self.data_file,
+            activities, size)
+        # Create the segment data
+        self.create_bulk_k2()
+
     def create_bulk_k2(self):
         # Create the segment data
         self.k2 = K2.objects.bulk_create([
@@ -44,11 +50,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'amt_past_due':(0,9,0,0), 'current_bal':(0,9,0,0),
             'spc_com_cd':('C','AX','WT','AU')}
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-acct_stat=65
-
-        self.account_activity = self.create_bulk_activities(
-            self.data_file, activities, 4)
-        # Create the segment data
-        self.create_bulk_k2()
+        self.create_data(activities, 4)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
@@ -74,11 +76,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'amt_past_due':(0,9,0,0), 'current_bal':(200,-9,100,0),
             'spc_com_cd':('C','AX','WT','AU')}
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-current_bal=0
-        self.account_activity = self.create_bulk_activities(
-            self.data_file, activities, 4)
-
-        # Create the segment data
-        self.create_bulk_k2()
+        self.create_data(activities, 4)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
@@ -104,11 +102,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'amt_past_due':(200,9,20,0), 'current_bal':(0,9,0,0),
             'spc_com_cd':('C','AX','WT','AU')}
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-amt_past_due=0
-        self.account_activity = self.create_bulk_activities(
-            self.data_file, activities, 4)
-
-        # Create the segment data
-        self.create_bulk_k2()
+        self.create_data(activities, 4)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
@@ -134,11 +128,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'amt_past_due':(0,9,0,0), 'current_bal':(200,9,100,0),
             'spc_com_cd':('AT','O','WT','AH')}
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-current_bal=0
-        self.account_activity = self.create_bulk_activities(
-            self.data_file, activities, 4)
-
-        # Create the segment data
-        self.create_bulk_k2()
+        self.create_data(activities, 4)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
@@ -162,11 +152,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'), 'amt_past_due':(200,-9,10,0), 'current_bal':(0,9,0,100),
             'spc_com_cd':('AT','O','WT','AH')}
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-amt_past_due=0
-        self.account_activity = self.create_bulk_activities(
-            self.data_file, activities, 4)
-
-        # Create the segment data
-        self.create_bulk_k2()
+        self.create_data(activities, 4)
         self.create_other_segments()
 
         expected = [{
@@ -195,11 +181,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'acct_type':('08','26','0','0'), 'amt_past_due':(200,9,0,0),
             'current_bal':(-1,0,-1,5), 'spc_com_cd':('BD','BK','AI','BG')}
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=AI, 4: NO-current_bal=5
-        self.account_activity = self.create_bulk_activities(
-            self.data_file, activities, 4)
-
-        # Create the segment data
-        self.create_bulk_k2()
+        self.create_data(activities, 4)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
@@ -224,12 +206,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'acct_type':('08','26','0','0'), 'amt_past_due':(-200,0,-1,1),
             'current_bal':(0,9,10,100), 'spc_com_cd':('BD','BK','AI','BG')}
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=AI, 4: NO-amt_past_due=1
-        self.account_activity = self.create_bulk_activities(
-            self.data_file, activities, 4)
-
-        # Create the segment data
-        self.create_bulk_k2()
-
+        self.create_data(activities, 4)
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
             'spc_com_cd': 'BD', 'acct_stat': '71', 'acct_type': '08','amt_past_due': -200, 'current_bal': 0,
@@ -253,11 +230,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'acct_type':('08','26','0','0'), 'amt_past_due':(0,9,0,0),
             'current_bal':(200,-9,10,0), 'spc_com_cd':('BC','BJ','BP','BF')}
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=BP, 4: NO-current_bal=0
-        self.account_activity = self.create_bulk_activities(
-            self.data_file, activities, 4)
-
-        # Create the segment data
-        self.create_bulk_k2()
+        self.create_data(activities, 4)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
@@ -282,11 +255,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'acct_type':('08','26','0A','0G'), 'amt_past_due':(200,-9,10,0),
             'current_bal':(0,9,10,100), 'spc_com_cd':('BC','BJ','BP','BF')}
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=BP, 4: NO-amt_past_due=0
-        self.account_activity = self.create_bulk_activities(
-            self.data_file, activities, 4)
-
-        # Create the segment data
-        self.create_bulk_k2()
+        self.create_data(activities, 4)
 
         expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',

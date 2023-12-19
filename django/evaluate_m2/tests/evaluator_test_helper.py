@@ -78,21 +78,6 @@ class EvaluatorTestHelper():
                 ))
         return AccountActivity.objects.bulk_create(account_activities)
 
-    def create_bulk_k2(self, value_list: dict, size):
-        k2_list=[]
-
-        for i in range(0, size):
-            k2_list.append(self.create_k2(
-                id=value_list['id'][i]
-                    if "id" in value_list else 1,
-                purch_sold_ind=value_list['purch_sold_ind'][i]
-                    if "purch_sold_ind" in value_list else '1',
-                purch_sold_name=value_list['purch_sold_name'][i]
-                    if "purch_sold_name" in value_list else 'Bank Bank',
-            ))
-        return K2.objects.bulk_create(k2_list)
-
-
     def create_acct_holder(self, file: M2DataFile, cons_info_ind='X'):
         return AccountHolder(data_file=file, activity_date=self.activity_date,
             surname='Doe', first_name='Jane', middle_name='A', gen_code='F',
@@ -143,6 +128,7 @@ class EvaluatorTestHelper():
         record_set = event.get_all_account_activity()
         for eval in self.evaluators:
             if eval.name == eval_name:
+                # print('\n\n', eval.func(record_set).query)
                 evaluators_matching += 1
                 output = eval.func(record_set)
                 results = sorted(list(output), key=lambda x: x['id'])

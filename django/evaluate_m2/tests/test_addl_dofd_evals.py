@@ -59,7 +59,7 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'acct_stat':('13','13','11','13','13'),
             'dofd':(None,None,None,None,datetime(2019, 12, 31)),
             'pmt_rating':('1','2','3','0','L')}
-        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: pmt_rating=0, 5: NO-dofd=01012020
+        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-pmt_rating=0, 5: NO-dofd=01012020
         self.account_activity = self.create_bulk_activities(self.data_file, activities, 5)
 
         # Create the segment data

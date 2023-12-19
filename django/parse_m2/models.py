@@ -9,7 +9,7 @@ class Metro2Event(models.Model):
 
     def get_all_account_activity(self):
         return AccountActivity.objects.filter(
-            account_holder__data_file__event__name=self.name)
+            account_holder__data_file__event=self)
 
 class M2DataFile(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)

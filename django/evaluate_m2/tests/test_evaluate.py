@@ -2,10 +2,10 @@ from django.test import TestCase
 
 from datetime import datetime
 from evaluate_m2.evaluate import evaluator
-from evaluate_m2.m2_evaluators.cat7_evals import evaluators as cat7_evals
+from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd
 from evaluate_m2.models import EvaluatorMetaData, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
-from parse_m2.models import K2, AccountActivity, M2DataFile, Metro2Event
+from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
 
 
 class EvaluateTestCase(TestCase, EvaluatorTestHelper):
@@ -19,46 +19,31 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
         self.expected = [{
             'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
-            'cons_acct_num': '0032', 'spc_com_cd': 'C', 'acct_stat': '71',
-            'amt_past_due': 0, 'current_bal': 0, 'date_closed': datetime(2020, 1, 1).date(),
-            'k2__purch_sold_ind': 'a'
+            'cons_acct_num': '0032', 'acct_stat': '71', 'dofd': None,
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }, {
             'id': 33, 'activity_date': datetime(2019, 12, 31).date(),
-            'cons_acct_num': '0033', 'spc_com_cd': 'AX', 'acct_stat': '11',
-            'amt_past_due': 9, 'current_bal': 9, 'date_closed': datetime(2020, 1, 1).date(),
-            'k2__purch_sold_ind': None
+            'cons_acct_num': '0033', 'acct_stat': '97', 'dofd': None,
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }]
         self.unexpected = {
             'id': 36, 'activity_date': datetime(2019, 12, 31).date(),
-            'cons_acct_num': '0036', 'spc_com_cd': 'AX', 'acct_stat': '11',
-            'amt_past_due': 9, 'current_bal': 9, 'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
+            'cons_acct_num': '0036', 'acct_stat': '71', 'dofd': None,
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }
 
         # Need to reset to an empty list after each test
-        evaluator.evaluators = cat7_evals
-        evaluator.metadata = list()
-        evaluator.evaluator_results = list()
-
-    def create_k2_segments(self):
-        # Create the segment data
-        k2_data = {'id':(32,34,35), 'purch_sold_ind':('a','b','c'),
-                   'purch_sold_name':('hit','no1','no2')}
-        self.k2 = self.create_bulk_k2(k2_data, 3)
-
-    def create_other_segments(self):
-        # Create the segment data
-        self.j1 = self.create_jsegment(32, 'j1', 'a1')
-        self.j1.save()
-        self.j2 = self.create_jsegment(32, 'j2', 'a2')
-        self.j2.save()
-        self.l1 = self.create_l1(32)
-        self.l1.save()
+        evaluator.evaluators = addl_dofd
 
     def create_data(self, activities, size):
         self.account_activity = self.create_bulk_activities(self.data_file,
             activities, size)
-        # Create the segment data
-        self.create_k2_segments()
 
     ############################
     # Tests for evaluate
@@ -69,21 +54,21 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
 
         # the expected outcome of not running evaluators should be
         # empty lists for results and metadata
-        expected = list()
-        self.assertListEqual(expected, evaluator.evaluator_results)
-        self.assertListEqual(expected, evaluator.metadata)
+        self.assertEqual(0, EvaluatorResult.objects.count())
+        self.assertEqual(0, EvaluatorResultSummary.objects.count())
+        self.assertEqual(0, EvaluatorMetaData.objects.count())
 
     def test_run_evaluators_produces_results(self):
         # should correctly insert one statement and one metadata statement
         # Account Activity data
         activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'amt_past_due':(0,9,0,0), 'current_bal':(0,9,0,0),
-            'spc_com_cd':('C','AX','WT','AU')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-acct_stat=65
+            'account_holder':('Z','Y','X','W'),
+            'acct_stat':('71','97','11','65'),
+            'dofd':(None,None,None,datetime(2019, 12, 31))}
+        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
         self.create_data(activities, 4)
 
-        evaluator.evaluators = [cat7_evals[0]]
+        evaluator.evaluators = [addl_dofd[0]]
         evaluator.run_evaluators(self.event)
 
         self.assertEqual(2, EvaluatorResult.objects.count())
@@ -91,16 +76,18 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(1, EvaluatorMetaData.objects.count())
 
     def test_run_evaluators_with_two_evaluators_produces_results(self):
-        activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','61','62'),
-            'amt_past_due':(0,9,0,0), 'current_bal':(0,10,20,30),
-            'spc_com_cd':('C','AX','WT','AU')}
-        # 1: Evaluator1 - HIT, 2: Evaluator1 & Evaluator2 - HIT,
-        # 3: NO HIT 4: Evaluator2 - HIT
+        activities = { 'id':(32,33,34,35),
+            'cons_acct_num':('0032','0033','0034','0035'),
+            'account_holder':('Z','Y','X','W'),
+            'acct_stat':('71','13','11','97'),
+            'dofd':(None,None,datetime(2019, 12, 31),None),
+            'pmt_rating':('1','2','0','L')}
+        # 1: Evaluator1 - HIT, 2: Evaluator2 - HIT,
+        # 3: NO HIT 4: Evaluator1 - HIT
 
         self.create_data(activities, 4)
 
-        evaluator.evaluators=cat7_evals[:2]
+        evaluator.evaluators=addl_dofd[:2]
         evaluator.run_evaluators(self.event)
         self.assertEqual(2, EvaluatorResultSummary.objects.count())
         self.assertEqual(2, EvaluatorMetaData.objects.count())
@@ -113,22 +100,23 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
                 id=evaluator.evaluators[0].id)).count())
 
         # second evaluator metadata and results
-        self.assertEqual(2, EvaluatorResultSummary.objects.get(
+        self.assertEqual(1, EvaluatorResultSummary.objects.get(
             evaluator=evaluator.evaluators[1]).hits)
-        self.assertEqual(2, EvaluatorResult.objects.filter(
+        self.assertEqual(1, EvaluatorResult.objects.filter(
             result_summary=EvaluatorResultSummary.objects.get(
                 id=evaluator.evaluators[1].id)).count())
 
     def test_prepare_results_creates_an_object(self):
         # should correctly create one EvaluatorResult object
-        activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'amt_past_due':(0,9,0,0), 'current_bal':(0,9,0,0),
-            'spc_com_cd':('C','AU','WT','AU')}
-        # 1: HIT, 2: NO-spc_com_cd=AU, 3: NO-spc_com_cd=WT, 4: NO-acct_stat=65
-        self.create_data(activities, 4)
+        activities = { 'id':(32,33,34), 'cons_acct_num':('0032','0033','0034'),
+            'account_holder':('Z','Y','X'),
+            'acct_stat':('71','66','65'),
+            'dofd':(None,None,datetime(2019, 12, 31))}
+        # 1: HIT, 2: NO-acct_stat=66, 3: NO-acct_stat=11, 4: NO-dofd=01012020
 
-        evl = cat7_evals[0]
+        self.create_data(activities, 3)
+
+        evl = addl_dofd[0]
         evl.save()
         result_summary = evaluator.prepare_result_summary(self.event, evl, self.expected)
         result_summary.save()
@@ -145,13 +133,13 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
     def test_prepare_result_summary_creates_an_object(self):
         # should correctly create one EvaluatorMetaData object
         activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'amt_past_due':(0,9,0,0), 'current_bal':(0,9,0,0),
-            'spc_com_cd':('C','AX','WT','AU')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-acct_stat=65
+            'account_holder':('Z','Y','X','W'),
+            'acct_stat':('71','97','11','65'),
+            'dofd':(None,None,None,datetime(2019, 12, 31))}
+        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
         self.create_data(activities, 4)
 
-        evl = cat7_evals[0]
+        evl = addl_dofd[0]
         evl.save()
         return_value = evaluator.prepare_result_summary(self.event, evl, self.expected)
 
