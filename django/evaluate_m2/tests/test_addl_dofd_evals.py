@@ -115,3 +115,36 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'terms_freq': '0'
         }]
         self.assert_evaluator_correct(self.event, 'ADDL-DOFD-3', expected)
+
+    def test_eval_addl_dofd_4(self):
+    # Hits condition is met:
+    # 1. doai > (dofd + 7 years)
+
+        # Create the Account Activities data
+        activities = {
+            'id':(32,33,34,35),
+            'cons_acct_num':('0032','0033','0034','0035'),
+            'account_holder':('Z','Y','X','W'),
+            'dofd':(
+                datetime(2015, 1, 1), datetime(2015, 12, 31),
+                datetime(2020, 1, 1), datetime(2020, 1, 1)),
+            'doai':(
+                datetime(2023, 1, 1), datetime(2023, 1, 1),
+                datetime(2023, 1, 1), datetime(2023, 1, 1))
+        }
+        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
+
+        self.create_bulk_activities(self.data_file, activities, 4)
+
+        # fields=['database record id', 'activity date', 'consumer account number',
+        # 'date of first delinquency', 'date of account information' ],
+        expected = [{
+            'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
+            'cons_acct_num': '0032', 'dofd': datetime(2015, 1, 1).date(),
+            'doai': datetime(2023, 1, 1).date()
+        }, {
+            'id': 33, 'activity_date': datetime(2019, 12, 31).date(),
+            'cons_acct_num': '0033', 'dofd': datetime(2015, 12, 31).date(),
+            'doai': datetime(2023, 1, 1).date()
+        }]
+        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-4', expected)
