@@ -3,7 +3,10 @@ from datetime import datetime
 from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
 from evaluate_m2.m2_evaluators.cat7_evals import evaluators as cat7_evals
-from parse_m2.models import AccountActivity, AccountHolder, J1, J2, K2, L1, M2DataFile
+from parse_m2.models import (
+    AccountActivity, AccountHolder, J1,
+    J2, K2, L1, M2DataFile, Metro2Event
+)
 
 class EvaluatorTestHelper():
     activity_date=datetime(2019, 12, 31)
@@ -106,8 +109,8 @@ class EvaluatorTestHelper():
             return  J2(account_activity=AccountActivity.objects.get(id=id), cons_info_ind=cons_info_ind)
 
     def create_k2(self, id: int, purch_sold_ind: str, purch_sold_name: str):
-        return  K2(account_activity=AccountActivity.objects.get(id=id), purch_sold_ind=purch_sold_ind,
-                   purch_sold_name=purch_sold_name)
+        return  K2(account_activity=AccountActivity.objects.get(id=id),
+                   purch_sold_ind=purch_sold_ind, purch_sold_name=purch_sold_name)
 
 
     def create_l1(self, id=1, change_ind='1', new_acc_num='9876543210',
@@ -115,19 +118,19 @@ class EvaluatorTestHelper():
         return  L1(account_activity=AccountActivity.objects.get(id=id),
                    change_ind=change_ind, new_acc_num=new_acc_num, new_id_num=new_id_num)
 
-    def assert_evaluator_correct(self, eval_name: str, expected_result: list[dict]):
+    def assert_evaluator_correct(self, event: Metro2Event, eval_name: str, expected_result: list[dict]):
         # Test that the evaluator:
         # 1. Name matches an evaluator in evaluators.py
         # 2. Is included in the list of evaluators to run
         # 3. Produces results in the expected format
         # 4. Triggers on the correct record
         evaluators_matching = 0
+        record_set = event.get_all_account_activity()
         for eval in self.evaluators:
             if eval.name == eval_name:
-                # This is left for debugging purposes to view the query
-                # print('\n\n', eval.func.query)
+                # print('\n\n', eval.func(record_set).query)
                 evaluators_matching += 1
-                output = eval.func
+                output = eval.func(record_set)
                 results = sorted(list(output), key=lambda x: x['id'])
                 expected = sorted(expected_result, key=lambda x: x['id'])
                 # print('\n\nRESULTS: ', results, '\n\n')

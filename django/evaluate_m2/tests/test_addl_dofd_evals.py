@@ -4,15 +4,15 @@ from datetime import datetime
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import K2, Metro2Event, M2DataFile
 
-class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
+class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self):
         # Create the parent records for the AccountActivity data
-        event = Metro2Event(name='test_exam')
-        event.save()
-        self.data_file = M2DataFile(event=event, file_name='file.txt')
+        self.event = Metro2Event(name='test_exam')
+        self.event.save()
+        self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
-        self.account_holders = self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V'))
+        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V'))
 
     ############################
     # Tests for the category addl dofd evaluators
@@ -24,11 +24,11 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
 
         # Create the Account Activities data
         activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W','V'),
+            'account_holder':('Z','Y','X','W'),
             'acct_stat':('71','97','11','65'),
             'dofd':(None,None,None,datetime(2019, 12, 31))}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
-        self.account_activity = self.create_bulk_activities(self.data_file, activities, 4)
+        self.create_bulk_activities(self.data_file, activities, 4)
 
         # Create the segment data
         expected = [{
@@ -44,7 +44,7 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
             'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }]
-        self.assert_evaluator_correct('ADDL-DOFD-1', expected)
+        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-1', expected)
 
     def test_eval_addl_dofd_2(self):
     # Hits when all conditions met:
@@ -59,8 +59,8 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
             'acct_stat':('13','13','11','13','13'),
             'dofd':(None,None,None,None,datetime(2019, 12, 31)),
             'pmt_rating':('1','2','3','0','L')}
-        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: pmt_rating=0, 5: NO-dofd=01012020
-        self.account_activity = self.create_bulk_activities(self.data_file, activities, 5)
+        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-pmt_rating=0, 5: NO-dofd=01012020
+        self.create_bulk_activities(self.data_file, activities, 5)
 
         # Create the segment data
         expected = [{
@@ -78,7 +78,7 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }]
-        self.assert_evaluator_correct('ADDL-DOFD-2', expected)
+        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-2', expected)
 
     def test_eval_addl_dofd_3(self):
     # Hits when all conditions met:
@@ -94,7 +94,7 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
             'dofd':(datetime(2019, 12, 31),datetime(2019, 12, 31),None,None,None),
             'pmt_rating':('0','0','0','3','0')}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: pmt_rating=3, 5: NO-dofd=01012020
-        self.account_activity = self.create_bulk_activities(self.data_file, activities, 5)
+        self.create_bulk_activities(self.data_file, activities, 5)
 
         # Create the segment data
         expected = [{
@@ -114,4 +114,4 @@ class TestAddlDofdEvals(TestCase, EvaluatorTestHelper):
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }]
-        self.assert_evaluator_correct('ADDL-DOFD-3', expected)
+        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-3', expected)

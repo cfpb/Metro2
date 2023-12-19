@@ -2,6 +2,7 @@ from django.test import TestCase
 import os
 from datetime import datetime
 
+from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import (
     Metro2Event,
     M2DataFile, AccountHolder, AccountActivity,
@@ -9,7 +10,7 @@ from parse_m2.models import (
 )
 
 
-class ParserUtilsTestCase(TestCase):
+class ParserModelsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self):
         self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')  # noqa E501
 
@@ -21,6 +22,50 @@ class ParserUtilsTestCase(TestCase):
             data_file = self.data_file, activity_date = self.activity_date)
         self.account_activity = AccountActivity(
             account_holder = self.account_holder, activity_date = self.activity_date)
+
+    def create_exam_activity(self):
+        # Create the Account Activities data
+        activities = {'id':(34,35),  'account_holder':('X','W'),
+                      'acct_type':('12','91'), 'cons_acct_num':('0034','0035'), 'credit_limit':(30,40), 'hcola':(-5,-5), 'port_type':('I','I'),
+                      'terms_dur':('15','20'), 'terms_freq':('P','D')}
+        # Create the parent records for the AccountActivity data for first event
+        event = Metro2Event(name='test_exam')
+        event.save()
+        file = M2DataFile(event=event, file_name='file.txt')
+        file.save()
+
+        # Create the Account Holders
+        self.create_bulk_account_holders(file, ('X','W'))
+        self.create_bulk_activities(file, activities, 2)
+
+        # Create the second exam Account Activities data
+        activities2 = {'id':(32,33),
+                      'account_holder':('Z','Y'), 'acct_type':('00','3A'),
+                      'cons_acct_num':('0032','0033'), 'credit_limit':(10,20),
+                      'hcola':(-1,-1), 'port_type':('I','M'),
+                      'terms_dur':('5','10'),  'terms_freq':('P','W')}
+        # Create the parent records for the AccountActivity data for second event
+        event_2 = Metro2Event(name='test_exam2')
+        event_2.save()
+        file2 = M2DataFile(event=event_2, file_name='file2.txt')
+        file2.save()
+        # Create the Account Holders
+        self.create_bulk_account_holders(file2, ('Z','Y'))
+        self.create_bulk_activities(file2, activities2, 2)
+
+    def test_metro2_event_get_all_account_activity_returns_results(self):
+        self.create_exam_activity()
+        event = Metro2Event.objects.get(name='test_exam')
+        result = event.get_all_account_activity()
+
+        self.assertEqual(2, len(result))
+
+    def test_get_all_account_activity_returns_no_results(self):
+        self.create_exam_activity()
+        event = Metro2Event(name="test_exam")
+        result = event.get_all_account_activity()
+
+        self.assertEqual(0, len(result))
 
     def test_parse_account_holder(self):
         with open(self.base_seg) as file:
