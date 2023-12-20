@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from datetime import datetime
+from datetime import date
 from evaluate_m2.evaluate import evaluator
 from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd
 from evaluate_m2.models import EvaluatorMetaData, EvaluatorResult, EvaluatorResultSummary
@@ -18,23 +18,23 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         # Create the Account Holders
         self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
         self.expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
+            'id': 32, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0032', 'acct_stat': '71', 'dofd': None,
             'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(),
+            'id': 33, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0033', 'acct_stat': '97', 'dofd': None,
             'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }]
         self.unexpected = {
-            'id': 36, 'activity_date': datetime(2019, 12, 31).date(),
+            'id': 36, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0036', 'acct_stat': '71', 'dofd': None,
             'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }
 
@@ -60,7 +60,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
             'account_holder':('Z','Y','X','W'),
             'acct_stat':('71','97','11','65'),
-            'dofd':(None,None,None,datetime(2019, 12, 31))}
+            'dofd':(None,None,None,date(2019, 12, 31))}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
         self.create_bulk_activities(self.data_file, activities, 4)
 
@@ -76,7 +76,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
             'cons_acct_num':('0032','0033','0034','0035'),
             'account_holder':('Z','Y','X','W'),
             'acct_stat':('71','13','11','97'),
-            'dofd':(None,None,datetime(2019, 12, 31),None),
+            'dofd':(None,None,date(2019, 12, 31),None),
             'pmt_rating':('1','2','0','L')}
         # 1: Evaluator1 - HIT, 2: Evaluator2 - HIT,
         # 3: NO HIT 4: Evaluator1 - HIT
@@ -106,7 +106,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         activities = { 'id':(32,33,34), 'cons_acct_num':('0032','0033','0034'),
             'account_holder':('Z','Y','X'),
             'acct_stat':('71','66','65'),
-            'dofd':(None,None,datetime(2019, 12, 31))}
+            'dofd':(None,None,date(2019, 12, 31))}
         # 1: HIT, 2: NO-acct_stat=66, 3: NO-acct_stat=11, 4: NO-dofd=01012020
         self.create_bulk_activities(self.data_file, activities, 3)
 
@@ -129,7 +129,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
             'account_holder':('Z','Y','X','W'),
             'acct_stat':('71','97','11','65'),
-            'dofd':(None,None,None,datetime(2019, 12, 31))}
+            'dofd':(None,None,None,date(2019, 12, 31))}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
         self.create_bulk_activities(self.data_file, activities, 4)
 

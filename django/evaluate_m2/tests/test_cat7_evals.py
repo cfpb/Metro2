@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from datetime import datetime
+from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import K2, Metro2Event, M2DataFile
 
@@ -52,13 +52,13 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_data(activities, 4)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'C', 'acct_stat': '71', 'amt_past_due': 0, 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': 'a'
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'AX', 'acct_stat': '11', 'amt_past_due': 9, 'current_bal': 9,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event,
@@ -78,13 +78,13 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_data(activities, 4)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'C', 'acct_stat': '71', 'amt_past_due': 0, 'current_bal': 200,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': 'a'
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'AX', 'acct_stat': '11', 'amt_past_due': 9, 'current_bal': -9,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, '7-1B-SCC Indicates Paid But Account Has Current Balance',
@@ -104,13 +104,13 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_data(activities, 4)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'C', 'acct_stat': '71', 'amt_past_due': 200, 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': 'a'
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'AX', 'acct_stat': '11', 'amt_past_due': 9, 'current_bal': 9,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, '7-1C-SCC Indicates Paid But Account Has Amount Past Due',
@@ -130,13 +130,13 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_data(activities, 4)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'AT', 'acct_stat': '71', 'amt_past_due': 0, 'current_bal': 200,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': 'a'
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'O', 'acct_stat': '11', 'amt_past_due': 9, 'current_bal': 9,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, '7-Transferred/purchased but account has balance', expected)
@@ -155,14 +155,14 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_other_segments()
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'account_holder__cons_info_ind': 'Z', 'spc_com_cd': 'AT', 'acct_stat': '71', 'amt_past_due': 200,
-            'current_bal': 0, 'date_closed': datetime(2020, 1, 1).date(), 'j1__cons_info_ind': 'a1',
+            'current_bal': 0, 'date_closed': date(2020, 1, 1), 'j1__cons_info_ind': 'a1',
             'j2__cons_info_ind': 'a2', 'k2__purch_sold_ind': 'a', 'l1__change_ind': '1'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'account_holder__cons_info_ind': 'Y', 'spc_com_cd': 'O', 'acct_stat': '11', 'amt_past_due': -9,
-            'current_bal': 9, 'date_closed': datetime(2020, 1, 1).date(), 'j1__cons_info_ind': None,
+            'current_bal': 9, 'date_closed': date(2020, 1, 1), 'j1__cons_info_ind': None,
             'j2__cons_info_ind': None, 'k2__purch_sold_ind': None, 'l1__change_ind': None
         }]
 
@@ -183,13 +183,13 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_data(activities, 4)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'BD', 'acct_stat': '71', 'acct_type': '08','amt_past_due': 200, 'current_bal': -1,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': 'a'
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'BK', 'acct_stat': '11',  'acct_type': '26','amt_past_due': 9, 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, '7-Terminated owing balance, but no current balance', expected)
@@ -207,13 +207,13 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         # 1: HIT, 2: HIT, 3: NO-spc_com_cd=AI, 4: NO-amt_past_due=1
         self.create_data(activities, 4)
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'BD', 'acct_stat': '71', 'acct_type': '08','amt_past_due': -200, 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': 'a'
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'BK', 'acct_stat': '11',  'acct_type': '26','amt_past_due': 0, 'current_bal': 9,
-            'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
+            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, '7-Terminated owing balance, but no APD', expected)
@@ -232,13 +232,13 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_data(activities, 4)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'BC', 'acct_stat': '71', 'acct_type': '08','amt_past_due': 0,
-            'current_bal': 200, 'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': 'a'
+            'current_bal': 200, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'BJ', 'acct_stat': '11',  'acct_type': '26','amt_past_due': 9,
-            'current_bal': -9, 'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
+            'current_bal': -9, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, '7-Account satisfied but has balance', expected)
@@ -257,13 +257,13 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_data(activities, 4)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032',
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'BC', 'acct_stat': '71', 'acct_type': '08','amt_past_due': 200,
-            'current_bal': 0, 'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': 'a'
+            'current_bal': 0, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0033',
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'BJ', 'acct_stat': '11',  'acct_type': '26','amt_past_due': -9,
-            'current_bal': 9, 'date_closed': datetime(2020, 1, 1).date(), 'k2__purch_sold_ind': None
+            'current_bal': 9, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, "7-Account satisfied but has APD", expected)
