@@ -27,6 +27,9 @@ class EvaluatorMetaData(models.Model):
     def set_func(self, func = None):
         self.func = func
 
+    def __str__(self) -> str:
+        return self.name
+
 class EvaluatorResultSummary(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     evaluator = models.ForeignKey(EvaluatorMetaData, on_delete=models.CASCADE)
