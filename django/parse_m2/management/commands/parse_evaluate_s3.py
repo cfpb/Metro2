@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from evaluate_m2.evaluate import evaluator
 from parse_m2.initiate_parsing import parse_files_from_s3_bucket
 from parse_m2.models import Metro2Event
 
@@ -35,8 +36,8 @@ class Command(BaseCommand):
             self.style.SUCCESS(f"Created event ID: {event_record.id}. Finished parsing data for event: {event_name}.")
         )
 
-        # self.stdout.write(f"Beginning evaluators for {event_name}.")
-        # run_evaluators(event_record)
-        # self.stdout.write(
-        #     self.style.SUCCESS(f"Finished running evaluators for {event_name} and saving results.")
-        # )
+        self.stdout.write(f"Beginning evaluators for {event_name}.")
+        evaluator.run_evaluators(event_record)
+        self.stdout.write(
+            self.style.SUCCESS(f"Finished running evaluators for {event_name} and saving results.")
+        )

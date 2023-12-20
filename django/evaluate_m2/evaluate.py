@@ -25,9 +25,6 @@ class Evaluate():
         # For this event, all evaluators run on the same set of records
         record_set = event.get_all_account_activity()
         for evaluator in self.evaluators:
-            # Generate evaluator metadata and save before accessed to generate
-            # the evaluator results summary
-            evaluator.save()
             results = evaluator.func(record_set)
             if results:
                 # generate evaluator results summary and save before accessed to generate
