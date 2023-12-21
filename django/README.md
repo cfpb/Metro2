@@ -19,11 +19,11 @@ Another way to interact with the codebase is via the django shell.
 [Here's a useful resource](https://studygyaan.com/django/django-shell-tutorial-explore-your-django-project) on how the django shell can be useful for development.
 To use it, run `docker-compose exec django sh` to enter the running container, then use `python manage.py shell` to start the interactive python console for this project.
 
-### Using the django shell to parse files from local filesystem
+### Parsing files from the local filesystem
 First, enter the django container by running `docker-compose exec django sh`.
 Next, you can run `python manage.py parse_local -e [event_name] -d [local_data_directory]` to parse the files from the provided directory. You can also use `python manage.py parse_local -h` for the help text.
 
-### Using the django shell to run the evaluators
+### Run the evaluators from the local filesystem
 First, enter the django container by running `docker-compose exec django sh`.
 Next, you can run `python manage.py run_evaluators -e [event_ID]` to run the evaluators on a dataset associated to the provided event. If there are existing results for this event, the previous results will be deleted before running the evaluator. You can also use `python manage.py run_evaluators -h` for the help text.
 
