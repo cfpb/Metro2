@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from datetime import date, datetime
+from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import Metro2Event, M2DataFile
 
@@ -26,22 +26,22 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
             'account_holder':('Z','Y','X','W'),
             'acct_stat':('71','97','11','65'),
-            'dofd':(None,None,None,datetime(2019, 12, 31))}
+            'dofd':(None,None,None,date(2019, 12, 31))}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
         self.create_bulk_activities(self.data_file, activities, 4)
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
+            'id': 32, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0032', 'acct_stat': '71', 'dofd': None,
             'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(),
+            'id': 33, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0033', 'acct_stat': '97', 'dofd': None,
             'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(), 'orig_chg_off_amt': 0,
+            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }]
         self.assert_evaluator_correct(self.event, 'ADDL-DOFD-1', expected)
@@ -57,24 +57,24 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'cons_acct_num':('0032','0033','0034','0035', '0036'),
             'account_holder':('Z','Y','X','W','V'),
             'acct_stat':('13','13','11','13','13'),
-            'dofd':(None,None,None,None,datetime(2019, 12, 31)),
+            'dofd':(None,None,None,None,date(2019, 12, 31)),
             'pmt_rating':('1','2','3','0','L')}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-pmt_rating=0, 5: NO-dofd=01012020
         self.create_bulk_activities(self.data_file, activities, 5)
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
+            'id': 32, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0032', 'acct_stat': '13', 'dofd': None,
             'pmt_rating':'1', 'amt_past_due': 0, 'compl_cond_cd':'0',
-            'current_bal': 0, 'date_closed': datetime(2020, 1, 1).date(),
+            'current_bal': 0, 'date_closed': date(2020, 1, 1),
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(),
+            'id': 33, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0033', 'acct_stat': '13', 'dofd': None,
             'pmt_rating':'2', 'amt_past_due': 0, 'compl_cond_cd':'0',
-            'current_bal': 0, 'date_closed': datetime(2020, 1, 1).date(),
+            'current_bal': 0, 'date_closed': date(2020, 1, 1),
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }]
@@ -91,26 +91,26 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'cons_acct_num':('0032','0033','0034','0035', '0036'),
             'account_holder':('Z','Y','X','W','V'),
             'acct_stat':('13','13','11','13','13'),
-            'dofd':(datetime(2019, 12, 31),datetime(2019, 12, 31),None,None,None),
+            'dofd':(date(2019, 12, 31),date(2019, 12, 31),None,None,None),
             'pmt_rating':('0','0','0','3','0')}
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: pmt_rating=3, 5: NO-dofd=01012020
         self.create_bulk_activities(self.data_file, activities, 5)
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(),
+            'id': 32, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0032', 'acct_stat': '13',
-            'dofd': datetime(2019, 12, 31).date(), 'pmt_rating':'0',
+            'dofd': date(2019, 12, 31), 'pmt_rating':'0',
             'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(),
+            'date_closed': date(2020, 1, 1),
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }, {
-            'id': 33, 'activity_date': datetime(2019, 12, 31).date(),
+            'id': 33, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0033', 'acct_stat': '13',
-            'dofd': datetime(2019, 12, 31).date(), 'pmt_rating':'0',
+            'dofd': date(2019, 12, 31), 'pmt_rating':'0',
             'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': datetime(2020, 1, 1).date(),
+            'date_closed': date(2020, 1, 1),
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }]

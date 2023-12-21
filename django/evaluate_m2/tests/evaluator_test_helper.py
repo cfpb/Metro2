@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
@@ -9,8 +9,7 @@ from parse_m2.models import (
 )
 
 class EvaluatorTestHelper():
-    activity_date=datetime(2019, 12, 31)
-    date=datetime(2020, 1, 1)
+    activity_date=date(2019, 12, 31)
     evaluators = addl_dofd_evals + cat7_evals + cat12_evals
 
     def create_bulk_account_holders(self, file: M2DataFile, cons_info_ind_list: tuple):
@@ -38,7 +37,7 @@ class EvaluatorTestHelper():
                 acct_type=value_list['acct_type'][i]
                     if "acct_type" in value_list else '00',
                 activity_date=value_list['activity_date'][i]
-                    if "activity_date" in value_list else datetime(2019, 12, 31),
+                    if "activity_date" in value_list else date(2019, 12, 31),
                 actual_pmt_amt=value_list['actual_pmt_amt'][i]
                     if "actual_pmt_amt" in value_list else 0,
                 amt_past_due=value_list['amt_past_due'][i]
@@ -52,13 +51,13 @@ class EvaluatorTestHelper():
                 current_bal=value_list['current_bal'][i]
                     if "current_bal" in value_list else 0,
                 date_closed=value_list['date_closed'][i]
-                    if "date_closed" in value_list else datetime(2020, 1, 1),
+                    if "date_closed" in value_list else date(2020, 1, 1),
                 date_open=value_list['date_open'][i]
-                    if "date_open" in value_list else datetime(2020, 1, 1),
+                    if "date_open" in value_list else date(2020, 1, 1),
                 doai=value_list['doai'][i]
-                    if "doai" in value_list else datetime(2020, 1, 1),
+                    if "doai" in value_list else date(2020, 1, 1),
                 dofd=value_list['dofd'][i]
-                    if "dofd" in value_list else datetime(2020, 1, 1),
+                    if "dofd" in value_list else date(2020, 1, 1),
                 hcola=value_list['hcola'][i]
                     if "hcola" in value_list else 0,
                 orig_chg_off_amt=value_list['orig_chg_off_amt'][i]
@@ -85,10 +84,10 @@ class EvaluatorTestHelper():
             cons_info_ind=cons_info_ind)
 
     def create_acct_activity(self, id: int, account_holder: AccountHolder,
-        acct_stat: str, acct_type: str, activity_date: datetime, actual_pmt_amt: int,
+        acct_stat: str, acct_type: str, activity_date: date, actual_pmt_amt: int,
         amt_past_due: int, cons_acct_num: int, compl_cond_cd: int, credit_limit: int,
-        current_bal: int, date_closed: datetime, date_open: datetime, doai: datetime,
-        dofd: datetime, hcola: int, orig_chg_off_amt: int, pmt_rating: str,
+        current_bal: int, date_closed: date, date_open: date, doai: date,
+        dofd: date, hcola: int, orig_chg_off_amt: int, pmt_rating: str,
         port_type: str, smpa: int, spc_com_cd: str, terms_dur: str, terms_freq: str,):
 
         return AccountActivity(

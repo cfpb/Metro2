@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from datetime import datetime
+from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import Metro2Event, M2DataFile
 
@@ -40,10 +40,10 @@ class Cat12_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_bulk_activities(self.data_file, activities, 6)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032', 'acct_type': '00', 'port_type': 'I', 'hcola': -1,
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032', 'acct_type': '00', 'port_type': 'I', 'hcola': -1,
             'terms_freq': 'P', 'credit_limit': 10, 'terms_dur': '5'
         }, {
-            'id': 36, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0036', 'acct_type': '00', 'port_type': 'I', 'hcola': 0,
+            'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '00', 'port_type': 'I', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
         self.assert_evaluator_correct(self.event, '12-Installment loan no HCOLA', expected)
@@ -69,10 +69,10 @@ class Cat12_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_bulk_activities(self.data_file, activities, 6)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032', 'acct_type': '08', 'port_type': 'M', 'hcola': -1,
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032', 'acct_type': '08', 'port_type': 'M', 'hcola': -1,
             'terms_freq': 'P', 'credit_limit': 10, 'terms_dur': '5'
         }, {
-            'id': 36, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0036', 'acct_type': '2C', 'port_type': 'M', 'hcola': 0,
+            'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '2C', 'port_type': 'M', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
         self.assert_evaluator_correct(self.event, '12-Mortgage no HCOLA', expected)
@@ -99,10 +99,10 @@ class Cat12_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_bulk_activities(self.data_file, activities, 6)
 
         expected = [{
-            'id': 32, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0032', 'acct_type': '0C', 'port_type': 'O', 'hcola': -1,
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032', 'acct_type': '0C', 'port_type': 'O', 'hcola': -1,
             'terms_freq': 'P', 'credit_limit': 10, 'terms_dur': '5'
         }, {
-            'id': 36, 'activity_date': datetime(2019, 12, 31).date(), 'cons_acct_num': '0036', 'acct_type': '0C', 'port_type': 'O', 'hcola': 0,
+            'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '0C', 'port_type': 'O', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
         self.assert_evaluator_correct(self.event, "12-Open no HCOLA", expected)
