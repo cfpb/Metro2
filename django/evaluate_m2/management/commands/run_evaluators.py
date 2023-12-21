@@ -5,7 +5,6 @@ from evaluate_m2.evaluate import evaluator
 from parse_m2.models import Metro2Event
 
 
-
 class Command(BaseCommand):
     """
     Run this command by running the following:
