@@ -19,6 +19,14 @@ Another way to interact with the codebase is via the django shell.
 [Here's a useful resource](https://studygyaan.com/django/django-shell-tutorial-explore-your-django-project) on how the django shell can be useful for development.
 To use it, run `docker-compose exec django sh` to enter the running container, then use `python manage.py shell` to start the interactive python console for this project.
 
+### Parsing files from the local filesystem
+First, enter the django container by running `docker-compose exec django sh`.
+Next, you can run `python manage.py parse_local -e [event_name] -d [local_data_directory]` to parse the files from the provided directory. You can also use `python manage.py parse_local -h` for the help text.
+
+### Run the evaluators from the local filesystem
+First, enter the django container by running `docker-compose exec django sh`.
+Next, you can run `python manage.py run_evaluators -e [event_ID]` to run the evaluators on a dataset associated to the provided event. If there are existing results for this event, the previous results will be deleted before running the evaluator. You can also use `python manage.py run_evaluators -h` for the help text.
+
 ### Using the django administrator interface
 First you'll need to create an admin account. (TODO: maybe we could automate this).
 Note that if you've already done this, the account will still exist, unless you've deleted your local database.
@@ -38,6 +46,16 @@ Instructions for running locally (for now):
 3. `./django/manage.py migrate`
 4. If you want to run the server: `./django/run-local.sh`, then visit localhost:8000/admin to log in to the admin site
 5. If you want to access the python console for the project: `./manage.py shell`
+
+To parse files from local filesystem:
+1. Navigate to the metro2 project django directory, `cd django/`
+2. Run the parser: `python manage.py parse_local -e [event_name] -d [local_data_directory]`
+3. See the help for command: `python manage.py parse_local -h`
+
+To run evaluators on a dataset:
+1. Navigate to the metro2 project django directory, `cd django/`
+2. Run the parser: `python manage.py run_evaluators -e [event_ID]`
+3. See the help for command: `python manage.py run_evaluators -h`
 
 To run the lint checks:
 1. `ruff check django/`
