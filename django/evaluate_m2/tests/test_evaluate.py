@@ -3,7 +3,7 @@ from django.test import TestCase
 from datetime import date
 from evaluate_m2.evaluate import evaluator
 from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd
-from evaluate_m2.models import EvaluatorMetaData, EvaluatorResult, EvaluatorResultSummary
+from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
 
@@ -49,7 +49,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         # empty lists for results and metadata
         self.assertEqual(0, EvaluatorResult.objects.count())
         self.assertEqual(0, EvaluatorResultSummary.objects.count())
-        self.assertEqual(0, EvaluatorMetaData.objects.count())
+        self.assertEqual(0, EvaluatorMetadata.objects.count())
 
     def test_run_evaluators_produces_results(self):
         # should correctly insert one statement and one metadata statement
@@ -85,7 +85,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         evaluator.evaluators[1].save()
         evaluator.run_evaluators(self.event)
         self.assertEqual(2, EvaluatorResultSummary.objects.count())
-        self.assertEqual(2, EvaluatorMetaData.objects.count())
+        self.assertEqual(2, EvaluatorMetadata.objects.count())
 
         # first evaluator metadata and results
         self.assertEqual(2, EvaluatorResultSummary.objects.get(
@@ -116,7 +116,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         result_summary.save()
         return_value = evaluator.prepare_result(result_summary, self.expected[0])
 
-        self.assertEqual(EvaluatorMetaData.objects.get(name=evl.name),
+        self.assertEqual(EvaluatorMetadata.objects.get(name=evl.name),
                          return_value.result_summary.evaluator)
         self.assertEqual(self.expected[0]['activity_date'], return_value.date)
         self.assertEqual(AccountActivity.objects.get(id=self.expected[0]['id']),
@@ -142,7 +142,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
 
     def test_run_evaluators_missing_parameter_raises_exception(self):
         # should raise an exception when the source_record does not exist
-        evl =EvaluatorMetaData(name='Test')
+        evl =EvaluatorMetadata(name='Test')
         evl.set_func(func=self.set_mock_function)
         evaluator.evaluators = [evl]
 

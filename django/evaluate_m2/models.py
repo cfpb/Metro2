@@ -5,7 +5,7 @@ from django.db.models import JSONField
 from parse_m2.models import AccountActivity, Metro2Event
 
 
-class EvaluatorMetaData(models.Model):
+class EvaluatorMetadata(models.Model):
     # id is auto-numbered
     name = models.CharField(max_length=200, blank=False)
     description = models.TextField(blank=True)  # plain language description
@@ -32,7 +32,7 @@ class EvaluatorMetaData(models.Model):
 
 class EvaluatorResultSummary(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
-    evaluator = models.ForeignKey(EvaluatorMetaData, on_delete=models.CASCADE)
+    evaluator = models.ForeignKey(EvaluatorMetadata, on_delete=models.CASCADE)
     hits = models.IntegerField()
 
 class EvaluatorResult(models.Model):
