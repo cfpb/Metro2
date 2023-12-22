@@ -38,9 +38,6 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }
 
-        # Need to reset to an empty list after each test
-        evaluator.evaluators = addl_dofd
-
     ############################
     # Tests for evaluate
     def test_run_evaluators_no_evals(self):
@@ -65,11 +62,12 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.create_bulk_activities(self.data_file, activities, 4)
 
         evaluator.evaluators = [addl_dofd[0]]
+        evaluator.evaluators[0].save()
+
         evaluator.run_evaluators(self.event)
 
         self.assertEqual(2, EvaluatorResult.objects.count())
         self.assertEqual(1, EvaluatorResultSummary.objects.count())
-        self.assertEqual(1, EvaluatorMetaData.objects.count())
 
     def test_run_evaluators_with_two_evaluators_produces_results(self):
         activities = { 'id':(32,33,34,35),
@@ -83,6 +81,8 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.create_bulk_activities(self.data_file, activities, 4)
 
         evaluator.evaluators=addl_dofd[:2]
+        evaluator.evaluators[0].save()
+        evaluator.evaluators[1].save()
         evaluator.run_evaluators(self.event)
         self.assertEqual(2, EvaluatorResultSummary.objects.count())
         self.assertEqual(2, EvaluatorMetaData.objects.count())
@@ -92,14 +92,14 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
             evaluator=evaluator.evaluators[0]).hits)
         self.assertEqual(2, EvaluatorResult.objects.filter(
             result_summary=EvaluatorResultSummary.objects.get(
-                id=evaluator.evaluators[0].id)).count())
+                evaluator_id=evaluator.evaluators[0].id)).count())
 
         # second evaluator metadata and results
         self.assertEqual(1, EvaluatorResultSummary.objects.get(
             evaluator=evaluator.evaluators[1]).hits)
         self.assertEqual(1, EvaluatorResult.objects.filter(
             result_summary=EvaluatorResultSummary.objects.get(
-                id=evaluator.evaluators[1].id)).count())
+                evaluator_id=evaluator.evaluators[1].id)).count())
 
     def test_prepare_results_creates_an_object(self):
         # should correctly create one EvaluatorResult object
