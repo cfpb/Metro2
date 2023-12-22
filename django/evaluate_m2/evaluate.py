@@ -1,6 +1,6 @@
 import logging
 
-from evaluate_m2.models import EvaluatorMetaData, EvaluatorResult, EvaluatorResultSummary
+from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
 from evaluate_m2.m2_evaluators.cat7_evals import evaluators as cat7_evals
 from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
@@ -49,7 +49,7 @@ class Evaluate():
             field_values=data
         )
 
-    def prepare_result_summary(self, event: Metro2Event, evaluator: EvaluatorMetaData,
+    def prepare_result_summary(self, event: Metro2Event, evaluator: EvaluatorMetadata,
                                data: list[dict]) -> EvaluatorResultSummary:
         return EvaluatorResultSummary(
             event=event,
