@@ -1,0 +1,43 @@
+import csv
+from django.core.management.base import BaseCommand
+from evaluate_m2.models import EvaluatorMetadata
+
+class Command(BaseCommand):
+    """
+    Run this command by running the following:
+    > python manage.py import_evaluator_metadata -f [file_path]
+    """
+    help =  "Imports the evaluator metadata in the given CSV " + \
+            "and saves it in the EvaluatorMetadata table in the database."
+
+    default_directory = "evaluate_m2/m2_evaluators/eval_metadata.csv"
+
+    def add_arguments(self, argparser):
+        dir_help = "Location of the evaluator metadata file relative to " + \
+            f"the `/django` directory. Defaults to {self.default_directory}."
+
+        argparser.add_argument("-f", "--file_path", nargs="?", required=False, help=dir_help)
+
+    def handle(self, *args, **options):
+        file_path = options["file_path"]
+
+        if not file_path:
+            file_path = self.default_directory
+
+        with open(file_path, mode='r', encoding='utf-8-sig') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                EvaluatorMetadata(
+                    name = row["name"],
+                    description = row["description"],
+                    long_description = row["long_description"],
+                    fields_used = row["fields_used"],
+                    fields_display = row["fields_display"],
+                    ipl = row["ipl"],
+                    crrg_topics = row["crrg_topics"],
+                    crrg_page = row["crrg_page"],
+                    pdf_page = row["pdf_page"],
+                    use_notes = row["use_notes"],
+                    alternative_explanation = row["alternative_explanation"],
+                    risk_level = row["risk_level"],
+                ).save()
