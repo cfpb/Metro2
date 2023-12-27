@@ -30,17 +30,4 @@ class Command(BaseCommand):
         with open(file_path, mode='r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                EvaluatorMetadata(
-                    name = row["name"],
-                    description = row["description"],
-                    long_description = row["long_description"],
-                    fields_used = row["fields_used"],
-                    fields_display = row["fields_display"],
-                    ipl = row["ipl"],
-                    crrg_topics = row["crrg_topics"],
-                    crrg_page = row["crrg_page"],
-                    pdf_page = row["pdf_page"],
-                    use_notes = row["use_notes"],
-                    alternative_explanation = row["alternative_explanation"],
-                    risk_level = row["risk_level"],
-                ).save()
+                EvaluatorMetadata.create_from_dict(row)

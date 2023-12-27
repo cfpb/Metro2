@@ -30,6 +30,25 @@ class EvaluatorMetadata(models.Model):
     def __str__(self) -> str:
         return self.name
 
+    @classmethod
+    def create_from_dict(cls, json: dict):
+        eval = cls(
+            name = json["name"],
+            description = json["description"],
+            long_description = json["long_description"],
+            fields_used = json["fields_used"],
+            fields_display = json["fields_display"],
+            ipl = json["ipl"],
+            crrg_topics = json["crrg_topics"],
+            crrg_page = json["crrg_page"],
+            pdf_page = json["pdf_page"],
+            use_notes = json["use_notes"],
+            alternative_explanation = json["alternative_explanation"],
+            risk_level = json["risk_level"],
+        )
+        eval.save()
+        return eval
+
 class EvaluatorResultSummary(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     evaluator = models.ForeignKey(EvaluatorMetadata, on_delete=models.CASCADE)
