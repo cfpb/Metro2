@@ -8,7 +8,8 @@ class Command(BaseCommand):
     > python manage.py import_evaluator_metadata -f [file_path]
     """
     help =  "Imports the evaluator metadata in the given CSV " + \
-            "and saves it in the EvaluatorMetadata table in the database."
+            "and saves it in the EvaluatorMetadata table in the database. " + \
+            "If any already exist in the database, they will be deleted and replaced."
 
     default_directory = "evaluate_m2/m2_evaluators/eval_metadata.csv"
 
@@ -23,6 +24,8 @@ class Command(BaseCommand):
 
         if not file_path:
             file_path = self.default_directory
+
+        EvaluatorMetadata.objects.all().delete()
 
         with open(file_path, mode='r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
