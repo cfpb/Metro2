@@ -25,9 +25,14 @@ class Command(BaseCommand):
         if not file_path:
             file_path = self.default_directory
 
+        self.stdout.write(f"Deleting {EvaluatorMetadata.objects.count()} existing evaluators from the system.")
         EvaluatorMetadata.objects.all().delete()
 
         with open(file_path, mode='r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 EvaluatorMetadata.create_from_dict(row)
+
+        self.stdout.write(
+            self.style.SUCCESS(f"Finished importing {EvaluatorMetadata.objects.count()} evaluators.")
+        )
