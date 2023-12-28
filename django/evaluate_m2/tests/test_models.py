@@ -34,3 +34,28 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
         # check that the properties are correct
         self.assertEqual(eval.name, input_json['name'])
         self.assertEqual(eval.fields_display, input_json['fields_display'])
+
+    def test_serialize_eval(self):
+        eval1 = EvaluatorMetadata(
+            name = "Betsy Test 1",
+            description = "My test evaluator",
+            fields_used = ["credit limit", "date closed"],
+            crrg_page = "444",
+            risk_level = "Low"
+        )
+
+        expected = [
+            "Betsy Test 1",             # self.name
+            "My test evaluator",        # self.description
+            "",                         # self.long_description
+            "credit limit;date closed", # self.fields_used
+            "",                         # self.fields_display
+            "",                         # self.ipl
+            "",                         # self.crrg_topics
+            "444",                      # self.crrg_page
+            "",                         # self.pdf_page
+            "",                         # self.use_notes
+            "",                         # self.alternative_explanation
+            "Low",                      # self.risk_level
+        ]
+        self.assertEqual(eval1.serialize(), expected)
