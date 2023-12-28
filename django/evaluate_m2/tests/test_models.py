@@ -33,7 +33,7 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
         self.assertIsNotNone(eval.id)
         # check that the properties are correct
         self.assertEqual(eval.name, input_json['name'])
-        self.assertEqual(eval.fields_display, input_json['fields_display'])
+        self.assertEqual(eval.fields_used, ["account status", "date of first delinquency"])
 
     def test_serialize_eval(self):
         eval1 = EvaluatorMetadata(
