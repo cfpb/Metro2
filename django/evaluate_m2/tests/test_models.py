@@ -12,3 +12,25 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
         evl.set_func(func=self.mock_function)
 
         self.assertEqual(self.mock_function, evl.func)
+
+    def test_eval_create_from_dict(self):
+        input_json = {
+            'name': 'ADDL-DOFD-1',
+            'description': 'Account status indicates a delinquent, or paid and previously delinquent, account but there is no date of first delinquency.',
+            'long_description': '',
+            'fields_used': 'account status;date of first delinquency',
+            'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            'ipl': '',
+            'crrg_topics': '',
+            'crrg_page': '41',
+            'pdf_page': '',
+            'use_notes': '',
+            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'risk_level': 'High'
+        }
+        eval = EvaluatorMetadata.create_from_dict(input_json)
+        # check that the evaluator was saved in the database
+        self.assertIsNotNone(eval.id)
+        # check that the properties are correct
+        self.assertEqual(eval.name, input_json['name'])
+        self.assertEqual(eval.fields_display, input_json['fields_display'])
