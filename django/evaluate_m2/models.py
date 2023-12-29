@@ -32,7 +32,8 @@ class EvaluatorMetadata(models.Model):
 
     @classmethod
     def create_from_dict(cls, json: dict):
-        eval = cls(
+        # using .create means we don't have to call .save manually
+        return cls.objects.create(
             name=json["name"],
             description=json["description"],
             long_description=json["long_description"],
@@ -46,8 +47,6 @@ class EvaluatorMetadata(models.Model):
             alternative_explanation=json["alternative_explanation"],
             risk_level=json["risk_level"],
         )
-        eval.save()
-        return eval
 
     csv_header = [
             "name",
