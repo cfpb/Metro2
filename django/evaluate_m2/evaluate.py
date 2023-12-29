@@ -21,9 +21,8 @@ class Evaluate():
         """
         logger = logging.getLogger('evaluate.run_evaluators')
 
-        # run evaluators
-        # For this event, all evaluators run on the same set of records
         record_set = event.get_all_account_activity()
+        # run evaluators
         for eval_name, func in self.evaluators.items():
             results = func(record_set)
             if results:
