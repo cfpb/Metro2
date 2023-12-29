@@ -10,8 +10,8 @@ from parse_m2.models import Metro2Event
 class Evaluate():
     def __init__(self):
         #  When evaluators are provided by additional files, add them here
-        #   e.g. self.evaluators = cat7_evals + cat9_evals + ...
-        self.evaluators = cat7_evals + cat12_evals + addl_dofd_evals
+        #   e.g. self.evaluators = cat7_evals | cat9_evals | ...
+        self.evaluators = addl_dofd_evals | cat7_evals | cat12_evals
 
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):
@@ -24,17 +24,15 @@ class Evaluate():
         # run evaluators
         # For this event, all evaluators run on the same set of records
         record_set = event.get_all_account_activity()
-        for evaluator in self.evaluators:
-            results = evaluator.func(record_set)
+        for eval_name, func in self.evaluators.items():
+            results = func(record_set)
             if results:
                 # generate evaluator results summary and save before accessed to generate
                 # the evaluator results
-                result_summary = self.prepare_result_summary(event, evaluator, results)
-                result_summary.save()
+                result_summary = self.prepare_result_summary(event, eval_name, results)
                 evaluator_results = list()
                 for row_data in results:
-                    result=self.prepare_result(result_summary,
-                        row_data)
+                    result=self.prepare_result(result_summary, row_data)
                     evaluator_results.append(result)
                 if (len(evaluator_results) > 0):
                     EvaluatorResult.objects.bulk_create(evaluator_results)
@@ -49,11 +47,24 @@ class Evaluate():
             field_values=data
         )
 
-    def prepare_result_summary(self, event: Metro2Event, evaluator: EvaluatorMetadata,
+    def prepare_result_summary(self, event: Metro2Event, eval_name: str,
                                data: list[dict]) -> EvaluatorResultSummary:
-        return EvaluatorResultSummary(
+        """
+        If an EvaluatorMetadata record already exists in the database with this name,
+        associate the results with that record. If one does not exist, create it.
+
+        Ideally, every evaluator function should already have an associated EvalMetadata
+        record, so the "except" clause here is just a failsafe in case we messed up
+        the Metadata import.
+        """
+        try:
+            eval_metadata = EvaluatorMetadata.objects.get(name=eval_name)
+        except EvaluatorMetadata.DoesNotExist:
+            eval_metadata = EvaluatorMetadata.objects.create(name=eval_name)
+
+        return EvaluatorResultSummary.objects.create(
             event=event,
-            evaluator=evaluator,
+            evaluator=eval_metadata,
             hits=len(data)
         )
 

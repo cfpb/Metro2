@@ -24,9 +24,6 @@ class EvaluatorMetadata(models.Model):
 
     func: any
 
-    def set_func(self, func = None):
-        self.func = func
-
     def __str__(self) -> str:
         return self.name
 

@@ -1,8 +1,6 @@
 from datetime import date
+from evaluate_m2.evaluate import evaluator
 
-from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
-from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
-from evaluate_m2.m2_evaluators.cat7_evals import evaluators as cat7_evals
 from parse_m2.models import (
     AccountActivity, AccountHolder, J1,
     J2, K2, L1, M2DataFile, Metro2Event
@@ -10,7 +8,7 @@ from parse_m2.models import (
 
 class EvaluatorTestHelper():
     activity_date=date(2019, 12, 31)
-    evaluators = addl_dofd_evals + cat7_evals + cat12_evals
+    evaluators = evaluator.evaluators
 
     def create_bulk_account_holders(self, file: M2DataFile, cons_info_ind_list: tuple):
         # Create bulk account holder data
@@ -125,11 +123,11 @@ class EvaluatorTestHelper():
         # 4. Triggers on the correct record
         evaluators_matching = 0
         record_set = event.get_all_account_activity()
-        for eval in self.evaluators:
-            if eval.name == eval_name:
+        for name, func in self.evaluators.items():
+            if name == eval_name:
                 # print('\n\n', eval.func(record_set).query)
                 evaluators_matching += 1
-                output = eval.func(record_set)
+                output = func(record_set)
                 results = sorted(list(output), key=lambda x: x['id'])
                 expected = sorted(expected_result, key=lambda x: x['id'])
                 # print('\n\nRESULTS: ', results, '\n\n')
