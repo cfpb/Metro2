@@ -19,6 +19,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 from users import views
+from evaluate_m2 import views as eval_views
 
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
     path('secured/', views.secured_view),
     path('datasets/', views.datasets),
     path('datasets/<int:dataset_id>/', views.dataset),
+    path('all-evaluator-metadata/', eval_views.download_evaluator_metadata)
 ]
