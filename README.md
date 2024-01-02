@@ -16,6 +16,7 @@ The front-end provides a React-based interface for authenticated and authorized 
     - [Running in Helm](#running-in-helm)
     - [Running in docker-compose](#running-in-docker-compose)
     - [Running jobs individually](#individual-jobs)
+- [Handling evaluator metadata](#handling-evaluator-metadata)
 - [Testing](#testing)
   - [Running tests and checking coverage](#running-tests-and-checking-coverage)
 
@@ -76,6 +77,38 @@ To bring down the created containers when you are done with them, run `docker-co
 ## Individual jobs
 
 Both the **django** and **front-end** code bases can be run locally. See the README for each subdirectory for instructions.
+
+# Handling evaluator metadata
+
+Each evaluator has several metadata fields associated with it, such as name, short description, long description, fields used, risk level, and more.
+We seed the database with initial metadata about each evaluator, then allow users to modify some of the fields.
+
+## Evaluator CSV format
+When importing and exporting evaluator metadata, we use a CSV with the following columns:
+`name`, `description`, `long_description`, `fields_used`, `fields_display`, `ipl`, `crrg_topics`, `crrg_page`, `pdf_page`, `use_notes`, `alternative_explanation`, `risk_level`.
+(Note that this list will change as we improve our implementation of the metadata system).
+Column headers in the file should match the column names in this list.
+For columns contain a list of fields (`fields_used` and `fields_display`, currently), the items in each list should be separated by colons (`;`).
+
+The `name` column is what we use to connect the evaluator metadata to the evaluator function, which is defined in code.
+This means that the `name` column needs to exactly match the name of the function in the code.
+If the names don't match, any evaluator results won't be correctly associated with the evaluator in the system.
+
+## Importing metadata
+Do this when deploying the project to a new environment to create evaluator metadata records in the database.
+
+How to import the evaluator metadata into the system:
+1. Create a CSV of all known evaluator metadata using the format described above.
+2. Save the CSV to this repo using the following filename: `evaluate_m2/m2_evaluators/eval_metadata.csv`.
+3. Import the metadata by running the following Django management command in the environment where the metadata should be imported: `python manage.py import_evaluator_metadata`.
+    - This command will delete and replace any existing evaluator metadata in the system.
+
+## Exporting metadata
+Do this when users have made manual updates to the evaluator metadata and you want to propagate those updates to another environment.
+
+How to export the evaluator metadata:
+1. Visit the `/all-evaluator-metadata` endpoint for the environment in the browser.
+    - This will download a CSV of all evaluator metadata in the system, which you can import into any Metro2 environment.
 
 # Testing
 
