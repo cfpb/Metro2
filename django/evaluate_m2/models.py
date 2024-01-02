@@ -45,6 +45,22 @@ class EvaluatorMetadata(models.Model):
             risk_level=json["risk_level"],
         )
 
+    def update_from_dict(self, json: dict):
+        # self.name shouldn't be updated
+        self.description=json["description"]
+        self.long_description=json["long_description"]
+        self.fields_used=json["fields_used"].split(";")
+        self.fields_display=json["fields_display"].split(";")
+        self.ipl=json["ipl"]
+        self.crrg_topics=json["crrg_topics"]
+        self.crrg_page=json["crrg_page"]
+        self.pdf_page=json["pdf_page"]
+        self.use_notes=json["use_notes"]
+        self.alternative_explanation=json["alternative_explanation"]
+        self.risk_level=json["risk_level"]
+        self.save()
+        return self
+
     csv_header = [
             "name",
             "description",

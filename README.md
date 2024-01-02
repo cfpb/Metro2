@@ -101,7 +101,7 @@ How to import the evaluator metadata into the system:
 1. Create a CSV of all known evaluator metadata using the format described above.
 2. Save the CSV to this repo using the following filename: `evaluate_m2/m2_evaluators/eval_metadata.csv`.
 3. Import the metadata by running the following Django management command in the environment where the metadata should be imported: `python manage.py import_evaluator_metadata`.
-    - This command will delete and replace any existing evaluator metadata in the system.
+    - This command will update any existing records with the new metadata, and create any that don't already exist.
 
 ## Exporting metadata
 Do this when users have made manual updates to the evaluator metadata and you want to propagate those updates to another environment.
