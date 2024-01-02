@@ -60,23 +60,19 @@ class EvaluatorMetadata(models.Model):
             "risk_level",
         ]
 
+    def serialize_list(self, list):
+        if list:
+            return ";".join(list)
+        else:
+            return ""
+
     def serialize(self):
-        if self.fields_used:
-            fields_used = ";".join(self.fields_used)
-        else:
-            fields_used = ""
-
-        if self.fields_display:
-            fields_display = ";".join(self.fields_display)
-        else:
-            fields_display = ""
-
         return [
             self.name,
             self.description,
             self.long_description,
-            fields_used,
-            fields_display,
+            self.serialize_list(self.fields_used),
+            self.serialize_list(self.fields_display),
             self.ipl,
             self.crrg_topics,
             self.crrg_page,
