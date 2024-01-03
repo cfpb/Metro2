@@ -9,7 +9,10 @@ class Command(BaseCommand):
     """
     help =  "Imports the evaluator metadata in the given CSV " + \
             "and saves it in the EvaluatorMetadata table in the database. " + \
-            "If any already exist in the database, they will be deleted and replaced."
+            "For each row in the CSV, if the 'name' column matches the name of " + \
+            "an existing EvaluatorMetadata in the database, that record will " + \
+            "be updated with new values from the CSV. Otherwise, a new record " + \
+            "will be created."
 
     default_directory = "evaluate_m2/m2_evaluators/eval_metadata.csv"
 
@@ -25,14 +28,22 @@ class Command(BaseCommand):
         if not file_path:
             file_path = self.default_directory
 
-        self.stdout.write(f"Deleting {EvaluatorMetadata.objects.count()} existing evaluators from the system.")
-        EvaluatorMetadata.objects.all().delete()
-
         with open(file_path, mode='r', encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
+            new = 0
+            updated = 0
+            rows_count = 0
             for row in reader:
-                EvaluatorMetadata.create_from_dict(row)
+                rows_count += 1
+                name = row["name"]
+                try:
+                    eval = EvaluatorMetadata.objects.get(name=name)
+                    eval.update_from_dict(row)
+                    updated += 1
+                except EvaluatorMetadata.DoesNotExist:
+                    eval = EvaluatorMetadata.create_from_dict(row)
+                    new += 1
 
-        self.stdout.write(
-            self.style.SUCCESS(f"Finished importing {EvaluatorMetadata.objects.count()} evaluators.")
-        )
+        self.stdout.write(f"Read all {rows_count} rows of the CSV.")
+        self.stdout.write(f"Created {new} and updated {updated} existing evaluators.")
+        self.stdout.write(f"{EvaluatorMetadata.objects.count()} total evaluators now exist.")
