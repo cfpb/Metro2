@@ -1,7 +1,6 @@
 import csv
 from django.http import HttpResponse
 from datetime import date
-from django.shortcuts import render
 from evaluate_m2.models import EvaluatorMetadata
 
 

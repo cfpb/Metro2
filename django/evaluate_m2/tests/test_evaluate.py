@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from datetime import date
 from evaluate_m2.evaluate import evaluator
-from evaluate_m2.m2_evaluators.addl_dofd_evals import *
+from evaluate_m2.m2_evaluators.addl_dofd_evals import addl_dofd_1_func, addl_dofd_2_func
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
@@ -128,7 +128,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
 
     def test_run_evaluators_missing_parameter_raises_exception(self):
         # should raise an exception when the source_record does not exist
-        bad_func = lambda: [self.unexpected]
+        bad_func = lambda: [self.unexpected]  # noqa: E731
         evaluator.evaluators = {"Test": bad_func}
 
         with self.assertRaises(TypeError) as cm:
