@@ -1,6 +1,6 @@
 # Overview
 
-CFPB’s Metro2 Evaluator Tool (M2) evaluates Metro2 data for inaccuracies which may prove harmful to consumers’ credit. CFPB’s Supervision and Enforcement teams will use this tool while conducting cases and exams to find inaccuracies in entity-provided data and assess their potential harm to consumers. 
+CFPB’s Metro2 Evaluator Tool (M2) evaluates Metro2 data for inaccuracies which may prove harmful to consumers’ credit. CFPB’s Supervision and Enforcement teams will use this tool while conducting cases and exams to find inaccuracies in entity-provided data and assess their potential harm to consumers.
 
 The application has a Django back-end which connects to a Postgres database. The back end fetches Metro2 data files from an S3 bucket, parses the relevant data into the database, and runs evaluators on the data. The back end also handles authorization for users and provides API endpoints to expose the evaluated data to the front end.
 
@@ -109,6 +109,13 @@ Do this when users have made manual updates to the evaluator metadata and you wa
 How to export the evaluator metadata:
 1. Visit the `/all-evaluator-metadata` endpoint for the environment in the browser.
     - This will download a CSV of all evaluator metadata in the system, which you can import into any Metro2 environment.
+
+## Exporting results
+Do this when users want to view results for a specific event and evaluator.
+
+How to export the evaluator results:
+1. Visit the `/events/{event_id}/evaluator/{evaluator_name}` endpoint for the environment in the browser. Provide the event ID and evaluator name for the evaluator results expected in the response.
+    - This will download a CSV of all evaluator results in the system associated to the provided event ID and evaluator.
 
 # Testing
 
