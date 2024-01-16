@@ -111,3 +111,15 @@ class EvaluatorResult(models.Model):
     field_values = JSONField(encoder=DjangoJSONEncoder)
     source_record = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     acct_num = models.CharField(max_length=30)
+
+    def create_csv_header(self):
+        csv_header = list(self.field_values.keys())
+        csv_header.insert(0, 'name')
+        csv_header[1]='source_record_id'
+        return csv_header
+
+    def create_csv_row_data(self):
+        response = [
+            self.result_summary.event.name,
+            ] + list(self.field_values.values())
+        return response
