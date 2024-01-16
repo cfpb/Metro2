@@ -114,8 +114,7 @@ class EvaluatorResult(models.Model):
 
     def create_csv_header(self):
         csv_header = list(self.field_values.keys())
-        csv_header.insert(0, 'name')
-        csv_header[1]='source_record_id'
+        csv_header.insert(0, 'event_name')
         return csv_header
 
     def create_csv_row_data(self):

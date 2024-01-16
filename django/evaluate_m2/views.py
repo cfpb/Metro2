@@ -25,7 +25,7 @@ def download_evaluator_metadata(request):
     return response
 
 def download_evaluator_results(request, event_id, evaluator_name):
-    # Documentation on returning CSV: https://docs.djangoproject.com/en/4.2/howto/ noutputting-csv/
+    # Documentation on returning CSV: https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
     try:
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=Metro2Event.objects.get(id=event_id),
