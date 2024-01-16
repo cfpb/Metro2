@@ -90,7 +90,7 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
             result_summary = EvaluatorResultSummary(),
             field_values = field_values_json,
         )
-        expected = [ 'name', 'field1', 'field2', 'field3' ]
+        expected = [ 'event_name', 'field1', 'field2', 'field3' ]
 
         self.assertEqual(eval_res.create_csv_header(), expected)
 
