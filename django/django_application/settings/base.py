@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'users',
     'parse_m2.apps.ParseM2Config',
     'evaluate_m2.apps.EvaluateM2Config',
+    'django_auth_adfs',
 ]
 
 MIDDLEWARE = [

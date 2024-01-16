@@ -48,6 +48,9 @@ services:
       PGHOST: postgres
       PGPORT: 5432
       METRO2ENV: local
+      CLIENT_ID:
+      CLIENT_SECRET:
+      TENANT_ID:
     ports:
       - 127.0.0.1:8000:8000
     stdin_open: true
