@@ -17,7 +17,7 @@ Running the project:
 When docker-compose starts the project, it automatically runs the database migrations, so you don't need to do so manually.
 Once it is running, you can see the app running by visiting http://localhost:8000/.
 
-Other useful actions in the system while running in docker-compose:
+**Other useful actions in the system while running in docker-compose:**
 
 To run the tests and view coverage:
 1. Enter the django container: `docker-compose exec django sh`.
@@ -38,10 +38,10 @@ Parse files from the local filesystem:
 2. Run `python manage.py parse_local -e [event_name] -d [local_data_directory]` to parse the files from the provided directory.
     - You can also use `python manage.py parse_local -h` for the help text.
 
-Run the evaluators from the local filesystem:
+Run the evaluators for an event:
 1. Enter the django container: `docker-compose exec django sh`.
 2. Run `python manage.py run_evaluators -e [event_ID]` to run the evaluators on a dataset associated to the provided event.
-    - If there are existing results for this event, the previous results will be deleted before running the evaluator.
+    - If there are existing evaluator results for this event, the previous results will be deleted before running the evaluator.
     - You can also use `python manage.py run_evaluators -h` for the help text.
 
 Use the django administrator interface:
@@ -49,9 +49,14 @@ Use the django administrator interface:
     - Note that if you've already done this, the account will still exist, unless you've deleted your local database.
     - If you already have a superuser login, skip to step 4.
 2. Enter the django container: `docker-compose exec django sh`.
-3. Run `python ./manage.py createsuperuser --username=admin --email=""` (or you can substitute whatever admin username you want).
+3. Run `python manage.py createsuperuser --username=admin --email=""` (or you can substitute whatever admin username you want).
     - The `createsuperuser` command will ask you to enter a password twice.
 4. Then you can log in to the admin interface at http://localhost:8000/admin using the username and password you entered in the previous step.
+
+To run the lint checks:
+1. Enter the django container: `docker-compose exec django sh`.
+1. Run `ruff check .`
+
 
 ## How to run locally
 You can use this strategy if docker-compose isn't working for you, for whatever reason.
@@ -63,19 +68,4 @@ Instructions for running locally (for now):
 4. If you want to run the server: `./django/run-local.sh`, then visit localhost:8000/admin to log in to the admin site
 5. If you want to access the python console for the project: `./manage.py shell`
 
-To parse files from local filesystem:
-1. Navigate to the metro2 project django directory, `cd django/`
-2. Run the parser: `python manage.py parse_local -e [event_name] -d [local_data_directory]`
-3. See the help for command: `python manage.py parse_local -h`
-
-To run evaluators on a dataset:
-1. Navigate to the metro2 project django directory, `cd django/`
-2. Run the parser: `python manage.py run_evaluators -e [event_ID]`
-3. See the help for command: `python manage.py run_evaluators -h`
-
-To run the lint checks:
-1. `ruff check django/`
-
-To run the tests and check test coverage:
-1. Run the tests: `coverage run ./django/manage.py test`
-2. Check test coverage: `coverage report` or `coverage html`
+All of the useful actions listed above for use in docker-compose can also be used in the local virtualenv.
