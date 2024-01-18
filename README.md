@@ -23,15 +23,16 @@ The front-end provides a React-based interface for authenticated and authorized 
 
 # Deployments
 
+Running the project in AWS Alto.
 TODO: add documentation about how to deploy, how to upload data in a deployed environment, how to configure a deployment, etc.
 
 ## Alto Dev
 
-- [Metro2 ALTO Dev Internal Jenkins](https://INTERNAL)
+- [Metro2 ALTO Dev-Internal Jenkins](https://INTERNAL)
 
 ## Alto Staging
 
-- [Metro2 ALTO Staging Internal Jenkins](https://INTERNAL)
+- [Metro2 ALTO Staging-Internal Jenkins](https://INTERNAL)
 
 ## Alto Prod
 

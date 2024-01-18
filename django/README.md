@@ -1,41 +1,57 @@
-This Django app is the future home of the user-facing Metro2 results app.
+# Metro2 Django
 
-There are two ways to run Django for local development: in the docker-compose setup and in a local virtualenv.
+The Metro2 Django app parses Metro2 data, runs evaluators, manages user access, and provides an API to support the React front-end.
+
+# Sections
+- Two ways to run the project:
+    - How to run in docker-compose
+    - How to run locally in a virtualenv
+
 
 ## How to run in docker-compose (recommended)
 If you have docker-compose installed, this will be the simplest strategy.
-From the Metro2 project root, run `docker-compose build` and `docker-compose up` to get the app running.
+If not, you can use the instructions under [[How to run locally]] below.
+
+Running the project:
+1. From the Metro2 project root, run `docker-compose build` and `docker-compose up` to get the app running.
 When docker-compose starts the project, it automatically runs the database migrations, so you don't need to do so manually.
 Once it is running, you can see the app running by visiting http://localhost:8000/.
 
-### Running the tests
-First, enter the django container by running `docker-compose exec django sh`.
-Next, you can run `coverage run manage.py test` to run the test suite and calculate coverage.
-View the coverage report with `coverage report` (full documentation for the coverage libarary is [here](https://coverage.readthedocs.io/en/7.3.2/)).
+Other useful actions in the system while running in docker-compose:
+
+To run the tests and view coverage:
+1. Enter the django container: `docker-compose exec django sh`.
+2. Run `coverage run manage.py test` to run the test suite and calculate coverage.
+3. View the coverage report with `coverage report`.
+
+Full documentation for the coverage libarary is [here](https://coverage.readthedocs.io/en/7.3.2/).
 (TODO: figure out how to view the HTML version of the coverage report when running in docker-compose)
 
-### Using the django shell
-Another way to interact with the codebase is via the django shell.
+Use the Django shell to interact with the codebase:
+1. Run `docker-compose exec django sh` to enter the running container
+2. Use `python manage.py shell` to start the interactive python console for this project.
+
 [Here's a useful resource](https://studygyaan.com/django/django-shell-tutorial-explore-your-django-project) on how the django shell can be useful for development.
-To use it, run `docker-compose exec django sh` to enter the running container, then use `python manage.py shell` to start the interactive python console for this project.
 
-### Parsing files from the local filesystem
-First, enter the django container by running `docker-compose exec django sh`.
-Next, you can run `python manage.py parse_local -e [event_name] -d [local_data_directory]` to parse the files from the provided directory. You can also use `python manage.py parse_local -h` for the help text.
+Parse files from the local filesystem:
+1. Enter the django container: `docker-compose exec django sh`.
+2. Run `python manage.py parse_local -e [event_name] -d [local_data_directory]` to parse the files from the provided directory.
+    - You can also use `python manage.py parse_local -h` for the help text.
 
-### Run the evaluators from the local filesystem
-First, enter the django container by running `docker-compose exec django sh`.
-Next, you can run `python manage.py run_evaluators -e [event_ID]` to run the evaluators on a dataset associated to the provided event. If there are existing results for this event, the previous results will be deleted before running the evaluator. You can also use `python manage.py run_evaluators -h` for the help text.
+Run the evaluators from the local filesystem:
+1. Enter the django container: `docker-compose exec django sh`.
+2. Run `python manage.py run_evaluators -e [event_ID]` to run the evaluators on a dataset associated to the provided event.
+    - If there are existing results for this event, the previous results will be deleted before running the evaluator.
+    - You can also use `python manage.py run_evaluators -h` for the help text.
 
-### Using the django administrator interface
-First you'll need to create an admin account. (TODO: maybe we could automate this).
-Note that if you've already done this, the account will still exist, unless you've deleted your local database.
-
-To so so, first enter the django container by running `docker-compose exec django sh`.
-Next, `python ./manage.py createsuperuser --username=admin --email=""` (or you can substitute whatever admin username you want).
-The `createsuperuser` script will ask you to enter a password twice.
-
-Once you have done that, you can log in to the admin interface at http://localhost:8000/admin using the username and password you entered in the previous step.
+Use the django administrator interface:
+1. First you'll need to create an admin account. (TODO: maybe we could automate this).
+    - Note that if you've already done this, the account will still exist, unless you've deleted your local database.
+    - If you already have a superuser login, skip to step 4.
+2. Enter the django container: `docker-compose exec django sh`.
+3. Run `python ./manage.py createsuperuser --username=admin --email=""` (or you can substitute whatever admin username you want).
+    - The `createsuperuser` command will ask you to enter a password twice.
+4. Then you can log in to the admin interface at http://localhost:8000/admin using the username and password you entered in the previous step.
 
 ## How to run locally
 You can use this strategy if docker-compose isn't working for you, for whatever reason.
