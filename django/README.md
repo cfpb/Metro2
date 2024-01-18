@@ -11,6 +11,7 @@ The Metro2 Django app parses Metro2 data, runs evaluators, manages user access, 
 ## How to run in docker-compose (recommended)
 If you have docker-compose installed, this will be the simplest strategy.
 If not, you can use the instructions under [[How to run locally]] below.
+Running in docker-compose uses the Django settings specified in `django_application/settings/docker-compose.py` and connects to a PostgreSQL database that is managed by docker-compose.
 
 Running the project:
 1. From the Metro2 project root, run `docker-compose build` and `docker-compose up` to get the app running.
@@ -60,6 +61,7 @@ To run the lint checks:
 
 ## How to run locally
 You can use this strategy if docker-compose isn't working for you, for whatever reason.
+This uses the Django settings specified in `django_application/settings/local.py`, including using a SQLite database instead of PostgreSQL.
 
 Instructions for running locally (for now):
 1. Prepare a python environment. I used pyenv-virtualenv.
