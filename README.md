@@ -111,12 +111,6 @@ How to export the evaluator metadata:
 1. Visit the `/all-evaluator-metadata` endpoint for the environment in the browser.
     - This will download a CSV of all evaluator metadata in the system, which you can import into any Metro2 environment.
 
-## Exporting results
-Do this when users want to view results for a specific event and evaluator.
-
-How to export the evaluator results:
-1. Visit the `/events/{event_id}/evaluator/{evaluator_name}` endpoint for the environment in the browser. Provide the event ID and evaluator name for the evaluator results expected in the response.
-    - This will download a CSV of all evaluator results in the system associated to the provided event ID and evaluator.
 
 # Testing
 
