@@ -15,7 +15,7 @@ Quick links
 
 `/events/{event_id}/evaluator/{evaluator_name}`
 
-GET - returns a CSV of evaluator results for an single evaluator (whose name matches `evaluator_name`) for a single event (with the id `event_id`).
+GET - returns a CSV of evaluator results for a single evaluator (whose name matches `evaluator_name`) for a single event (with the id `event_id`).
 
 Users can import this CSV into Excel in order to sort, filter, and analyze the results. The CSV contains one row for each `EvaluatorResult` for the given event + evaluator combo. It has a column for each field in the "fields used" column of the Evaluator Source of Truth spreadsheet.
 
