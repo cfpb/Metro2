@@ -77,7 +77,7 @@ To bring down the created containers when you are done with them, run `docker-co
 
 ## Individual jobs
 
-Both the **django** and **front-end** code bases can be run locally. See the README for each subdirectory for instructions.
+Both the **Django** and **Front-end** code bases can be run locally. See the README for each subdirectory for instructions.
 
 # Handling evaluator metadata
 
@@ -116,13 +116,13 @@ How to export the evaluator metadata:
 
 ## Running tests and checking coverage
 
-**For the `django` code:**
+**For the Django code:**
 
-1. Connect to the django container: while the docker-compose setup is running, `docker-compose exec django sh`
+1. Connect to the Django container: while the docker-compose setup is running, `docker-compose exec django sh`
 2. Run the tests: once connected to the container, run `coverage run ./manage.py test`
 2. Check test coverage: `coverage report` or `coverage html`
 
-**For the `front-end` code:**
+**For the Front-end code:**
 
 1. Install any front-end dependencies listed in [front-end/README.md](/front-end/README.md)
 2. Run linting and tests: From the `/front-end` directory, run `yarn validate`
