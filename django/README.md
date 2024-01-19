@@ -27,7 +27,7 @@ To run the tests and view coverage:
     - To view the report in the container, run `coverage report` in the container.
     - To view the HTML coverage report:
         1. Run `coverage html` in the container. This will generate a directory `htmlcov` with all the HTML coverage files.
-        2. Locate and double-click on the `index.html` file in Finder `{Metro2 Directory}/django/htmlcov/` to open the HTML coverage in the browser.
+        2. Locate and double-click on the `index.html` file in Finder `{Metro2 Directory}/django/htmlcov/` to open the coverage report in the browser.
 
 Full documentation for the coverage libarary is [here](https://coverage.readthedocs.io/en/7.3.2/).
 (TODO: figure out how to view the HTML version of the coverage report when running in docker-compose)
