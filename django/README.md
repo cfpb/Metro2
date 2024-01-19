@@ -30,7 +30,6 @@ To run the tests and view coverage:
         2. Locate and double-click on the `index.html` file in Finder `{Metro2 Directory}/django/htmlcov/` to open the coverage report in the browser.
 
 Full documentation for the coverage libarary is [here](https://coverage.readthedocs.io/en/7.3.2/).
-(TODO: figure out how to view the HTML version of the coverage report when running in docker-compose)
 
 Use the Django shell to interact with the codebase:
 1. Run `docker-compose exec django sh` to enter the running container
