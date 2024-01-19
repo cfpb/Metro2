@@ -24,7 +24,7 @@ To run the tests and view coverage:
 1. Enter the Django container: `docker-compose exec django sh`.
 2. Run `coverage run manage.py test` to run the test suite and calculate coverage.
 3. View the coverage report:
-    - To view the report in the container, run with `coverage report` in the container.
+    - To view the report in the container, run `coverage report` in the container.
     - To view the HTML coverage report:
         1. Run `coverage html` in the container. This will generate a directory `htmlcov` with all the HTML coverage files.
         2. Locate and double-click on the `index.html` file in Finder `{Metro2 Directory}/django/htmlcov/` to open the HTML coverage in the browser.
