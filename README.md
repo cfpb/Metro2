@@ -47,7 +47,7 @@ Choose the way to run the project that best suits your needs:
 
 ## Running in Helm
 
-When running locally a helm deployment locally, we use the docker-desktop cluster that comes with Docker.
+When running a helm deployment locally, we use the docker-desktop cluster that comes with Docker.
 To prepare your environment, make sure that you have [kubernetes enabled in Docker](https://docs.docker.com/desktop/kubernetes/).
 Install helm (`brew install helm`) and optionally install [OpenLens](https://github.com/MuhammedKalkan/OpenLens) for better visualization.
 
