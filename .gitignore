@@ -16,6 +16,7 @@
 !.env_SAMPLE
 !.gitignore
 !README.md
+!API.md
 !setup.sh
 !unzip.sh
 !helm-install.sh

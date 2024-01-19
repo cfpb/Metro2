@@ -23,15 +23,16 @@ The front-end provides a React-based interface for authenticated and authorized 
 
 # Deployments
 
+Running the project in AWS Alto.
 TODO: add documentation about how to deploy, how to upload data in a deployed environment, how to configure a deployment, etc.
 
 ## Alto Dev
 
-- [Metro2 ALTO Dev Internal Jenkins](https://INTERNAL)
+- [Metro2 ALTO Dev-Internal Jenkins](https://INTERNAL)
 
 ## Alto Staging
 
-- [Metro2 ALTO Staging Internal Jenkins](https://INTERNAL)
+- [Metro2 ALTO Staging-Internal Jenkins](https://INTERNAL)
 
 ## Alto Prod
 
@@ -46,7 +47,7 @@ Choose the way to run the project that best suits your needs:
 
 ## Running in Helm
 
-When running locally a helm deployment locally, we use the docker-desktop cluster that comes with Docker.
+When running a helm deployment locally, we use the docker-desktop cluster that comes with Docker.
 To prepare your environment, make sure that you have [kubernetes enabled in Docker](https://docs.docker.com/desktop/kubernetes/).
 Install helm (`brew install helm`) and optionally install [OpenLens](https://github.com/MuhammedKalkan/OpenLens) for better visualization.
 
@@ -76,7 +77,7 @@ To bring down the created containers when you are done with them, run `docker-co
 
 ## Individual jobs
 
-Both the **django** and **front-end** code bases can be run locally. See the README for each subdirectory for instructions.
+Both the **Django** and **Front-end** code bases can be run locally. See the README for each subdirectory for instructions.
 
 # Handling evaluator metadata
 
@@ -110,24 +111,18 @@ How to export the evaluator metadata:
 1. Visit the `/all-evaluator-metadata` endpoint for the environment in the browser.
     - This will download a CSV of all evaluator metadata in the system, which you can import into any Metro2 environment.
 
-## Exporting results
-Do this when users want to view results for a specific event and evaluator.
-
-How to export the evaluator results:
-1. Visit the `/events/{event_id}/evaluator/{evaluator_name}` endpoint for the environment in the browser. Provide the event ID and evaluator name for the evaluator results expected in the response.
-    - This will download a CSV of all evaluator results in the system associated to the provided event ID and evaluator.
 
 # Testing
 
 ## Running tests and checking coverage
 
-**For the `django` code:**
+**For the Django code:**
 
-1. Connect to the django container: while the docker-compose setup is running, `docker-compose exec django sh`
+1. Connect to the Django container: while the docker-compose setup is running, `docker-compose exec django sh`
 2. Run the tests: once connected to the container, run `coverage run ./manage.py test`
 2. Check test coverage: `coverage report` or `coverage html`
 
-**For the `front-end` code:**
+**For the Front-end code:**
 
 1. Install any front-end dependencies listed in [front-end/README.md](/front-end/README.md)
 2. Run linting and tests: From the `/front-end` directory, run `yarn validate`
