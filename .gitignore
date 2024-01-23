@@ -29,3 +29,4 @@
 *.DS_Store
 helm/metro2/charts/
 django/static
+htmlcov/
