@@ -27,8 +27,11 @@ class EvaluatorTestHelper():
                 id=value_list['id'][i]
                     if "id" in value_list else 1,
                 account_holder=AccountHolder.objects.get(
-                    cons_info_ind=value_list['account_holder'][i])
+                        cons_info_ind=value_list['account_holder'][i])
                     if "account_holder" in value_list
+                    else AccountHolder.objects.get(
+                        id=value_list['account_holder_id'][i].id)
+                    if "account_holder_id" in value_list
                     else self.create_acct_holder(data_file),
                 acct_stat=value_list['acct_stat'][i]
                     if "acct_stat" in value_list else '00',
@@ -60,6 +63,8 @@ class EvaluatorTestHelper():
                     if "hcola" in value_list else 0,
                 orig_chg_off_amt=value_list['orig_chg_off_amt'][i]
                     if "orig_chg_off_amt" in value_list else 0,
+                php=value_list['php'][i]
+                    if "php" in value_list else 'X',
                 port_type=value_list['port_type'][i]
                     if "port_type" in value_list else 'X',
                 pmt_rating=value_list['pmt_rating'][i]
@@ -75,6 +80,21 @@ class EvaluatorTestHelper():
                 ))
         return AccountActivity.objects.bulk_create(account_activities)
 
+    def create_bulk_JSegments(self, j_type: str, value_list: dict, size: int):
+        # Create bulk account holder data
+        j_segments=[]
+        for i in range(0, size):
+            j_segments.append(
+                self.create_jsegment(
+                    id=value_list['account_activity'][i],
+                    j_type=j_type,
+                    cons_info_ind=value_list['cons_info_ind'][i])
+            )
+        if j_type == 'j1':
+            return J1.objects.bulk_create(j_segments)
+        else:
+            return J2.objects.bulk_create(j_segments)
+
     def create_acct_holder(self, file: M2DataFile, cons_info_ind='X'):
         return AccountHolder(data_file=file, activity_date=self.activity_date,
             surname='Doe', first_name='Jane', middle_name='A', gen_code='F',
@@ -85,7 +105,7 @@ class EvaluatorTestHelper():
         acct_stat: str, acct_type: str, activity_date: date, actual_pmt_amt: int,
         amt_past_due: int, cons_acct_num: int, compl_cond_cd: int, credit_limit: int,
         current_bal: int, date_closed: date, date_open: date, doai: date,
-        dofd: date, hcola: int, orig_chg_off_amt: int, pmt_rating: str,
+        dofd: date, hcola: int, orig_chg_off_amt: int, php:str, pmt_rating: str,
         port_type: str, smpa: int, spc_com_cd: str, terms_dur: str, terms_freq: str,):
 
         return AccountActivity(
@@ -96,7 +116,7 @@ class EvaluatorTestHelper():
             credit_limit=credit_limit, current_bal=current_bal,
             date_closed=date_closed, date_open=date_open, doai=doai,
             dofd=dofd, hcola=hcola, orig_chg_off_amt=orig_chg_off_amt,
-            pmt_rating=pmt_rating, port_type=port_type, smpa=smpa,
+            php=php, pmt_rating=pmt_rating, port_type=port_type, smpa=smpa,
             spc_com_cd=spc_com_cd, terms_dur=terms_dur, terms_freq=terms_freq)
 
     def create_jsegment(self, id: int, j_type: str, cons_info_ind: str):
