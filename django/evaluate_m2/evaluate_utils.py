@@ -7,8 +7,8 @@ class ConversionException(Exception):
 
 def get_previous_month(activity_date: date):
     """
-    Given a date activity_date, calculate the total days of the month and return the previous month. Throw an UnreadableLineException
-    if it can't be processed.
+    Given a date activity_date, calculate the total days of the month and return the previous month.
+    Throw an ConversionException if it can't be processed.
 
     Inputs:
     `activity_date` - the date to be compared
