@@ -70,7 +70,8 @@ class Addl_Bk_EvalsTestCase(TestCase, EvaluatorTestHelper):
     def test_eval_addl_bk_1_no_j1_segment(self):
         create_j1_data=False
         self.create_bulk_records(create_j1_data)
-        # 1: HIT, 2: HIT, 3: HIT, 4: NO-dofd=01012020, 5: NO-all cons_info_ind not valid
+        # 1: HIT, 2: NO-all cons_info_ind not valid, 3: HIT,
+        # 4: NO-dofd=01012020, 5: NO-all cons_info_ind not valid
 
         # Create the segment data
         expected = [{
@@ -93,7 +94,8 @@ class Addl_Bk_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'account_activity':(33,36),
             'cons_info_ind':('E','O')}
         self.create_bulk_JSegments('j1', j1_data, 2)
-        # 1: HIT, 2: HIT, 3: HIT, 4: NO-dofd=01012020, 5: NO-all cons_info_ind not valid
+        # 1: HIT, 2: 2 HITS, 3: HIT, 4: NO-dofd=01012020,
+        # 5: NO-all cons_info_ind not valid
 
         # Create the segment data
         expected = [{
@@ -126,7 +128,8 @@ class Addl_Bk_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'account_activity':(34,36),
             'cons_info_ind':('O','O')}
         self.create_bulk_JSegments('j1', j1_data, 2)
-        # 1: HIT, 2: HIT, 3: HIT, 4: NO-dofd=01012020, 5: NO-all cons_info_ind not valid
+        # 1: HIT, 2: HIT, 3: 2 HITs, 4: NO-dofd=01012020,
+        # 5: NO-all cons_info_ind not valid
 
         # Create the segment data
         expected = [{
