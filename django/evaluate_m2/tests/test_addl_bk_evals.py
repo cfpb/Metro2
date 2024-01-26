@@ -22,13 +22,10 @@ class Addl_Bk_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_bulk_activities(self.data_file, activities, 5)
 
         if create_j1:
-            print('J1-data created')
             j1_data = {
                 'account_activity':(32,33,34,35,36),
                 'cons_info_ind':('I','C','K','L','M')}
             self.create_bulk_JSegments('j1', j1_data, 5)
-        else:
-            print('No J1-data created')
 
         j2_data = {
               'account_activity':(32,33,34,35,36),
