@@ -145,13 +145,14 @@ class EvaluatorTestHelper():
         record_set = event.get_all_account_activity()
         for name, func in self.evaluators.items():
             if name == eval_name:
-                # print('\n\n', eval.func(record_set).query)
+                # print('\n\n', func(record_set).query)
                 evaluators_matching += 1
                 output = func(record_set)
                 results = sorted(list(output), key=lambda x: x['id'])
                 expected = sorted(expected_result, key=lambda x: x['id'])
-                # print('\n\nRESULTS: ', results, '\n\n')
-                # print('\n\nEXPECTED: ', expected, '\n\n')
+                # print('-'*50, '\n', eval_name, '\n', '-'*50,)
+                # print('\nRESULTS: ', results, '\n')
+                # print('\nEXPECTED: ', expected, '\n\n')
         # Exactly one evaluator should have run
         self.assertEqual(evaluators_matching, 1)
 
