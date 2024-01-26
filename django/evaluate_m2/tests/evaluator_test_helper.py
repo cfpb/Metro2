@@ -75,6 +75,21 @@ class EvaluatorTestHelper():
                 ))
         return AccountActivity.objects.bulk_create(account_activities)
 
+    def create_bulk_JSegments(self, j_type: str, value_list: dict, size: int):
+        # Create bulk account holder data
+        j_segments=[]
+        for i in range(0, size):
+            j_segments.append(
+                self.create_jsegment(
+                    id=value_list['account_activity'][i],
+                    j_type=j_type,
+                    cons_info_ind=value_list['cons_info_ind'][i])
+            )
+        if j_type == 'j1':
+            return J1.objects.bulk_create(j_segments)
+        else:
+            return J2.objects.bulk_create(j_segments)
+
     def create_acct_holder(self, file: M2DataFile, cons_info_ind='X'):
         return AccountHolder(data_file=file, activity_date=self.activity_date,
             surname='Doe', first_name='Jane', middle_name='A', gen_code='F',
@@ -125,13 +140,14 @@ class EvaluatorTestHelper():
         record_set = event.get_all_account_activity()
         for name, func in self.evaluators.items():
             if name == eval_name:
-                # print('\n\n', eval.func(record_set).query)
+                # print('\n\n', func(record_set).query)
                 evaluators_matching += 1
                 output = func(record_set)
                 results = sorted(list(output), key=lambda x: x['id'])
                 expected = sorted(expected_result, key=lambda x: x['id'])
-                # print('\n\nRESULTS: ', results, '\n\n')
-                # print('\n\nEXPECTED: ', expected, '\n\n')
+                # print('-'*50, '\n', eval_name, '\n', '-'*50,)
+                # print('\nRESULTS: ', results, '\n')
+                # print('\nEXPECTED: ', expected, '\n\n')
         # Exactly one evaluator should have run
         self.assertEqual(evaluators_matching, 1)
 
