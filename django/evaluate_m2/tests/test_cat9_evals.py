@@ -7,15 +7,14 @@ from parse_m2.models import Metro2Event, M2DataFile
 class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self):
         # Create the parent records for the previous AccountActivity data
-        self.prev_event = Metro2Event(name='test_exam')
-        self.prev_event.save()
-        self.prev_data_file = M2DataFile(event=self.prev_event, file_name='old_file.txt')
+        self.event = Metro2Event(name='test_exam')
+        self.event.save()
+        self.prev_data_file = M2DataFile(event=self.event, file_name='old_file.txt')
         self.prev_data_file.save()
         # Create the Account Holders
         self.prev_accounts = self.create_bulk_account_holders(self.prev_data_file, ('','','','A','','','',''))
-        # Create the parent records for the AccountActivity data
-        self.event = Metro2Event(name='test_exam')
-        self.event.save()
+        # Create the parent records for
+        # the AccountActivity data
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
