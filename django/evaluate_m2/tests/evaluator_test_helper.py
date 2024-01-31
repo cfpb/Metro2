@@ -37,7 +37,7 @@ class EvaluatorTestHelper():
                     if "acct_stat" in value_list else '00',
                 acct_type=value_list['acct_type'][i]
                     if "acct_type" in value_list else '00',
-                activity_date=value_list['activity_date'][i]
+                activity_date=value_list['activity_date']
                     if "activity_date" in value_list else date(2019, 12, 31),
                 actual_pmt_amt=value_list['actual_pmt_amt'][i]
                     if "actual_pmt_amt" in value_list else 0,
@@ -83,12 +83,20 @@ class EvaluatorTestHelper():
     def create_bulk_JSegments(self, j_type: str, value_list: dict, size: int):
         # Create bulk account holder data
         j_segments=[]
-        for i in range(0, size):
+        if size > 1:
+            for i in range(0, size):
+                j_segments.append(
+                    self.create_jsegment(
+                        id=value_list['account_activity'][i],
+                        j_type=j_type,
+                        cons_info_ind=value_list['cons_info_ind'][i])
+                )
+        else:
             j_segments.append(
                 self.create_jsegment(
-                    id=value_list['account_activity'][i],
+                    id=value_list['account_activity'],
                     j_type=j_type,
-                    cons_info_ind=value_list['cons_info_ind'][i])
+                    cons_info_ind=value_list['cons_info_ind'])
             )
         if j_type == 'j1':
             return J1.objects.bulk_create(j_segments)
