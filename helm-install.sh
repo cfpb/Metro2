@@ -39,7 +39,7 @@ if [[ "$CLUSTER" == "docker-desktop" ]]; then
   kubectl wait --for=condition=ready \
   --all pods
 
-  VALUES="values.yaml"
+  VALUES="values-local.yaml"
 
 else 
  
