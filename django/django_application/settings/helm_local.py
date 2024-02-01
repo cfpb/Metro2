@@ -1,3 +1,5 @@
+# Use these settings when running the helm chart on your local computer for testing.
+
 from .base import *
 from .base import MIDDLEWARE as BASE_MIDDLEWARE
 

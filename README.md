@@ -1,6 +1,6 @@
 # Overview
 
-CFPB’s Metro2 Evaluator Tool (M2) evaluates Metro2 data for inaccuracies which may prove harmful to consumers’ credit. CFPB’s Supervision and Enforcement teams will use this tool while conducting cases and exams to find inaccuracies in entity-provided data and assess their potential harm to consumers. 
+CFPB’s Metro2 Evaluator Tool (M2) evaluates Metro2 data for inaccuracies which may prove harmful to consumers’ credit. CFPB’s Supervision and Enforcement teams will use this tool while conducting cases and exams to find inaccuracies in entity-provided data and assess their potential harm to consumers.
 
 The application has a Django back-end which connects to a Postgres database. The back end fetches Metro2 data files from an S3 bucket, parses the relevant data into the database, and runs evaluators on the data. The back end also handles authorization for users and provides API endpoints to expose the evaluated data to the front end.
 
@@ -23,15 +23,16 @@ The front-end provides a React-based interface for authenticated and authorized 
 
 # Deployments
 
+Running the project in AWS Alto.
 TODO: add documentation about how to deploy, how to upload data in a deployed environment, how to configure a deployment, etc.
 
 ## Alto Dev
 
-- [Metro2 ALTO Dev Internal Jenkins](https://INTERNAL)
+- [Metro2 ALTO Dev-Internal Jenkins](https://INTERNAL)
 
 ## Alto Staging
 
-- [Metro2 ALTO Staging Internal Jenkins](https://INTERNAL)
+- [Metro2 ALTO Staging-Internal Jenkins](https://INTERNAL)
 
 ## Alto Prod
 
@@ -46,7 +47,7 @@ Choose the way to run the project that best suits your needs:
 
 ## Running in Helm
 
-When running locally a helm deployment locally, we use the docker-desktop cluster that comes with Docker.
+When running a helm deployment locally, we use the docker-desktop cluster that comes with Docker.
 To prepare your environment, make sure that you have [kubernetes enabled in Docker](https://docs.docker.com/desktop/kubernetes/).
 Install helm (`brew install helm`) and optionally install [OpenLens](https://github.com/MuhammedKalkan/OpenLens) for better visualization.
 
@@ -76,7 +77,7 @@ To bring down the created containers when you are done with them, run `docker-co
 
 ## Individual jobs
 
-Both the **django** and **front-end** code bases can be run locally. See the README for each subdirectory for instructions.
+Both the **Django** and **Front-end** code bases can be run locally. See the README for each subdirectory for instructions.
 
 # Handling evaluator metadata
 
@@ -110,17 +111,18 @@ How to export the evaluator metadata:
 1. Visit the `/all-evaluator-metadata` endpoint for the environment in the browser.
     - This will download a CSV of all evaluator metadata in the system, which you can import into any Metro2 environment.
 
+
 # Testing
 
 ## Running tests and checking coverage
 
-**For the `django` code:**
+**For the Django code:**
 
-1. Connect to the django container: while the docker-compose setup is running, `docker-compose exec django sh`
+1. Connect to the Django container: while the docker-compose setup is running, `docker-compose exec django sh`
 2. Run the tests: once connected to the container, run `coverage run ./manage.py test`
 2. Check test coverage: `coverage report` or `coverage html`
 
-**For the `front-end` code:**
+**For the Front-end code:**
 
 1. Install any front-end dependencies listed in [front-end/README.md](/front-end/README.md)
 2. Run linting and tests: From the `/front-end` directory, run `yarn validate`
