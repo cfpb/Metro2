@@ -25,9 +25,6 @@ LOCAL_EVENT_DATA = "parse_m2/local_data/"
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
 tenant_id = os.getenv('TENANT_ID')
-print('-'*30 + '\n', 'CLIENT_ID: ', client_id)
-print('CLIENT_SECRET: ', client_secret)
-print('TENANT_ID: ', tenant_id)
 
 AUTH_ADFS = {
     'AUDIENCE': client_id,
