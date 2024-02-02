@@ -6,6 +6,94 @@ from parse_m2.models import (
     J2, K2, L1, M2DataFile, Metro2Event
 )
 
+
+def acct_record(file: M2DataFile, custom_values: dict):
+    """
+    Returns an AccountActivity record for use in tests, using the values
+    provided, or defaulting to basic values where none are provided.
+    Also creates the AccountHolder record associated with the AccountActivity
+    record.
+
+    Inputs:
+    - file: M2DataFile record the AccountHolder record will be associated with
+    - custom_values: Dict of values to override the defaults. Keys should match
+                     the field names in the AccountActivity and AccountHolder models
+    """
+    # Set basic defaults for all values in AccountActivity.
+    # If we end up needing more values in AccountHolder, add
+    # them here as well.
+    default_values = {
+        # AccountHolder values
+        "cons_info_ind": "",
+        # Shared values (used in both AccountHolder and AccountActivity)
+        "activity_date": date(2022, 5, 30),
+        "cons_acct_num": "",
+        # AccountActivity values
+        "port_type": "A",
+        "acct_type": "",
+        "date_open": date(2018, 2, 28),
+        "credit_limit": 0,
+        "hcola": 0,
+        "terms_dur": "00",
+        "terms_freq": "00",
+        "smpa": 0,
+        "actual_pmt_amt": 0,
+        "acct_stat": "",
+        "pmt_rating": "",
+        "php": "",
+        "spc_com_cd": "",
+        "compl_cond_cd": "",
+        "current_bal": 0,
+        "amt_past_due": 0,
+        "orig_chg_off_amt": 0,
+        "doai": date(2022, 5, 1),
+        "dofd": None,
+        "date_closed": None,
+        "dolp": None,
+        "int_type_ind": "",
+    }
+    # Override defaults with provided values
+    values = default_values | custom_values
+    # Create the AccountHolder record with provided values
+    acct_holder = AccountHolder(
+        data_file = file,
+        activity_date=values["activity_date"],
+        cons_acct_num = values["cons_acct_num"],
+        cons_info_ind = values["cons_info_ind"],
+    )
+    acct_holder.save()
+    # Create the AccountActivity record with provided values
+    acct_activity = AccountActivity(
+        account_holder=acct_holder,
+        activity_date=values["activity_date"],
+        cons_acct_num = values["cons_acct_num"],
+        port_type = values["port_type"],
+        acct_type = values["acct_type"],
+        date_open = values["date_open"],
+        credit_limit = values["credit_limit"],
+        hcola = values["hcola"],
+        terms_dur = values["terms_dur"],
+        terms_freq = values["terms_freq"],
+        smpa = values["smpa"],
+        actual_pmt_amt = values["actual_pmt_amt"],
+        acct_stat = values["acct_stat"],
+        pmt_rating = values["pmt_rating"],
+        php = values["php"],
+        spc_com_cd = values["spc_com_cd"],
+        compl_cond_cd = values["compl_cond_cd"],
+        current_bal = values["current_bal"],
+        amt_past_due = values["amt_past_due"],
+        orig_chg_off_amt = values["orig_chg_off_amt"],
+        doai = values["doai"],
+        dofd = values["dofd"],
+        date_closed = values["date_closed"],
+        dolp = values["dolp"],
+        int_type_ind = values["int_type_ind"],
+    )
+    acct_activity.save()
+    return acct_activity
+
+
 class EvaluatorTestHelper():
     activity_date=date(2019, 12, 31)
     evaluators = evaluator.evaluators
