@@ -2,10 +2,10 @@ from datetime import date
 from django.test import TestCase
 from evaluate_m2.evaluate_utils import get_activity_date_range, every_month_in_range
 from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import Metro2Event, M2DataFile, AccountActivity, AccountHolder
+from parse_m2.models import Metro2Event, M2DataFile
 
 
-class Cat9_EvalsTestCase(TestCase):
+class EvaluatorUtilsTestCase(TestCase):
     def test_get_activity_date_range(self):
         # Create test records
         event = Metro2Event.objects.create(name = "test")

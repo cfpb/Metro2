@@ -32,13 +32,11 @@ def every_month_in_range(start: date, end: date):
     - end: datetime.date
     """
     months = []
-
     # Start with the first month in the range
     y = start.year
     m = start.month
 
     while y <= end.year:
-
         # If we've reached the end of the range, exit the loop
         if y >= end.year and m > end.month:
             break
