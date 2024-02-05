@@ -22,8 +22,8 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the Account Holders
         self.prev_j1 = []
 
-    def create_old_records(self, ids:tuple, prev_acct_stats:tuple, phps:tuple,
-                           file_names:list, activity_dates:tuple, size: int,
+    def create_old_records(self, ids:list, prev_acct_stats:list, phps:list,
+                           file_names:list, activity_dates:list, size: int,
                            create_all_j1_segments: bool):
         prev_port_type=[
             ('A','A','A','A','A','A','A','A'),
@@ -64,7 +64,7 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
                 'cons_info_ind':('','','','','','','','')}
             create_bulk_JSegments('j2', j2_data, size)
 
-    def create_all_records(self, acct_stats:tuple, phps:tuple, size: int,
+    def create_all_records(self, acct_stats:list, phps:tuple, size: int,
                            create_all_j1_segments:bool, addl_fields=list(),
                            act_date=date(2019, 12, 31)):
 
@@ -103,7 +103,7 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
     # 4. prior_acct_stat == '11'
     # 5. prior_current_bal > 0
     # 6. port_type  == 'C', 'O', 'R'
-    # 7. php != 'O'
+    # 7. first character of php != '0'
 
     def test_eval_9_3A_acct_stat_current_PHP_not_current(self):
         # Create previous Account Activities data
@@ -150,7 +150,7 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_all_records(acct_stats, phps, 8, False, addl_fields)
         # 22, 23, 24, 25, 26, 27, 28, 29 - NO
         # 32-37: No-php==0, 38: No-port_type == 'B', 39: HIT
-        # 42: HIT, 43: No-missing J1 segment, 44: NO-port_type='A',
+        # 42: HIT, 43: HIT, 44: NO-port_type='A',
         # 45: NO-prev_cons_info_ind='A', 46: NO-prev_j1__cons_info_ind='M',
         # 47: NO-prev_current_bal=0, 48: NO-prev_acct_stat=10, 49: NO-php=O
 
@@ -167,6 +167,12 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'prev_acct_stat':'11', 'prev_cons_info_ind': '',
             'prev_j1__cons_info_ind': '', 'prev_j2__cons_info_ind': '',
             'prev_current_bal': 5
+        }, {
+            'id': 43, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0033', 'php':'LLL', 'port_type':'O',
+            'prev_acct_stat':'11', 'prev_cons_info_ind': '',
+            'prev_j1__cons_info_ind': None, 'prev_j2__cons_info_ind': '',
+            'prev_current_bal': 10
         }]
         self.assert_evaluator_correct(self.event,
             '9-3A Account Status current but PHP not current', expected)
