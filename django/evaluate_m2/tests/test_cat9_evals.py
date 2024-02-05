@@ -3,6 +3,8 @@ from django.test import TestCase
 from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import (
     EvaluatorTestHelper,
+    create_bulk_acct_record,
+    create_bulk_JSegments,
     get_prior_months_by_number
 )
 from parse_m2.models import Metro2Event, M2DataFile
@@ -18,7 +20,6 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
         # Create the Account Holders
-        self.accounts = self.create_bulk_account_holders(self.data_file, ('A','B','C','D','E','F','G','H'))
         self.prev_j1 = []
 
     def create_old_records(self, ids:tuple, prev_acct_stats:tuple, phps:tuple,
@@ -28,43 +29,40 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
             ('A','A','A','A','A','A','A','A'),
             ('B','B','R','B','B','B','B','R')]
 
-        for i in range(0, len(file_names)):
+        for i in range(0, len(ids)):
             # Create previous files
             file = M2DataFile(event=self.event, file_name=file_names[i])
             file.save()
             self.prev_files.append(file)
-
-        for i in range(0, len(ids)):
-        # Create the Account Holders
-            prev_accounts = self.create_bulk_account_holders(self.prev_files[i], ('','','','A','','','',''))
-
             prev_activities = { 'id':ids[i],
-                'activity_date':activity_dates[i],
+                'activity_date':[activity_dates[i]] * size,
                 'cons_acct_num':('0032','0033','0034','0035','0036','0037','0038','0039'),
+                'cons_info_ind':('','','','A','','','',''),
                 'current_bal': (5, 10, 15, 20, 25, 0, 35, 40),
                 'acct_stat':prev_acct_stats[i],
                 'port_type':prev_port_type[i],
-                'php':phps[i],
-                'account_holder_id':prev_accounts}
-            self.create_bulk_activities(file, prev_activities, size)
+                'php':phps[i]}
+            self.previous_activities = create_bulk_acct_record(file, prev_activities, size)
 
             if create_all_j1_segments:
                 j1_data = {
-                    'account_activity':ids[i],
+                    'account_activity':self.previous_activities,
                     'cons_info_ind':('','','','','M','','','')}
-                self.nov_j1 = self.create_bulk_JSegments('j1', j1_data, size)
+                self.nov_j1 = create_bulk_JSegments('j1', j1_data, size)
             else:
                 missing_ids=list(ids[i])
                 missing_ids.pop(1)
+                acct_activity=list(self.previous_activities)
+                acct_activity.pop(1)
                 j1_data = {
-                    'account_activity':missing_ids,
+                    'account_activity':acct_activity,
                     'cons_info_ind':('','','','M','','','')}
-                self.nov_j1 = self.create_bulk_JSegments('j1', j1_data, size - 1)
+                self.nov_j1 = create_bulk_JSegments('j1', j1_data, size - 1)
 
             j2_data = {
-                'account_activity':ids[i],
+                'account_activity':self.previous_activities,
                 'cons_info_ind':('','','','','','','','')}
-            self.create_bulk_JSegments('j2', j2_data, size)
+            create_bulk_JSegments('j2', j2_data, size)
 
     def create_all_records(self, acct_stats:tuple, phps:tuple, size: int,
                            create_all_j1_segments:bool, addl_fields=list(),
@@ -85,14 +83,14 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the Account Activities data
         current_activities = { 'id':(42,43,44,45,46,47,48,49),
-            'activity_date': act_date,
+            'activity_date': [act_date]*size,
             'cons_acct_num':('0032','0033','0034','0035','0036','0037','0038','0039'),
-            'account_holder_id':self.accounts,
+            'cons_info_ind':('A','B','C','D','E','F','G','H'),
             'php':phps}
 
         if 'port_type' in addl_fields:
             current_activities['port_type']=('C','O','A','C','O','R','C','O')
-        self.create_bulk_activities(self.data_file, current_activities, size)
+        create_bulk_acct_record(self.data_file, current_activities, size)
     ############################
     # Tests for the category 9 evaluators
 
@@ -189,10 +187,10 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create additional J1 segments for previous record
         addl_j1_data = {
-            'account_activity':(32,36),
+            'account_activity':(self.previous_activities[2],self.previous_activities[4]),
             'cons_info_ind':('','')
         }
-        self.prev_j1.append(self.create_bulk_JSegments('j1', addl_j1_data, 2))
+        self.prev_j1.append(create_bulk_JSegments('j1', addl_j1_data, 2))
 
         # Create the segment data
         expected = [{

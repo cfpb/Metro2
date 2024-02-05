@@ -125,6 +125,135 @@ def acct_record(file: M2DataFile, custom_values: dict):
     return acct_activity
 
 
+def create_bulk_acct_record(file: M2DataFile, value_list: dict, size: int):
+    """
+    Returns a list of AccountActivity records for use in tests, using the values
+    provided, or defaulting to basic values where none are provided.
+    Also creates the AccountHolder record associated with the AccountActivity
+    record.
+
+    Inputs:
+    - file: M2DataFile record the AccountHolder record will be associated with
+    - value_list: Dict of lists to convert to list of dict to override default_values.
+                     Keys should match the field names in the AccountActivity and
+                     AccountHolder models
+    - size: The number of AccountActivity and AccountHolder to create
+    """
+    account_activities=[]
+    # Set basic defaults for all values in AccountActivity.
+    # If we end up needing more values in AccountHolder, add
+    # them here as well.
+    default_values = {
+        "id":"1",
+        # AccountHolder values
+        "cons_info_ind": "",
+        # Shared values (used in both AccountHolder and AccountActivity)
+        "activity_date": date(2019, 12, 31),
+        "cons_acct_num": "",
+        # AccountActivity values
+        "port_type": "X",
+        "acct_type": "00",
+        "date_open": date(2020, 1, 1),
+        "credit_limit": 0,
+        "hcola": 0,
+        "terms_dur": "0",
+        "terms_freq": "0",
+        "smpa": 0,
+        "actual_pmt_amt": 0,
+        "acct_stat": "00",
+        "pmt_rating": "0",
+        "php": "X",
+        "spc_com_cd": "X",
+        "compl_cond_cd": "0",
+        "current_bal": 0,
+        "amt_past_due": 0,
+        "orig_chg_off_amt": 0,
+        "doai": date(2022, 5, 1),
+        "dofd": date(2020, 1, 1),
+        "date_closed": date(2020, 1, 1),
+        "dolp": None,
+        "int_type_ind": "",
+    }
+    # Convert dictionary of list to list of dictionaries
+    custom_values = [{key : value[i] for key, value in value_list.items()}
+        for i in range(size)]
+
+    for i in range(0, size):
+        # Override defaults with provided values
+        values = default_values | custom_values[i]
+        # Create the AccountHolder record with provided values
+        acct_holder = AccountHolder(
+            data_file = file,
+            activity_date=values["activity_date"],
+            cons_acct_num = values["cons_acct_num"],
+            cons_info_ind = values["cons_info_ind"],
+        )
+        acct_holder.save()
+        # Create the AccountActivity record with provided values
+        acct_activity = AccountActivity(
+            id=values["id"],
+            account_holder=acct_holder,
+            activity_date=values["activity_date"],
+            cons_acct_num = values["cons_acct_num"],
+            port_type = values["port_type"],
+            acct_type = values["acct_type"],
+            date_open = values["date_open"],
+            credit_limit = values["credit_limit"],
+            hcola = values["hcola"],
+            terms_dur = values["terms_dur"],
+            terms_freq = values["terms_freq"],
+            smpa = values["smpa"],
+            actual_pmt_amt = values["actual_pmt_amt"],
+            acct_stat = values["acct_stat"],
+            pmt_rating = values["pmt_rating"],
+            php = values["php"],
+            spc_com_cd = values["spc_com_cd"],
+            compl_cond_cd = values["compl_cond_cd"],
+            current_bal = values["current_bal"],
+            amt_past_due = values["amt_past_due"],
+            orig_chg_off_amt = values["orig_chg_off_amt"],
+            doai = values["doai"],
+            dofd = values["dofd"],
+            date_closed = values["date_closed"],
+            dolp = values["dolp"],
+            int_type_ind = values["int_type_ind"],
+        )
+        account_activities.append(acct_activity)
+    return AccountActivity.objects.bulk_create(account_activities)
+
+def create_bulk_JSegments(j_type: str, value_list: dict, size: int):
+    """
+    Returns a list of J1/J2 records for use in tests, using the values
+    provided.
+
+    Inputs:
+    - j_type: a string value indicating which J Segment to create.
+    - value_list: Dict of lists to convert to list of dict to override default_values.
+                     Keys should match the field names in the J Segments
+    - size: The number of J Segments to create
+    """
+    # Create bulk account holder data
+    j_segments=[]
+
+    # Convert dictionary of list to list of dictionaries
+    custom_values = [{key : value[i] for key, value in value_list.items()}
+        for i in range(size)]
+    for i in range(0, size):
+        values = custom_values[i]
+        if j_type == 'j1':
+            j_segments.append(J1(
+                account_activity=values['account_activity'],
+                cons_info_ind=values['cons_info_ind']))
+        else:
+            j_segments.append(J2(
+                account_activity=values['account_activity'],
+                cons_info_ind=values['cons_info_ind']))
+    if j_type == 'j1':
+        return J1.objects.bulk_create(j_segments)
+    else:
+        return J2.objects.bulk_create(j_segments)
+
+
 class EvaluatorTestHelper():
     activity_date=date(2019, 12, 31)
     evaluators = evaluator.evaluators
