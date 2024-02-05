@@ -1,8 +1,10 @@
 from django.test import TestCase
 
 from datetime import date
-from evaluate_m2.evaluate_utils import get_prior_months_by_number
-from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
+from evaluate_m2.tests.evaluator_test_helper import (
+    EvaluatorTestHelper,
+    get_prior_months_by_number
+)
 from parse_m2.models import Metro2Event, M2DataFile
 
 class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
