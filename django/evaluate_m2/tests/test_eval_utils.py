@@ -10,10 +10,10 @@ class EvaluatorUtilsTestCase(TestCase):
         # Create test records
         event = Metro2Event.objects.create(name = "test")
         file = M2DataFile.objects.create(event=event, file_name="test")
-        acct_record(file, {"activity_date": date(2010, 11, 5)})
-        acct_record(file, {"activity_date": date(2010, 12, 5)})
-        acct_record(file, {"activity_date": date(2011, 1, 5)})
-        acct_record(file, {"activity_date": date(2011, 2, 5)})
+        acct_record(file, {"id":1, "activity_date": date(2010, 11, 5)})
+        acct_record(file, {"id":2, "activity_date": date(2010, 12, 5)})
+        acct_record(file, {"id":3, "activity_date": date(2011, 1, 5)})
+        acct_record(file, {"id":4, "activity_date": date(2011, 2, 5)})
         record_set = event.get_all_account_activity()
 
         expected = {
