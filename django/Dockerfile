@@ -7,6 +7,7 @@ RUN apk update --no-cache && \
     apk add libpq && \
     apk add --virtual .build-deps gcc python3-dev musl-dev postgresql-dev && \
     apk add --no-cache bash && \
+    apk add postgresql15=15.5-r0 &&\
     pip install --upgrade pip 
 
 # Ensure that the environment uses UTF-8 encoding by default
