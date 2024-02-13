@@ -131,15 +131,15 @@ def create_bulk_acct_record(file: M2DataFile, value_list: dict, size: int):
     """
     Returns a list of AccountActivity records for use in tests, using the values
     provided, or defaulting to basic values where none are provided.
-    Also creates the AccountHolder record associated with the AccountActivity
+    Also creates the AccountHolder records associated with the AccountActivity
     record.
 
     Inputs:
-    - file: M2DataFile record the AccountHolder record will be associated with
+    - file: M2DataFile record the AccountHolder records will be associated with
     - value_list: Dict of lists to convert to list of dict to override default_values.
                      Keys should match the field names in the AccountActivity and
                      AccountHolder models
-    - size: The number of AccountActivity and AccountHolder to create
+    - size: The number of AccountActivity and AccountHolder records to create
     """
     account_activities:list[AccountActivity] = []
     # Convert dictionary of list to list of dictionaries
