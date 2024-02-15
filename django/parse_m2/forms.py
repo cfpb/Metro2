@@ -33,7 +33,7 @@ class Metro2EventForm(forms.ModelForm):
             event_name = self.cleaned_data["name"]
             directory = self.cleaned_data["directory"]
             if self.enabled:
-                call_command('parse_evaluate_s3', event_name=event_name, data_directory=directory)
+                call_command('parse_evaluate_s3', event_name=event_name, s3_directory=directory)
             else:
                 call_command('parse_local', event_name=event_name,
                             data_directory=directory)
