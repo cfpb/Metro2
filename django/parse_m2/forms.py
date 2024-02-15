@@ -21,7 +21,7 @@ class Metro2EventForm(forms.ModelForm):
             self.fields['directory'].help_text = 'Provide the bucket name where the data files are located'
         else:
             self.fields['directory'].label = 'Data Directory'
-            self.fields['directory'].help_text = 'Provide the directory where the data files are located'
+            self.fields['directory'].help_text = 'Provide the directory where the data files are located.  If not provided, it will default to \'/parse_m2/local_data\''
 
     def save_m2m(self):
         pass
