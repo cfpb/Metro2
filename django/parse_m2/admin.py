@@ -17,6 +17,88 @@ from parse_m2.models import (
 # Register your models here.
 class Metro2EventAdmin(admin.ModelAdmin):
     list_display = ['name']
+    form=Metro2EventForm
+
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Overrides BaseModelAdmin get_form() to display fields based
+        on an add/change view for Metro2Events
+        """
+        if obj: # obj is not None, so this is a change page
+            self.readonly_fields = ['name']
+            help_texts = {'name': ""}
+            kwargs.update({'help_texts': help_texts})
+        else: # obj is None, so this is an add page
+            self.readonly_fields = []
+            self.fields = ['name','directory']
+        return super(Metro2EventAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_fieldsets(self, request, obj=None):
+        """
+        Overrides BaseModelAdmin get_fieldsets() to update fields based
+        on an add/change view for Metro2Events
+        """
+        if obj: # obj is not None, so this is a change page
+            self.fields = ['name']
+        else: # obj is None, so this is an add page
+            self.fields = ['name','directory']
+        return super(Metro2EventAdmin, self).get_fieldsets(request, obj)
+
+    def render_change_form(self, request, context, add=False, change=False, form_url="", obj=None):
+        """
+        Overrides BaseModelAdmin render_change_form() to update the flags to
+        show/hide buttons on add or change view for Metro2Events
+        """
+        print('In render_change_form')
+        if obj:
+            context.update({"show_parse": False})
+            context.update({"show_parse_eval": False})
+            context.update({"show_eval": True})
+        else:
+            context.update({"show_parse": True})
+            context.update({"show_parse_eval": True})
+            context.update({"show_eval": False})
+        context.update({"show_close": True})
+        context.update({"show_save": False})
+        context.update({"show_delete_link": False})
+        context.update({"show_save_as_new": False})
+        context.update({"show_save_and_add_another": False})
+        context.update({"show_save_and_continue": False})
+
+        return super(Metro2EventAdmin, self).render_change_form(request, context, add, change, form_url, obj)
+
+    def response_change(self, request, obj):
+        """
+        Overrides ModelAdmin response_change() to call the evaluate mgmt command and add a message to django-admin that the command has completed.
+        """
+        logger = logging.getLogger('admin.response_change')
+        if "_parse_eval" in request.POST or "_eval" in request.POST:
+            try:
+                obj.evaluate()
+                messages.success(request, f"Finished running evaluators for event ID: {obj.id} and saving results.")
+            except (ValueError, TypeError):
+                pass
+            return redirect(".")
+        return  super(Metro2EventAdmin, self).response_change(request, obj)
+
+    def message_user(self, request, message, level=messages.INFO, extra_tags='',
+                    fail_silently=False):
+        """
+        Overrides ModelAdmin message_user() to only include the messages created and not the default messages
+        """
+        pass
+
+    def save_model(self, request, obj, form, change):
+        """
+        Overrides ModelAdmin save_model() to update the message returned to the view
+        """
+        if obj.id:
+            if not change: # This is a new
+                messages.success(request, f'Created event ID: {obj.id}. Finished parsing data for event: {obj.name}')
+                self.response_change(request, obj)
+        else:
+            messages.error(request, 'Event did not save successfully and did not parse data')
+        super().save_model(request, obj, form, change)
 
     def has_add_permission(self, request, obj=None):
         return True
