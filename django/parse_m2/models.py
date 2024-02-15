@@ -1,22 +1,34 @@
 from django.db import models
+from django.core.management import call_command
 
 from parse_m2.parse_utils import get_field_value
 from parse_m2 import fields
 
 
 class Metro2Event(models.Model):
+    class Meta:
+        verbose_name_plural = "Metro2 Events"
     name = models.CharField(max_length=300)
 
     def get_all_account_activity(self):
         return AccountActivity.objects.filter(
             account_holder__data_file__event=self)
 
+    def evaluate(self):
+        print("\tIn evaulate()")
+        call_command('run_evaluators', event_id=self.id)
+
+
 class M2DataFile(models.Model):
+    class Meta:
+        verbose_name_plural = "Metro2 Data Files"
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=200)
     timestamp = models.DateTimeField(auto_now_add=True)
 
 class UnparseableData(models.Model):
+    class Meta:
+        verbose_name_plural = "Unparseable Data"
     data_file = models.ForeignKey(M2DataFile, on_delete=models.CASCADE)
     unparseable_line = models.CharField(max_length=2000)
     error_description = models.CharField(max_length=200)
@@ -55,6 +67,8 @@ class Address(models.Model):
         abstract = True
 
 class AccountHolder(Person, Address):
+    class Meta:
+        verbose_name_plural = "Account Holders"
     data_file = models.ForeignKey(M2DataFile, on_delete=models.CASCADE)
     activity_date = models.DateField()
     cons_acct_num = models.CharField(max_length=200)
@@ -93,6 +107,8 @@ class AccountHolder(Person, Address):
         )
 
 class AccountActivity(models.Model):
+    class Meta:
+        verbose_name_plural = "Account Activities"
     # Note: Numeric fields are using models.IntegerField, which
     # has a limit of +/- 2.4 billion. Since the Metro2 format limits each of
     # these numeric fields to 9 characters, that size should be sufficient.
@@ -161,6 +177,8 @@ class AccountActivity(models.Model):
         )
 
 class J1(Person):
+    class Meta:
+        verbose_name_plural = "J1 Segment Associated Consumer - Same Address"
     account_activity = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     # Contains all fields from the Person abstract class
 
@@ -181,6 +199,8 @@ class J1(Person):
         )
 
 class J2(Person, Address):
+    class Meta:
+        verbose_name_plural = "J2 Segment Associated Consumer - Different Address"
     account_activity = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     # Contains all fields from the Person and Address abstract classes
 
@@ -211,6 +231,8 @@ class J2(Person, Address):
         )
 
 class K1(models.Model):
+    class Meta:
+        verbose_name_plural = "K1 Segment Original Creditor Name"
     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE)
     orig_creditor_name = models.CharField(max_length=200)
     creditor_classification = models.CharField(max_length=200)
@@ -224,6 +246,8 @@ class K1(models.Model):
         )
 
 class K2(models.Model):
+    class Meta:
+        verbose_name_plural = "K2 Segment Purchased From/Sold To"
     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE)
     purch_sold_ind = models.CharField(max_length=200)
     purch_sold_name = models.CharField(max_length=200)
@@ -237,6 +261,8 @@ class K2(models.Model):
         )
 
 class K3(models.Model):
+    class Meta:
+        verbose_name_plural = "K3 Segment Mortgage Information"
     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE)
     agency_id = models.CharField(max_length=200)
     agency_acct_num = models.CharField(max_length=200)
@@ -252,6 +278,8 @@ class K3(models.Model):
         )
 
 class K4(models.Model):
+    class Meta:
+        verbose_name_plural = "K4 Segment Specialized Payment Information"
     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE)
     spc_pmt_ind = models.CharField(max_length=200)
     deferred_pmt_st_dt = models.DateField(null=True)
@@ -269,6 +297,8 @@ class K4(models.Model):
         )
 
 class L1(models.Model):
+    class Meta:
+        verbose_name_plural = "L1 Segment Account Number/Identification Number Change"
     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE)
     change_ind = models.CharField(max_length=200)
     new_acc_num = models.CharField(max_length=200)
@@ -284,6 +314,8 @@ class L1(models.Model):
         )
 
 class N1(models.Model):
+    class Meta:
+        verbose_name_plural = "N1 Segment Employment"
     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE)
     employer_name = models.CharField(max_length=200)
     employer_addr1 = models.CharField(max_length=200)
