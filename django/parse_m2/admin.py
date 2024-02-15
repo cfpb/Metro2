@@ -26,13 +26,23 @@ class Metro2EventAdmin(admin.ModelAdmin):
         """
         if obj: # obj is not None, so this is a change page
             self.readonly_fields = ['name']
-            self.fields = ['name', 'directory']
             help_texts = {'name': ""}
             kwargs.update({'help_texts': help_texts})
         else: # obj is None, so this is an add page
             self.readonly_fields = []
             self.fields = ['name','directory']
         return super(Metro2EventAdmin, self).get_form(request, obj, **kwargs)
+
+    def get_fieldsets(self, request, obj=None):
+        """
+        Overrides BaseModelAdmin get_fieldsets() to update fields based
+        on an add/change view for Metro2Events
+        """
+        if obj: # obj is not None, so this is a change page
+            self.fields = ['name']
+        else: # obj is None, so this is an add page
+            self.fields = ['name','directory']
+        return super(Metro2EventAdmin, self).get_fieldsets(request, obj)
 
     def render_change_form(self, request, context, add=False, change=False, form_url="", obj=None):
         """
