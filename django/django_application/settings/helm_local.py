@@ -17,5 +17,26 @@ DATABASES = {
         "PORT": "5432",
     }
 }
-
+S3_ENABLED=False
 S3_BUCKET_NAME = "cfpb-metro2-***REMOVED***"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'prepend_date': {
+            'format': '{asctime} {levelname}: {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'prepend_date',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
