@@ -1,17 +1,29 @@
 from django.contrib import admin
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary, EvaluatorResult
 
-
 # Register your models here.
 class EvaluatorMetadataAdmin(admin.ModelAdmin):
+    readonly_fields = ['name']
+    fields = [
+            'description', 'long_description',
+            'fields_used', 'fields_display', 'ipl',
+            'crrg_topics', 'crrg_page', 'pdf_page',
+            'use_notes', 'alternative_explanation',
+            'risk_level']
     list_display = [
         'name', 'description', 'long_description',
         'fields_used', 'fields_display', 'ipl',
         'crrg_topics', 'crrg_page', 'pdf_page',
         'use_notes', 'alternative_explanation',
         'risk_level']
-    readonly_fields=('name',)
+
     def has_add_permission(self, request, obj=None):
+        return False
+    def has_view_permission(self, request, obj=None):
+        return True
+    def has_change_permission(self, request, obj=None):
+        return True
+    def has_delete_permission(self, request, obj=None):
         return False
 
 class EvaluatorResultSummaryAdmin(admin.ModelAdmin):

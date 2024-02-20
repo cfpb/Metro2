@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.core.management import call_command
 
 from parse_m2.models import Metro2Event
@@ -12,7 +13,7 @@ class Metro2EventForm(forms.ModelForm):
         fields = ['name',]
         help_texts = {'name': "Provide an event name"}
     directory = forms.CharField(label="Data Directory", max_length=300, required=False)
-    enabled = os.environ.get("S3_ENABLED")
+    enabled = settings.S3_ENABLED
     def __init__(self, *args, **kwargs):
         super(Metro2EventForm, self).__init__(*args, **kwargs)
 

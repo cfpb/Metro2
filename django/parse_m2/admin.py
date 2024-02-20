@@ -18,6 +18,7 @@ from parse_m2.models import (
 class Metro2EventAdmin(admin.ModelAdmin):
     list_display = ['name']
     form=Metro2EventForm
+    fields = ['name','directory']
 
     def get_form(self, request, obj=None, **kwargs):
         """
@@ -28,21 +29,11 @@ class Metro2EventAdmin(admin.ModelAdmin):
             self.readonly_fields = ['name']
             help_texts = {'name': ""}
             kwargs.update({'help_texts': help_texts})
+            self.fields = ['directory']
         else: # obj is None, so this is an add page
             self.readonly_fields = []
             self.fields = ['name','directory']
         return super(Metro2EventAdmin, self).get_form(request, obj, **kwargs)
-
-    def get_fieldsets(self, request, obj=None):
-        """
-        Overrides BaseModelAdmin get_fieldsets() to update fields based
-        on an add/change view for Metro2Events
-        """
-        if obj: # obj is not None, so this is a change page
-            self.fields = ['name']
-        else: # obj is None, so this is an add page
-            self.fields = ['name','directory']
-        return super(Metro2EventAdmin, self).get_fieldsets(request, obj)
 
     def render_change_form(self, request, context, add=False, change=False, form_url="", obj=None):
         """
@@ -107,7 +98,7 @@ class Metro2EventAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         return True
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True
 
 class M2DataFileAdmin(admin.ModelAdmin):
     list_display = ['event', 'file_name', 'timestamp']
@@ -289,11 +280,12 @@ admin.site.register(K4, K4Admin)
 admin.site.register(L1, L1Admin)
 admin.site.register(N1, N1Admin)
 
+# This is to manually order the sites rather than the
+# alphabetically ordered
 def get_app_list(self, request, app_label=None):
     """Return the installed apps that have been registered in admin.py"""
     app_dict = self._build_app_dict(request, app_label)
     app_list = list(app_dict.values())
     return app_list
-
 
 AdminSite.get_app_list = get_app_list
