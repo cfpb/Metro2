@@ -5,4 +5,4 @@ psycopg2-binary==2.9.9
 ruff==0.1.11
 sqlparse==0.4.4
 boto3==1.33.10
-django-auth-adfs==1.13.0
+django-auth-adfs==1.14.0
