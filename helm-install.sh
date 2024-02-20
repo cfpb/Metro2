@@ -6,6 +6,19 @@ if ! command -v helm &> /dev/null; then
   exit 1
 fi
 
+## Ensure that the user is in their local cluster. If not, exit
+CLUSTER=$(kubectl config current-context)
+
+if [[ "$CLUSTER" != "docker-desktop" ]]; then
+
+  echo "This script should only be used for your local environment, a.k.a. docker-desktop."
+  echo "Your current context: ${CLUSTER}."
+  echo ""
+  echo "To set your context to local, use the following command: kubectl config set-context docker-desktop"
+  exit 1
+
+fi
+
 HELM_DIR="./helm/metro2"
 
 RELEASE=${RELEASE:-metro2}
@@ -22,32 +35,19 @@ else
 fi
 
 
-## Get Cluster
-CLUSTER=$(kubectl config current-context)
-
-if [[ "$CLUSTER" == "docker-desktop" ]]; then 
-
-  helm install metro2-db \
-  bitnami/postgresql --set persistence.enabled=false \
-  --set auth.postgresPassword='cfpb' \
-  --set auth.database='metro2-data' \
-  --set auth.host='metro2-db-postgresql' \
-  --set auth.user='postgres'
+helm install metro2-db \
+bitnami/postgresql --set persistence.enabled=false \
+--set auth.postgresPassword='cfpb' \
+--set auth.database='metro2-data' \
+--set auth.host='metro2-db-postgresql' \
+--set auth.user='postgres'
 
 
-  # wait for postgres to be in ready state
-  kubectl wait --for=condition=ready \
-  --all pods
+# wait for postgres to be in ready state
+kubectl wait --for=condition=ready \
+--all pods
 
-  VALUES="values-local.yaml"
-
-else 
- 
-  helm repo add bitnami https://charts.bitnami.com/bitnami
-  helm dependency build ./helm/metro2
-  VALUES="values-eks.yaml"
-
-fi
+VALUES="values-local.yaml"
 
 helm upgrade --install $RELEASE $HELM_DIR -f $HELM_DIR/$VALUES
 
