@@ -29,10 +29,8 @@ class Metro2EventAdmin(admin.ModelAdmin):
             self.readonly_fields = ['name']
             help_texts = {'name': ""}
             kwargs.update({'help_texts': help_texts})
-            self.fields = ['directory']
         else: # obj is None, so this is an add page
             self.readonly_fields = []
-            self.fields = ['name','directory']
         return super(Metro2EventAdmin, self).get_form(request, obj, **kwargs)
 
     def render_change_form(self, request, context, add=False, change=False, form_url="", obj=None):
