@@ -31,7 +31,7 @@ tenant_id = os.environ.get('TENANT_ID')
 
 
 AUTH_ADFS = {
-    'AUDIENCE': client_id,
+    "AUDIENCE": ["api://" + client_id, client_id],
     'CLIENT_ID': client_id,
     'CLIENT_SECRET': client_secret,
     'CLAIM_MAPPING': {'first_name': 'given_name',
