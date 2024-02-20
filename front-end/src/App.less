@@ -1,5 +1,14 @@
 @import (reference) './index.less';
 
-.app {
-	padding: 15px 30px;
+// design system overrides needed for full-width layout
+.wrapper,
+.grid {
+	max-width: none !important;
+}
+
+// global layout pattern
+// provides left / right padding
+.content-row {
+	padding: unit((@grid_gutter-width / 2 / @base-font-size-px), em) 
+           unit((@grid_gutter-width / @base-font-size-px), em);
 }

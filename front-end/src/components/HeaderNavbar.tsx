@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react'
 
-import './HeaderNavbar.less'
-import logo from '/images/logo_237x50@2x.png'
+import './HeaderNavbar.less
+// eslint-disable-next-line import/no-absolute-path
+import logo from "/images/logo_237x50@2x.png"
 
 export default function HeaderNavbar(): ReactElement {
 	return (

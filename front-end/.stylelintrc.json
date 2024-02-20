@@ -11,6 +11,15 @@
 			{
 				"ignoreAtRules": ["layer"]
 			}
-		]
+		],
+		"function-no-unknown": [
+      true,
+      { 
+				"ignoreFunctions": ["extend", "fade", "mix", "unit"] 
+			}
+    ],
+		"selector-class-pattern": null
 	}
 }
+
+
