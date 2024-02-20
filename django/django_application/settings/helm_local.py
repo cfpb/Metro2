@@ -25,9 +25,9 @@ S3_BUCKET_NAME = "cfpb-metro2-***REMOVED***"
 
 # Client secret is not public information. Should store it as an environment variable.
 
-client_id = os.getenv('CLIENT_ID')
-client_secret = os.getenv('CLIENT_SECRET')
-tenant_id = os.getenv('TENANT_ID')
+client_id = os.environ.get('CLIENT_ID')
+client_secret = os.environ.get('CLIENT_SECRET')
+tenant_id = os.environ.get('TENANT_ID')
 
 
 AUTH_ADFS = {

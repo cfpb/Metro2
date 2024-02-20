@@ -22,9 +22,9 @@ LOCAL_EVENT_DATA = "parse_m2/local_data/"
 
 # Client secret is not public information. Should store it as an environment variable.
 
-client_id = os.getenv('CLIENT_ID')
-client_secret = os.getenv('CLIENT_SECRET')
-tenant_id = os.getenv('TENANT_ID')
+client_id = os.environ.get('CLIENT_ID')
+client_secret = os.environ.get('CLIENT_SECRET')
+tenant_id = os.environ.get('TENANT_ID')
 
 AUTH_ADFS = {
     'AUDIENCE': client_id,
