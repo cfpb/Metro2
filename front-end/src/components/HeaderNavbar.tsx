@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import './HeaderNavbar.less
+import './HeaderNavbar.less'
 // eslint-disable-next-line import/no-absolute-path
 import logo from "/images/logo_237x50@2x.png"
 
