@@ -14,5 +14,3 @@ export const eventIndexRoute = createRoute({
   getParentRoute: () => eventRoute,
   component: EventPage
 })
-
-

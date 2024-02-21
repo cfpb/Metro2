@@ -15,7 +15,7 @@
 		"function-no-unknown": [
       true,
       { 
-				"ignoreFunctions": ["extend", "fade", "mix", "unit"] 
+				"ignoreFunctions": ["unit"] 
 			}
     ],
 		"selector-class-pattern": null
