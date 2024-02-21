@@ -76,7 +76,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_application.wsgi.application'
 
-
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
