@@ -21,6 +21,7 @@
 !unzip.sh
 !helm-install.sh
 !build-images.sh
+!.editorconfig
 
 # ... but still ignore compiled files
 *.pyc
