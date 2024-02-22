@@ -22,9 +22,9 @@
 	"dependencies": {
 		"@cfpb/cfpb-design-system": "0.26.1",
 		"@tanstack/react-query": "4.29.7",
+		"@tanstack/react-router": "^1.16.2",
 		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"react-router-dom": "6.11.2"
+		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
 		"@nabla/vite-plugin-eslint": "1.5.0",
