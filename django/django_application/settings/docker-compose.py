@@ -16,4 +16,3 @@ DATABASES = {
 }
 
 LOCAL_EVENT_DATA = "parse_m2/local_data/"
-
