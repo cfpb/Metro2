@@ -100,5 +100,5 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # the response should a list of contain field_values from EvaluatorResult
+        # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(response.json(), expected)
