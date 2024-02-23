@@ -1,6 +1,5 @@
 import csv
-import json
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from datetime import date
 
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
@@ -69,14 +68,9 @@ def download_evaluator_results(request, event_id, evaluator_name):
         # Add all evaluator results field_values to the response
         for eval_result in eval_result_summary.evaluatorresult_set.all():
             results.append(eval_result.field_values)
+        data = {'hits': results}
 
-        output = json.dumps({'hits':results})
-        response = HttpResponse(
-            output,
-            headers={"Content-Type":"application/json"}
-        )
-
-        return response
+        return JsonResponse(data)
     except Metro2Event.DoesNotExist:
         msg = f"Event ID: {event_id} does not exist."
         raise Http404(msg)
