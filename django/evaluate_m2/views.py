@@ -1,4 +1,5 @@
 import csv
+import json
 from django.http import Http404, HttpResponse
 from datetime import date
 
@@ -24,7 +25,7 @@ def download_evaluator_metadata(request):
 
     return response
 
-def download_evaluator_results(request, event_id, evaluator_name):
+def download_evaluator_results_csv(request, event_id, evaluator_name):
     try:
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=Metro2Event.objects.get(id=event_id),
@@ -47,6 +48,33 @@ def download_evaluator_results(request, event_id, evaluator_name):
                 header_created=True
             else:
                 writer.writerow(eval_result.create_csv_row_data())
+
+        return response
+    except Metro2Event.DoesNotExist:
+        msg = f"Event ID: {event_id} does not exist."
+        raise Http404(msg)
+    except EvaluatorMetadata.DoesNotExist:
+        msg = f"Evaluator: {evaluator_name} does not exist."
+        raise Http404(msg)
+    except EvaluatorResultSummary.DoesNotExist:
+        msg = f"Evaluator result does not exist for event ID {event_id} or evaluator {evaluator_name}."
+        raise Http404(msg)
+
+def download_evaluator_results(request, event_id, evaluator_name):
+    try:
+        eval_result_summary = EvaluatorResultSummary.objects.get(
+            event=Metro2Event.objects.get(id=event_id),
+            evaluator=EvaluatorMetadata.objects.get(name=evaluator_name))
+        results = []
+        # Add all evaluator results field_values to the response
+        for eval_result in eval_result_summary.evaluatorresult_set.all():
+            results.append(eval_result.field_values)
+
+        output = json.dumps({'hits':results})
+        response = HttpResponse(
+            output,
+            headers={"Content-Type":"application/json"}
+        )
 
         return response
     except Metro2Event.DoesNotExist:
