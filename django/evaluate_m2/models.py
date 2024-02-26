@@ -115,6 +115,9 @@ class EvaluatorResultSummary(models.Model):
     evaluator = models.ForeignKey(EvaluatorMetadata, on_delete=models.CASCADE)
     hits = models.IntegerField()
 
+    def __str__(self) -> str:
+        return f"Event: {self.event} - {self.evaluator}"
+
 
 class EvaluatorResult(models.Model):
     class Meta:
