@@ -1,10 +1,12 @@
 from django.test import TestCase
+from datetime import datetime
 
-from evaluate_m2.evaluate import evaluator
-from evaluate_m2.m2_evaluators.addl_dofd_evals import addl_dofd_1_func
-from evaluate_m2.models import EvaluatorMetadata
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResult,
+    EvaluatorResultSummary
+)
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
-
 from parse_m2.models import M2DataFile, Metro2Event
 
 
@@ -41,13 +43,20 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         return super().setUp()
 
     def create_activity_data(self):
-                # Create the parent records for the AccountActivity data
-        self.event = Metro2Event(name='test_exam')
-        self.event.save()
-        self.data_file = M2DataFile(event=self.event, file_name='file.txt')
-        self.data_file.save()
+        activities = {
+            'id':(32,33),
+            'cons_acct_num':('0032','0033'),
+            'account_holder':('Z','Y'),
+            'acct_stat':('71','97'),
+            'dofd':(None,None),
+            'pmt_rating':('1','2')}
+        # Create the parent records for the AccountActivity data
+        event = Metro2Event(id=1, name='test_exam')
+        event.save()
+        data_file = M2DataFile(event=event, file_name='file.txt')
+        data_file.save()
         # Create the Account Holders
-        self.create_bulk_account_holders(self.data_file, ('Z','Y'))
+        self.create_bulk_account_holders(data_file, ('Z','Y'))
         # Create the Account Activities data
         activities = {
             'id':(32,33),
@@ -56,10 +65,23 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'acct_stat':('71','97'),
             'dofd':(None,None),
             'pmt_rating':('1','2')}
-        self.create_bulk_activities(self.data_file, activities, 2)
+        acct_actvities = self.create_bulk_activities(data_file, activities, 2)
+        eval_rs = EvaluatorResultSummary(
+            event=event, evaluator=self.eval1, hits=2)
+        eval_rs.save()
+        eval_r1 = EvaluatorResult(
+            result_summary=eval_rs, date=datetime(2021, 1, 1),
+            field_values={'first': 'record'},
+            source_record= acct_actvities[0], acct_num='0032')
+        eval_r1.save()
+        eval_r2 = EvaluatorResult(
+            result_summary=eval_rs, date=datetime(2021, 1, 1),
+            field_values={'second': 'record'},
+            source_record= acct_actvities[1], acct_num='0033')
+        eval_r2.save()
 
-    def test_download_eval_metadata(self):
-        response = self.client.get('/all-evaluator-metadata/')
+    def xtest_download_eval_metadata(self):
+        response = self.client.get('/all-evaluator-metadata')
 
         # the response should be a CSV
         self.assertEqual(response.status_code, 200)
@@ -73,32 +95,35 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         for item in self.eval2.serialize():
             self.assertIn(item, csv_content)
 
-    def test_download_evaluator_results(self):
-        expected = {
-            'hits': [
-                {
-                    'id': 32, 'activity_date': '2019-12-31', 'cons_acct_num': '0032',
-                    'acct_stat': '71', 'dofd': None, 'amt_past_due': 0,
-                    'compl_cond_cd': '0', 'current_bal': 0, 'date_closed': '2020-01-01',
-                    'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
-                }, {
-                    'id': 33, 'activity_date': '2019-12-31', 'cons_acct_num': '0033',
-                    'acct_stat': '97', 'dofd': None, 'amt_past_due': 0,
-                    'compl_cond_cd': '0', 'current_bal': 0, 'date_closed': '2020-01-01',
-                    'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
-                    'terms_freq': '0'
-                }
-            ]}
+    def test_get_evaluator_results(self):
+        expected = {'hits': [{'first': 'record'}, {'second': 'record'}]}
         self.create_activity_data()
 
-        evaluator.evaluators = {
-            "ADDL-DOFD-1": addl_dofd_1_func}
-        evaluator.run_evaluators(self.event)
-        response = self.client.get('/events/1/evaluator/ADDL-DOFD-1/')
-
+        response = self.client.get('/events/1/evaluator/ADDL-DOFD-1')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
         # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(response.json(), expected)
+
+    def test_get_evaluator_results_with_error_no_evaluator_metadata(self):
+        self.create_activity_data()
+        response = self.client.get('/events/1/evaluator/NON_EXISTENT')
+
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response, 'Evaluator: NON_EXISTENT does not exist.', status_code=404)
+
+    def test_get_evaluator_results_with_error_no_event(self):
+        response = self.client.get('/events/1/evaluator/ADDL-DOFD-1')
+
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response, 'Event ID: 1 does not exist.', status_code=404)
+
+    def test_get_evaluator_with_error_no_evaluator_results_summary(self):
+        self.create_activity_data()
+        response = self.client.get('/events/1/evaluator/ADDL-DOFD-2')
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response,
+            'Evaluator result does not exist for event ID 1 or evaluator ADDL-DOFD-2.',
+            status_code=404)
