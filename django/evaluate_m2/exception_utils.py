@@ -1,0 +1,22 @@
+from datetime import datetime
+from rest_framework import status
+
+def get_eval_results_not_found_exception(
+        error_string:str, event_id: str, evaluator_name: str, path: str):
+    msg = ''
+
+    if 'Metro2Event' in error_string:
+        msg = f'Event ID: {event_id} does not exist.'
+    elif 'EvaluatorMetadata' in error_string:
+        msg = f'Evaluator: {evaluator_name} does not exist.'
+    else:
+        msg = f'Evaluator result does not exist for event ID {event_id} or evaluator {evaluator_name}.'
+    error= {
+        'timestamp': datetime.now(),
+        'status': status.HTTP_404_NOT_FOUND,
+        'error': 'Not Found',
+        'message': msg,
+        'path': path
+    }
+
+    return error
