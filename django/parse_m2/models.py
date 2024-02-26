@@ -68,28 +68,28 @@ class AccountHolder(Person, Address):
         return cls(
             data_file = m2_data_file,
             activity_date = activity_date,
-            cons_acct_num = get_field_value(fields.base_fields["cons_acct_num"], base_seg),
+            cons_acct_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg),
 
             # Person-related values
-            surname = get_field_value(fields.base_fields["surname"], base_seg),
-            first_name = get_field_value(fields.base_fields["first_name"], base_seg),
-            middle_name = get_field_value(fields.base_fields["middle_name"], base_seg),
-            gen_code = get_field_value(fields.base_fields["gen_code"], base_seg),
-            ssn = get_field_value(fields.base_fields["ssn"], base_seg),
-            dob = get_field_value(fields.base_fields["dob"], base_seg),
-            phone_num = get_field_value(fields.base_fields["phone_num"], base_seg),
-            ecoa = get_field_value(fields.base_fields["ecoa"], base_seg),
-            cons_info_ind = get_field_value(fields.base_fields["cons_info_ind"], base_seg),
+            surname = get_field_value(fields.base_fields, "surname", base_seg),
+            first_name = get_field_value(fields.base_fields, "first_name", base_seg),
+            middle_name = get_field_value(fields.base_fields, "middle_name", base_seg),
+            gen_code = get_field_value(fields.base_fields, "gen_code", base_seg),
+            ssn = get_field_value(fields.base_fields, "ssn", base_seg),
+            dob = get_field_value(fields.base_fields, "dob", base_seg),
+            phone_num = get_field_value(fields.base_fields, "phone_num", base_seg),
+            ecoa = get_field_value(fields.base_fields, "ecoa", base_seg),
+            cons_info_ind = get_field_value(fields.base_fields, "cons_info_ind", base_seg),
 
             # Address-related values
-            country_cd = get_field_value(fields.base_fields["country_cd"], base_seg),
-            addr_line_1 = get_field_value(fields.base_fields["addr_line_1"], base_seg),
-            addr_line_2 = get_field_value(fields.base_fields["addr_line_2"], base_seg),
-            city = get_field_value(fields.base_fields["city"], base_seg),
-            state = get_field_value(fields.base_fields["state"], base_seg),
-            zip = get_field_value(fields.base_fields["zip"], base_seg),
-            addr_ind = get_field_value(fields.base_fields["addr_ind"], base_seg),
-            res_cd = get_field_value(fields.base_fields["res_cd"], base_seg),
+            country_cd = get_field_value(fields.base_fields, "country_cd", base_seg),
+            addr_line_1 = get_field_value(fields.base_fields, "addr_line_1", base_seg),
+            addr_line_2 = get_field_value(fields.base_fields, "addr_line_2", base_seg),
+            city = get_field_value(fields.base_fields, "city", base_seg),
+            state = get_field_value(fields.base_fields, "state", base_seg),
+            zip = get_field_value(fields.base_fields, "zip", base_seg),
+            addr_ind = get_field_value(fields.base_fields, "addr_ind", base_seg),
+            res_cd = get_field_value(fields.base_fields, "res_cd", base_seg),
         )
 
 class AccountActivity(models.Model):
@@ -134,30 +134,30 @@ class AccountActivity(models.Model):
         return cls(
             account_holder = acct_holder,
             activity_date = activity_date,
-            cons_acct_num = get_field_value(fields.base_fields["cons_acct_num"], base_seg),
+            cons_acct_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg),
 
-            port_type = get_field_value(fields.base_fields["port_type"], base_seg),
-            acct_type = get_field_value(fields.base_fields["acct_type"], base_seg),
-            date_open = get_field_value(fields.base_fields["date_open"], base_seg),
-            credit_limit = get_field_value(fields.base_fields["credit_limit"], base_seg),
-            hcola = get_field_value(fields.base_fields["hcola"], base_seg),
-            terms_dur = get_field_value(fields.base_fields["terms_dur"], base_seg),
-            terms_freq = get_field_value(fields.base_fields["terms_freq"], base_seg),
-            smpa = get_field_value(fields.base_fields["smpa"], base_seg),
-            actual_pmt_amt  = get_field_value(fields.base_fields["actual_pmt_amt"], base_seg),
-            acct_stat = get_field_value(fields.base_fields["acct_stat"], base_seg),
-            pmt_rating = get_field_value(fields.base_fields["pmt_rating"], base_seg),
-            php  = get_field_value(fields.base_fields["php"], base_seg),
-            spc_com_cd = get_field_value(fields.base_fields["spc_com_cd"], base_seg),
-            compl_cond_cd = get_field_value(fields.base_fields["compl_cond_cd"], base_seg),
-            current_bal = get_field_value(fields.base_fields["current_bal"], base_seg),
-            amt_past_due = get_field_value(fields.base_fields["amt_past_due"], base_seg),
-            orig_chg_off_amt = get_field_value(fields.base_fields["orig_chg_off_amt"], base_seg),
-            doai = get_field_value(fields.base_fields["doai"], base_seg),
-            dofd = get_field_value(fields.base_fields["dofd"], base_seg),
-            date_closed = get_field_value(fields.base_fields["date_closed"], base_seg),
-            dolp = get_field_value(fields.base_fields["dolp"], base_seg),
-            int_type_ind = get_field_value(fields.base_fields["int_type_ind"], base_seg),
+            port_type = get_field_value(fields.base_fields, "port_type", base_seg),
+            acct_type = get_field_value(fields.base_fields, "acct_type", base_seg),
+            date_open = get_field_value(fields.base_fields, "date_open", base_seg),
+            credit_limit = get_field_value(fields.base_fields, "credit_limit", base_seg),
+            hcola = get_field_value(fields.base_fields, "hcola", base_seg),
+            terms_dur = get_field_value(fields.base_fields, "terms_dur", base_seg),
+            terms_freq = get_field_value(fields.base_fields, "terms_freq", base_seg),
+            smpa = get_field_value(fields.base_fields, "smpa", base_seg),
+            actual_pmt_amt  = get_field_value(fields.base_fields, "actual_pmt_amt", base_seg),
+            acct_stat = get_field_value(fields.base_fields, "acct_stat", base_seg),
+            pmt_rating = get_field_value(fields.base_fields, "pmt_rating", base_seg),
+            php  = get_field_value(fields.base_fields, "php", base_seg),
+            spc_com_cd = get_field_value(fields.base_fields, "spc_com_cd", base_seg),
+            compl_cond_cd = get_field_value(fields.base_fields, "compl_cond_cd", base_seg),
+            current_bal = get_field_value(fields.base_fields, "current_bal", base_seg),
+            amt_past_due = get_field_value(fields.base_fields, "amt_past_due", base_seg),
+            orig_chg_off_amt = get_field_value(fields.base_fields, "orig_chg_off_amt", base_seg),
+            doai = get_field_value(fields.base_fields, "doai", base_seg),
+            dofd = get_field_value(fields.base_fields, "dofd", base_seg),
+            date_closed = get_field_value(fields.base_fields, "date_closed", base_seg),
+            dolp = get_field_value(fields.base_fields, "dolp", base_seg),
+            int_type_ind = get_field_value(fields.base_fields, "int_type_ind", base_seg),
         )
 
 class J1(Person):
@@ -169,15 +169,15 @@ class J1(Person):
         return cls(
             account_activity = account_activity,
             # Person-related values
-            surname = get_field_value(fields.j1_fields["surname_j1"], segment),
-            first_name = get_field_value(fields.j1_fields["first_name_j1"], segment),
-            middle_name = get_field_value(fields.j1_fields["middle_name_j1"], segment),
-            gen_code = get_field_value(fields.j1_fields["gen_code_j1"], segment),
-            ssn = get_field_value(fields.j1_fields["ssn_j1"], segment),
-            dob = get_field_value(fields.j1_fields["dob_j1"], segment),
-            phone_num = get_field_value(fields.j1_fields["phone_num_j1"], segment),
-            ecoa = get_field_value(fields.j1_fields["ecoa_j1"], segment),
-            cons_info_ind = get_field_value(fields.j1_fields["cons_info_ind_j1"], segment),
+            surname = get_field_value(fields.j1_fields, "surname_j1", segment),
+            first_name = get_field_value(fields.j1_fields, "first_name_j1", segment),
+            middle_name = get_field_value(fields.j1_fields, "middle_name_j1", segment),
+            gen_code = get_field_value(fields.j1_fields, "gen_code_j1", segment),
+            ssn = get_field_value(fields.j1_fields, "ssn_j1", segment),
+            dob = get_field_value(fields.j1_fields, "dob_j1", segment),
+            phone_num = get_field_value(fields.j1_fields, "phone_num_j1", segment),
+            ecoa = get_field_value(fields.j1_fields, "ecoa_j1", segment),
+            cons_info_ind = get_field_value(fields.j1_fields, "cons_info_ind_j1", segment),
         )
 
 class J2(Person, Address):
@@ -189,25 +189,25 @@ class J2(Person, Address):
         return cls(
             account_activity = account_activity,
             # Person-related values
-            surname = get_field_value(fields.j2_fields["surname_j2"], segment),
-            first_name = get_field_value(fields.j2_fields["first_name_j2"], segment),
-            middle_name = get_field_value(fields.j2_fields["middle_name_j2"], segment),
-            gen_code = get_field_value(fields.j2_fields["gen_code_j2"], segment),
-            ssn = get_field_value(fields.j2_fields["ssn_j2"], segment),
-            dob = get_field_value(fields.j2_fields["dob_j2"], segment),
-            phone_num = get_field_value(fields.j2_fields["phone_num_j2"], segment),
-            ecoa = get_field_value(fields.j2_fields["ecoa_j2"], segment),
-            cons_info_ind = get_field_value(fields.j2_fields["cons_info_ind_j2"], segment),
+            surname = get_field_value(fields.j2_fields, "surname_j2", segment),
+            first_name = get_field_value(fields.j2_fields, "first_name_j2", segment),
+            middle_name = get_field_value(fields.j2_fields, "middle_name_j2", segment),
+            gen_code = get_field_value(fields.j2_fields, "gen_code_j2", segment),
+            ssn = get_field_value(fields.j2_fields, "ssn_j2", segment),
+            dob = get_field_value(fields.j2_fields, "dob_j2", segment),
+            phone_num = get_field_value(fields.j2_fields, "phone_num_j2", segment),
+            ecoa = get_field_value(fields.j2_fields, "ecoa_j2", segment),
+            cons_info_ind = get_field_value(fields.j2_fields, "cons_info_ind_j2", segment),
 
             # Address-related values
-            country_cd = get_field_value(fields.j2_fields["country_cd_j2"], segment),
-            addr_line_1 = get_field_value(fields.j2_fields["addr_line_1_j2"], segment),
-            addr_line_2 = get_field_value(fields.j2_fields["addr_line_2_j2"], segment),
-            city = get_field_value(fields.j2_fields["city_j2"], segment),
-            state = get_field_value(fields.j2_fields["state_j2"], segment),
-            zip = get_field_value(fields.j2_fields["zip_j2"], segment),
-            addr_ind = get_field_value(fields.j2_fields["addr_ind_j2"], segment),
-            res_cd = get_field_value(fields.j2_fields["res_cd_j2"], segment),
+            country_cd = get_field_value(fields.j2_fields, "country_cd_j2", segment),
+            addr_line_1 = get_field_value(fields.j2_fields, "addr_line_1_j2", segment),
+            addr_line_2 = get_field_value(fields.j2_fields, "addr_line_2_j2", segment),
+            city = get_field_value(fields.j2_fields, "city_j2", segment),
+            state = get_field_value(fields.j2_fields, "state_j2", segment),
+            zip = get_field_value(fields.j2_fields, "zip_j2", segment),
+            addr_ind = get_field_value(fields.j2_fields, "addr_ind_j2", segment),
+            res_cd = get_field_value(fields.j2_fields, "res_cd_j2", segment),
         )
 
 class K1(models.Model):
@@ -219,8 +219,8 @@ class K1(models.Model):
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
         return cls(
             account_activity = account_activity,
-            orig_creditor_name = get_field_value(fields.k1_fields["k1_orig_creditor_name"], segment),
-            creditor_classification = get_field_value(fields.k1_fields["k1_creditor_classification"], segment),
+            orig_creditor_name = get_field_value(fields.k1_fields, "k1_orig_creditor_name", segment),
+            creditor_classification = get_field_value(fields.k1_fields, "k1_creditor_classification", segment),
         )
 
 class K2(models.Model):
@@ -232,8 +232,8 @@ class K2(models.Model):
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
         return cls(
             account_activity = account_activity,
-            purch_sold_ind = get_field_value(fields.k2_fields["k2_purch_sold_ind"], segment),
-            purch_sold_name = get_field_value(fields.k2_fields["k2_purch_sold_name"], segment),
+            purch_sold_ind = get_field_value(fields.k2_fields, "k2_purch_sold_ind", segment),
+            purch_sold_name = get_field_value(fields.k2_fields, "k2_purch_sold_name", segment),
         )
 
 class K3(models.Model):
@@ -246,9 +246,9 @@ class K3(models.Model):
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
         return cls(
             account_activity = account_activity,
-            agency_id = get_field_value(fields.k3_fields["k3_agcy_id"], segment),
-            agency_acct_num = get_field_value(fields.k3_fields["k3_agcy_acct_num"], segment),
-            min = get_field_value(fields.k3_fields["k3_min"], segment),
+            agency_id = get_field_value(fields.k3_fields, "k3_agcy_id", segment),
+            agency_acct_num = get_field_value(fields.k3_fields, "k3_agcy_acct_num", segment),
+            min = get_field_value(fields.k3_fields, "k3_min", segment),
         )
 
 class K4(models.Model):
@@ -262,10 +262,10 @@ class K4(models.Model):
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
         return cls(
             account_activity = account_activity,
-            spc_pmt_ind = get_field_value(fields.k4_fields["k4_spc_pmt_ind"], segment),
-            deferred_pmt_st_dt = get_field_value(fields.k4_fields["k4_deferred_pmt_st_dt"], segment),
-            balloon_pmt_due_dt = get_field_value(fields.k4_fields["k4_balloon_pmt_due_dt"], segment),
-            balloon_pmt_amt = get_field_value(fields.k4_fields["k4_balloon_pmt_amt"], segment),
+            spc_pmt_ind = get_field_value(fields.k4_fields, "k4_spc_pmt_ind", segment),
+            deferred_pmt_st_dt = get_field_value(fields.k4_fields, "k4_deferred_pmt_st_dt", segment),
+            balloon_pmt_due_dt = get_field_value(fields.k4_fields, "k4_balloon_pmt_due_dt", segment),
+            balloon_pmt_amt = get_field_value(fields.k4_fields, "k4_balloon_pmt_amt", segment),
         )
 
 class L1(models.Model):
@@ -278,9 +278,9 @@ class L1(models.Model):
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
         return cls(
             account_activity = account_activity,
-            change_ind = get_field_value(fields.l1_fields["l1_change_ind"], segment),
-            new_acc_num = get_field_value(fields.l1_fields["l1_new_acc_num"], segment),
-            new_id_num = get_field_value(fields.l1_fields["l1_new_id_num"], segment),
+            change_ind = get_field_value(fields.l1_fields, "l1_change_ind", segment),
+            new_acc_num = get_field_value(fields.l1_fields, "l1_new_acc_num", segment),
+            new_id_num = get_field_value(fields.l1_fields, "l1_new_id_num", segment),
         )
 
 class N1(models.Model):
@@ -297,11 +297,11 @@ class N1(models.Model):
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
         return cls(
             account_activity = account_activity,
-            employer_name = get_field_value(fields.n1_fields["n1_employer_name"], segment),
-            employer_addr1 = get_field_value(fields.n1_fields["employer_addr1"], segment),
-            employer_addr2 = get_field_value(fields.n1_fields["employer_addr2"], segment),
-            employer_city = get_field_value(fields.n1_fields["employer_city"], segment),
-            employer_state = get_field_value(fields.n1_fields["employer_state"], segment),
-            employer_zip = get_field_value(fields.n1_fields["employer_zip"], segment),
-            occupation = get_field_value(fields.n1_fields["occupation"], segment),
+            employer_name = get_field_value(fields.n1_fields, "n1_employer_name", segment),
+            employer_addr1 = get_field_value(fields.n1_fields, "employer_addr1", segment),
+            employer_addr2 = get_field_value(fields.n1_fields, "employer_addr2", segment),
+            employer_city = get_field_value(fields.n1_fields, "employer_city", segment),
+            employer_state = get_field_value(fields.n1_fields, "employer_state", segment),
+            employer_zip = get_field_value(fields.n1_fields, "employer_zip", segment),
+            occupation = get_field_value(fields.n1_fields, "occupation", segment),
         )

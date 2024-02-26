@@ -43,7 +43,7 @@ def cast_to_type(input: str, type_str: str):
                 return None
 
 
-def get_field_value(field: tuple, line: str):
+def get_field_value(field_ref: dict, field_name: str, line: str):
     """
     For one field listed in fields.py, get the value from the given segment
     and cast it to the type indicated.
@@ -54,6 +54,8 @@ def get_field_value(field: tuple, line: str):
               target value, and a type (defaults to "string")
     `line` - the string (segment) from which to get the value
     """
+    field = field_ref[field_name]
+
     # Unpack the tuple that contains the field info
     try:
         field_start, field_end, field_type = field

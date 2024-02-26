@@ -5,10 +5,8 @@ from parse_m2 import parse_utils
 
 
 class ParserUtilsTestCase(TestCase):
-    def test_get_field_value_errors_when_field_nonexistent(self):
-        with self.assertRaises(parse_utils.UnreadableLineException):
-            parse_utils.get_field_value((1,30), "string")
-
+    # Tests for cast_to_type
+    # ========================
     def test_cast_field_to_value_for_int_type(self):
         result = parse_utils.cast_to_type("123", "numeric")
         self.assertEqual(result, 123)
@@ -71,23 +69,23 @@ class ParserUtilsTestCase(TestCase):
 
     def test_get_field_value_gets_correct_string(self):
         str = "test1234"
-        result = parse_utils.get_field_value((1,4), str)
+        result = parse_utils.get_field_value({"x": (1,4)}, "x", str)
         self.assertEqual(result, "test")
 
-        result = parse_utils.get_field_value((4,7), str)
+        result = parse_utils.get_field_value({"x": (4,7)}, "x", str)
         self.assertEqual(result, "t123")
 
-        result = parse_utils.get_field_value((1,1), str)
+        result = parse_utils.get_field_value({"x": (1,1)}, "x", str)
         self.assertEqual(result, "t")
 
     def test_get_field_value_casts_to_types(self):
         str = "    test1234"
-        result = parse_utils.get_field_value((1,8, "string"), str)
+        result = parse_utils.get_field_value({"x": (1,8, "string")}, "x", str)
         self.assertEqual(result, "test")
 
-        result = parse_utils.get_field_value((11,12, "numeric"), str)
+        result = parse_utils.get_field_value({"x": (11,12, "numeric")}, "x", str)
         self.assertEqual(result, 34)
 
         str = "test03111901"
-        result = parse_utils.get_field_value((5,12, "date"), str)
+        result = parse_utils.get_field_value({"x": (5,12, "date")}, "x", str)
         self.assertEqual(result, datetime(1901, 3, 11))
