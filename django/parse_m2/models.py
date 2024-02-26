@@ -35,12 +35,18 @@ class Metro2Event(models.Model):
         """
         return self.user_group in user.groups.all()
 
+    def __str__(self) -> str:
+        return self.name
+
 class M2DataFile(models.Model):
     class Meta:
         verbose_name_plural = "Metro2 Data Files"
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=200)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.file_name
 
 class UnparseableData(models.Model):
     class Meta:
@@ -93,6 +99,9 @@ class AccountHolder(Person, Address):
     # Since this model inherits from the Address base class,
     # it automatically has country_cd, addr, city, state, etc.
 
+    def __str__(self) -> str:
+        return f"AccountHolder {self.id} (File ID: {self.data_file.id})"
+
     @classmethod
     def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date):
         return cls(
@@ -135,6 +144,9 @@ class AccountActivity(models.Model):
     # Note: Date fields that are not required in the CRRG use the option
     # null=True. For all required fields, this option defaults to null=False,
     # so they must have a value.
+
+    def __str__(self) -> str:
+        return f"AccountActivity {self.id} (File ID: {self.account_holder.data_file.id})"
 
     account_holder = models.OneToOneField(AccountHolder, on_delete=models.CASCADE)
     activity_date = models.DateField()
@@ -199,6 +211,9 @@ class J1(Person):
     account_activity = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     # Contains all fields from the Person abstract class
 
+    def __str__(self) -> str:
+        return f"J1 {self.id} (File ID: {self.account_activity.account_holder.data_file.id})"
+
     @classmethod
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
         return cls(
@@ -220,6 +235,9 @@ class J2(Person, Address):
         verbose_name_plural = "J2 Segment Associated Consumer - Different Address"
     account_activity = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     # Contains all fields from the Person and Address abstract classes
+
+    def __str__(self) -> str:
+        return f"J2 {self.id} (File ID: {self.account_activity.account_holder.data_file.id})"
 
     @classmethod
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
@@ -254,6 +272,9 @@ class K1(models.Model):
     orig_creditor_name = models.CharField(max_length=200)
     creditor_classification = models.CharField(max_length=200)
 
+    def __str__(self) -> str:
+        return f"K1 {self.id} (File ID: {self.account_activity.account_holder.data_file.id})"
+
     @classmethod
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
         return cls(
@@ -268,6 +289,9 @@ class K2(models.Model):
     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE)
     purch_sold_ind = models.CharField(max_length=200)
     purch_sold_name = models.CharField(max_length=200)
+
+    def __str__(self) -> str:
+        return f"K2 {self.id} (File ID: {self.account_activity.account_holder.data_file.id})"
 
     @classmethod
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
@@ -284,6 +308,9 @@ class K3(models.Model):
     agency_id = models.CharField(max_length=200)
     agency_acct_num = models.CharField(max_length=200)
     min = models.CharField(max_length=200)
+
+    def __str__(self) -> str:
+        return f"K3 {self.id} (File ID: {self.account_activity.account_holder.data_file.id})"
 
     @classmethod
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
@@ -303,6 +330,9 @@ class K4(models.Model):
     balloon_pmt_due_dt = models.DateField(null=True)
     balloon_pmt_amt = models.IntegerField(null=True)
 
+    def __str__(self) -> str:
+        return f"K4 {self.id} (File ID: {self.account_activity.account_holder.data_file.id})"
+
     @classmethod
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
         return cls(
@@ -320,6 +350,9 @@ class L1(models.Model):
     change_ind = models.CharField(max_length=200)
     new_acc_num = models.CharField(max_length=200)
     new_id_num = models.CharField(max_length=200)
+
+    def __str__(self) -> str:
+        return f"L1 {self.id} (File ID: {self.account_activity.account_holder.data_file.id})"
 
     @classmethod
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
@@ -341,6 +374,9 @@ class N1(models.Model):
     employer_state = models.CharField(max_length=200)
     employer_zip = models.CharField(max_length=200)
     occupation = models.CharField(max_length=200)
+
+    def __str__(self) -> str:
+        return f"N1 {self.id} (File ID: {self.account_activity.account_holder.data_file.id})"
 
     @classmethod
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):
