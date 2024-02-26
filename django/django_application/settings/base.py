@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,6 +54,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'django_application.urls'
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'evaluate_m2.exception',
+}
 
 TEMPLATES = [
     {
