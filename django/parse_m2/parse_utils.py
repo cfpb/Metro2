@@ -64,19 +64,26 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
         # default to string if no type is provided
         field_type = "string"
 
-    # Throw an error if the desired indices don't exist in the string
-    if len(line) < field_end:
-        msg = f"Segment too short: looking for index {field_end}, " + \
-              f"but segment length is {len(line)}"
+    try:
+        # Throw an error if the desired indices don't exist in the string
+        if len(line) < field_end:
+            msg = f"Segment too short: looking for index {field_end}, " + \
+                f"but segment length is {len(line)}"
+            raise UnreadableLineException(msg)
+
+        # Get the string between start and end indices.
+        # The CRRG (and fields.py) uses string positions that start at 1,
+        # but python indicates string position starting at 0.
+        # So we use `field_start-1` to adjust for the difference.
+        target_str = line[field_start - 1: field_end]
+
+        # Cast the string to the given type
+        result =  cast_to_type(target_str, field_type)
+
+    except UnreadableLineException as e:
+        # Add context to the error message that comes out of cast_to_type
+        msg = f"Field name: `{field_name}`. Indices: {field_start}-{field_end}. Field_type `{field_type}`. " \
+               + f"Input: `{line}`. Issue detail: " + str(e)
         raise UnreadableLineException(msg)
-
-    # Get the string between start and end indices.
-    # The CRRG (and fields.py) uses string positions that start at 1,
-    # but python indicates string position starting at 0.
-    # So we use `field_start-1` to adjust for the difference.
-    target_str = line[field_start - 1: field_end]
-
-    # Cast the string to the given type
-    result =  cast_to_type(target_str, field_type)
 
     return result

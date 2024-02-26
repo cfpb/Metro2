@@ -67,6 +67,21 @@ class ParserUtilsTestCase(TestCase):
         result = parse_utils.cast_to_type("", "string")
         self.assertEqual(result, "")
 
+    # Tests for get_field_value
+    # ========================
+    def test_get_field_value_gives_informative_error_msg(self):
+        with self.assertRaises(parse_utils.UnreadableLineException)as e:
+            parse_utils.get_field_value({"account_plan": (1,30)}, "account_plan", "string")
+        self.assertIn("segment length is 6", str(e.exception))
+
+        with self.assertRaises(parse_utils.UnreadableLineException)as e1:
+            parse_utils.get_field_value({"test_date": (1,8, "date")}, "test_date", "33334444")
+        self.assertIn("Indices: 1-8", str(e1.exception))
+
+        with self.assertRaises(parse_utils.UnreadableLineException)as e2:
+            parse_utils.get_field_value({"age": (1,3, "numeric")}, "age", "XYZ")
+        self.assertIn("Field name: `age`", str(e2.exception))
+
     def test_get_field_value_gets_correct_string(self):
         str = "test1234"
         result = parse_utils.get_field_value({"x": (1,4)}, "x", str)
