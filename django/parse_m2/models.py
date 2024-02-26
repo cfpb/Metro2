@@ -19,7 +19,7 @@ class M2DataFile(models.Model):
 class UnparseableData(models.Model):
     data_file = models.ForeignKey(M2DataFile, on_delete=models.CASCADE)
     unparseable_line = models.CharField(max_length=2000)
-    error_description = models.CharField(max_length=200)
+    error_description = models.CharField(max_length=2000)
 
 class Person(models.Model):
     surname = models.CharField(max_length=200)
