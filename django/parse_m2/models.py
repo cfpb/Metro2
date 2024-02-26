@@ -256,7 +256,7 @@ class K4(models.Model):
     spc_pmt_ind = models.CharField(max_length=200)
     deferred_pmt_st_dt = models.DateField(null=True)
     balloon_pmt_due_dt = models.DateField(null=True)
-    balloon_pmt_amt = models.IntegerField()
+    balloon_pmt_amt = models.IntegerField(null=True)
 
     @classmethod
     def parse_from_segment(cls, segment: str, account_activity: AccountActivity):

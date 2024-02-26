@@ -136,7 +136,7 @@ k4_fields = {
     "k4_spc_pmt_ind":(3, 4),
     "k4_deferred_pmt_st_dt":(5, 12, "date optional"),
     "k4_balloon_pmt_due_dt":(13, 20, "date optional"),
-    "k4_balloon_pmt_amt":(21, 29, "numeric"),
+    "k4_balloon_pmt_amt":(21, 29, "numeric optional"),
     "reserved_k4":(30, 30),
 }
 
