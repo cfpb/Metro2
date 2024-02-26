@@ -19,16 +19,20 @@ def cast_to_type(input: str, type_str: str):
     Inputs:
     `input` - the string to be converted
     `type_str` - one of the following: "string", "numeric",
-                 "date", or "date optional"
+                 "numeric optional", "date", or "date optional"
     """
     if type_str == "string":
         return input.strip()
-    if type_str == "numeric":
+    if type_str == "numeric" or type_str == "numeric optional":
         try:
             return int(input)
         except ValueError:
-            msg = f"Numeric value `{input}` could not be parsed as int"
-            raise UnreadableLineException(msg)
+            if type_str == "numeric":
+                msg = f"Numeric value `{input}` could not be parsed as int"
+                raise UnreadableLineException(msg)
+            else:
+                return None
+
     if type_str == "date" or type_str == "date optional":
         if len(input) != 8:
             msg = f"Date value `{input}` must have length 8, instead had {len(input)}"
