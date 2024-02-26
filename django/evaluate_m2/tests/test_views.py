@@ -1,5 +1,5 @@
 from django.test import TestCase
-from datetime import datetime
+from datetime import date
 
 from evaluate_m2.models import (
     EvaluatorMetadata,
@@ -58,25 +58,19 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         # Create the Account Holders
         self.create_bulk_account_holders(data_file, ('Z','Y'))
         # Create the Account Activities data
-        activities = {
-            'id':(32,33),
-            'cons_acct_num':('0032','0033'),
-            'account_holder':('Z','Y'),
-            'acct_stat':('71','97'),
-            'dofd':(None,None),
-            'pmt_rating':('1','2')}
+        activities = {'id':(32,33), 'account_holder':('Z','Y')}
         acct_actvities = self.create_bulk_activities(data_file, activities, 2)
         eval_rs = EvaluatorResultSummary(
             event=event, evaluator=self.eval1, hits=2)
         eval_rs.save()
         eval_r1 = EvaluatorResult(
-            result_summary=eval_rs, date=datetime(2021, 1, 1),
-            field_values={'first': 'record'},
+            result_summary=eval_rs, date=date(2021, 1, 1),
+            field_values={'record': 1, 'acct_type':'y'},
             source_record= acct_actvities[0], acct_num='0032')
         eval_r1.save()
         eval_r2 = EvaluatorResult(
-            result_summary=eval_rs, date=datetime(2021, 1, 1),
-            field_values={'second': 'record'},
+            result_summary=eval_rs, date=date(2021, 1, 1),
+            field_values={'record': 2, 'acct_type': 'n'},
             source_record= acct_actvities[1], acct_num='0033')
         eval_r2.save()
 
@@ -96,7 +90,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             self.assertIn(item, csv_content)
 
     def test_get_evaluator_results(self):
-        expected = {'hits': [{'first': 'record'}, {'second': 'record'}]}
+        expected = {'hits': [{'record': 1, 'acct_type':'y'},
+                             {'record': 2, 'acct_type': 'n'}]}
         self.create_activity_data()
 
         response = self.client.get('/events/1/evaluator/ADDL-DOFD-1')
