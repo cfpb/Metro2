@@ -2,7 +2,6 @@
 
 from .base import *
 
-
 DEBUG = True
 
 # Database

@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
@@ -33,3 +34,11 @@ urlpatterns = [
     path('all-evaluator-metadata', eval_views.download_evaluator_metadata),
     path('events/', include(evaluate_m2_urls)),
 ]
+
+try:
+    # If the SSO library is installed, include auth-related URLs
+    urlpatterns += [
+        path('oauth2/', include('django_auth_adfs.urls')),
+    ]
+except ImproperlyConfigured:
+    pass
