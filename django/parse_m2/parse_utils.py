@@ -53,10 +53,15 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
     and cast it to the type indicated.
 
     Inputs:
-    `field` - a tuple in the form of (int, int) or (int, int, str)
-              which represents the start index and end index of the
-              target value, and a type (defaults to "string")
-    `line` - the string (segment) from which to get the value
+    `field_ref` - A dict containing a set of fields and their indices,
+                  as found in fields.py.
+                  Keys are fields in the metro2 data file. Values are
+                  tuples in the form of (int, int) or (int, int, str)
+                  which represents the start index and end index of the
+                  target value, and a type (defaults to "string").
+    `field_name` - The name of the field to parse from `line`.
+                   Should be a key in `field_ref`.
+    `line` - The string (segment) from which to get the value.
     """
     field = field_ref[field_name]
 
