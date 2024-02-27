@@ -43,7 +43,7 @@ class M2FileParser():
         if re.match(self.header_format, line[:10]):
             # If the line is a header, get the activity_date
             return parse_utils.get_field_value(
-                fields.header_fields["activity_date"],
+                fields.header_fields, "activity_date",
                 line,
             )
         else:

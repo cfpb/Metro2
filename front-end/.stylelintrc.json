@@ -11,6 +11,15 @@
 			{
 				"ignoreAtRules": ["layer"]
 			}
-		]
+		],
+		"function-no-unknown": [
+      true,
+      { 
+				"ignoreFunctions": ["unit"] 
+			}
+    ],
+		"selector-class-pattern": null
 	}
 }
+
+
