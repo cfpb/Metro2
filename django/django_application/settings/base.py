@@ -59,7 +59,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
     ],
-    'EXCEPTION_HANDLER': 'evaluate_m2.exception',
 }
 
 TEMPLATES = [
