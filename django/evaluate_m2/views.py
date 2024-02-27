@@ -65,7 +65,7 @@ def download_evaluator_results_csv(request, event_id, evaluator_name):
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 @api_view()
-def download_evaluator_results(request, event_id, evaluator_name):
+def evaluator_results_view(request, event_id, evaluator_name):
     logger = logging.getLogger('views.download_evaluator_results')
     try:
         eval_result_summary = EvaluatorResultSummary.objects.get(
