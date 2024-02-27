@@ -74,7 +74,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             source_record= acct_actvities[1], acct_num='0033')
         eval_r2.save()
 
-    def xtest_download_eval_metadata(self):
+    def test_download_eval_metadata(self):
         response = self.client.get('/all-evaluator-metadata')
 
         # the response should be a CSV
