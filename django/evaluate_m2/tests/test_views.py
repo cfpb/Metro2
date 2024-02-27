@@ -43,13 +43,6 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         return super().setUp()
 
     def create_activity_data(self):
-        activities = {
-            'id':(32,33),
-            'cons_acct_num':('0032','0033'),
-            'account_holder':('Z','Y'),
-            'acct_stat':('71','97'),
-            'dofd':(None,None),
-            'pmt_rating':('1','2')}
         # Create the parent records for the AccountActivity data
         event = Metro2Event(id=1, name='test_exam')
         event.save()
