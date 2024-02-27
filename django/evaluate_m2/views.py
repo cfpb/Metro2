@@ -73,7 +73,7 @@ def evaluator_results_view(request, event_id, evaluator_name):
             evaluator=EvaluatorMetadata.objects.get(name=evaluator_name))
         results = []
         # Add all evaluator results field_values to the response
-        for eval_result in eval_result_summary.evaluatorresult_set.all():
+        for eval_result in eval_result_summary.evaluatorresult_set.all()[:50]:
             results.append(eval_result.field_values)
         data = {'hits': results}
         return JsonResponse(data)
