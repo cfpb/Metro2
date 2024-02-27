@@ -82,7 +82,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         for item in self.eval2.serialize():
             self.assertIn(item, csv_content)
 
-    def test_get_evaluator_results(self):
+    def test_evaluator_results_view(self):
         expected = {'hits': [{'record': 1, 'acct_type':'y'},
                              {'record': 2, 'acct_type': 'n'}]}
         self.create_activity_data()
@@ -95,20 +95,20 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(response.json(), expected)
 
-    def test_get_evaluator_results_with_error_no_evaluator_metadata(self):
+    def test_evaluator_results_view_with_error_no_evaluator_metadata(self):
         self.create_activity_data()
         response = self.client.get('/events/1/evaluator/NON_EXISTENT')
 
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response, 'Evaluator: NON_EXISTENT does not exist.', status_code=404)
 
-    def test_get_evaluator_results_with_error_no_event(self):
+    def test_evaluator_results_view_with_error_no_event(self):
         response = self.client.get('/events/1/evaluator/ADDL-DOFD-1')
 
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response, 'Event ID: 1 does not exist.', status_code=404)
 
-    def test_get_evaluator_with_error_no_evaluator_results_summary(self):
+    def test_evaluator_results_view_with_error_no_evaluator_results_summary(self):
         self.create_activity_data()
         response = self.client.get('/events/1/evaluator/ADDL-DOFD-2')
         self.assertEqual(response.headers['Content-Type'], 'application/json')
