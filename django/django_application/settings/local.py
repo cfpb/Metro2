@@ -16,23 +16,7 @@ LOCAL_EVENT_DATA = "parse_m2/local_data/"
 S3_BUCKET_NAME = "cfpb-metro2-***REMOVED***"
 S3_ENABLED=False
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'prepend_date': {
-            'format': '{asctime} {levelname}: {message}',
-            'style': '{',
-        },
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'prepend_date',
-        },
-    },
-    'root': {
+LOGGING['root']= {
         'handlers': ['console'],
         'level': 'DEBUG',
-    },
-}
+    }
