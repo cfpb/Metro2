@@ -82,6 +82,27 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         for item in self.eval2.serialize():
             self.assertIn(item, csv_content)
 
+    def test_download_evaluator_results_csv(self):
+        self.create_activity_data()
+
+        response = self.client.get('/events/1/evaluator/ADDL-DOFD-1/csv')
+
+        # the response should be a CSV
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'text/csv')
+        self.assertIn(f'filename=test_exam_ADDL-DOFD-1_{date.today()}.csv', response.headers['Content-Disposition'])
+
+        # the CSV should contain info about the evaluator_results
+        csv_content = response.content.decode('utf-8')
+
+        expected = "\r\n".join([
+            "event_name,record,acct_type",
+            "test_exam,1,y",
+            "test_exam,2,n",
+            "",
+        ])
+        self.assertEqual(csv_content, expected)
+
     def test_evaluator_results_view(self):
         expected = {'hits': [{'record': 1, 'acct_type':'y'},
                              {'record': 2, 'acct_type': 'n'}]}
