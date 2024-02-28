@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import renderWithProviders from '../../testUtils'
 import EvaluatorPage from 'pages/Evaluator/EvaluatorPage'
 
 describe('<EvaluatorPage />', () => {
-	it('renders', () => {
-		render(<EvaluatorPage />)
-		expect(screen.getByText('Evaluator page')).toBeInTheDocument()
+	it('renders Evaluator page', async () => {
+		renderWithProviders(<EvaluatorPage/>)
+		expect(await screen.findByText('Inconsistency')).toBeVisible()
 	})
 })

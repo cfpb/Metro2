@@ -8,6 +8,7 @@ const rootRoute = createRootRoute({
   component: (): ReactElement => (
       <Suspense fallback={ <LoadingOrError /> }>
         <Outlet />
+        {/* <TanStackRouterDevtools /> */}
       </Suspense>
     )
 })

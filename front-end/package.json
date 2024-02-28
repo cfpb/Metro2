@@ -23,6 +23,7 @@
 		"@cfpb/cfpb-design-system": "0.26.1",
 		"@tanstack/react-query": "4.29.7",
 		"@tanstack/react-router": "^1.16.2",
+		"@tanstack/router-devtools": "^1.17.4",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},

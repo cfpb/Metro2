@@ -145,7 +145,7 @@
 		"react/jsx-no-constructed-context-values": "error",
 		"react/jsx-no-script-url": "error",
 		"react/jsx-no-useless-fragment": "error",
-
+		"react/require-default-props": "off",
 		"unicorn/filename-case": [
 			"error",
 			{
@@ -155,7 +155,9 @@
 				}
 			}
 		],
-		"unicorn/no-nested-ternary": ["error"]
+		"unicorn/no-nested-ternary": ["error"],
+		"unicorn/no-null": "off",
+		"unicorn/no-keyword-prefix": "off"
 	},
 	"settings": {
 		"react": {
