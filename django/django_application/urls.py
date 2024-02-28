@@ -16,11 +16,12 @@ Including another URLconf
 """
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import path, include
 from django.views.generic import TemplateView
 
 from users import views
 from evaluate_m2 import views as eval_views
+from evaluate_m2 import urls as evaluate_m2_urls
 
 
 urlpatterns = [
@@ -30,8 +31,8 @@ urlpatterns = [
     path('secured/', views.secured_view),
     path('datasets/', views.datasets),
     path('datasets/<int:dataset_id>/', views.dataset),
-    path('all-evaluator-metadata/', eval_views.download_evaluator_metadata),
-    path('events/<int:event_id>/evaluator/<str:evaluator_name>/', eval_views.download_evaluator_results),
+    path('all-evaluator-metadata', eval_views.download_evaluator_metadata),
+    path('events/', include(evaluate_m2_urls)),
 ]
 
 try:

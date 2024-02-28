@@ -9,11 +9,11 @@ TODO: Add info on how auth tokens need to be included/handled in API requests
 ## API endpoints
 
 Quick links
+- [`/events/{event_id}/evaluator/{evaluator_name}/csv`](#exporting-evaluator-results-csv)
 - [`/events/{event_id}/evaluator/{evaluator_name}`](#exporting-evaluator-results)
+### Exporting evaluator results CSV
 
-### Exporting evaluator results
-
-`/events/{event_id}/evaluator/{evaluator_name}`
+`/events/{event_id}/evaluator/{evaluator_name}/csv`
 
 GET - returns a CSV of evaluator results for a single evaluator (whose name matches `evaluator_name`) for a single event (with the id `event_id`).
 
@@ -30,4 +30,34 @@ hyundai2024,1100,,0,13,1,,M,0,2019-01-29,0,2019-01-31,,20121204941549,0
 hyundai2024,1303,,0,13,1,,M,0,2018-11-27,0,2019-01-31,,20120603193654,0
 hyundai2024,1320,,0,13,1,,M,0,2018-11-15,0,2019-01-31,,20121004399540,0
 hyundai2024,1331,,0,13,1,,M,0,2019-01-26,0,2019-01-31,,20121205047544,0
+```
+
+### Exporting evaluator results
+
+`/events/{event_id}/evaluator/{evaluator_name}`
+
+GET - returns a JSON with a `hits` field composed of a list that contains one object per EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose name matches `evaluator_name`) combo. The keys in each object would be the list of fields saved in field_values for that EvaluatorResult.
+
+**Example response:**
+```JSON
+{
+    "hits": [
+        {
+            "id": 1026,
+            "cons_acct_num": "1234567890",
+            "activity_date": "1/31/2019",
+            "dofd": null,
+            "smpa": "0",
+            "acct_stat": "13",
+            "pmt_rating": "1",
+            "spc_com_cd": "",
+            "terms_freq": "M",
+            "current_bal": 0,
+            "date_closed": "11/27/2018",
+            "amt_past_due": 0,
+            "compl_cond_cd": null,
+            "orig_chg_off_am": 0,
+        }, { ... }
+    ]
+}
 ```
