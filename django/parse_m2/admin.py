@@ -38,7 +38,6 @@ class Metro2EventAdmin(admin.ModelAdmin):
         Overrides BaseModelAdmin render_change_form() to update the flags to
         show/hide buttons on add or change view for Metro2Events
         """
-        print('In render_change_form')
         if obj:
             context.update({"show_parse": False})
             context.update({"show_parse_eval": False})

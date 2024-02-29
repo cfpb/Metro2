@@ -26,6 +26,7 @@ class Metro2EventForm(forms.ModelForm):
 
     def save_m2m(self):
         pass
+
     def save(self, commit):
         # This is called only when it is for a new Metro2Event
         if self.is_valid() & self.has_changed():

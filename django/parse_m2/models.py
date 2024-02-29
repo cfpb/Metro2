@@ -15,7 +15,6 @@ class Metro2Event(models.Model):
             account_holder__data_file__event=self)
 
     def evaluate(self):
-        print("\tIn evaulate()")
         call_command('run_evaluators', event_id=self.id)
 
 
