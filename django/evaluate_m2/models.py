@@ -6,6 +6,8 @@ from parse_m2.models import AccountActivity, Metro2Event
 
 
 class EvaluatorMetadata(models.Model):
+    class Meta:
+        verbose_name_plural = "Evaluator Metadata"
     # id is auto-numbered
     name = models.CharField(max_length=200, blank=False)
     description = models.TextField(blank=True)  # plain language description
@@ -100,12 +102,16 @@ class EvaluatorMetadata(models.Model):
 
 
 class EvaluatorResultSummary(models.Model):
+    class Meta:
+        verbose_name_plural = "Evaluator Result Summaries"
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     evaluator = models.ForeignKey(EvaluatorMetadata, on_delete=models.CASCADE)
     hits = models.IntegerField()
 
 
 class EvaluatorResult(models.Model):
+    class Meta:
+        verbose_name_plural = "Evaluator Results"
     result_summary = models.ForeignKey(EvaluatorResultSummary, on_delete=models.CASCADE)
     date = models.DateField()
     field_values = JSONField(encoder=DjangoJSONEncoder)

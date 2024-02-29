@@ -14,5 +14,5 @@ DATABASES = {
         'PORT': '5432'
     }
 }
-
+S3_ENABLED=False
 LOCAL_EVENT_DATA = "parse_m2/local_data/"

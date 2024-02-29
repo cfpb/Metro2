@@ -25,6 +25,7 @@ class Evaluate():
         record_set = event.get_all_account_activity()
         # run evaluators
         for eval_name, func in self.evaluators.items():
+            logger.info(f"Running evaluator: {eval_name}")
             results = func(record_set)
             if results:
                 # generate evaluator results summary and save before accessed to generate
@@ -36,6 +37,7 @@ class Evaluate():
                     evaluator_results.append(result)
                 if (len(evaluator_results) > 0):
                     EvaluatorResult.objects.bulk_create(evaluator_results)
+                    logger.info(f"Evaluator results written to the database: {evaluator_results.count()}")
 
     def prepare_result(self, result_summary: EvaluatorResultSummary,
                        data: dict) -> EvaluatorResult:
