@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import renderWithProviders from '../../testUtils'
 import EventPage from 'pages/Event/EventPage'
 
 describe('<EventPage />', () => {
-	it('renders', () => {
-		render(<EventPage />)
-		expect(screen.getByText('Event page')).toBeInTheDocument()
+	it('renders Event page', async () => {
+		renderWithProviders(<EventPage/>)
+		expect(await screen.findByText('Test bank exam')).toBeVisible()
 	})
 })

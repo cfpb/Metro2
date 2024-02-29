@@ -1,9 +1,10 @@
 import type { ReactElement } from 'react'
+import LocatorBar from 'components/LocatorBar/LocatorBar'
 
 export default function AccountPage(): ReactElement {
 	return (
-    <div className='content-row'>
-      <h3>Account page</h3>
-    </div>
+    <LocatorBar eyebrow='Account'
+							  heading='999999999'
+                breadcrumbs/>
 	)
 }

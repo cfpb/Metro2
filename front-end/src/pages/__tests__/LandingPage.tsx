@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
+import renderWithProviders from '../../testUtils'
 import LandingPage from 'pages/Landing/LandingPage'
 
 describe('<LandingPage />', () => {
-	it('renders', () => {
-		render(<LandingPage />)
-		expect(screen.getByText('Landing page')).toBeInTheDocument()
+	it('renders Landing page', async () => {
+		renderWithProviders(<LandingPage/>)
+		expect(await screen.findByText('Here is your events list')).toBeVisible()
 	})
 })

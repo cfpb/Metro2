@@ -19,11 +19,11 @@ declare module '@tanstack/react-router' {
 export default function App(): ReactElement {
 	return (
 		<>
-		<HeaderNavbar />
-		<header className="content-row">
-			<h1 className="h2 u-mb0">Metro2 Evaluator Tool</h1>
-		</header>
-		<RouterProvider router={ router }/>
+			<HeaderNavbar />
+			<header className="content-row">
+				<h1 className="h2 u-mb0">Metro2 Evaluator Tool</h1>
+			</header>
+			<RouterProvider router={ router }/>
 		</>
 	)
 }
