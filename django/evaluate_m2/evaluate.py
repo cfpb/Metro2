@@ -37,7 +37,7 @@ class Evaluate():
                     evaluator_results.append(result)
                 if (len(evaluator_results) > 0):
                     EvaluatorResult.objects.bulk_create(evaluator_results)
-                    logger.info(f"Evaluator results written to the database: {evaluator_results.count}")
+                    logger.info(f"Evaluator results written to the database: {evaluator_results.count()}")
 
     def prepare_result(self, result_summary: EvaluatorResultSummary,
                        data: dict) -> EvaluatorResult:
