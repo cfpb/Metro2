@@ -16,7 +16,7 @@ from parse_m2.models import (
 
 # Register your models here.
 class Metro2EventAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ['name', 'id']
     form=Metro2EventForm
     fields = ['name','directory']
 
