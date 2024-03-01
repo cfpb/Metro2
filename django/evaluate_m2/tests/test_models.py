@@ -8,7 +8,8 @@ from parse_m2.models import Metro2Event
 class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
     def test_eval_create_from_dict(self):
         input_json = {
-            'name': 'ADDL-DOFD-1',
+            'id': 'ADDL-DOFD-1',
+            'name': '',
             'description': 'Account status indicates a delinquent, or paid and previously delinquent, account but there is no date of first delinquency.',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
@@ -25,19 +26,21 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
         # check that the evaluator was saved in the database
         self.assertIsNotNone(eval.id)
         # check that the properties are correct
-        self.assertEqual(eval.name, input_json['name'])
+        self.assertEqual(eval.id, input_json['id'])
         self.assertEqual(eval.fields_used, ["account status", "date of first delinquency"])
 
     def test_eval_update_from_dict(self):
         eval1 = EvaluatorMetadata(
-            name = "Betsy Test 3",
+            id = "Betsy Test 3",
+            name = "Betsy's test evaluator",
             description = "Another test evaluator",
             fields_used = ["credit limit", "date closed"],
             crrg_page = "444",
             risk_level = "Low"
         )
         input_json = {
-            'name': 'Betsy Test 3',
+            'id': 'Betsy Test 3',
+            'name': '',
             'description': 'Account status indicates a delinquent, or paid and previously delinquent, account but there is no date of first delinquency.',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
@@ -52,12 +55,13 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
         }
 
         result = eval1.update_from_dict(input_json)
+        self.assertEqual(result.name, "")
         self.assertEqual(result.crrg_page, "41")
         self.assertEqual(result.risk_level, "High")
 
     def test_serialize_eval(self):
         eval1 = EvaluatorMetadata(
-            name = "Betsy Test 1",
+            id = "Betsy Test 1",
             description = "My test evaluator",
             fields_used = ["credit limit", "date closed"],
             crrg_page = "444",
@@ -65,7 +69,8 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
         )
 
         expected = [
-            "Betsy Test 1",             # self.name
+            "Betsy Test 1",             # self.id
+            "",                         # self.name
             "My test evaluator",        # self.description
             "",                         # self.long_description
             "credit limit;date closed", # self.fields_used
