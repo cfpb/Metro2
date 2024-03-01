@@ -35,9 +35,9 @@ class Command(BaseCommand):
             rows_count = 0
             for row in reader:
                 rows_count += 1
-                name = row["name"]
+                id = row["id"]
                 try:
-                    eval = EvaluatorMetadata.objects.get(name=name)
+                    eval = EvaluatorMetadata.objects.get(name=id)
                     eval.update_from_dict(row)
                     updated += 1
                 except EvaluatorMetadata.DoesNotExist:
