@@ -30,7 +30,7 @@ class EvaluatorMetadata(models.Model):
     func: any
 
     def __str__(self) -> str:
-        return self.name
+        return self.id
 
     @classmethod
     def create_from_dict(cls, json: dict):
