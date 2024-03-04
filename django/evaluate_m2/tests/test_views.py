@@ -40,6 +40,20 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             'risk_level': 'High'
         })
+        self.eval3 = EvaluatorMetadata.create_from_dict({
+            'name': 'ADDL-DOFD-3',
+            'description': 'description for a third addl-dofd eval',
+            'long_description': '',
+            'fields_used': 'account status;dofd;php',
+            'fields_display': 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            'ipl': '',
+            'crrg_topics': '',
+            'crrg_page': '41',
+            'pdf_page': '',
+            'use_notes': '',
+            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'risk_level': 'High'
+        })
         return super().setUp()
 
     def create_activity_data(self):
@@ -49,13 +63,17 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         data_file = M2DataFile(event=event, file_name='file.txt')
         data_file.save()
         # Create the Account Holders
-        self.create_bulk_account_holders(data_file, ('Z','Y'))
+        accounts = self.create_bulk_account_holders(data_file, ('Z','Y','X'))
         # Create the Account Activities data
-        activities = {'id':(32,33), 'account_holder':('Z','Y')}
+        activities = {'id':(32,33), 'account_holder':('Z','Y'),
+                      'cons_acct_num':('0032', '0033')}
         acct_actvities = self.create_bulk_activities(data_file, activities, 2)
         eval_rs = EvaluatorResultSummary(
             event=event, evaluator=self.eval1, hits=2)
         eval_rs.save()
+        eval_rs2 = EvaluatorResultSummary(
+            event=event, evaluator=self.eval3, hits=1)
+        eval_rs2.save()
         eval_r1 = EvaluatorResult(
             result_summary=eval_rs, date=date(2021, 1, 1),
             field_values={'record': 1, 'acct_type':'y'},
@@ -66,6 +84,11 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             field_values={'record': 2, 'acct_type': 'n'},
             source_record= acct_actvities[1], acct_num='0033')
         eval_r2.save()
+        eval_r3 = EvaluatorResult(
+            result_summary=eval_rs2, date=date(2021, 1, 1),
+            field_values={'record': 3, 'acct_type': 'n'},
+            source_record= acct_actvities[0], acct_num='0032')
+        eval_r3.save()
 
     def test_download_eval_metadata(self):
         response = self.client.get('/all-evaluator-metadata')
@@ -80,6 +103,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         for item in self.eval1.serialize():
             self.assertIn(item, csv_content)
         for item in self.eval2.serialize():
+            self.assertIn(item, csv_content)
+        for item in self.eval3.serialize():
             self.assertIn(item, csv_content)
 
     def test_download_evaluator_results_csv(self):
@@ -136,3 +161,58 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertContains(response,
             'Evaluator result does not exist for event ID 1 or evaluator ADDL-DOFD-2.',
             status_code=404)
+
+    def test_account_summary_view_single_results(self):
+        self.create_activity_data()
+        expected_acct_activity = {
+            'activity_date': '2019-12-31', 'port_type': 'X', 'acct_type': '00',
+            'date_open': '2020-01-01', 'credit_limit': 0, 'hcola': 0, 'terms_dur': '0',
+            'terms_freq': '0', 'smpa': 0, 'actual_pmt_amt': 0, 'acct_stat': '00',
+            'pmt_rating': '0', 'php': '', 'spc_com_cd': 'X', 'compl_cond_cd': '0',
+            'current_bal': 0, 'amt_past_due': 0, 'orig_chg_off_amt': 0,
+            'doai': '2020-01-01', 'dofd': '2020-01-01', 'date_closed': '2020-01-01',
+            'dolp': None, 'int_type_ind': ''}
+
+        expected = {
+            'const_acct_num': '0033',
+            'inconsistencies': [
+                {
+                    'id': 1,
+                    'name': 'ADDL-DOFD-1'
+                }
+            ],
+            'account_activity': [expected_acct_activity]
+        }
+
+        response = self.client.get('/events/1/account/0033')
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        # the response should a hits field with a list of EvaluatorResult field_values
+        self.assertEqual(response.json(), expected)
+
+
+    def test_account_summary_view_multiple_results(self):
+        self.create_activity_data()
+        expected_acct_activities = [
+            {'activity_date': '2019-12-31', 'port_type': 'X', 'acct_type': '00', 'date_open': '2020-01-01', 'credit_limit': 0, 'hcola': 0, 'terms_dur': '0', 'terms_freq': '0', 'smpa': 0, 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0', 'php': '', 'spc_com_cd': 'X', 'compl_cond_cd': '0', 'current_bal': 0, 'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2020-01-01', 'dofd': '2020-01-01', 'date_closed': '2020-01-01', 'dolp': None, 'int_type_ind': ''},
+            {'activity_date': '2019-12-31', 'port_type': 'X', 'acct_type': '00', 'date_open': '2020-01-01', 'credit_limit': 0, 'hcola': 0, 'terms_dur': '0', 'terms_freq': '0', 'smpa': 0, 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0', 'php': '', 'spc_com_cd': 'X', 'compl_cond_cd': '0', 'current_bal': 0, 'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2020-01-01', 'dofd': '2020-01-01', 'date_closed': '2020-01-01', 'dolp': None, 'int_type_ind': ''}]
+
+        expected = {
+            'const_acct_num': '0032',
+            'inconsistencies': [
+                { 'id': 1, 'name': 'ADDL-DOFD-1' },
+                { 'id': 3, 'name': 'ADDL-DOFD-3' },
+            ],
+            'account_activity': expected_acct_activities
+        }
+
+        response = self.client.get('/events/1/account/0032')
+
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        # the response should a hits field with a list of EvaluatorResult field_values
+        self.assertEqual(response.json(), expected)

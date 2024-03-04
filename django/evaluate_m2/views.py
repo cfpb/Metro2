@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from evaluate_m2.exception_utils import get_eval_results_not_found_exception
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
+from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from parse_m2.models import Metro2Event
 
 def download_evaluator_metadata(request):
@@ -65,7 +65,7 @@ def download_evaluator_results_csv(request, event_id, evaluator_name):
 
 @api_view()
 def evaluator_results_view(request, event_id, evaluator_name):
-    logger = logging.getLogger('views.download_evaluator_results')
+    logger = logging.getLogger('views.evaluator_results_view')
     try:
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=Metro2Event.objects.get(id=event_id),
@@ -82,5 +82,43 @@ def evaluator_results_view(request, event_id, evaluator_name):
         EvaluatorResultSummary.DoesNotExist
     ) as e:
         error = get_eval_results_not_found_exception(str(e), event_id, evaluator_name, request.path)
+        logger.error(error['message'])
+        return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+@api_view()
+def account_summary_view(request, event_id, account_number):
+    logger = logging.getLogger('views.account_summary_view')
+    try:
+
+        eval_results = EvaluatorResult.objects.filter(
+            acct_num=account_number,
+            result_summary__event__id=event_id)
+        eval_metadata=[]
+        acct_activities=[]
+
+        if len(eval_results) > 1:
+            for e in eval_results:
+                eval={'id': e.result_summary.evaluator.id,
+                    'name': e.result_summary.evaluator.name}
+                if eval not in eval_metadata:
+                    eval_metadata.append(eval)
+                acct_activities.append(e.source_record.serialize_json())
+        else:
+            e = eval_results.first()
+            eval_metadata.append({
+                'id': e.result_summary.evaluator.id,
+                'name': e.result_summary.evaluator.name})
+            acct_activities.append(e.source_record.serialize_json())
+
+        data = {'const_acct_num': account_number,
+                'inconsistencies': eval_metadata,
+                'account_activity': acct_activities}
+
+        return JsonResponse(data)
+    except (
+        Metro2Event.DoesNotExist,
+        EvaluatorMetadata.DoesNotExist
+    ) as e:
+        error = get_eval_results_not_found_exception(str(e), event_id, None, request.path)
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
