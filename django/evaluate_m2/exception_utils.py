@@ -10,7 +10,7 @@ def get_eval_results_not_found_exception(
     elif 'EvaluatorMetadata' in error_string:
         msg = f'Evaluator: {evaluator_id} does not exist.'
     else:
-        msg = f'Evaluator result does not exist for event ID {event_id} or evaluator {evaluator_id}.'
+        msg = f'Evaluator result does not exist for event ID {event_id} or evaluator ID {evaluator_id}.'
     error= {
         'timestamp': datetime.now(),
         'status': status.HTTP_404_NOT_FOUND,
