@@ -53,7 +53,6 @@ class ParserModelsTestCase(TestCase, EvaluatorTestHelper):
         # Create the Account Holders
         self.create_bulk_account_holders(file2, ('Z','Y'))
         self.create_bulk_activities(file2, activities2, 2)
-        return super().setUp()
 
     def test_metro2_event_get_all_account_activity_returns_results(self):
         self.create_exam_activity()
@@ -170,7 +169,6 @@ class TestMetro2EventAccess(TestCase):
         self.examiner.groups.set([group1, group2])
         self.user_without_group = User.objects.create(
             username="other_user", password="")
-        return super().setUp()
 
     def test_access_true_for_user_in_correct_group(self):
         """
@@ -187,20 +185,11 @@ class TestMetro2EventAccess(TestCase):
         self.assertFalse(self.event1.check_access_for_user(self.user_without_group))
         self.assertFalse(self.event2.check_access_for_user(self.user_without_group))
 
-    def test_access_false_for_user_without_correct_group(self):
-        """
-        When event1.user_group does not contain the user,
-        event1.check_access_for_user should return False.
-        """
-        self.assertFalse(self.event1.check_access_for_user(self.user_without_group))
-        self.assertFalse(self.event2.check_access_for_user(self.user_without_group))
-
 
 class TestMetro2Eventset(TestCase):
     def setUp(self) -> None:
         self.name = "OfficialExam2023"
         self.event = Metro2Event.objects.create(name=self.name)
-        return super().setUp()
 
     def test_str_matches_name(self):
         self.assertEqual(self.name, str(self.event))
