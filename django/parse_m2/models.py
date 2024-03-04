@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group, User
 from django.db import models
 from django.core.management import call_command
 
@@ -9,6 +10,15 @@ class Metro2Event(models.Model):
     class Meta:
         verbose_name_plural = "Metro2 Events"
     name = models.CharField(max_length=300)
+    user_group = models.ForeignKey(
+        Group,
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self) -> str:
+        return self.name
 
     def get_all_account_activity(self):
         return AccountActivity.objects.filter(
@@ -17,6 +27,13 @@ class Metro2Event(models.Model):
     def evaluate(self):
         call_command('run_evaluators', event_id=self.id)
 
+    def check_access_for_user(self, user) -> bool:
+        """
+        Utility method for checking authorization. Returns True if
+        the user is assigned to the correct user group to have
+        access to this event.
+        """
+        return self.user_group in user.groups.all()
 
 class M2DataFile(models.Model):
     class Meta:
