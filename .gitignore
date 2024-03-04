@@ -13,7 +13,6 @@
 !Dockerfile
 !docker-compose.yml
 !.dockerignore
-!.env_SAMPLE
 !.gitignore
 !README.md
 !API.md

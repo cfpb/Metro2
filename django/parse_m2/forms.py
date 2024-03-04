@@ -10,7 +10,7 @@ import os
 class Metro2EventForm(forms.ModelForm):
     class Meta:
         model = Metro2Event
-        fields = ['name',]
+        fields = ['name','user_group']
         help_texts = {'name': "Provide an event name"}
     directory = forms.CharField(label="Data Directory", max_length=300, required=False)
     enabled = settings.S3_ENABLED
@@ -28,19 +28,21 @@ class Metro2EventForm(forms.ModelForm):
         pass
 
     def save(self, commit):
-        # This is called only when it is for a new Metro2Event
         if self.is_valid() & self.has_changed():
-            super(Metro2EventForm, self).save(commit=False)
-            self.save_m2m()
-            event_name = self.cleaned_data["name"]
-            directory = self.cleaned_data["directory"]
-            if self.enabled:
-                call_command('parse_evaluate_s3', event_name=event_name, s3_directory=directory)
+            if 'name' in self.changed_data or 'directory' in self.changed_data:
+                super(Metro2EventForm, self).save(commit=False)
+                self.save_m2m()
+                event_name = self.cleaned_data["name"]
+                directory = self.cleaned_data["directory"]
+                if self.enabled:
+                    call_command('parse_evaluate_s3', event_name=event_name, s3_directory=directory)
+                else:
+                    call_command('parse_local', event_name=event_name,
+                                data_directory=directory)
+                # The mgmt command saves the Metro2Event, so we need to retrieve the
+                # most recently saved Metro2Event object by name
+                return Metro2Event.objects.latest('name')
             else:
-                call_command('parse_local', event_name=event_name,
-                            data_directory=directory)
-            # The mgmt command saves the Metro2Event, so we need to retrieve the
-            # most recently saved Metro2Event object by name
-            return Metro2Event.objects.latest('name')
+                return self.instance
         else:
             return self.instance

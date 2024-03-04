@@ -49,7 +49,7 @@ class Evaluate():
             field_values=data
         )
 
-    def prepare_result_summary(self, event: Metro2Event, eval_name: str,
+    def prepare_result_summary(self, event: Metro2Event, eval_id: str,
                                data: list[dict]) -> EvaluatorResultSummary:
         """
         If an EvaluatorMetadata record already exists in the database with this name,
@@ -60,9 +60,9 @@ class Evaluate():
         the Metadata import.
         """
         try:
-            eval_metadata = EvaluatorMetadata.objects.get(name=eval_name)
+            eval_metadata = EvaluatorMetadata.objects.get(id=eval_id)
         except EvaluatorMetadata.DoesNotExist:
-            eval_metadata = EvaluatorMetadata.objects.create(name=eval_name)
+            eval_metadata = EvaluatorMetadata.objects.create(id=eval_id)
 
         return EvaluatorResultSummary.objects.create(
             event=event,

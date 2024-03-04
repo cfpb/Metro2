@@ -86,13 +86,13 @@ We seed the database with initial metadata about each evaluator, then allow user
 
 ## Evaluator CSV format
 When importing and exporting evaluator metadata, we use a CSV with the following columns:
-`name`, `description`, `long_description`, `fields_used`, `fields_display`, `ipl`, `crrg_topics`, `crrg_page`, `pdf_page`, `use_notes`, `alternative_explanation`, `risk_level`.
+`id`, `name`, `description`, `long_description`, `fields_used`, `fields_display`, `ipl`, `crrg_topics`, `crrg_page`, `pdf_page`, `use_notes`, `alternative_explanation`, `risk_level`.
 (Note that this list will change as we improve our implementation of the metadata system).
 Column headers in the file should match the column names in this list.
 For columns contain a list of fields (`fields_used` and `fields_display`, currently), the items in each list should be separated by colons (`;`).
 
-The `name` column is what we use to connect the evaluator metadata to the evaluator function, which is defined in code.
-This means that the `name` column needs to exactly match the name of the function in the code.
+The `id` column is what we use to connect the evaluator metadata to the evaluator function, which is defined in code.
+This means that the `id` column needs to exactly match the name of the function in the code.
 If the names don't match, any evaluator results won't be correctly associated with the evaluator in the system.
 
 ## Importing metadata

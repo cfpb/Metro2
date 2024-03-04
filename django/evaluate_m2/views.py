@@ -31,13 +31,15 @@ def download_evaluator_metadata(request):
     return response
 
 @api_view()
-def download_evaluator_results_csv(request, event_id, evaluator_name):
+def download_evaluator_results_csv(request, event_id, evaluator_id):
     logger = logging.getLogger('views.download_evaluator_results_csv')
     try:
+        event = Metro2Event.objects.get(id=event_id)
+        eval = EvaluatorMetadata.objects.get(id=evaluator_id)
         eval_result_summary = EvaluatorResultSummary.objects.get(
-            event=Metro2Event.objects.get(id=event_id),
-            evaluator=EvaluatorMetadata.objects.get(name=evaluator_name))
-        filename = f"{eval_result_summary.event.name}_{evaluator_name}_{date.today()}.csv"
+            event=event, evaluator=eval)
+
+        filename = f"{event.name}_{eval.id}_{date.today()}.csv"
         response = HttpResponse(
             content_type="text/csv",
             headers={"Content-Disposition": f"attachment; filename={filename}"}
@@ -60,17 +62,17 @@ def download_evaluator_results_csv(request, event_id, evaluator_name):
         EvaluatorResultSummary.DoesNotExist
     ) as e:
         error = get_evaluate_m2_not_found_exception(
-            error=str(e), id=event_id, name=evaluator_name, path=request.path)
+            str(e), event_id, evaluator_id, request.path)
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 @api_view()
-def evaluator_results_view(request, event_id, evaluator_name):
+def evaluator_results_view(request, event_id, evaluator_id):
     logger = logging.getLogger('views.evaluator_results_view')
     try:
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=Metro2Event.objects.get(id=event_id),
-            evaluator=EvaluatorMetadata.objects.get(name=evaluator_name))
+            evaluator=EvaluatorMetadata.objects.get(id=evaluator_id))
         results = []
         # Add all evaluator results field_values to the response
         for eval_result in eval_result_summary.evaluatorresult_set.all()[:50]:
@@ -83,7 +85,7 @@ def evaluator_results_view(request, event_id, evaluator_name):
         EvaluatorResultSummary.DoesNotExist
     ) as e:
         error = get_evaluate_m2_not_found_exception(
-            error=str(e), id=event_id, name=evaluator_name, path=request.path)
+            str(e), event_id, evaluator_id, request.path)
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
@@ -116,6 +118,6 @@ def account_summary_view(request, event_id, account_number):
         AccountActivity.DoesNotExist
     ) as e:
         error = get_evaluate_m2_not_found_exception(
-            error=str(e), id=event_id, name=None, path=request.path)
+            str(e), event_id, None, request.path, account_number)
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)

@@ -8,8 +8,11 @@ from parse_m2.models import AccountActivity, Metro2Event
 class EvaluatorMetadata(models.Model):
     class Meta:
         verbose_name_plural = "Evaluator Metadata"
-    # id is auto-numbered
-    name = models.CharField(max_length=200, blank=False)
+
+    # Use the identifier as the primary key instead of an auto_numbered ID.
+    # id values may not be blank and must be unique
+    id = models.CharField(max_length=200, primary_key=True)
+    name = models.CharField(max_length=200)
     description = models.TextField(blank=True)  # plain language description
     long_description = models.TextField(blank=True)
     fields_used = JSONField(encoder=DjangoJSONEncoder, null=True)
@@ -27,12 +30,13 @@ class EvaluatorMetadata(models.Model):
     func: any
 
     def __str__(self) -> str:
-        return self.name
+        return self.id
 
     @classmethod
     def create_from_dict(cls, json: dict):
         # using .create means we don't have to call .save manually
         return cls.objects.create(
+            id=json["id"],
             name=json["name"],
             description=json["description"],
             long_description=json["long_description"],
@@ -48,7 +52,8 @@ class EvaluatorMetadata(models.Model):
         )
 
     def update_from_dict(self, json: dict):
-        # self.name shouldn't be updated
+        # self.id shouldn't be updated
+        self.name=json["name"]
         self.description=json["description"]
         self.long_description=json["long_description"]
         self.fields_used=json["fields_used"].split(";")
@@ -64,6 +69,7 @@ class EvaluatorMetadata(models.Model):
         return self
 
     csv_header = [
+            "id",
             "name",
             "description",
             "long_description",
@@ -86,6 +92,7 @@ class EvaluatorMetadata(models.Model):
 
     def serialize(self):
         return [
+            self.id,
             self.name,
             self.description,
             self.long_description,
