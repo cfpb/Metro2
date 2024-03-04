@@ -9,7 +9,7 @@ class Command(BaseCommand):
     """
     help =  "Imports the evaluator metadata in the given CSV " + \
             "and saves it in the EvaluatorMetadata table in the database. " + \
-            "For each row in the CSV, if the 'name' column matches the name of " + \
+            "For each row in the CSV, if the 'id' column matches the name of " + \
             "an existing EvaluatorMetadata in the database, that record will " + \
             "be updated with new values from the CSV. Otherwise, a new record " + \
             "will be created."
