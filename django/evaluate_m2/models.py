@@ -112,6 +112,7 @@ class EvaluatorResultSummary(models.Model):
 class EvaluatorResult(models.Model):
     class Meta:
         verbose_name_plural = "Evaluator Results"
+        indexes = [ models.Index(fields=['acct_num',])]
     result_summary = models.ForeignKey(EvaluatorResultSummary, on_delete=models.CASCADE)
     date = models.DateField()
     field_values = JSONField(encoder=DjangoJSONEncoder)
