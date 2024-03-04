@@ -1,5 +1,5 @@
 import logging
-import pdb
+
 from django.contrib import admin, messages
 from django.contrib.admin import AdminSite
 from django.core.management import call_command
@@ -16,7 +16,7 @@ from parse_m2.models import (
 
 # Register your models here.
 class Metro2EventAdmin(admin.ModelAdmin):
-    list_display = ['name', 'id']
+    list_display = ['name', 'id', 'user_group']
     form=Metro2EventForm
     fields = ['name','user_group','directory']
 
