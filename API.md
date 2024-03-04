@@ -32,7 +32,7 @@ hyundai2024,1320,,0,13,1,,M,0,2018-11-15,0,2019-01-31,,20121004399540,0
 hyundai2024,1331,,0,13,1,,M,0,2019-01-26,0,2019-01-31,,20121205047544,0
 ```
 
-### Exporting evaluator results
+### Evaluator results view
 
 `/events/{event_id}/evaluator/{evaluator_name}`
 
@@ -58,6 +58,54 @@ GET - returns a JSON with a `hits` field composed of a list that contains one ob
             "compl_cond_cd": null,
             "orig_chg_off_am": 0,
         }, { ... }
+    ]
+}
+```
+
+### Account summary view
+
+`/events/{event_id}/accounts/{account_number}`
+
+GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `account_activity`. The `cons_acct_num` field contains the account number, `inconsistencies` is composed of a list of inconsistencies found for the account, and `account_activity` is composed of a list of activity records with this `cons_acct_num`.
+
+**Example response:**
+```JSON
+{
+    "cons_acct_num": "1234567890",
+    "inconsistencies": [
+        {
+            "id": "2",
+            "name": "ADDL-DOFD-1",
+        },
+        # ...etc.
+    ],
+    "account_activity": [
+        {
+            "activity_date": "11/30/2023",
+            "port_type": "I",
+            "acct_type": "00",
+            "date_open": "1/30/2018",
+            "credit_limit": 0,
+            "hcola": 24294,
+            "terms_dur": "072",
+            "terms_freq": "",
+            "smpa": "",
+            "actual_pmt_amt": "",
+            "acct_stat": "",
+            "pmt_rating": "",
+            "php": "",
+            "spc_com_cd": "",
+            "compl_cond_cd": "",
+            "current_bal": "",
+            "amt_past_due": "",
+            "orig_chg_off_amt": "",
+            "doai": "",
+            "dofd": "",
+            "date_closed": "",
+            "dolp": "",
+            "int_type_ind": "",
+        },
+        # ...etc.
     ]
 }
 ```
