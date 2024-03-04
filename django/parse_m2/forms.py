@@ -28,7 +28,6 @@ class Metro2EventForm(forms.ModelForm):
         pass
 
     def save(self, commit):
-        # This is called only when it is for a new Metro2Event
         if self.is_valid() & self.has_changed():
             if 'name' in self.changed_data or 'directory' in self.changed_data:
                 super(Metro2EventForm, self).save(commit=False)
