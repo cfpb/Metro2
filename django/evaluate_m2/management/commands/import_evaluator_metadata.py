@@ -9,7 +9,7 @@ class Command(BaseCommand):
     """
     help =  "Imports the evaluator metadata in the given CSV " + \
             "and saves it in the EvaluatorMetadata table in the database. " + \
-            "For each row in the CSV, if the 'name' column matches the name of " + \
+            "For each row in the CSV, if the 'id' column matches the name of " + \
             "an existing EvaluatorMetadata in the database, that record will " + \
             "be updated with new values from the CSV. Otherwise, a new record " + \
             "will be created."
@@ -35,9 +35,9 @@ class Command(BaseCommand):
             rows_count = 0
             for row in reader:
                 rows_count += 1
-                name = row["name"]
+                id = row["id"]
                 try:
-                    eval = EvaluatorMetadata.objects.get(name=name)
+                    eval = EvaluatorMetadata.objects.get(name=id)
                     eval.update_from_dict(row)
                     updated += 1
                 except EvaluatorMetadata.DoesNotExist:

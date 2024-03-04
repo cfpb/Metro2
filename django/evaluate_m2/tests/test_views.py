@@ -13,7 +13,8 @@ from parse_m2.models import M2DataFile, Metro2Event
 class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self) -> None:
         self.eval1 = EvaluatorMetadata.create_from_dict({
-            'name': 'ADDL-DOFD-1',
+            'id': 'ADDL-DOFD-1',
+            'name': 'Additional evaluator for Date of First Delinquency',
             'description': 'description of addl-dofd-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
@@ -27,7 +28,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'risk_level': 'High'
         })
         self.eval2 = EvaluatorMetadata.create_from_dict({
-            'name': 'ADDL-DOFD-2',
+            'id': 'ADDL-DOFD-2',
+            'name': '',
             'description': 'description for the other addl-dofd eval',
             'long_description': '',
             'fields_used': 'account status;dofd;php',
