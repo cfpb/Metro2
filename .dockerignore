@@ -8,4 +8,3 @@
 # ...and these files
 !setup.sh
 !unzip.sh
-!.env
