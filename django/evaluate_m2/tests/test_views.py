@@ -74,7 +74,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         data_file = M2DataFile(event=event, file_name='file.txt')
         data_file.save()
         # Create the Account Holders
-        accounts = self.create_bulk_account_holders(data_file, ('Z','Y','X'))
+        self.create_bulk_account_holders(data_file, ('Z','Y'))
         # Create the Account Activities data
         activities = {'id':(32,33), 'account_holder':('Z','Y'),
                       'cons_acct_num':('0032', '0033')}
