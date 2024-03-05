@@ -11,6 +11,7 @@ TODO: Add info on how auth tokens need to be included/handled in API requests
 Quick links:
 - [`/events/{event_id}/evaluator/{evaluator_id}/csv`](#exporting-evaluator-results-csv)
 - [`/events/{event_id}/evaluator/{evaluator_id}`](#exporting-evaluator-results)
+- [`/events/{event_id}/accounts/{account_number}/account_holder`](#account-pii-view)
 
 ### Exporting evaluator results CSV
 
@@ -60,5 +61,36 @@ GET - returns a JSON with a `hits` field composed of a list that contains one ob
             "orig_chg_off_am": 0,
         }, { ... }
     ]
+}
+```
+
+### Account PII view
+
+`/events/{event_id}/accounts/{account_number}/account_holder`
+
+GET - returns a JSON for the latest account holder information for a specified `account_number` and `event_id`.
+
+**Example response:**
+```JSON
+{
+    "id": 1,
+    "cons_acct_num": "1234567890",
+    "surname": "Claus",
+    "first_name": "Santa",
+    "middle_name": "H",
+    "gen_code": "",
+    "ssn": "333224444",
+    "dob": "12/25/1900",
+    "phone_num": "5552220000",
+    "ecoa": "",
+    "cons_info_ind": "",
+    "country_cd": "",
+    "addr_line_1": "12 Santa's Workshop Way",
+    "addr_line_2": "",
+    "city": "North Pole",
+    "state": "AK",
+    "zip": "99000",
+    "addr_ind": "",
+    "res_cd": ""
 }
 ```
