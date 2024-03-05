@@ -9,7 +9,7 @@ from rest_framework import status
 
 from evaluate_m2.exception_utils import get_eval_results_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
-from parse_m2.models import Metro2Event
+from parse_m2.models import AccountHolder, Metro2Event
 
 def download_evaluator_metadata(request):
     # Documentation on returning CSV: https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
@@ -84,5 +84,23 @@ def evaluator_results_view(request, event_id, evaluator_id):
         EvaluatorResultSummary.DoesNotExist
     ) as e:
         error = get_eval_results_not_found_exception(str(e), event_id, evaluator_id, request.path)
+        logger.error(error['message'])
+        return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+@api_view()
+def account_pii_view(request, event_id, account_number):
+    logger = logging.getLogger('views.account_pii_view')
+    try:
+        result = AccountHolder.objects.filter(
+            data_file__event__id=event_id,
+            cons_acct_num=account_number).latest('id')
+
+        return JsonResponse(result.serialize_json())
+    except (
+        Metro2Event.DoesNotExist,
+        AccountHolder.DoesNotExist
+    ) as e:
+        error = get_eval_results_not_found_exception(
+            str(e), event_id, None, request.path, account_number)
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
