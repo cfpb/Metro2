@@ -14,7 +14,7 @@ if [[ "$CLUSTER" != "docker-desktop" ]]; then
   echo "This script should only be used for your local environment, a.k.a. docker-desktop."
   echo "Your current context: ${CLUSTER}."
   echo ""
-  echo "To set your context to local, use the following command: kubectl config set-context docker-desktop"
+  echo "To set your context to local, use the following command: kubectl config use-context docker-desktop"
   exit 1
 
 fi
