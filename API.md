@@ -10,7 +10,8 @@ TODO: Add info on how auth tokens need to be included/handled in API requests
 
 Quick links:
 - [`/events/{event_id}/evaluator/{evaluator_id}/csv`](#exporting-evaluator-results-csv)
-- [`/events/{event_id}/evaluator/{evaluator_id}`](#exporting-evaluator-results)
+- [`/events/{event_id}/evaluator/{evaluator_id}`](#evaluator-results-view)
+- [`/events/{event_id}/accounts/{account_number}`](#account-summary-view)
 
 ### Exporting evaluator results CSV
 
