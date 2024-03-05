@@ -4,7 +4,7 @@
 	"version": "0.0.0",
 	"scripts": {
 		"build": "vite build",
-		"dev": "vite --open",
+		"dev": "vite",
 		"preview": "vite preview",
 		"preview:test": "start-server-and-test preview http://localhost:4173",
 		"test": "vitest",

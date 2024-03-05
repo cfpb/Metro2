@@ -5,6 +5,24 @@ import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(({ mode }) => ({
+	base: '/static/',
+  build: {
+    // generate manifest.json in outDir
+    manifest: true,
+    rollupOptions: {
+      input: {
+        main: './src/main.tsx',
+      },
+      output: {
+        chunkFileNames: undefined,
+      },
+
+    },
+    // outDir: 'dist',
+    commonjsOptions: {
+      include: /node_modules/,
+    },
+  },
 	test: {
 		css: false,
 		include: ['src/**/__tests__/*'],
@@ -26,6 +44,7 @@ export default defineConfig(({ mode }) => ({
 		...(mode === 'test' ? [] : [eslintPlugin()])
 	],
 	server: {
-		port: 3000
+		port: 3000,
+		host: true
 	}
 }))
