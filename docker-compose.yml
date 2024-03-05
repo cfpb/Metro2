@@ -32,6 +32,8 @@ services:
       postgres:
         condition: service_healthy
     command: yarn dev
+    volumes:
+      - ./front-end/src:/src/frontend/src
   django:
     image: django-m2:local
     build:
