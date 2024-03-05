@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => ({
 		...(mode === 'test' ? [] : [eslintPlugin()])
 	],
 	server: {
-		port: 3000
+		port: 3000,
+		host: true
 	}
 }))
