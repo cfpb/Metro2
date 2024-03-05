@@ -83,6 +83,7 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
     ],
     "account_activity": [
         {
+            "id": 3,
             "activity_date": "11/30/2023",
             "port_type": "I",
             "acct_type": "00",
