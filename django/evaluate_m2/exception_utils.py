@@ -10,7 +10,7 @@ def get_evaluate_m2_not_found_exception(
     elif 'EvaluatorMetadata' in error_string:
         msg = f'Evaluator: {evaluator_id} does not exist.'
     elif 'AccountActivity' in error_string:
-        msg = f'AccountActivity records not found for account number {acct_num}.'
+        msg = f'AccountActivity record(s) not found for account number {acct_num}.'
     else:
         msg = f'Evaluator result does not exist for event ID {event_id} or evaluator ID {evaluator_id}.'
     error= {
