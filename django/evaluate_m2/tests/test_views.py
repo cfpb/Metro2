@@ -51,7 +51,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         data_file = M2DataFile(event=event, file_name='file.txt')
         data_file.save()
         # Create the Account Holders
-        self.create_bulk_account_holders(data_file, ('Z','Y'))
+        self.accounts = self.create_bulk_account_holders(data_file, ('Z','Y'))
         # Create the Account Activities data
         activities = {'id':(32,33), 'account_holder':('Z','Y')}
         acct_actvities = self.create_bulk_activities(data_file, activities, 2)
@@ -136,5 +136,18 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         response = self.client.get('/events/1/evaluator/ADDL-DOFD-2')
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response,
-            'Evaluator result does not exist for event ID 1 or evaluator ADDL-DOFD-2.',
+            'Evaluator result does not exist for event ID 1 or evaluator ID ADDL-DOFD-2.',
             status_code=404)
+
+    def test_account_pii_view(self):
+        self.create_activity_data()
+        expected = self.accounts[1].serialize_json()
+
+        response = self.client.get('/events/1/account/012345/account_holder')
+        # the response should be a JSON
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        # the response should a hits field with a list of EvaluatorResult field_values
+        self.assertEqual(response.json(), expected)
