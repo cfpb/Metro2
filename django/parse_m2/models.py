@@ -196,6 +196,7 @@ class AccountActivity(models.Model):
 
     def serialize_json(self):
         return {
+            'id': self.id,
             'activity_date' : self.activity_date,
             'port_type' : self.port_type,
             'acct_type' : self.acct_type,

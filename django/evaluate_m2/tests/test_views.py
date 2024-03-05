@@ -57,14 +57,15 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             'risk_level': 'High'
         })
-        self.expected_activity = [{
-            'activity_date': '2019-12-31', 'port_type': 'X', 'acct_type': '00',
-            'date_open': '2020-01-01', 'credit_limit': 0, 'hcola': 0, 'terms_dur': '0',
-            'terms_freq': '0', 'smpa': 0, 'actual_pmt_amt': 0, 'acct_stat': '00',
-            'pmt_rating': '0', 'php': '', 'spc_com_cd': 'X', 'compl_cond_cd': '0',
-            'current_bal': 0, 'amt_past_due': 0, 'orig_chg_off_amt': 0,
-            'doai': '2020-01-01', 'dofd': '2020-01-01', 'date_closed': '2020-01-01',
-            'dolp': None, 'int_type_ind': ''}]
+    def get_account_activity(self, id: int):
+        return [{ 'id': id, 'activity_date': '2019-12-31', 'port_type': 'X',
+                 'acct_type': '00', 'date_open': '2020-01-01', 'credit_limit': 0,
+                 'hcola': 0, 'terms_dur': '0', 'terms_freq': '0', 'smpa': 0,
+                 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0', 'php': '',
+                 'spc_com_cd': 'X', 'compl_cond_cd': '0', 'current_bal': 0,
+                 'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2020-01-01',
+                 'dofd': '2020-01-01', 'date_closed': '2020-01-01', 'dolp': None,
+                 'int_type_ind': ''}]
 
     def create_activity_data(self):
         # Create the parent records for the AccountActivity data
@@ -185,10 +186,10 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                     'name': 'Additional evaluator for Date of First Delinquency'
                 }
             ],
-            'account_activity': self.expected_activity
+            'account_activity': self.get_account_activity(id=33)
         }
-
         response = self.client.get('/events/1/account/0033')
+
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
@@ -205,10 +206,10 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                   'name': 'Additional evaluator for Date of First Delinquency' },
                 { 'id': 'ADDL-DOFD-3', 'name': '' },
             ],
-            'account_activity': self.expected_activity
+            'account_activity': self.get_account_activity(id=32)
         }
-
         response = self.client.get('/events/1/account/0032')
+
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
