@@ -1,4 +1,5 @@
 import csv
+import json
 import logging
 from datetime import date
 from django.http import HttpResponse, JsonResponse
@@ -10,7 +11,7 @@ from rest_framework import status
 from evaluate_m2.exception_utils import get_eval_results_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
 from parse_m2.models import AccountHolder, Metro2Event
-
+from parse_m2.serializers import AccountHolderSerializer
 def download_evaluator_metadata(request):
     # Documentation on returning CSV: https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
     filename = f"evaluator-metadata-{date.today()}.csv"
@@ -94,8 +95,10 @@ def account_pii_view(request, event_id, account_number):
         result = AccountHolder.objects.filter(
             data_file__event__id=event_id,
             cons_acct_num=account_number).latest('id')
+        serializier = AccountHolderSerializer(result)
+        acct_pii = json.dumps(serializier.data)
 
-        return JsonResponse(result.serialize_json())
+        return JsonResponse(json.loads(acct_pii))
     except (
         Metro2Event.DoesNotExist,
         AccountHolder.DoesNotExist
