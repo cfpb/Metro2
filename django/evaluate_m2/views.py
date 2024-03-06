@@ -1,4 +1,5 @@
 import csv
+import json
 import logging
 from datetime import date
 from django.http import HttpResponse, JsonResponse
@@ -10,6 +11,7 @@ from rest_framework import status
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from parse_m2.models import AccountActivity, Metro2Event
+from parse_m2.serializers import AccountActivitySerializer
 
 def download_evaluator_metadata(request):
     # Documentation on returning CSV: https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
@@ -93,23 +95,23 @@ def evaluator_results_view(request, event_id, evaluator_id):
 def account_summary_view(request, event_id, account_number):
     logger = logging.getLogger('views.account_summary_view')
     try:
+        event = Metro2Event.objects.get(id=event_id)
+        event_activities=event.get_all_account_activity().filter(
+            cons_acct_num=account_number)
+        activities_serializer = AccountActivitySerializer(event_activities, many=True)
+        activities = json.dumps(activities_serializer.data)
         eval_results = EvaluatorResult.objects.filter(
             acct_num=account_number,
-            result_summary__event__id=event_id)
-        activities=AccountActivity.objects.filter(
-            cons_acct_num=account_number)
+            result_summary__event=event)
         eval_metadata=[]
-        acct_activities=[]
         for e in eval_results:
             eval={'id': e.result_summary.evaluator.id,
                 'name': e.result_summary.evaluator.name}
             if eval not in eval_metadata:
                 eval_metadata.append(eval)
-        for a in activities:
-            acct_activities.append(a.serialize_json())
-        data = {'const_acct_num': account_number,
+        data = {'cons_acct_num': account_number,
                 'inconsistencies': eval_metadata,
-                'account_activity': acct_activities}
+                'account_activity': json.loads(activities)}
         return JsonResponse(data)
     except (
         Metro2Event.DoesNotExist,

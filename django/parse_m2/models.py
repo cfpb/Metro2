@@ -193,36 +193,6 @@ class AccountActivity(models.Model):
             int_type_ind = get_field_value(fields.base_fields, "int_type_ind", base_seg),
         )
 
-
-    def serialize_json(self):
-        return {
-            'id': self.id,
-            'activity_date' : self.activity_date,
-            'port_type' : self.port_type,
-            'acct_type' : self.acct_type,
-            'date_open' : self.date_open,
-            'credit_limit' : self.credit_limit,
-            'hcola' : self.hcola,
-            'terms_dur' : self.terms_dur,
-            'terms_freq' : self.terms_freq,
-            'smpa' : self.smpa,
-            'actual_pmt_amt' : self.actual_pmt_amt,
-            'acct_stat' : self.acct_stat,
-            'pmt_rating' : self.pmt_rating,
-            'php' : self.php,
-            'spc_com_cd' : self.spc_com_cd,
-            'compl_cond_cd' : self.compl_cond_cd,
-            'current_bal' : self.current_bal,
-            'amt_past_due' : self.amt_past_due,
-            'orig_chg_off_amt' : self.orig_chg_off_amt,
-            'doai' : self.doai,
-            'dofd' : self.dofd,
-            'date_closed' : self.date_closed,
-            'dolp' : self.dolp,
-            'int_type_ind' : self.int_type_ind
-        }
-
-
 class J1(Person):
     class Meta:
         verbose_name_plural = "J1 Segment Associated Consumer - Same Address"
