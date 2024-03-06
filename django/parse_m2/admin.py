@@ -16,9 +16,9 @@ from parse_m2.models import (
 
 # Register your models here.
 class Metro2EventAdmin(admin.ModelAdmin):
-    list_display = ['name', 'id']
+    list_display = ['name', 'id', 'user_group']
     form=Metro2EventForm
-    fields = ['name','directory']
+    fields = ['name','user_group','directory']
 
     def get_form(self, request, obj=None, **kwargs):
         """
@@ -30,7 +30,7 @@ class Metro2EventAdmin(admin.ModelAdmin):
             help_texts = {'name': ""}
             kwargs.update({'help_texts': help_texts})
         else: # obj is None, so this is an add page
-            self.readonly_fields = []
+            self.readonly_fields = ['user_group']
         return super(Metro2EventAdmin, self).get_form(request, obj, **kwargs)
 
     def render_change_form(self, request, context, add=False, change=False, form_url="", obj=None):
@@ -42,12 +42,13 @@ class Metro2EventAdmin(admin.ModelAdmin):
             context.update({"show_parse": False})
             context.update({"show_parse_eval": False})
             context.update({"show_eval": True})
+            context.update({"show_save": True})
         else:
             context.update({"show_parse": True})
             context.update({"show_parse_eval": True})
             context.update({"show_eval": False})
+            context.update({"show_save": False})
         context.update({"show_close": True})
-        context.update({"show_save": False})
         context.update({"show_delete_link": False})
         context.update({"show_save_as_new": False})
         context.update({"show_save_and_add_another": False})
@@ -84,6 +85,8 @@ class Metro2EventAdmin(admin.ModelAdmin):
             if not change: # This is a new
                 messages.success(request, f'Created event ID: {obj.id}. Finished parsing data for event: {obj.name}')
                 self.response_change(request, obj)
+            else:
+                messages.success(request, f'The metro2 event \"{obj.name}\" was changed successfully.')
         else:
             messages.error(request, 'Event did not save successfully and did not parse data')
         super().save_model(request, obj, form, change)

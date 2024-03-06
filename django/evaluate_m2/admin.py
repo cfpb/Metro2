@@ -3,15 +3,15 @@ from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary, Evalua
 
 # Register your models here.
 class EvaluatorMetadataAdmin(admin.ModelAdmin):
-    readonly_fields = ['name']
+    readonly_fields = ['id']
     fields = [
-            'description', 'long_description',
+            'name', 'description', 'long_description',
             'fields_used', 'fields_display', 'ipl',
             'crrg_topics', 'crrg_page', 'pdf_page',
             'use_notes', 'alternative_explanation',
             'risk_level']
     list_display = [
-        'name', 'description', 'long_description',
+        'id', 'name', 'description', 'long_description',
         'fields_used', 'fields_display', 'ipl',
         'crrg_topics', 'crrg_page', 'pdf_page',
         'use_notes', 'alternative_explanation',

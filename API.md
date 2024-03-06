@@ -8,14 +8,15 @@ TODO: Add info on how auth tokens need to be included/handled in API requests
 
 ## API endpoints
 
-Quick links
-- [`/events/{event_id}/evaluator/{evaluator_name}/csv`](#exporting-evaluator-results-csv)
-- [`/events/{event_id}/evaluator/{evaluator_name}`](#exporting-evaluator-results)
+Quick links:
+- [`/events/{event_id}/evaluator/{evaluator_id}/csv`](#exporting-evaluator-results-csv)
+- [`/events/{event_id}/evaluator/{evaluator_id}`](#exporting-evaluator-results)
+
 ### Exporting evaluator results CSV
 
-`/events/{event_id}/evaluator/{evaluator_name}/csv`
+`/events/{event_id}/evaluator/{evaluator_id}/csv`
 
-GET - returns a CSV of evaluator results for a single evaluator (whose name matches `evaluator_name`) for a single event (with the id `event_id`).
+GET - returns a CSV of evaluator results for a single evaluator (whose ID matches `evaluator_id`) for a single event (with the ID `event_id`).
 
 Users can import this CSV into Excel in order to sort, filter, and analyze the results. The CSV contains one row for each `EvaluatorResult` for the given event + evaluator combo. It has a column for each field in the "fields used" column of the Evaluator Source of Truth spreadsheet.
 
@@ -34,9 +35,9 @@ hyundai2024,1331,,0,13,1,,M,0,2019-01-26,0,2019-01-31,,20121205047544,0
 
 ### Exporting evaluator results
 
-`/events/{event_id}/evaluator/{evaluator_name}`
+`/events/{event_id}/evaluator/{evaluator_id}`
 
-GET - returns a JSON with a `hits` field composed of a list that contains one object per EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose name matches `evaluator_name`) combo. The keys in each object would be the list of fields saved in field_values for that EvaluatorResult.
+GET - returns a JSON with a `hits` field composed of a list that contains one object per EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose ID matches `evaluator_id`) combo. The keys in each object would be the list of fields saved in field_values for that EvaluatorResult.
 
 **Example response:**
 ```JSON
