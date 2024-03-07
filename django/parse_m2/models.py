@@ -148,6 +148,7 @@ class AccountHolder(Person, Address):
 class AccountActivity(models.Model):
     class Meta:
         verbose_name_plural = "Account Activities"
+        indexes = [ models.Index(fields=['cons_acct_num',])]
     # Note: Numeric fields are using models.IntegerField, which
     # has a limit of +/- 2.4 billion. Since the Metro2 format limits each of
     # these numeric fields to 9 characters, that size should be sufficient.
