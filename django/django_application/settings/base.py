@@ -102,13 +102,20 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / STATIC_URL
 
+# Include assets from front end's build directory
+# when collecting static files.
 STATICFILES_DIRS = [
-    FRONTEND_DIR / "dist",
+    FRONTEND_DIR / 'dist',
 ]
 
-DJANGO_VITE_ASSETS_PATH = FRONTEND_DIR / 'dist/assets/'
-
-DJANGO_VITE_DEV_MODE = True
+# The dev_mode setting determines whether live modules or
+# built assets will be served.
+DJANGO_VITE = {
+  'default': {
+    'dev_mode': False,
+    'dev_server_port': 3000
+  }
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
