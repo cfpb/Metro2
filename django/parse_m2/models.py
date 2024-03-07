@@ -122,28 +122,6 @@ class AccountHolder(Person, Address):
             res_cd = get_field_value(fields.base_fields, "res_cd", base_seg),
         )
 
-    def serialize_json(self):
-        return {
-            'id': self.id,
-            'cons_acct_num' : self.cons_acct_num,
-            'surname' : self.surname,
-            'first_name' : self.first_name,
-            'middle_name' : self.middle_name,
-            'gen_code' : self.gen_code,
-            'ssn' : self.ssn,
-            'dob' : self.dob,
-            'phone_num' : self.phone_num,
-            'ecoa' : self.ecoa,
-            'cons_info_ind' : self.cons_info_ind,
-            'country_cd' : self.country_cd,
-            'addr_line_1' : self.addr_line_1,
-            'addr_line_2' : self.addr_line_2,
-            'city' : self.city,
-            'state' : self.state,
-            'zip' : self.zip,
-            'addr_ind' : self.addr_ind,
-            'res_cd' : self.res_cd
-        }
 
 class AccountActivity(models.Model):
     class Meta:
