@@ -179,7 +179,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def test_account_summary_view_single_results(self):
         self.create_activity_data()
         expected = {
-            'const_acct_num': '0033',
+            'cons_acct_num': '0033',
             'inconsistencies': [
                 {
                     'id': 'ADDL-DOFD-1',
@@ -200,7 +200,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def test_account_summary_view_multiple_results(self):
         self.create_activity_data()
         expected = {
-            'const_acct_num': '0032',
+            'cons_acct_num': '0032',
             'inconsistencies': [
                 { 'id': 'ADDL-DOFD-1',
                   'name': 'Additional evaluator for Date of First Delinquency' },

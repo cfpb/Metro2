@@ -1,6 +1,6 @@
 import csv
-import json
 import logging
+
 from datetime import date
 from django.http import HttpResponse, JsonResponse
 
@@ -99,7 +99,6 @@ def account_summary_view(request, event_id, account_number):
         event_activities=event.get_all_account_activity().filter(
             cons_acct_num=account_number)
         activities_serializer = AccountActivitySerializer(event_activities, many=True)
-        activities = json.dumps(activities_serializer.data)
         eval_results = EvaluatorResult.objects.filter(
             acct_num=account_number,
             result_summary__event=event)
@@ -111,7 +110,7 @@ def account_summary_view(request, event_id, account_number):
                 eval_metadata.append(eval)
         data = {'cons_acct_num': account_number,
                 'inconsistencies': eval_metadata,
-                'account_activity': json.loads(activities)}
+                'account_activity': activities_serializer.data}
         return JsonResponse(data)
     except (
         Metro2Event.DoesNotExist,
