@@ -5,7 +5,7 @@ import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(({ mode }) => ({
-	base: 'static/',
+	base: '/static/',
   build: {
     // generate manifest.json in outDir
     manifest: true,
