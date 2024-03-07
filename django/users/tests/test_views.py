@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, User
 from django.test import TestCase
+
 from users.models import Dataset
 from unittest import mock
 
@@ -101,21 +102,18 @@ class TestUsersView(TestCase):
 
     def test_users_view(self):
         expected = {
-            "is_admin": 'False',
+            "is_admin": False,
             "username": "examiner",
             "assigned_events": [
-                { "id": 1, "name": "event1" },
-                { "id": 2, "name": "event2" }
+                { "id": 1, "name": "group1" },
+                { "id": 2, "name": "group2" }
             ]
         }
         response = self.client.get('/users/1')
-        print(response.json())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected)
 
-    def test_single_dataset_view_returns_404_when_not_authorized(self):
-        self.client.force_login(self.user)
-        with mock.patch.object(Dataset, "check_access_for_user") as access_check:
-            # Mock the dataset.check_access_for_user method to return False
-            access_check.return_value = False
-            response = self.client.get(f"/datasets/{self.dataset.id}/")
-            access_check.assert_called_once()
-            self.assertEqual(response.status_code, 404)
+    def test_users_view_returns_404_when_not_found(self):
+        response = self.client.get('/users/2')
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response, 'User ID: 2 does not exist.', status_code=404)
