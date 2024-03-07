@@ -122,7 +122,6 @@ class AccountHolder(Person, Address):
             res_cd = get_field_value(fields.base_fields, "res_cd", base_seg),
         )
 
-
 class AccountActivity(models.Model):
     class Meta:
         verbose_name_plural = "Account Activities"
