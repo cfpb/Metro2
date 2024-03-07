@@ -10,14 +10,14 @@ class TestSecuredViews(TestCase):
             username="user1", password="pass",
         )
         return super().setUp()
-    
+
     # TODO: The tests targeting `/secured` and `/unsecured` are proofs
     # of concept for testing secured views. Once we add real paths/
     # endpoints, we can update these tests to use real URLs.
     def test_unsecured_view_doesnt_require_auth(self):
         response = self.client.get("/unsecured/")
         self.assertEqual(response.status_code, 200)
-    
+
     def test_secured_view_redirects_when_unauthenticated(self):
         response = self.client.get("/secured/")
         self.assertEqual(response.status_code, 302)
@@ -43,7 +43,7 @@ class TestDatasetListView(TestCase):
             username="other_user", password="",
         )
         return super().setUp()
-    
+
     def test_datasets_list_view_redirects_when_not_authorized(self):
         self.client.logout()
         response = self.client.get("/datasets/")
@@ -76,6 +76,40 @@ class TestIndividualDatasetView(TestCase):
             response = self.client.get(f"/datasets/{self.dataset.id}/")
             access_check.assert_called_once()
             self.assertContains(response, "TestExamABC", status_code=200)
+
+    def test_single_dataset_view_returns_404_when_not_authorized(self):
+        self.client.force_login(self.user)
+        with mock.patch.object(Dataset, "check_access_for_user") as access_check:
+            # Mock the dataset.check_access_for_user method to return False
+            access_check.return_value = False
+            response = self.client.get(f"/datasets/{self.dataset.id}/")
+            access_check.assert_called_once()
+            self.assertEqual(response.status_code, 404)
+
+
+class TestUsersView(TestCase):
+    def setUp(self) -> None:
+        self.user = User.objects.create(
+            username="examiner",
+            password="",
+            email="examiner@fake.gov"
+        )
+        group = Group.objects.create(name="group1")
+        group.user_set.add(self.user)
+        group2 = Group.objects.create(name="group2")
+        group2.user_set.add(self.user)
+
+    def test_users_view(self):
+        expected = {
+            "is_admin": 'False',
+            "username": "examiner",
+            "assigned_events": [
+                { "id": 1, "name": "event1" },
+                { "id": 2, "name": "event2" }
+            ]
+        }
+        response = self.client.get('/users/1')
+        print(response.json())
 
     def test_single_dataset_view_returns_404_when_not_authorized(self):
         self.client.force_login(self.user)

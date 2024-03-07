@@ -33,6 +33,7 @@ urlpatterns = [
     path('datasets/<int:dataset_id>/', views.dataset),
     path('all-evaluator-metadata', eval_views.download_evaluator_metadata),
     path('events/', include(evaluate_m2_urls)),
+    path('users/<int:user_id>', views.users_view),
 ]
 
 try:
