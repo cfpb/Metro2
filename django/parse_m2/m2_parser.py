@@ -1,7 +1,6 @@
 import io
 import re
 
-
 from parse_m2 import fields
 from parse_m2.models import (
     Metro2Event,
@@ -253,7 +252,20 @@ class M2FileParser():
         """
         # get first line
         header_line = self.get_next_line(f)
-        activity_date = self.get_activity_date_from_header(header_line)
+        try:
+            activity_date = self.get_activity_date_from_header(header_line)
+        except (
+            parse_utils.UnreadableFileException,
+            parse_utils.UnreadableLineException
+        ) as e:
+            # if the header couldn't be parsed, save the header as
+            # UnparseableData, and don't try to parse the rest of the file
+            UnparseableData.objects.create(
+                data_file=self.file_record,
+                unparseable_line=header_line,
+                error_description=str(e)
+            )
+            return
 
         # parse the rest of the file until it is done
         while f.tell() < file_size:
