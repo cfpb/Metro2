@@ -101,7 +101,7 @@ class Metro2EventAdmin(admin.ModelAdmin):
         return True
 
 class M2DataFileAdmin(admin.ModelAdmin):
-    list_display = ['event', 'file_name', 'timestamp']
+    list_display = ['id', 'event', 'file_name', 'timestamp']
 
     def has_add_permission(self, request, obj=None):
         return False
