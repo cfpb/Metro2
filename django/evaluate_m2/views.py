@@ -1,4 +1,5 @@
 import csv
+import json
 import logging
 
 from datetime import date
@@ -10,8 +11,9 @@ from rest_framework import status
 
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
-from parse_m2.models import AccountActivity, Metro2Event
-from parse_m2.serializers import AccountActivitySerializer
+
+from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
+from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
 
 def download_evaluator_metadata(request):
     # Documentation on returning CSV: https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
@@ -117,6 +119,24 @@ def account_summary_view(request, event_id, account_number):
         EvaluatorMetadata.DoesNotExist,
         EvaluatorResult.DoesNotExist,
         AccountActivity.DoesNotExist
+    ) as e:
+        error = get_evaluate_m2_not_found_exception(
+            str(e), event_id, None, request.path, account_number)
+        logger.error(error['message'])
+        return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+@api_view()
+def account_pii_view(request, event_id, account_number):
+    logger = logging.getLogger('views.account_pii_view')
+    try:
+        result = AccountHolder.objects.filter(
+            data_file__event__id=event_id,
+            cons_acct_num=account_number).latest('activity_date')
+        acct_holder_serializer = AccountHolderSerializer(result)
+        return JsonResponse(acct_holder_serializer.data)
+    except (
+        Metro2Event.DoesNotExist,
+        AccountHolder.DoesNotExist
     ) as e:
         error = get_evaluate_m2_not_found_exception(
             str(e), event_id, None, request.path, account_number)
