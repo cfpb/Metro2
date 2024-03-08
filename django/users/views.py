@@ -41,10 +41,13 @@ def dataset(request, dataset_id):
     return render(request, "m2/dataset.html", context)
 
 @api_view(('GET',))
-def users_view(request, user_id):
+def users_view(request, user_id=0):
     logger = logging.getLogger('views.user_view')
     try:
-        user = User.objects.get(id=user_id)
+        user = User.objects.get(username=request.user.username) \
+                if user_id == 0 \
+                else User.objects.get(id=user_id)
+
         groupSerializer = GroupSerializer(user.groups.all(), many=True)
         response = {
             "is_admin": True if user.is_superuser == 1 else False,
