@@ -16,9 +16,7 @@ export default defineConfig(({ mode }) => ({
       output: {
         chunkFileNames: undefined,
       },
-
     },
-    // outDir: 'dist',
     commonjsOptions: {
       include: /node_modules/,
     },
@@ -46,6 +44,7 @@ export default defineConfig(({ mode }) => ({
 	server: {
 		port: 3000,
 		host: true,
+		// Needed by django-vite to serve media files
 		origin: 'http://localhost:3000'
 	}
 }))

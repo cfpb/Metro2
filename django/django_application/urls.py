@@ -25,7 +25,6 @@ from evaluate_m2 import urls as evaluate_m2_urls
 
 
 urlpatterns = [
-    # path("", TemplateView.as_view(template_name="m2/index.html")),
     path('admin/', admin.site.urls),
     path('unsecured/', views.unsecured_view),
     path('secured/', views.secured_view),

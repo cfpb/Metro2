@@ -101,10 +101,13 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / STATIC_URL
 
+# Copy over built front end assets with collectstatic
 STATICFILES_DIRS = [
     FRONT_END_DIR / 'dist',
 ]
 
+# Tells django-vite the port where vite is serving live
+# front end assets (defaults to 5173)
 DJANGO_VITE_DEV_SERVER_PORT = 3000
 
 # Default primary key field type
