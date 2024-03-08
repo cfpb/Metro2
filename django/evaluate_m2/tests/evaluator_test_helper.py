@@ -285,7 +285,7 @@ class EvaluatorTestHelper():
         return AccountHolder(data_file=file, activity_date=self.activity_date,
             surname='Doe', first_name='Jane', middle_name='A', gen_code='F',
             ssn='012345678', dob='01012000', phone_num='0123456789', ecoa='0',
-            cons_info_ind=cons_info_ind)
+            cons_info_ind=cons_info_ind, cons_acct_num='012345')
 
     def create_acct_activity(self, id: int, account_holder: AccountHolder,
         acct_stat: str, acct_type: str, activity_date: date, actual_pmt_amt: int,

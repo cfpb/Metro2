@@ -5,7 +5,7 @@ FROM python:3.11-alpine as base
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
     apk add libpq && \
-    apk add --virtual .build-deps gcc python3-dev musl-dev postgresql-dev && \
+    apk add --virtual .build-deps gcc python3-dev musl-dev && \
     apk add --no-cache bash && \
     pip install --upgrade pip 
 

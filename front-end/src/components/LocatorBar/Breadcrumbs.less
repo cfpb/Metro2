@@ -1,0 +1,36 @@
+@import (reference) '../../index.less';
+
+// Borrowed from cf.gov since DS doesn't include breadcrumbs
+
+.m-breadcrumbs {
+  // Mobile size.
+  position: relative;
+  display: flex;
+  gap: unit( (@grid_gutter-width / 3 / @base-font-size-px ), em);
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: unit( (14px / @base-font-size-px), em);
+  padding-bottom: unit( (@grid_gutter-width / 3 / @base-font-size-px ), em);
+  min-height: 33px;
+
+  &_crumb,
+  .cf-icon-svg-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  &_crumbs {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+// Hide on print.
+.respond-to-print( {
+  .m-breadcrumbs {
+    display: none;
+  }
+});

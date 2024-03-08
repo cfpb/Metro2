@@ -1,0 +1,16 @@
+@import (reference) '../../index.less';
+
+.locator-bar {
+  box-sizing: border-box;
+  padding: unit((@grid_gutter-width / @base-font-size-px), em);
+  border-top: 1px solid @gray-60;
+  background-color: @gray-10;
+
+  &__actions {
+    padding-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
+  }
+
+  h2, h3, h4, h5 {
+    margin: 2px !important;
+  }
+}

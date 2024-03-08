@@ -14,12 +14,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.views.generic import TemplateView
 
 from users import views
 from evaluate_m2 import views as eval_views
+from evaluate_m2 import urls as evaluate_m2_urls
 
 
 urlpatterns = [
@@ -29,6 +31,14 @@ urlpatterns = [
     path('secured/', views.secured_view),
     path('datasets/', views.datasets),
     path('datasets/<int:dataset_id>/', views.dataset),
-    path('all-evaluator-metadata/', eval_views.download_evaluator_metadata),
-    path('events/<int:event_id>/evaluator/<str:evaluator_name>/', eval_views.download_evaluator_results),
+    path('all-evaluator-metadata', eval_views.download_evaluator_metadata),
+    path('events/', include(evaluate_m2_urls)),
 ]
+
+try:
+    # If the SSO library is installed, include auth-related URLs
+    urlpatterns += [
+        path('oauth2/', include('django_auth_adfs.urls')),
+    ]
+except ImproperlyConfigured:
+    pass

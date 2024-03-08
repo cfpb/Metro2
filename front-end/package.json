@@ -4,7 +4,7 @@
 	"version": "0.0.0",
 	"scripts": {
 		"build": "vite build",
-		"dev": "vite --open",
+		"dev": "vite",
 		"preview": "vite preview",
 		"preview:test": "start-server-and-test preview http://localhost:4173",
 		"test": "vitest",
@@ -22,9 +22,10 @@
 	"dependencies": {
 		"@cfpb/cfpb-design-system": "0.26.1",
 		"@tanstack/react-query": "4.29.7",
+		"@tanstack/react-router": "^1.16.2",
+		"@tanstack/router-devtools": "^1.17.4",
 		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"react-router-dom": "6.11.2"
+		"react-dom": "18.2.0"
 	},
 	"devDependencies": {
 		"@nabla/vite-plugin-eslint": "1.5.0",

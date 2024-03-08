@@ -5,8 +5,7 @@ import renderWithProviders from 'testUtils'
 describe('<App />', () => {
 	it('renders', async () => {
 		window.history.pushState({}, 'Home', '/')
-		renderWithProviders(<App />, false)
-
-		await expect(screen.findByText('Your cases')).resolves.toBeInTheDocument()
+		renderWithProviders(<App />)
+		expect(await screen.findByText('Metro2 Evaluator Tool')).toBeVisible()
 	})
 })
