@@ -20,3 +20,5 @@ S3_ENABLED=False
 
 LOCAL_EVENT_DATA = "parse_m2/local_data/"
 S3_BUCKET_NAME = "cfpb-metro2-***REMOVED***"
+
+DJANGO_VITE_DEV_MODE = True

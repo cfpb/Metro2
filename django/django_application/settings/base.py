@@ -15,7 +15,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-FRONTEND_DIR = BASE_DIR.parent / "front-end"
+FRONT_END_DIR = BASE_DIR.parent / 'front-end'
 
 
 # Quick-start development settings - unsuitable for production
@@ -67,7 +67,6 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             Path(BASE_DIR) / 'templates',
-            FRONTEND_DIR / "dist",
          ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -102,20 +101,11 @@ STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / STATIC_URL
 
-# Include assets from front end's build directory
-# when collecting static files.
 STATICFILES_DIRS = [
-    FRONTEND_DIR / 'dist',
+    FRONT_END_DIR / 'dist',
 ]
 
-# The dev_mode setting determines whether live modules or
-# built assets will be served.
-DJANGO_VITE = {
-  'default': {
-    'dev_mode': True,
-    'dev_server_port': 3000
-  }
-}
+DJANGO_VITE_DEV_SERVER_PORT = 3000
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

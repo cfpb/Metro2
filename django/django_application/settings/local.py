@@ -20,3 +20,5 @@ LOGGING['root']= {
         'handlers': ['console'],
         'level': 'DEBUG',
     }
+
+DJANGO_VITE_DEV_MODE = True

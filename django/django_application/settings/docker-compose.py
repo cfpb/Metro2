@@ -16,3 +16,5 @@ DATABASES = {
 }
 S3_ENABLED=False
 LOCAL_EVENT_DATA = "parse_m2/local_data/"
+
+DJANGO_VITE_DEV_MODE = True
