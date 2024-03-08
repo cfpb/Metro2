@@ -67,9 +67,8 @@ class ParserTestCase(TestCase):
             self.assertEqual(K1.objects.count(), 1)
             self.assertEqual(K2.objects.count(), 1)
 
-
     ############################
-    # Tests for handling unparseable data
+    # Tests for handling unparseable data in the body of the file
     def test_unparseable_data_in_line(self):
         line = "this is a bad line of data"
         result = self.parser.parse_line(line, self.activity_date)
@@ -141,3 +140,26 @@ class ParserTestCase(TestCase):
             header_row = file.readline()
             activity_date = self.parser.get_activity_date_from_header(header_row)
             self.assertEqual(activity_date, datetime(2023, 12, 31, 0, 0))
+
+    def test_parser_saves_header_as_unparseable(self):
+        bad_header_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_bad_header.txt')
+        file_size = os.path.getsize(bad_header_file)
+
+        # First line of bad_header_file doesn't match the header format
+        with open(bad_header_file, mode='r') as filestream:
+            self.parser.parse_file_contents(filestream, file_size)
+
+            # Only one record should be saved by the parser:
+            self.assertEqual(UnparseableData.objects.count(), 1)
+
+            # Everything else should be empty
+            self.assertEqual(AccountHolder.objects.count(), 0)
+            self.assertEqual(AccountActivity.objects.count(), 0)
+            self.assertEqual(K1.objects.count(), 0)
+            self.assertEqual(K2.objects.count(), 0)
+            self.assertEqual(L1.objects.count(), 0)
+            self.assertEqual(J1.objects.count(), 0)
+            self.assertEqual(J2.objects.count(), 0)
+            self.assertEqual(K3.objects.count(), 0)
+            self.assertEqual(K4.objects.count(), 0)
+            self.assertEqual(N1.objects.count(), 0)
