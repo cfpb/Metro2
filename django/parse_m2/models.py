@@ -4,6 +4,7 @@ from django.core.management import call_command
 
 from parse_m2.parse_utils import get_field_value
 from parse_m2 import fields
+from evaluate_m2.managers import AccountActivityQuerySet
 
 
 class Metro2Event(models.Model):
@@ -132,6 +133,8 @@ class AccountHolder(Person, Address):
         )
 
 class AccountActivity(models.Model):
+    objects = AccountActivityQuerySet.as_manager()
+
     class Meta:
         verbose_name_plural = "Account Activities"
         indexes = [ models.Index(fields=['cons_acct_num',])]

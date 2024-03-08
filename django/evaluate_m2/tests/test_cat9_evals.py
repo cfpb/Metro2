@@ -188,7 +188,7 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32-37: No-php==0, 38: No-port_type == 'B', 39: HIT
         # 42: HIT-multiple J1 Segments('','') only one record returned,
         # 43: HIT, 44: NO-port_type='A', 45: NO-prev_cons_info_ind='A',
-        # 46: HIT-multiple J1 Segments prev_j1__cons_info_ind=['M',''],
+        # 46: NO-multiple J1 Segments prev_j1__cons_info_ind=['M',''],
         # 47: NO-prev_current_bal=0, 48: NO-prev_acct_stat=10, 49: NO-php=O
 
         # Create additional J1 segments for previous record
@@ -217,12 +217,6 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'prev_acct_stat':'11', 'prev_cons_info_ind': '',
             'prev_j1__cons_info_ind': '', 'prev_j2__cons_info_ind': '',
             'prev_current_bal': 10
-        }, {
-            'id': 46, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0036', 'php':'LLL', 'port_type':'O',
-            'prev_acct_stat':'11', 'prev_cons_info_ind': '',
-            'prev_j1__cons_info_ind': '', 'prev_j2__cons_info_ind': '',
-            'prev_current_bal': 25
         }]
         self.assert_evaluator_correct(self.event,
             '9-3A Account Status current but PHP not current', expected)
