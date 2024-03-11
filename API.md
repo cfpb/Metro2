@@ -13,6 +13,7 @@ Quick links:
 - [`/events/{event_id}/evaluator/{evaluator_id}`](#evaluator-results-view)
 - [`/events/{event_id}/accounts/{account_number}`](#account-summary-view)
 - [`/events/{event_id}/accounts/{account_number}/account_holder`](#account-pii-view)
+- [`/users/{user_id}`](#users-view)
 
 ### Exporting evaluator results CSV
 
@@ -142,5 +143,31 @@ GET - returns a JSON for the latest account holder information for a specified `
     "zip": "99000",
     "addr_ind": "",
     "res_cd": ""
+}
+```
+
+### Users view
+If SSO is enabled:
+    `/users`
+
+    GET - returns a JSON for the current user's information
+
+If SSO is not enabled:
+    `/users/{user_id}`
+
+    GET - returns a JSON for a user's information for a specified `user_id`.
+
+**Example response:**
+```JSON
+{
+    "is_admin": true,
+    "username": "jane.doe",
+    "assigned_events": [
+        {
+            "id": 1,
+            "name": "Hyundai2024",
+        },
+        # ... etc.
+    ]
 }
 ```

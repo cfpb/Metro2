@@ -33,13 +33,16 @@ urlpatterns = [
     path('datasets/<int:dataset_id>/', views.dataset),
     path('all-evaluator-metadata', eval_views.download_evaluator_metadata),
     path('events/', include(evaluate_m2_urls)),
-    path('users/<int:user_id>', views.users_view),
 ]
 
 try:
     # If the SSO library is installed, include auth-related URLs
     urlpatterns += [
         path('oauth2/', include('django_auth_adfs.urls')),
+        path('users', views.users_view),
     ]
 except ImproperlyConfigured:
+    urlpatterns += [
+        path('users/<int:user_id>', views.users_view),
+    ]
     pass
