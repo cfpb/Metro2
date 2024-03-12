@@ -39,10 +39,10 @@ try:
     # If the SSO library is installed, include auth-related URLs
     urlpatterns += [
         path('oauth2/', include('django_auth_adfs.urls')),
-        path('users', views.users_view),
+        path('api/users', views.users_view),
     ]
 except ImproperlyConfigured:
     urlpatterns += [
-        path('users/<int:user_id>', views.users_view),
+        path('api/users/<int:user_id>', views.users_view),
     ]
     pass
