@@ -188,7 +188,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             ],
             'account_activity': self.get_account_activity(id=33)
         }
-        response = self.client.get('/events/1/account/0033')
+        response = self.client.get('/api/events/1/account/0033')
 
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
@@ -208,7 +208,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             ],
             'account_activity': self.get_account_activity(id=32)
         }
-        response = self.client.get('/events/1/account/0032')
+        response = self.client.get('/api/events/1/account/0032')
 
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
@@ -226,7 +226,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                     'state': '', 'zip': '', 'addr_ind': '', 'res_cd': '',
                     'cons_acct_num': '012345'}
 
-        response = self.client.get('/events/1/account/012345/account_holder')
+        response = self.client.get('/api/events/1/account/012345/account_holder')
         # the response should be a JSON
 
         self.assertEqual(response.status_code, 200)
