@@ -13,7 +13,7 @@ Quick links:
 - [`/events/{event_id}/evaluator/{evaluator_id}`](#evaluator-results-view)
 - [`/events/{event_id}/accounts/{account_number}`](#account-summary-view)
 - [`/events/{event_id}/accounts/{account_number}/account_holder`](#account-pii-view)
-- [`/users/{user_id}`](#users-view)
+- [`/api/users/{user_id}`](#users-view)
 
 ### Exporting evaluator results CSV
 
@@ -148,12 +148,12 @@ GET - returns a JSON for the latest account holder information for a specified `
 
 ### Users view
 If SSO is enabled:
-    `/users`
+    `/api/users`
 
     GET - returns a JSON for the current user's information
 
 If SSO is not enabled:
-    `/users/{user_id}`
+    `/api/users/{user_id}`
 
     GET - returns a JSON for a user's information for a specified `user_id`.
 
