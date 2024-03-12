@@ -9,12 +9,12 @@ TODO: Add info on how auth tokens need to be included/handled in API requests
 ## API endpoints
 
 Quick links:
-- [`/events/{event_id}/evaluator/{evaluator_id}/csv`](#exporting-evaluator-results-csv)
-- [`/events/{event_id}/evaluator/{evaluator_id}`](#exporting-evaluator-results)
+- [`/api/events/{event_id}/evaluator/{evaluator_id}/csv`](#exporting-evaluator-results-csv)
+- [`/api/events/{event_id}/evaluator/{evaluator_id}`](#exporting-evaluator-results)
 
 ### Exporting evaluator results CSV
 
-`/events/{event_id}/evaluator/{evaluator_id}/csv`
+`/api/events/{event_id}/evaluator/{evaluator_id}/csv`
 
 GET - returns a CSV of evaluator results for a single evaluator (whose ID matches `evaluator_id`) for a single event (with the ID `event_id`).
 
@@ -35,7 +35,7 @@ hyundai2024,1331,,0,13,1,,M,0,2019-01-26,0,2019-01-31,,20121205047544,0
 
 ### Exporting evaluator results
 
-`/events/{event_id}/evaluator/{evaluator_id}`
+`/api/events/{event_id}/evaluator/{evaluator_id}`
 
 GET - returns a JSON with a `hits` field composed of a list that contains one object per EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose ID matches `evaluator_id`) combo. The keys in each object would be the list of fields saved in field_values for that EvaluatorResult.
 
