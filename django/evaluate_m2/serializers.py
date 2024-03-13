@@ -3,11 +3,6 @@ from rest_framework import serializers
 from .models import EvaluatorMetadata, EvaluatorResultSummary
 
 
-class EvaluatorResultSummarySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EvaluatorResultSummary
-        fields = ['hits']
-
 class EvaluatorMetadataSerializer(serializers.ModelSerializer):
     hits = serializers.SerializerMethodField(read_only=True)
 
