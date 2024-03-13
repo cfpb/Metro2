@@ -3,6 +3,24 @@
 // global layout pattern
 // provides left / right padding
 .content-row {
-	padding: unit((@grid_gutter-width / 2 / @base-font-size-px), em) 
+	padding: unit((@grid_gutter-width / 2 / @base-font-size-px), em)
            unit((@grid_gutter-width / @base-font-size-px), em);
+}
+
+.block {
+    &.u-center {
+        width: 60%;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto; //should we change it to simply margin:auto ?
+    }
+
+    .a-btn.a-btn__link {
+        padding-left: 2rem;
+
+        svg{
+            padding-left: .5rem;
+            padding-top: .1rem;
+        }
+    }
 }
