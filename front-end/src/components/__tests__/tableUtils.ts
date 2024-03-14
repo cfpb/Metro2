@@ -2,7 +2,7 @@ import { formatNumber } from '../Table/tableUtils'
 
 describe('formatNumber', () => {
 	it('returns a formatted string when passed a number', () => {
-    const formattedLongNumber = formatNumber(123456789)
+    const formattedLongNumber = formatNumber(123_456_789)
     expect(formattedLongNumber).toEqual('123,456,789')
 
     const formattedShortNumber = formatNumber(123)
@@ -13,7 +13,7 @@ describe('formatNumber', () => {
     const formattedNullValue = formatNumber(null)
     expect(formattedNullValue).toBe('')
 
-    const formattedUndefinedValue = formatNumber(undefined)
+    const formattedUndefinedValue = formatNumber(void 0)
     expect(formattedUndefinedValue).toBe('')
 	})
 })
