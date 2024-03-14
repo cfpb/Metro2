@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import { AgGridReact } from 'ag-grid-react'
 import type { ColDef } from 'ag-grid-community';
-import { columnDefaults, gridOptionDefaults } from './defaults'
+import { columnDefaults, gridOptionDefaults } from './tableUtils'
 import './Table.less'
 
 /* Table props
@@ -34,8 +34,8 @@ import './Table.less'
 interface TableProperties<T> {
 	rows: T[],
 	columnDefinitions: ColDef[],
-	height: 'fixed' | 'full',
-	resizableColumns: boolean
+	height?: 'fixed' | 'full',
+	resizableColumns?: boolean
 }
 export default function Table<T extends object>( {
 	height='fixed',
@@ -56,7 +56,8 @@ export default function Table<T extends object>( {
 		<div className="u-mt15 u-mb30">
 			<div className={`ag-theme-alpine
 			                 data-grid-container
-											 data-grid-container--${height}-height`}>
+											 data-grid-container--${height}-height`}
+					 data-testid='data-grid-container'>
 				<AgGridReact rowData={ rowData }
 				             columnDefs={ columnDefinitions }
 										 defaultColDef={ { resizable: resizableColumns, ...columnDefaults } }

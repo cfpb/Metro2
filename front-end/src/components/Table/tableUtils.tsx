@@ -4,6 +4,7 @@ const numberFormatter = new Intl.NumberFormat('en', {
   notation: 'standard'
 })
 
+// TOOD: consider whether this needs any other type guards
 export function formatNumber(val: number | null | undefined): string {
   return val == null ? '' : numberFormatter.format(val) 
 }
@@ -16,7 +17,7 @@ export const ColumnTypes = {
   },
   formattedNumber: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    valueFormatter: ( {value}: ValueFormatterParams<any, number | null> ): string => formatNumber(value),
+    valueFormatter: ({value}: ValueFormatterParams<any, number | null> ): string => formatNumber(value),
     cellClass: 'ag-right-aligned-cell',
     headerClass: 'ag-right-aligned-header'
   }

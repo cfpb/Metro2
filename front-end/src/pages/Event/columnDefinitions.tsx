@@ -1,5 +1,5 @@
 
-import type { ColDef, ValueFormatterParams } from 'ag-grid-community';
+import type { ColDef, ValueFormatterParams } from 'ag-grid-community'
 import type { EvaluatorMetadata } from './Event'
 
 const columnDefinitions: ColDef<EvaluatorMetadata>[] = [

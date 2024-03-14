@@ -11,12 +11,12 @@ export default function EventPage(): ReactElement {
 	return (
 		<>
     	<LocatorBar heading={ eventData.name }
-							    subhead={ `Data from ${ eventData.start_date } - ${ eventData.end_date }` }/>
+                  subhead={ `Data from ${ eventData.start_date } - ${ eventData.end_date }` }/>
 			<div className='block'>
 				<Table rows={ rowData } 
-							 columnDefinitions={ columnDefinitions }
-							 height='full' 
-							 resizableColumns={ false }/>
+               columnDefinitions={ columnDefinitions }
+               height='full' 
+               resizableColumns={ false }/>
 			</div>
 		</>
 	)
