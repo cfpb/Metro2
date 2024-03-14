@@ -7,20 +7,29 @@
            unit((@grid_gutter-width / @base-font-size-px), em);
 }
 
-.block {
-    &.u-center {
-        width: 60%;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto; //should we change it to simply margin:auto ?
-    }
+.error-message {
+    width: 80%;
+    max-width: 500px;
+    margin: auto;
 
-    .a-btn.a-btn__link {
-        padding-left: 2rem;
+    .m-btn-group .a-btn + .a-btn {
+        margin-left: 2rem;
 
         svg{
             padding-left: .5rem;
             padding-top: .1rem;
         }
+    }
+}
+
+@media screen and (max-width: 585px) {
+    .m-btn-group {
+        text-align: center;
+
+        .a-btn {margin: auto 2rem;}
+    }
+
+    .error-message .m-btn-group .a-btn + .a-btn {
+        margin: .5rem 0;
     }
 }
