@@ -102,7 +102,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         eval_r3.save()
 
     def test_download_eval_metadata(self):
-        response = self.client.get('/all-evaluator-metadata')
+        response = self.client.get('/api/all-evaluator-metadata')
 
         # the response should be a CSV
         self.assertEqual(response.status_code, 200)

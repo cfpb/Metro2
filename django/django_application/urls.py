@@ -30,7 +30,7 @@ urlpatterns = [
     path('secured/', views.secured_view),
     path('datasets/', views.datasets),
     path('datasets/<int:dataset_id>/', views.dataset),
-    path('all-evaluator-metadata', eval_views.download_evaluator_metadata),
+    path('api/all-evaluator-metadata', eval_views.download_evaluator_metadata),
     path('api/events/', include(evaluate_m2_urls)),
     re_path(r'^(?:.*)?', TemplateView.as_view(template_name="m2/index.html"))
 ]
