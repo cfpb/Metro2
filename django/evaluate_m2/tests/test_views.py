@@ -266,7 +266,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
-        print(response.json())
+
         # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(len(response.json()['evaluators']), 2)
         self.assertEqual(response.json(), expected)
