@@ -34,7 +34,7 @@ def download_evaluator_metadata(request):
 
     return response
 
-@api_view()
+@api_view(('GET',))
 def download_evaluator_results_csv(request, event_id, evaluator_id):
     logger = logging.getLogger('views.download_evaluator_results_csv')
     try:
@@ -93,7 +93,7 @@ def evaluator_results_view(request, event_id, evaluator_id):
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
-@api_view()
+@api_view(('GET',))
 def account_summary_view(request, event_id, account_number):
     logger = logging.getLogger('views.account_summary_view')
     try:
@@ -125,7 +125,7 @@ def account_summary_view(request, event_id, account_number):
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
-@api_view()
+@api_view(('GET',))
 def account_pii_view(request, event_id, account_number):
     logger = logging.getLogger('views.account_pii_view')
     try:
