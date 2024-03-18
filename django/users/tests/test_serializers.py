@@ -1,34 +1,33 @@
-from datetime import date
-from django.contrib.auth.models import Group, Permission, User
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Group, User
 from django.test import TestCase
 
-from rest_framework.renderers import JSONRenderer
+from parse_m2.models import Metro2Event
+from users.serializers import UserViewSerializer
 
-from users.serializers import GroupSerializer
 
-class GroupSerializerTestCase(TestCase):
+class UserViewSerializerTestCase(TestCase):
     def setUp(self) -> None:
-        # Create an AccountActivity record
-        ct = ContentType.objects.get_for_model(User)
-        self.group = Group.objects.create(name="group")
-        permission = Permission.objects.create(codename='read',
-                                   name='Can read',
-                                   content_type=ct)
-        self.group.permissions.add(permission)
+        # Create a User record
+        self.user = User.objects.create(
+            username="examiner",
+            password="",
+            email="examiner@fake.gov"
+        )
+        self.group = Group.objects.create(name="event1")
+        self.group.user_set.add(self.user)
+        event = Metro2Event(id=1, name='test_exam', user_group=self.group)
+        event.save()
+        event2 = Metro2Event(id=2, name='another_exam', user_group=self.group)
+        event2.save()
 
         self.json_representation = {
-            "id": self.group.id,
-            "name": "group"
+            "is_admin": False,
+            "username": "examiner",
+            "assigned_events": [
+                { "id": 1, "name": "test_exam" }, { "id": 2, "name": "another_exam" }
+            ]
         }
 
-    def test_group_serializer(self):
-        serializer = GroupSerializer(self.group)
+    def test_user_view_serializer(self):
+        serializer = UserViewSerializer(self.user)
         self.assertEqual(serializer.data, self.json_representation)
-
-    def test_group_serializer_many_true(self):
-        groups = [self.group]
-        serializer = GroupSerializer(groups, many=True)
-        json_output = JSONRenderer().render(serializer.data)
-        expected = JSONRenderer().render([self.json_representation])
-        self.assertEqual(json_output, expected)

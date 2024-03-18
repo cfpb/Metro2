@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Group, User
 from django.test import TestCase
 
+from parse_m2.models import Metro2Event
 from users.models import Dataset
 from unittest import mock
 
@@ -95,18 +96,19 @@ class TestUsersView(TestCase):
             password="",
             email="examiner@fake.gov"
         )
-        group = Group.objects.create(name="group1")
+        group = Group.objects.create(name="event1")
         group.user_set.add(self.user)
-        group2 = Group.objects.create(name="group2")
-        group2.user_set.add(self.user)
-
+        event = Metro2Event(id=1, name='test_exam', user_group=group)
+        event.save()
+        event2 = Metro2Event(id=2, name='test_exam2', user_group=group)
+        event2.save()
     def test_users_view(self):
         expected = {
             "is_admin": False,
             "username": "examiner",
             "assigned_events": [
-                { "id": 1, "name": "group1" },
-                { "id": 2, "name": "group2" }
+                { "id": 1, "name": "test_exam" },
+                { "id": 2, "name": "test_exam2" }
             ]
         }
         response = self.client.get('/api/users/1')

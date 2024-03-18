@@ -5,13 +5,13 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 from django.http import Http404, JsonResponse
 from django.shortcuts import render
 
 from users.exception_utils import get_users_not_found_exception
 from users.models import Dataset
-from users.serializers import GroupSerializer
+from users.serializers import UserViewSerializer
 
 def unsecured_view(request):
     return render(request, "m2/page.html")
@@ -47,14 +47,9 @@ def users_view(request, user_id=0):
         user = User.objects.get(username=request.user.username) \
                 if user_id == 0 \
                 else User.objects.get(id=user_id)
-
-        groupSerializer = GroupSerializer(user.groups.all(), many=True)
-        response = {
-            "is_admin": True if user.is_superuser == 1 else False,
-            "username": user.username,
-            "assigned_events": groupSerializer.data
-        }
-        return JsonResponse(response)
+        print(user)
+        userSerializer = UserViewSerializer(user)
+        return JsonResponse(userSerializer.data)
     except User.DoesNotExist:
         error = get_users_not_found_exception(user_id, request.path)
         logger.error(error['message'])
