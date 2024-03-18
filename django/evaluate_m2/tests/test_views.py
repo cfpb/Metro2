@@ -6,6 +6,7 @@ from evaluate_m2.models import (
     EvaluatorResult,
     EvaluatorResultSummary
 )
+from evaluate_m2.serializers import EvaluatorMetadataSerializer
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import M2DataFile, Metro2Event
 
@@ -112,11 +113,11 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
         # the CSV should contain info about the evals
         csv_content = response.content.decode('utf-8')
-        for item in self.eval1.serialize():
+        for item in EvaluatorMetadataSerializer(self.eval1).data:
             self.assertIn(item, csv_content)
-        for item in self.eval2.serialize():
+        for item in EvaluatorMetadataSerializer(self.eval2).data:
             self.assertIn(item, csv_content)
-        for item in self.eval3.serialize():
+        for item in EvaluatorMetadataSerializer(self.eval3).data:
             self.assertIn(item, csv_content)
 
     def test_download_evaluator_results_csv(self):

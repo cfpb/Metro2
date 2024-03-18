@@ -11,11 +11,12 @@ from rest_framework import status
 
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
-
+from evaluate_m2.serializers import EvaluatorMetadataSerializer
 from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
 
-def download_evaluator_metadata(request):
+@api_view(('GET',))
+def download_evaluator_metadata_csv(request):
     # Documentation on returning CSV: https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
     filename = f"evaluator-metadata-{date.today()}.csv"
     response = HttpResponse(
@@ -23,14 +24,17 @@ def download_evaluator_metadata(request):
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
-    writer = csv.writer(response)
-
+    eval_metadata_serializer = EvaluatorMetadataSerializer(
+        EvaluatorMetadata.objects.all(), many=True
+    )
+    header = EvaluatorMetadataSerializer.Meta.fields
     # Add the header to the CSV response
-    writer.writerow(EvaluatorMetadata.csv_header)
+    writer = csv.DictWriter(response, fieldnames=header)
+    writer.writeheader()
 
     # Add all evaluators to the response
-    for eval in EvaluatorMetadata.objects.all():
-        writer.writerow(eval.serialize())
+    for row in eval_metadata_serializer.data:
+        writer.writerow(row)
 
     return response
 
