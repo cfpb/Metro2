@@ -1,6 +1,9 @@
 from rest_framework import serializers
 
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult
+from .models import (
+    EvaluatorMetadata,
+    EvaluatorResult,EvaluatorResultSummary
+)
 
 
 class EvaluatorMetadataSerializer(serializers.ModelSerializer):
@@ -35,3 +38,12 @@ class EvaluatorMetadataSerializer(serializers.ModelSerializer):
             return ";".join(obj.fields_display)
         else:
             return ""
+
+class EvaluatorResultsViewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EvaluatorResult
+        fields = ['field_values']
+
+    def to_representation(self, obj):
+            return obj.field_values

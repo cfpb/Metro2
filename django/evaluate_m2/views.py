@@ -11,7 +11,9 @@ from rest_framework import status
 
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
-from evaluate_m2.serializers import EvaluatorMetadataSerializer
+from evaluate_m2.serializers import (
+    EvaluatorMetadataSerializer,
+    EvaluatorResultsViewSerializer)
 from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
 
@@ -81,12 +83,11 @@ def evaluator_results_view(request, event_id, evaluator_id):
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=Metro2Event.objects.get(id=event_id),
             evaluator=EvaluatorMetadata.objects.get(id=evaluator_id))
-        results = []
-        # Add all evaluator results field_values to the response
-        for eval_result in eval_result_summary.evaluatorresult_set.all()[:50]:
-            results.append(eval_result.field_values)
-        data = {'hits': results}
-        return JsonResponse(data)
+        eval_result_serializer = EvaluatorResultsViewSerializer(
+            eval_result_summary.evaluatorresult_set.all(), many=True)
+
+        response = {'hits': eval_result_serializer.data}
+        return JsonResponse(response)
     except (
         Metro2Event.DoesNotExist,
         EvaluatorMetadata.DoesNotExist,
