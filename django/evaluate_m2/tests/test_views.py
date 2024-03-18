@@ -61,7 +61,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         return [{ 'id': id, 'activity_date': '2019-12-31', 'port_type': 'X',
                  'acct_type': '00', 'date_open': '2020-01-01', 'credit_limit': 0,
                  'hcola': 0, 'terms_dur': '0', 'terms_freq': '0', 'smpa': 0,
-                 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0', 'php': '',
+                 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0', 'php': 'X',
                  'spc_com_cd': 'X', 'compl_cond_cd': '0', 'current_bal': 0,
                  'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2020-01-01',
                  'dofd': '2020-01-01', 'date_closed': '2020-01-01', 'dolp': None,
