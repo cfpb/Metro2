@@ -117,6 +117,6 @@ class EvaluatorResultsViewSerializerTestCase(TestCase):
         self.eval_result.save()
         self.json_representation = {'record': 1, 'acct_type':'y'}
 
-    def test_evaluator_metadata_serializer(self):
+    def test_evaluator_results_serializer(self):
         serializer = EvaluatorResultsViewSerializer(self.eval_result)
         self.assertEqual(serializer.data, self.json_representation)
