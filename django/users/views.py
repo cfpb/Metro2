@@ -44,10 +44,11 @@ def dataset(request, dataset_id):
 def users_view(request, user_id=0):
     logger = logging.getLogger('views.user_view')
     try:
+        # username is retrieved from the request if SSO is enabled
+        # user_id from the URL will be used if SSO is not enabled
         user = User.objects.get(username=request.user.username) \
                 if user_id == 0 \
                 else User.objects.get(id=user_id)
-        print(user)
         userSerializer = UserViewSerializer(user)
         return JsonResponse(userSerializer.data)
     except User.DoesNotExist:

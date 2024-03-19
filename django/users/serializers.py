@@ -18,5 +18,5 @@ class UserViewSerializer(serializers.ModelSerializer):
         eventSerializer = Metro2EventSerializer(events, many=True)
         return eventSerializer.data
 
-    def get_is_admin(self, obj):
-        return True if obj.is_superuser == 1 else False
+    def get_is_admin(self, obj) -> bool:
+        return obj.is_superuser == 1

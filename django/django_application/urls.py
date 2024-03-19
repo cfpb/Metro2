@@ -45,4 +45,3 @@ except ImproperlyConfigured:
     urlpatterns += [
         path('api/users/<int:user_id>', views.users_view),
     ]
-    pass

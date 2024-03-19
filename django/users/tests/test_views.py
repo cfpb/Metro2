@@ -92,8 +92,8 @@ class TestIndividualDatasetView(TestCase):
 class TestUsersView(TestCase):
     def setUp(self) -> None:
         self.user = User.objects.create(
+            id=1,
             username="examiner",
-            password="",
             email="examiner@fake.gov"
         )
         group = Group.objects.create(name="event1")
