@@ -102,7 +102,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         eval_r3.save()
 
     def test_download_eval_metadata(self):
-        response = self.client.get('/all-evaluator-metadata')
+        response = self.client.get('/api/all-evaluator-metadata')
 
         # the response should be a CSV
         self.assertEqual(response.status_code, 200)
@@ -122,7 +122,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def test_download_evaluator_results_csv(self):
         self.create_activity_data()
 
-        response = self.client.get('/events/1/evaluator/ADDL-DOFD-1/csv')
+        response = self.client.get('/api/events/1/evaluator/ADDL-DOFD-1/csv')
 
         # the response should be a CSV
         self.assertEqual(response.status_code, 200)
@@ -146,7 +146,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                              {'record': 2, 'acct_type': 'n'}]}
         self.create_activity_data()
 
-        response = self.client.get('/events/1/evaluator/ADDL-DOFD-1')
+        response = self.client.get('/api/events/1/evaluator/ADDL-DOFD-1')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
@@ -156,21 +156,21 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_evaluator_results_view_with_error_no_evaluator_metadata(self):
         self.create_activity_data()
-        response = self.client.get('/events/1/evaluator/NON_EXISTENT')
+        response = self.client.get('/api/events/1/evaluator/NON_EXISTENT')
 
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response, 'Evaluator: NON_EXISTENT does not exist.',
             status_code=404)
 
     def test_evaluator_results_view_with_error_no_event(self):
-        response = self.client.get('/events/1/evaluator/ADDL-DOFD-1')
+        response = self.client.get('/api/events/1/evaluator/ADDL-DOFD-1')
 
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response, 'Event ID: 1 does not exist.', status_code=404)
 
     def test_evaluator_results_view_with_error_no_evaluator_results_summary(self):
         self.create_activity_data()
-        response = self.client.get('/events/1/evaluator/ADDL-DOFD-2')
+        response = self.client.get('/api/events/1/evaluator/ADDL-DOFD-2')
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response,
             'Evaluator result does not exist for event ID 1 or evaluator ID ADDL-DOFD-2.',
@@ -188,7 +188,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             ],
             'account_activity': self.get_account_activity(id=33)
         }
-        response = self.client.get('/events/1/account/0033')
+        response = self.client.get('/api/events/1/account/0033')
 
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
@@ -208,7 +208,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             ],
             'account_activity': self.get_account_activity(id=32)
         }
-        response = self.client.get('/events/1/account/0032')
+        response = self.client.get('/api/events/1/account/0032')
 
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
@@ -226,7 +226,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                     'state': '', 'zip': '', 'addr_ind': '', 'res_cd': '',
                     'cons_acct_num': '012345'}
 
-        response = self.client.get('/events/1/account/012345/account_holder')
+        response = self.client.get('/api/events/1/account/012345/account_holder')
         # the response should be a JSON
 
         self.assertEqual(response.status_code, 200)

@@ -9,15 +9,14 @@ TODO: Add info on how auth tokens need to be included/handled in API requests
 ## API endpoints
 
 Quick links:
-- [`/events/{event_id}/evaluator/{evaluator_id}/csv`](#exporting-evaluator-results-csv)
-- [`/events/{event_id}/evaluator/{evaluator_id}`](#evaluator-results-view)
-- [`/events/{event_id}/accounts/{account_number}`](#account-summary-view)
-- [`/events/{event_id}/accounts/{account_number}/account_holder`](#account-pii-view)
+- [`/api/events/{event_id}/evaluator/{evaluator_id}/csv`](#exporting-evaluator-results-csv)
+- [`/api/events/{event_id}/evaluator/{evaluator_id}`](#evaluator-results-view)
+- [`/api/events/{event_id}/accounts/{account_number}`](#account-summary-view)
+- [`/api/events/{event_id}/accounts/{account_number}/account_holder`](#account-pii-view)
 - [`/api/users/{user_id}`](#users-view)
-
 ### Exporting evaluator results CSV
 
-`/events/{event_id}/evaluator/{evaluator_id}/csv`
+`/api/events/{event_id}/evaluator/{evaluator_id}/csv`
 
 GET - returns a CSV of evaluator results for a single evaluator (whose ID matches `evaluator_id`) for a single event (with the ID `event_id`).
 
@@ -38,7 +37,7 @@ hyundai2024,1331,,0,13,1,,M,0,2019-01-26,0,2019-01-31,,20121205047544,0
 
 ### Evaluator results view
 
-`/events/{event_id}/evaluator/{evaluator_id}`
+`/api/events/{event_id}/evaluator/{evaluator_id}`
 
 GET - returns a JSON with a `hits` field composed of a list that contains one object per EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose ID matches `evaluator_id`) combo. The keys in each object would be the list of fields saved in field_values for that EvaluatorResult.
 
@@ -68,7 +67,7 @@ GET - returns a JSON with a `hits` field composed of a list that contains one ob
 
 ### Account summary view
 
-`/events/{event_id}/accounts/{account_number}`
+`/api/events/{event_id}/accounts/{account_number}`
 
 GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `account_activity`. The `cons_acct_num` field contains the account number, `inconsistencies` is composed of a list of inconsistencies found for the account, and `account_activity` is composed of a list of activity records with this `cons_acct_num`.
 
@@ -117,7 +116,7 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
 
 ### Account PII view
 
-`/events/{event_id}/accounts/{account_number}/account_holder`
+`/api/events/{event_id}/accounts/{account_number}/account_holder`
 
 GET - returns a JSON for the latest account holder information for a specified `account_number` and `event_id`.
 
