@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 
 from users import views
@@ -25,14 +25,13 @@ from evaluate_m2 import urls as evaluate_m2_urls
 
 
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="m2/index.html")),
     path('admin/', admin.site.urls),
     path('unsecured/', views.unsecured_view),
     path('secured/', views.secured_view),
     path('datasets/', views.datasets),
     path('datasets/<int:dataset_id>/', views.dataset),
-    path('all-evaluator-metadata', eval_views.download_evaluator_metadata_csv),
-    path('events/', include(evaluate_m2_urls)),
+    path('api/all-evaluator-metadata', eval_views.download_evaluator_metadata_csv),
+    path('api/events/', include(evaluate_m2_urls)),
 ]
 
 try:
@@ -42,3 +41,6 @@ try:
     ]
 except ImproperlyConfigured:
     pass
+
+# Fall through route to handle all other urls through front end
+urlpatterns.append(re_path(r'^(?:.*)?', TemplateView.as_view(template_name='m2/index.html')))
