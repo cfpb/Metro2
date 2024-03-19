@@ -13,5 +13,6 @@ class EventsViewSerializer(serializers.ModelSerializer):
                   'crrg_page','pdf_page','use_notes','alternative_explanation',
                   'risk_level']
 
-    def get_hits(self, eval):
-        return EvaluatorResultSummary.objects.get(evaluator=eval).hits
+    def get_hits(self, obj):
+        event = self.context.get("event")
+        return EvaluatorResultSummary.objects.get(evaluator=obj, event=event).hits

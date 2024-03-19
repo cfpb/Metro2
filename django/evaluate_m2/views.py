@@ -150,7 +150,8 @@ def events_view(request, event_id):
         event = Metro2Event.objects.get(id=event_id)
         eval_result_summary = EvaluatorResultSummary.objects.filter(event=event)
         evaluators = [ers.evaluator for ers in eval_result_summary]
-        evaluator_metadata_serializer = EventsViewSerializer(evaluators, many=True)
+        evaluator_metadata_serializer = EventsViewSerializer(
+            evaluators, many=True, context={'event': event})
         result = {
             'id': event.id,
             'name': event.name,
