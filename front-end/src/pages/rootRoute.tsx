@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { createRootRoute, Outlet } from '@tanstack/react-router'
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 import LoadingOrError from '../components/LoadingOrError'
+import NotFound from 'components/NotFound'
 
 const rootRoute = createRootRoute({
   component: (): ReactElement => (
@@ -10,7 +11,8 @@ const rootRoute = createRootRoute({
         <Outlet />
         {/* <TanStackRouterDevtools /> */}
       </Suspense>
-    )
+    ),
+    notFoundComponent: NotFound
 })
 
 export default rootRoute
