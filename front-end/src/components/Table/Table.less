@@ -1,0 +1,75 @@
+@import url('ag-grid-community/styles/ag-grid.css');
+@import url('ag-grid-community/styles/ag-theme-alpine.css');
+@import (reference) '../../index.less';
+
+.ag-theme-alpine {
+  // Override defaults to approximate Design System table styles
+  --ag-font-family: "Avenir Next", arial, sans-serif !important;
+  --ag-font-size: unit( ( 16px / @base-font-size-px ), em);
+  --ag-border-color: @table-border;
+  --ag-header-column-resize-handle-color: @table-border;
+  --ag-secondary-border-color: @table-border;
+  --ag-odd-row-background-color: @white;
+
+  .ag-cell {
+    font-size: unit( ( 14px / @base-font-size-px ), em);
+  }
+
+  .ag-cell-value {
+    line-height: 20px !important;
+    word-break: normal; 
+    padding-top: 10px; 
+    padding-bottom: 10px; 
+  }
+
+  .ag-header {
+    text-transform: uppercase;
+    font-size: unit( ( 13px / @base-font-size-px ), em);
+  }
+
+  // make the row borders take up full width even if row content
+  // doesn't extend to end of row
+  .ag-center-cols-container {
+    min-width: 100%;
+  }
+
+  // no minimum height on this container means no gap between bottom row
+  // and bottom border when there are only a couple of rows in the table
+  .ag-center-cols-viewport {
+    min-height: unset !important;
+  }
+
+  // prevents doubling of row border with border of container 
+  // when there's no bottom scrollbar
+  .ag-row.ag-row-last  {
+    border-bottom-width: 0 !important;
+  }
+
+  // the resize handler for a pinned left column's header
+  // should disappear into the cell border
+  // by default it's offset from the border by 1 pixel (-4px)
+  .ag-pinned-left-header .ag-header-cell-resize {
+    right: -5px;
+  }
+}
+
+// override centered text alignment
+.ag-overlay-wrapper {
+  text-align: left;
+}
+
+.ag-root-wrapper {
+  margin: unit((@grid_gutter-width / 2 / @base-font-size-px), em) 
+          unit((@grid_gutter-width / @base-font-size-px), em);
+}
+
+// grid container fills width of screen
+.data-grid-container {
+  width: 100%;
+
+  // fixed height container takes up max of 90% of viewport height
+  &__fixed-height {
+    height: 90vh;
+    margin-bottom: 3vh;
+  }
+}
