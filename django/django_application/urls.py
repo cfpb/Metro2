@@ -30,7 +30,7 @@ urlpatterns = [
     path('secured/', views.secured_view),
     path('datasets/', views.datasets),
     path('datasets/<int:dataset_id>/', views.dataset),
-    path('api/all-evaluator-metadata', eval_views.download_evaluator_metadata),
+    path('api/all-evaluator-metadata', eval_views.download_evaluator_metadata_csv),
     path('api/events/', include(evaluate_m2_urls)),
 ]
 
