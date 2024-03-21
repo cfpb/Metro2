@@ -84,7 +84,7 @@ def evaluator_results_view(request, event_id, evaluator_id):
             event=Metro2Event.objects.get(id=event_id),
             evaluator=EvaluatorMetadata.objects.get(id=evaluator_id))
         eval_result_serializer = EvaluatorResultsViewSerializer(
-            eval_result_summary.evaluatorresult_set.all(), many=True)
+            eval_result_summary.evaluatorresult_set.all()[:50], many=True)
 
         response = {'hits': eval_result_serializer.data}
         return JsonResponse(response)
