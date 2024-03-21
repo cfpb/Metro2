@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import Breadcrumbs from './Breadcrumbs'
 import './LocatorBar.less'
 import './Breadcrumbs.less'
@@ -14,7 +15,7 @@ export default function LocatorBar( {
   eyebrow,
   subhead,
   breadcrumbs = false
-}: LocatorBarProperties ): JSX.Element {
+}: LocatorBarProperties ): ReactElement {
   let className = 'locator-bar' 
   if ( breadcrumbs ) className += ' locator-bar__actions'
 

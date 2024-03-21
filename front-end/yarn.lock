@@ -1830,6 +1830,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ag-grid-community@npm:31.1.1":
+  version: 31.1.1
+  resolution: "ag-grid-community@npm:31.1.1"
+  checksum: a3bedb05e9bae71dc1a13d9be157eda39bcdee97109de2ae2188720b455f1db86cde3f4205f165cd672f574b2e5d03e8554830293ab892b0421c3e441d3525a0
+  languageName: node
+  linkType: hard
+
+"ag-grid-react@npm:^31.1.1":
+  version: 31.1.1
+  resolution: "ag-grid-react@npm:31.1.1"
+  dependencies:
+    ag-grid-community: 31.1.1
+    prop-types: ^15.8.1
+  peerDependencies:
+    react: ^16.3.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.3.0 || ^17.0.0 || ^18.0.0
+  checksum: d1389a2cc827045041dfcd9ce3f7ae009fcf97ba2c9efe072fc5faf5c3f53bf2b613385d99e9c2aae2449d8bfc8d9d3e8a08a1a2b89dc98af5cc660510f059a5
+  languageName: node
+  linkType: hard
+
 "agent-base@npm:6":
   version: 6.0.2
   resolution: "agent-base@npm:6.0.2"
@@ -4158,6 +4178,7 @@ __metadata:
     "@typescript-eslint/parser": 5.59.6
     "@vitejs/plugin-react": 4.0.0
     "@vitest/coverage-istanbul": 0.31.1
+    ag-grid-react: ^31.1.1
     autoprefixer: 10.4.14
     css-mediaquery: 0.1.2
     cypress: 12.12.0

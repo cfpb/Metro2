@@ -5,6 +5,6 @@ import EventPage from 'pages/Event/EventPage'
 describe('<EventPage />', () => {
 	it('renders Event page', async () => {
 		renderWithProviders(<EventPage/>)
-		expect(await screen.findByText('Test bank exam')).toBeVisible()
+		expect(await screen.findByText('Bank A auto exam')).toBeVisible()
 	})
 })

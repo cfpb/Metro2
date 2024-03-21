@@ -38,9 +38,12 @@ try:
     # If the SSO library is installed, include auth-related URLs
     urlpatterns += [
         path('oauth2/', include('django_auth_adfs.urls')),
+        path('api/users', views.users_view),
     ]
 except ImproperlyConfigured:
-    pass
+    urlpatterns += [
+        path('api/users/<int:user_id>', views.users_view),
+    ]
 
 # Fall through route to handle all other urls through front end
 urlpatterns.append(re_path(r'^(?:.*)?', TemplateView.as_view(template_name='m2/index.html')))

@@ -8,7 +8,7 @@ from evaluate_m2.models import (
 )
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
-from parse_m2.models import M2DataFile, Metro2Event
+from parse_m2.models import AccountHolder, M2DataFile, Metro2Event
 
 
 class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
@@ -75,7 +75,14 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         data_file = M2DataFile(event=event, file_name='file.txt')
         data_file.save()
         # Create the Account Holders
-        self.accounts = self.create_bulk_account_holders(data_file, ('Z','Y'))
+        acct_holder = AccountHolder(id=1, data_file=data_file,
+            activity_date=date(2023, 11, 30), surname='Doe', first_name='Jane',
+            middle_name='A', gen_code='F', ssn='012345678', dob='01012000',
+            phone_num='0123456789', ecoa='0', cons_info_ind='Z', cons_acct_num='012345')
+        acct_holder.save()
+        acct_holder2 = AccountHolder(id=2, data_file=data_file,
+            activity_date=date(2023, 11, 30), cons_info_ind='Y', cons_acct_num='012345')
+        acct_holder2.save()
         # Create the Account Activities data
         activities = {'id':(32,33), 'account_holder':('Z','Y'),
                       'cons_acct_num':('0032', '0033')}
