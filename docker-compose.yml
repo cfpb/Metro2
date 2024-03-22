@@ -47,6 +47,6 @@ services:
       - 127.0.0.1:8000:8000
     stdin_open: true
     tty: true
-    command: sh -c "python manage.py migrate  && ./add-seed-data.sh && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate  && ./seed-data.sh && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./django:/src/metro2/django
