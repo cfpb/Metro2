@@ -26,7 +26,7 @@ from evaluate_m2 import urls as evaluate_m2_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/all-evaluator-metadata', eval_views.download_evaluator_metadata),
+    path('api/all-evaluator-metadata', eval_views.download_evaluator_metadata_csv),
     path('api/events/', include(evaluate_m2_urls)),
 ]
 
