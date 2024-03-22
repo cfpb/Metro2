@@ -30,7 +30,7 @@ urlpatterns = [
     path('secured/', views.secured_view),
     path('datasets/', views.datasets),
     path('datasets/<int:dataset_id>/', views.dataset),
-    path('api/all-evaluator-metadata', eval_views.download_evaluator_metadata_csv),
+    path('api/all-evaluator-metadata/', eval_views.download_evaluator_metadata_csv),
     path('api/events/', include(evaluate_m2_urls)),
 ]
 
@@ -38,11 +38,11 @@ try:
     # If the SSO library is installed, include auth-related URLs
     urlpatterns += [
         path('oauth2/', include('django_auth_adfs.urls')),
-        path('api/users', views.users_view),
+        path('api/users/', views.users_view),
     ]
 except ImproperlyConfigured:
     urlpatterns += [
-        path('api/users/<int:user_id>', views.users_view),
+        path('api/users/<int:user_id>/', views.users_view),
     ]
 
 # Fall through route to handle all other urls through front end

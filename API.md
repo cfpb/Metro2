@@ -9,14 +9,36 @@ TODO: Add info on how auth tokens need to be included/handled in API requests
 ## API endpoints
 
 Quick links:
-- [`/api/events/{event_id}/evaluator/{evaluator_id}/csv`](#exporting-evaluator-results-csv)
-- [`/api/events/{event_id}/evaluator/{evaluator_id}`](#evaluator-results-view)
-- [`/api/events/{event_id}/accounts/{account_number}`](#account-summary-view)
-- [`/api/events/{event_id}/accounts/{account_number}/account_holder`](#account-pii-view)
-- [`/api/users/{user_id}`](#users-view)
+- [`/api/all-evaluator-metadata/`](#exporting-evaluator-metadata-csv)
+- [`/api/events/{event_id}/evaluator/{evaluator_id}/csv/`](#exporting-evaluator-results-csv)
+- [`/api/events/{event_id}/evaluator/{evaluator_id}/`](#evaluator-results-view)
+- [`/api/events/{event_id}/accounts/{account_number}/`](#account-summary-view)
+- [`/api/events/{event_id}/accounts/{account_number}/account_holder/`](#account-pii-view)
+- [`/api/users/{user_id}/`](#users-view)
+
+### Exporting evaluator metadata CSV
+
+`/api/all-evaluator-metadata/`
+
+GET - returns a CSV of evaluator metatdata from the database.
+
+Users can export this CSV into Excel in order to sort, filter, and analyze the metadata. The CSV file name will be appended with the current date.
+
+**Example response:**
+File name: `evaluator-metadata-2024-03-18.csv`
+
+File contents:
+```csv
+id,name,description,long_description,fields_used,fields_display,ipl,crrg_topics,crrg_page,pdf_page,use_notes,alternative_explanation,risk_level
+ADDL-DOFD-1,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,41,79,,,High
+ADDL-DOFD-2,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
+ADDL-DOFD-3,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
+ADDL-DOFD-4,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
+```
+
 ### Exporting evaluator results CSV
 
-`/api/events/{event_id}/evaluator/{evaluator_id}/csv`
+`/api/events/{event_id}/evaluator/{evaluator_id}/csv/`
 
 GET - returns a CSV of evaluator results for a single evaluator (whose ID matches `evaluator_id`) for a single event (with the ID `event_id`).
 
@@ -37,7 +59,7 @@ hyundai2024,1331,,0,13,1,,M,0,2019-01-26,0,2019-01-31,,20121205047544,0
 
 ### Evaluator results view
 
-`/api/events/{event_id}/evaluator/{evaluator_id}`
+`/api/events/{event_id}/evaluator/{evaluator_id}/`
 
 GET - returns a JSON with a `hits` field composed of a list that contains one object per EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose ID matches `evaluator_id`) combo. The keys in each object would be the list of fields saved in field_values for that EvaluatorResult.
 
@@ -67,7 +89,7 @@ GET - returns a JSON with a `hits` field composed of a list that contains one ob
 
 ### Account summary view
 
-`/api/events/{event_id}/accounts/{account_number}`
+`/api/events/{event_id}/accounts/{account_number}/`
 
 GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `account_activity`. The `cons_acct_num` field contains the account number, `inconsistencies` is composed of a list of inconsistencies found for the account, and `account_activity` is composed of a list of activity records with this `cons_acct_num`.
 
@@ -116,7 +138,7 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
 
 ### Account PII view
 
-`/api/events/{event_id}/accounts/{account_number}/account_holder`
+`/api/events/{event_id}/accounts/{account_number}/account_holder/`
 
 GET - returns a JSON for the latest account holder information for a specified `account_number` and `event_id`.
 
@@ -147,12 +169,12 @@ GET - returns a JSON for the latest account holder information for a specified `
 
 ### Users view
 If SSO is enabled:
-    `/api/users`
+    `/api/users/`
 
     GET - returns a JSON that includes a list of all events that the user has permission to view, as well as their username and admin status
 
 If SSO is not enabled:
-    `/api/users/{user_id}`
+    `/api/users/{user_id}/`
 
     GET - returns a JSON that includes a list of all events that the user has permission to view, as well as their username and admin status
 
