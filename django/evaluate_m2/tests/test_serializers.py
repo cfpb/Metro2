@@ -1,10 +1,9 @@
-from datetime import date
 from django.test import TestCase
 from rest_framework.renderers import JSONRenderer
 
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
 from evaluate_m2.serializers import EventsViewSerializer
-from parse_m2.models import AccountActivity, AccountHolder, M2DataFile, Metro2Event
+from parse_m2.models import Metro2Event
 
 
 class EventsViewSerializerTestCase(TestCase):
@@ -29,40 +28,6 @@ class EventsViewSerializerTestCase(TestCase):
         # Create the parent records for the AccountActivity data
         self.event = Metro2Event(id=1, name='test_exam')
         self.event.save()
-        file = M2DataFile(event=self.event, file_name='file.txt')
-        file.save()
-        acct_holder = AccountHolder(
-            data_file=file,activity_date=date(2023, 11, 30), cons_acct_num="98765")
-        acct_holder.save()
-
-        acct_activity = AccountActivity(
-            account_holder=acct_holder,
-            activity_date=date(2023,11,20),
-            cons_acct_num="98765",
-            port_type="port_type",
-            acct_type="acct_type",
-            date_open=date(2020,3,17),
-            credit_limit=9000,
-            hcola=90210,
-            terms_dur="terms_dur",
-            terms_freq="terms_freq",
-            smpa=5,
-            actual_pmt_amt=201,
-            acct_stat="acct_stat",
-            pmt_rating="pmt_rating",
-            php="php",
-            spc_com_cd="spc_com_cd",
-            compl_cond_cd="compl_cond_cd",
-            current_bal=12345,
-            amt_past_due=111,
-            orig_chg_off_amt=0,
-            doai=date(2023,11,3),
-            dofd=None,
-            date_closed=None,
-            dolp=date(2023,1,1),
-            int_type_ind="int_type_ind",
-        )
-        acct_activity.save()
 
         self.eval_rs = EvaluatorResultSummary(
             event=self.event, evaluator=self.eval, hits=2)
