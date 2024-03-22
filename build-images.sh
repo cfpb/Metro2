@@ -50,11 +50,13 @@ if [[ $TARGET_ENV == "eks" ]]; then
   AWS_REGION="us-east-1"
   DOCKER_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com" 
 
-  echo "Building metro2_frontend:$TAG"
-  ECR_REPO="cfpb/metro2/metro2-frontend"
-  DOCKER_IMAGE=$DOCKER_REGISTRY/$ECR_REPO
-  echo $DOCKER_IMAGE
-  docker build ./front-end/ -t "$DOCKER_IMAGE:$TAG"
+  # Temporarily disable building the front-end container
+  # TODO: Uncomment or otherwise modify this section when we are ready to include front-end code in deploys
+  # echo "Building metro2_frontend:$TAG"
+  # ECR_REPO="cfpb/metro2/metro2-frontend"
+  # DOCKER_IMAGE=$DOCKER_REGISTRY/$ECR_REPO
+  # echo $DOCKER_IMAGE
+  # docker build ./front-end/ -t "$DOCKER_IMAGE:$TAG"
 
   echo "Building metro2_django:$TAG"
   ECR_REPO="cfpb/metro2/metro2-django"
@@ -65,8 +67,12 @@ else
   # If TARGET_ENV isn't eks, it must be local
   TAG="local"
   echo "With TARGET_ENV set to 'local', images will be tagged with value 'local'"
-  echo "Building metro2_frontend:$TAG"
-  docker build ./front-end/ -t "metro2_frontend:$TAG"
+
+  # Temporarily disable building the front-end container
+  # TODO: Uncomment or otherwise modify this section when we are ready to include front-end code in deploys
+  # echo "Building metro2_frontend:$TAG"
+  # docker build ./front-end/ -t "metro2_frontend:$TAG"
+
   echo "Building metro2_django:$TAG"
   docker build ./django/ -t "metro2_django:$TAG"
 fi
