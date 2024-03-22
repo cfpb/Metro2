@@ -206,7 +206,6 @@ If SSO is not enabled:
 
 **Example response:**
 ```JSON
-
 {
     "is_admin": true,
     "username": "jane.doe",
