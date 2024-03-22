@@ -1,0 +1,23 @@
+{ 
+  "cons_acct_num": "123456789",
+  "inconsistencies": [
+    {
+      "name": "ADDL-DOFD-1", 
+      "id": "addl-dofd-1"
+    },
+    {
+      "name": "ADDL-DOFD-2", 
+      "id": "addl-dofd-2"
+    }
+  ],
+  "account_activity": [
+    {
+      "activity_date": "2023-12-01",
+      "date_open": "2014-12-02",
+      "port_type": "I",
+      "acct_type": "00",
+      "terms_dur": "74",
+      "terms_freq": "M"
+    }
+  ]
+}

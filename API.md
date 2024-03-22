@@ -14,6 +14,7 @@ Quick links:
 - [`/api/events/{event_id}/accounts/{account_number}`](#account-summary-view)
 - [`/api/events/{event_id}/accounts/{account_number}/account_holder`](#account-pii-view)
 - [`/api/events/{event_id}`](#events-view)
+- [`/api/users/{user_id}`](#users-view)
 
 ### Exporting evaluator results CSV
 
@@ -190,4 +191,31 @@ GET - returns a JSON information about an event, including its name and all eval
     ]
 }
 
+```
+
+### Users view
+If SSO is enabled:
+    `/api/users`
+
+    GET - returns a JSON that includes a list of all events that the user has permission to view, as well as their username and admin status
+
+If SSO is not enabled:
+    `/api/users/{user_id}`
+
+    GET - returns a JSON that includes a list of all events that the user has permission to view, as well as their username and admin status
+
+**Example response:**
+```JSON
+
+{
+    "is_admin": true,
+    "username": "jane.doe",
+    "assigned_events": [
+        {
+            "id": 1,
+            "name": "Hyundai2024",
+        },
+        # ... etc.
+    ]
+}
 ```
