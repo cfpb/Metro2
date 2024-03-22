@@ -14,7 +14,10 @@ class Command(BaseCommand):
     > python manage.py parse_local_and_evaluate -e [event_name] -d [local_data_directory]
 
     This command will fetch the files from the given directory, create an
-    Event record, and parse the data into the database. Then will run the evaluators on the dataset associated to the event, creates an EvaluatorResultSummary record for each evaluator that has a hit, and an EvaluatorResult record for each item returned from the evaluator.
+    Event record, and parse the data into the database. Then will run the evaluators on
+    the dataset associated to the event, creates an EvaluatorResultSummary record for
+    each evaluator that has a hit, and an EvaluatorResult record for each item returned
+    from the evaluator.
     """
 
     default_location = settings.LOCAL_EVENT_DATA

@@ -23,6 +23,7 @@ It will also run a script that:
 Once it is running, you can see the app running by visiting http://localhost:8000/.
 
 **Other useful actions in the system while running in docker-compose:**
+
 To run the tests and view coverage:
 1. Enter the Django container: `docker-compose exec django sh`.
 2. Run `coverage run manage.py test` to run the test suite and calculate coverage.
