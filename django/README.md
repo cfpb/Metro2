@@ -17,13 +17,10 @@ Running the project:
 1. From the Metro2 project root, run `docker-compose build` and `docker-compose up` to get the app running.
 When docker-compose starts the project, it automatically runs the database migrations, so you don't need to do so manually.
 It will also run a script that:
-  - Adds Evaluator Metadata to the database
+  - Adds Evaluator Metadata to the database if it does not already exist
   - Parses a sample file
   - Evaluates the parsed data and stores the result in the database
 Once it is running, you can see the app running by visiting http://localhost:8000/.
-
-Note: `docker-compose up` will fail to run after the first time due to the seed data.  To avoid this, we will need to remove the metro2 Postgres volume first.
-Run `docker volume rm metro2_postgres_data` before `docker-compose up`
 
 **Other useful actions in the system while running in docker-compose:**
 To run the tests and view coverage:
@@ -53,6 +50,11 @@ Run the evaluators for an event:
     - If there are existing evaluator results for this event, the previous results will be deleted before running the evaluator.
     - You can also use `python manage.py run_evaluators -h` for the help text.
 
+Parse local files and run the evaluators for an event:
+1. Enter the Django container: `docker-compose exec django sh`.
+2. Run `python manage.py parse_local_and_evaluate -e [event_name] -d [local_data_directory]` to run the evaluators on a dataset associated to the provided event.
+    - You can also use `python manage.py parse_local -h` for the help text.
+
 Use the Django administrator interface:
 1. First you'll need to create an admin account. (TODO: maybe we could automate this).
     - Note that if you've already done this, the account will still exist, unless you've deleted your local database.
@@ -76,7 +78,6 @@ Instructions for running locally (for now):
 2. From the metro2 project root, `pip install -r django/requirements.txt`
 3. `./django/manage.py migrate`
 4. If you want to run the server: `./django/run-local.sh`, then visit localhost:8000/admin to log in to the admin site
-  - you have the option to add seed data to the database
 5. If you want to access the python console for the project: `./manage.py shell`
 
 All of the useful actions listed above for use in docker-compose can also be used in the local virtualenv.
