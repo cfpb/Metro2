@@ -68,45 +68,6 @@ class EvaluatorMetadata(models.Model):
         self.save()
         return self
 
-    csv_header = [
-            "id",
-            "name",
-            "description",
-            "long_description",
-            "fields_used",
-            "fields_display",
-            "ipl",
-            "crrg_topics",
-            "crrg_page",
-            "pdf_page",
-            "use_notes",
-            "alternative_explanation",
-            "risk_level",
-        ]
-
-    def serialize_list(self, list):
-        if list:
-            return ";".join(list)
-        else:
-            return ""
-
-    def serialize(self):
-        return [
-            self.id,
-            self.name,
-            self.description,
-            self.long_description,
-            self.serialize_list(self.fields_used),
-            self.serialize_list(self.fields_display),
-            self.ipl,
-            self.crrg_topics,
-            self.crrg_page,
-            self.pdf_page,
-            self.use_notes,
-            self.alternative_explanation,
-            self.risk_level,
-        ]
-
 
 class EvaluatorResultSummary(models.Model):
     class Meta:
