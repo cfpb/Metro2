@@ -262,7 +262,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             }]}
 
 
-        response = self.client.get('/events/1')
+        response = self.client.get('/api/events/1')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
