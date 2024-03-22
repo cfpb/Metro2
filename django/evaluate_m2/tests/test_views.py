@@ -181,7 +181,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         response = self.client.get('/api/events/1/evaluator/ADDL-DOFD-2')
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response,
-            'Evaluator result does not exist for event ID 1 or evaluator ID ADDL-DOFD-2.',
+            'EvaluatorResultSummary record(s) not found for event ID 1.',
             status_code=404)
 
     def test_account_summary_view_single_results(self):
@@ -241,4 +241,40 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
         # the response should a hits field with a list of EvaluatorResult field_values
+        self.assertEqual(response.json(), expected)
+
+    def test_events_view(self):
+        self.create_activity_data()
+        expected = {
+            'id': 1,
+            'name': 'test_exam',
+            'evaluators': [{
+                'hits': 2, 'id': 'ADDL-DOFD-1',
+                'name': 'Additional evaluator for Date of First Delinquency',
+                'description': 'description of addl-dofd-1', 'long_description': '',
+                'fields_used': ['account status', 'date of first delinquency'],
+                'fields_display': ['amount past due', 'compliance condition code',
+                    'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',
+                    'terms frequency'],
+                'ipl': '', 'crrg_topics': '', 'crrg_page': '400', 'pdf_page': '',
+                'use_notes': '', 'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 'risk_level': 'High'
+            }, {
+                'hits': 1, 'id': 'ADDL-DOFD-3', 'name': '', 'description':
+                    'description for a third addl-dofd eval', 'long_description': '',
+                    'fields_used': ['account status', 'dofd', 'php'],
+                    'fields_display': ['original charge-off amount',
+                        'scheduled monthly payment amount', 'special comment code',
+                        'terms frequency'],
+                'ipl': '', 'crrg_topics': '', 'crrg_page': '41', 'pdf_page': '',
+                'use_notes': '', 'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 'risk_level': 'High'
+            }]}
+
+
+        response = self.client.get('/api/events/1')
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        # the response should a hits field with a list of EvaluatorResult field_values
+        self.assertEqual(len(response.json()['evaluators']), 2)
         self.assertEqual(response.json(), expected)

@@ -1,5 +1,4 @@
 import csv
-import json
 import logging
 
 from datetime import date
@@ -13,7 +12,8 @@ from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
-    EvaluatorResultsViewSerializer)
+    EvaluatorResultsViewSerializer,
+    EventsViewSerializer)
 from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
 
@@ -145,5 +145,29 @@ def account_pii_view(request, event_id, account_number):
     ) as e:
         error = get_evaluate_m2_not_found_exception(
             str(e), event_id, None, request.path, account_number)
+        logger.error(error['message'])
+        return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+@api_view()
+def events_view(request, event_id):
+    logger = logging.getLogger('views.evaluator_results_view')
+    try:
+        event = Metro2Event.objects.get(id=event_id)
+        eval_result_summary = EvaluatorResultSummary.objects.filter(event=event)
+        evaluators = [ers.evaluator for ers in eval_result_summary]
+        evaluator_metadata_serializer = EventsViewSerializer(
+            evaluators, many=True, context={'event': event})
+        result = {
+            'id': event.id,
+            'name': event.name,
+            'evaluators': evaluator_metadata_serializer.data
+        }
+        return JsonResponse(result)
+    except (
+        Metro2Event.DoesNotExist,
+        EvaluatorResultSummary.DoesNotExist
+    ) as e:
+        error = get_evaluate_m2_not_found_exception(
+            str(e), event_id, None, request.path)
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
