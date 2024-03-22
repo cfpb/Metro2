@@ -12,4 +12,5 @@ urlpatterns = [
          eval_views.account_summary_view),
     path('<int:event_id>/account/<str:account_number>/account_holder/',
          eval_views.account_pii_view),
+     path('<int:event_id>/', eval_views.events_view),
 ]

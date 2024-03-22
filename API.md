@@ -14,6 +14,7 @@ Quick links:
 - [`/api/events/{event_id}/evaluator/{evaluator_id}/`](#evaluator-results-view)
 - [`/api/events/{event_id}/accounts/{account_number}/`](#account-summary-view)
 - [`/api/events/{event_id}/accounts/{account_number}/account_holder/`](#account-pii-view)
+- [`/api/events/{event_id}`](#events-view)
 - [`/api/users/{user_id}/`](#users-view)
 
 ### Exporting evaluator metadata CSV
@@ -165,6 +166,52 @@ GET - returns a JSON for the latest account holder information for a specified `
     "addr_ind": "",
     "res_cd": ""
 }
+```
+
+### Events view
+
+`/api/events/{event_id}/`
+
+GET - returns a JSON information about an event, including its name and all evaluators that have results for the specified `event_id`.
+
+**Example response:**
+```JSON
+{
+    "id": 1,
+    "name": "Hyundai2025",
+    "evaluators": [
+        {
+            "hits": 4209,
+            "id":"ADDL-DOFD-4",
+            "name": "ADDL-DOFD-4",
+            "description": "Account reports date of first delinquency longer than 7 years.",
+            "long_description": "",
+            "fields_used": [
+                "date of first delinquency",
+                "date of account information"
+            ],
+            "fields_display": [
+                "amount past due",
+                "compliance condition code",
+                "current balance",
+                "date closed",
+                "original charge-off amount",
+                "scheduled monthly payment amount",
+                "special comment code",
+                "terms frequency"
+            ],
+            "ipl": "",
+            "crrg_topics": "",
+            "crrg_page": "",
+            "pdf_page": "",
+            "use_notes": "",
+            "alternative_explanation": "",
+            "risk_level": "",
+        },
+        # ... etc.
+    ]
+}
+
 ```
 
 ### Users view
