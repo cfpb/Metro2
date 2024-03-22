@@ -37,7 +37,7 @@ class Command(BaseCommand):
                 rows_count += 1
                 id = row["id"]
                 try:
-                    eval = EvaluatorMetadata.objects.get(name=id)
+                    eval = EvaluatorMetadata.objects.get(id=id)
                     eval.update_from_dict(row)
                     updated += 1
                 except EvaluatorMetadata.DoesNotExist:
