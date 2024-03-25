@@ -7,6 +7,14 @@ from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
 
 
+def file_type_valid(filename: str) -> bool:
+    allowed_file_extensions = [
+        'txt',
+    ]
+    extension = filename.split('.')[-1].lower()
+
+    return extension in allowed_file_extensions
+
 ############################################
 # Methods for parsing files from the local filesystem
 def parse_local_file(event: Metro2Event, filepath):
@@ -41,9 +49,11 @@ def parse_files_from_local_filesystem(event_identifier: str, data_directory: str
         logger.info(f"Encountered file in local data path: {filename}")
         filepath = os.path.join(data_directory, filename)
 
-        # Only use files ending in .txt
-        if os.path.isfile(filepath) and filename.lower().endswith('.txt'):
-            parse_local_file(event, filepath)
+        if os.path.isfile(filepath):
+            if file_type_valid(filename):
+                parse_local_file(event, filepath)
+            else:
+                logger.info(f"Skipping. Does not match an allowed file type.")
 
     return event
 
@@ -92,6 +102,9 @@ def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, buc
     for file in s3_bucket_files(bucket_directory, bucket_name):
         logger.info(f"Encountered file: {file.key}")
         # TODO: Handle errors connecting to bucket and opening files
-        parse_s3_file(file, event)
+        if file_type_valid(file.key):
+            parse_s3_file(file, event)
+        else:
+            logger.info(f"Skipping. Does not match an allowed file type.")
 
     return event
