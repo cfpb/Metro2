@@ -41,10 +41,8 @@ class Command(BaseCommand):
         if not data_directory:
             self.stdout.write(f"Using default file location for Metro2 files: `{self.default_location}`.")
             data_directory = self.default_location
-
-        try:
-            existing_event = Metro2Event.objects.get(name=event_name)
-        except Metro2Event.DoesNotExist:
+        if not Metro2Event.objects.filter(name=event_name).exists():
+            self.stdout.write(f"Event Record does not exist for event name: {event_name}.")
             self.stdout.write(
                 f"Beginning event `{event_name}`. Parsing files from local filesystem in `{data_directory}` directory.")
             event_record: Metro2Event = parse_files_from_local_filesystem(event_name, data_directory)
