@@ -4,6 +4,11 @@ set -e
 echo "Setting up the seed data..."
 
 echo
+echo "Adding a superuser with username 'admin'."
+export DJANGO_SUPERUSER_PASSWORD='admin'
+python ./manage.py createsuperuser --username=admin --email='admin@example.com' --no-input
+
+echo
 echo "Add Evaluator MetaData to the database"
 python manage.py import_evaluator_metadata -f evaluate_m2/m2_evaluators/eval_metadata.csv
 
