@@ -32,6 +32,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         event_name = options["event_name"]
+        data_directory = options["data_directory"]
         if not data_directory:
             self.stdout.write(f"Using default file location for Metro2 files: `{self.default_location}`.")
             data_directory = self.default_location
