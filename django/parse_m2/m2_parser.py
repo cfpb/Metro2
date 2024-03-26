@@ -159,6 +159,8 @@ class M2FileParser():
         except parse_utils.UnreadableLineException as e:
             # if any part of the line couldn't be parsed, don't save
             #  the segments; only save the line as UnparseableData
+            if len(line) > 2000:
+                line = line[:1997] + "..."
             return {"UnparseableData": UnparseableData(
                 data_file=self.file_record,
                 unparseable_line=line,
@@ -260,6 +262,8 @@ class M2FileParser():
         ) as e:
             # if the header couldn't be parsed, save the header as
             # UnparseableData, and don't try to parse the rest of the file
+            if len(header_line) > 2000:
+                header_line = header_line[:1997] + "..."
             UnparseableData.objects.create(
                 data_file=self.file_record,
                 unparseable_line=header_line,
