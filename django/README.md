@@ -52,8 +52,8 @@ Run the evaluators for an event:
 
 Parse local files and run the evaluators for an event:
 1. Enter the Django container: `docker-compose exec django sh`.
-2. Run `python manage.py parse_local_and_evaluate -e [event_name] -d [local_data_directory]` to run the evaluators on a dataset associated to the provided event.
-    - You can also use `python manage.py parse_local -h` for the help text.
+2. Run `python manage.py parse_evaluate_local -e [event_name] -d [local_data_directory]` to run the evaluators on a dataset associated to the provided event.
+    - You can also use `python manage.py parse_evaluate_local -h` for the help text.
 
 Use the Django administrator interface:
 1. First you'll need to create an admin account. (TODO: maybe we could automate this).
