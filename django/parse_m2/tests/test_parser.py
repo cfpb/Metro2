@@ -151,6 +151,9 @@ class ParserTestCase(TestCase):
 
             # Only one record should be saved by the parser:
             self.assertEqual(UnparseableData.objects.count(), 1)
+            record = UnparseableData.objects.first()
+            self.assertIn("BADHEADER", record.unparseable_line)
+            self.assertEqual(record.error_description, "First line of file isn't a header")
 
             # Everything else should be empty
             self.assertEqual(AccountHolder.objects.count(), 0)
