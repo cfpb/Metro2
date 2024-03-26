@@ -18,8 +18,7 @@ Running the project:
 When docker-compose starts the project, it automatically runs the database migrations, so you don't need to do so manually.
 It will also run a script that:
   - Adds Evaluator Metadata to the database if it does not already exist
-  - Parses a sample file
-  - Evaluates the parsed data and stores the result in the database
+  - Creates a Metro2Event called Sample-Dataset-007 if it doesn't already exist, parses all data files in the parse_m2/local_data/ directory, and evaluates them.
 Once it is running, you can see the app running by visiting http://localhost:8000/.
 
 **Other useful actions in the system while running in docker-compose:**

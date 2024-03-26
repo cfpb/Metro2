@@ -7,10 +7,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--username', help="Admin's username")
-        parser.add_argument('--email', help="Admin's email")
         parser.add_argument('--password', help="Admin's password")
-        parser.add_argument('--no-input', help="Read options from the environment",
-                            action='store_true')
 
     def handle(self, *args, **options):
         User = get_user_model()
@@ -18,7 +15,7 @@ class Command(BaseCommand):
         if not User.objects.filter(username=options['username']).exists():
             self.stdout.write(f"An admin user account was not found for username: {options['username']}")
             User.objects.create_superuser(username=options['username'],
-                                          email=options['email'],
+                                          email='',
                                           password=options['password'])
             self.stdout.write(
                 self.style.SUCCESS(f"Finished creating admin user with username: {options['username']}.")

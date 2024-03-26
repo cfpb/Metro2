@@ -16,12 +16,10 @@ class Command(BaseCommand):
     files from the given directory, create an Event record and parse the data into the
     database. Then will call the command to run the evaluators.
     """
-    default_event = 'Sample-Dataset-007'
     default_location = settings.LOCAL_EVENT_DATA
-    help = "Starts the parse process on a directory of files in the local filesystem. " + \
-           "Creates a new Metro2Event record for these Metro2 records. If no directory " + \
-           "argument is provided, defaults to the LOCAL_EVENT_DATA setting in this " + \
-           f"env: {default_location}"
+    help = "This command is used to add sample data in local development " + \
+           "environments. It will create a new Metro2Event record with the " + \
+           "provided event name if it does not exist or will quit if it exists."
 
     def add_arguments(self, argparser):
         event_help = "A name to identify this event record"
@@ -34,10 +32,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         event_name = options["event_name"]
-        data_directory = options["data_directory"]
-        if not event_name:
-            self.stdout.write(f"Using default event name: `{self.default_event}`.")
-            event_name = self.event_name
         if not data_directory:
             self.stdout.write(f"Using default file location for Metro2 files: `{self.default_location}`.")
             data_directory = self.default_location
@@ -55,3 +49,5 @@ class Command(BaseCommand):
             evaluator.run_evaluators(event_record)
             self.stdout.write(
                 self.style.SUCCESS(f"Finished running evaluators for event ID: {event_record.id} and saving results."))
+        else:
+            self.stdout.write(f"An event record already exists for event name: {event_name}. No changes will be made.")
