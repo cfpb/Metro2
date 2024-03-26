@@ -1,3 +1,4 @@
+import zipfile
 import os
 from django.test import TestCase
 
@@ -31,6 +32,16 @@ class InitiateParsingTestCase(TestCase):
         # this exception is uncaught.
         with self.assertRaises(FileNotFoundError):
             parse_files_from_local_filesystem("exam A", "/directory/that/does/not/exist")
+
+    def test_open_zipfiles(self):
+        test_zip_location = os.path.join(
+            'parse_m2', 'tests','sample_files', 'test_local_zipped')
+        parse_files_from_local_filesystem("exam ZIP", test_zip_location)
+        # the zip contained 1 file
+        self.assertEqual(M2DataFile.objects.count(), 1)
+        # the file contained 1997 parseable records
+        self.assertEqual(AccountHolder.objects.count(), 1997)
+
 
     # Test for parsing files from the S3 bucket. Only run when testing manually.
     # Before running, make sure S3 env vars are in place.

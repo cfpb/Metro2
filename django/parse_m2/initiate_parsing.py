@@ -1,3 +1,4 @@
+import zipfile
 import boto3
 import os
 import logging
@@ -9,11 +10,20 @@ from parse_m2.models import Metro2Event
 
 def file_type_valid(filename: str) -> bool:
     allowed_file_extensions = [
-        'txt',
+        'txt', 'zip'
     ]
     extension = filename.split('.')[-1].lower()
 
     return extension in allowed_file_extensions
+
+def zip_file(filename: str) -> bool:
+    zip_file_extensions = [
+        'zip'
+    ]
+    extension = filename.split('.')[-1].lower()
+
+    return extension in zip_file_extensions
+
 
 ############################################
 # Methods for parsing files from the local filesystem
@@ -36,6 +46,21 @@ def parse_local_file(event: Metro2Event, filepath):
         if fstream:
             fstream.close()
 
+def parse_zip_file(zip_path: str, event: Metro2Event):
+    logger = logging.getLogger('parse_m2.parse_zipfile')
+    with zipfile.ZipFile(zip_path, 'r') as zipf:
+        for f in zipf.filelist:
+            filename = f.filename
+            logger.info(f"Encountered file in zipfile: {filename}")
+            if file_type_valid(filename):
+                parser = M2FileParser(event, f"local:ZIP:{zip_path}:{filename}")
+                fstream = zipf.open(filename)
+                file_size = f.file_size
+                parser.parse_file_contents(fstream, file_size)
+                logger.info(f"file written to db")
+            else:
+                logger.info(f"Skipping file within zip. Does not match an allowed file type.")
+
 
 def parse_files_from_local_filesystem(event_identifier: str, data_directory: str) -> Metro2Event:
     logger = logging.getLogger('parse_m2.parse_files_from_local_filesystem')
@@ -51,7 +76,10 @@ def parse_files_from_local_filesystem(event_identifier: str, data_directory: str
 
         if os.path.isfile(filepath):
             if file_type_valid(filename):
-                parse_local_file(event, filepath)
+                if zip_file(filename):
+                    parse_zip_file(filepath, event)
+                else:
+                    parse_local_file(event, filepath)
             else:
                 logger.info(f"Skipping. Does not match an allowed file type.")
 
