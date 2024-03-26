@@ -16,6 +16,9 @@ Running in docker-compose uses the Django settings specified in `django_applicat
 Running the project:
 1. From the Metro2 project root, run `docker-compose build` and `docker-compose up` to get the app running.
 When docker-compose starts the project, it automatically runs the database migrations, so you don't need to do so manually.
+It will also run a script that:
+  - Adds Evaluator Metadata to the database if it does not already exist
+  - Creates a Metro2Event called Sample-Dataset-007 if it doesn't already exist, parses all data files in the parse_m2/local_data/ directory, and evaluates them.
 Once it is running, you can see the app running by visiting http://localhost:8000/.
 
 **Other useful actions in the system while running in docker-compose:**
@@ -46,6 +49,11 @@ Run the evaluators for an event:
 2. Run `python manage.py run_evaluators -e [event_ID]` to run the evaluators on a dataset associated to the provided event.
     - If there are existing evaluator results for this event, the previous results will be deleted before running the evaluator.
     - You can also use `python manage.py run_evaluators -h` for the help text.
+
+Parse local files and run the evaluators for an event:
+1. Enter the Django container: `docker-compose exec django sh`.
+2. Run `python manage.py parse_evaluate_local -e [event_name] -d [local_data_directory]` to run the evaluators on a dataset associated to the provided event.
+    - You can also use `python manage.py parse_evaluate_local -h` for the help text.
 
 Use the Django administrator interface:
 1. First you'll need to create an admin account. (TODO: maybe we could automate this).
