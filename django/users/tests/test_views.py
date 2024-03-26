@@ -27,11 +27,11 @@ class TestUsersView(TestCase):
                 { "id": 2, "name": "test_exam2" }
             ]
         }
-        response = self.client.get('/api/users/1')
+        response = self.client.get('/api/users/1/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), expected)
 
     def test_users_view_returns_404_when_not_found(self):
-        response = self.client.get('/api/users/2')
+        response = self.client.get('/api/users/2/')
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response, 'User ID: 2 does not exist.', status_code=404)
