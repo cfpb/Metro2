@@ -14,7 +14,7 @@ Quick links:
 - [`/api/events/{event_id}/evaluator/{evaluator_id}/`](#evaluator-results-view)
 - [`/api/events/{event_id}/accounts/{account_number}/`](#account-summary-view)
 - [`/api/events/{event_id}/accounts/{account_number}/account_holder/`](#account-pii-view)
-- [`/api/events/{event_id}`](#events-view)
+- [`/api/events/{event_id}/`](#events-view)
 - [`/api/users/{user_id}/`](#users-view)
 
 ### Exporting evaluator metadata CSV
