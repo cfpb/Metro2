@@ -60,3 +60,7 @@ class InitiateParsingTestCase(TestCase):
 
         # The test file should contain 1998 base segments
         self.assertEqual(AccountHolder.objects.count(), 1998)
+
+    def test_open_zipfiles_s3(self):
+        test_zip_location = "test-zipped"
+        parse_files_from_s3_bucket("exam ZIP S3", test_zip_location)
