@@ -97,18 +97,13 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
 
     return result
 
-def file_type_valid(filename: str) -> bool:
-    allowed_file_extensions = [
-        'txt', 'zip'
-    ]
-    extension = filename.split('.')[-1].lower()
-
-    return extension in allowed_file_extensions
+def data_file(filename: str) -> bool:
+    data_file_extensions = ['txt']
+    return get_extension(filename) in data_file_extensions
 
 def zip_file(filename: str) -> bool:
-    zip_file_extensions = [
-        'zip'
-    ]
-    extension = filename.split('.')[-1].lower()
+    zip_file_extensions = ['zip']
+    return get_extension(filename) in zip_file_extensions
 
-    return extension in zip_file_extensions
+def get_extension(filename: str) -> str:
+    return filename.split('.')[-1].lower()

@@ -4,7 +4,7 @@ import logging
 
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
-from parse_m2.parse_utils import file_type_valid, zip_file
+from parse_m2.parse_utils import data_file, zip_file
 
 
 ############################################
@@ -34,10 +34,12 @@ def parse_zip_file(zip_path: str, event: Metro2Event):
         for f in zipf.filelist:
             filename = f.filename
             logger.info(f"Encountered file in zipfile: {filename}")
-            if file_type_valid(filename):
-                parser = M2FileParser(event, f"local:ZIP:{zip_path}:{filename}")
+            if data_file(filename):
+                full_name = f"local:ZIP:{zip_path}:{filename}"
+                parser = M2FileParser(event, full_name)
                 fstream = zipf.open(filename)
                 file_size = f.file_size
+                logger.debug(f"Parsing file {full_name}...")
                 parser.parse_file_contents(fstream, file_size)
                 logger.info(f"file written to db")
             else:
@@ -45,6 +47,13 @@ def parse_zip_file(zip_path: str, event: Metro2Event):
 
 
 def parse_files_from_local_filesystem(event_identifier: str, data_directory: str) -> Metro2Event:
+    """
+    Create a Metro2Event record. Parse all files in the <data_directory> folder
+    in the local filesystem and save them to the event. For any files that look like
+    zip files, iterate through each file in the zip and parse each one.
+
+    Return the Metro2Event file associated with the parsed records.
+    """
     logger = logging.getLogger('parse_m2.parse_files_from_local_filesystem')
 
     # Create a new Metro2Event. All records parsed will be associated with this Event.
@@ -57,11 +66,10 @@ def parse_files_from_local_filesystem(event_identifier: str, data_directory: str
         filepath = os.path.join(data_directory, filename)
 
         if os.path.isfile(filepath):
-            if file_type_valid(filename):
-                if zip_file(filename):
-                    parse_zip_file(filepath, event)
-                else:
-                    parse_local_file(event, filepath)
+            if zip_file(filename):
+                parse_zip_file(filepath, event)
+            elif data_file(filename):
+                parse_local_file(event, filepath)
             else:
                 logger.info(f"Skipping. Does not match an allowed file type.")
 
