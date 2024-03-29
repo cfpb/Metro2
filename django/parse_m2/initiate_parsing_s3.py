@@ -42,15 +42,16 @@ def parse_zip_file_S3(zip_obj, event, zipfile_name):
     # zipfiles might fail. If that happens, we'll have to try another approach
     with io.BytesIO(zip_obj.get()["Body"].read()) as fstream:
         with zipfile.ZipFile(fstream, mode='r') as zipf:
-            for file in zipf.filelist:
-                name = file.filename
+            for f in zipf.filelist:
+                name = f.filename
                 logger.info(f"Encountered file within ZIP: {name}")
                 full_name = f"s3:{zipfile_name}:{name}"
                 parser = M2FileParser(event, full_name)
                 if data_file(name):
-                    logger.debug(f"Parsing file {full_name}...")
-                    parser.parse_file_contents(zipf.open(name), file.file_size)
-                    logger.debug(f"File {full_name} written to database")
+                    with zipf.open(name) as fstream:
+                        logger.debug(f"Parsing file {full_name}...")
+                        parser.parse_file_contents(fstream, f.file_size)
+                        logger.debug(f"File {full_name} written to database")
                 else:
                     parser.record_unparseable_file()
                     logger.info(f"Skipping. Does not match an allowed file type.")

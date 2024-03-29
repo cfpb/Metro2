@@ -17,16 +17,13 @@ def parse_local_file(event: Metro2Event, filepath):
 
     logger.debug(f"Parsing local file: {filepath}")
     try:
-        fstream = open(filepath, 'r')
-        file_size = os.path.getsize(filepath)
-        # Parse the file
-        parser.parse_file_contents(fstream, file_size)
-        logger.info(f'File {os.path.basename(fstream.name)} written to database.')
+        with open(filepath, 'r') as fstream:
+            file_size = os.path.getsize(filepath)
+            # Parse the file
+            parser.parse_file_contents(fstream, file_size)
+            logger.info(f'File {os.path.basename(fstream.name)} written to database.')
     except FileNotFoundError as e:
         logger.error(f"There was an error opening the file: {e}")
-    finally:
-        if fstream:
-            fstream.close()
 
 def parse_zip_file(zip_path: str, event: Metro2Event):
     logger = logging.getLogger('parse_m2.parse_zipfile')
@@ -37,11 +34,10 @@ def parse_zip_file(zip_path: str, event: Metro2Event):
             full_name = f"local:ZIP:{zip_path}:{filename}"
             parser = M2FileParser(event, full_name)
             if data_file(filename):
-                fstream = zipf.open(filename)
-                file_size = f.file_size
-                logger.debug(f"Parsing file {full_name}...")
-                parser.parse_file_contents(fstream, file_size)
-                logger.info(f"file written to db")
+                with zipf.open(filename) as fstream:
+                    logger.debug(f"Parsing file {full_name}...")
+                    parser.parse_file_contents(fstream, f.file_size)
+                    logger.info(f"file written to db")
             else:
                 parser.record_unparseable_file()
                 logger.info(f"Skipping file within zip. Does not match an allowed file type.")
