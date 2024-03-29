@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from evaluate_m2.evaluate import evaluator
-from parse_m2.initiate_parsing_local import parse_files_from_s3_bucket
+from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
 from parse_m2.models import Metro2Event
 
 
