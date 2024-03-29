@@ -2,11 +2,12 @@ import zipfile
 import os
 from django.test import TestCase
 
-from parse_m2.initiate_parsing import parse_files_from_local_filesystem, parse_files_from_s3_bucket
+from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
+from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
 from parse_m2.models import Metro2Event, M2DataFile, AccountHolder
 
 
-class InitiateParsingTestCase(TestCase):
+class InitiateLocalParsingTestCase(TestCase):
     def setUp(self):
         # this directory has two Metro2 files: m2_file_small and m2_file_small_with_error
         # and one file that doesn't end in .txt, so it won't get parsed
@@ -43,6 +44,7 @@ class InitiateParsingTestCase(TestCase):
         self.assertEqual(AccountHolder.objects.count(), 1997)
 
 
+class InitiateS3ParsingTestCase(TestCase):
     # Test for parsing files from the S3 bucket. Only run when testing manually.
     # Before running, make sure S3 env vars are in place.
     def xtest_fetch_s3(self):
@@ -61,6 +63,6 @@ class InitiateParsingTestCase(TestCase):
         # The test file should contain 1998 base segments
         self.assertEqual(AccountHolder.objects.count(), 1998)
 
-    def test_open_zipfiles_s3(self):
+    def xtest_open_zipfiles_s3(self):
         test_zip_location = "test-zipped"
         parse_files_from_s3_bucket("exam ZIP S3", test_zip_location)
