@@ -38,6 +38,8 @@ def s3_bucket_files(bucket_directory: str, bucket_name: str):
 
 def parse_zip_file_S3(zip_obj, event, zipfile_name):
     logger = logging.getLogger('parse_m2.parse_zip_file_s3')
+    # TODO: If the files are large (>2GB), this method of streaming
+    # zipfiles might fail. If that happens, we'll have to try another approach
     with io.BytesIO(zip_obj.get()["Body"].read()) as fstream:
         with zipfile.ZipFile(fstream, mode='r') as zipf:
             for file in zipf.filelist:
