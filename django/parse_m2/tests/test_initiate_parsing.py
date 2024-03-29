@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
-from parse_m2.models import Metro2Event, M2DataFile, AccountHolder
+from parse_m2.models import Metro2Event, M2DataFile, AccountHolder, UnparseableData
 
 
 class InitiateLocalParsingTestCase(TestCase):
@@ -63,6 +63,20 @@ class InitiateS3ParsingTestCase(TestCase):
         # The test file should contain 1998 base segments
         self.assertEqual(AccountHolder.objects.count(), 1998)
 
-    def xtest_open_zipfiles_s3(self):
-        test_zip_location = "test-zipped"
-        parse_files_from_s3_bucket("exam ZIP S3", test_zip_location)
+    def xtest_fetch_s3_zip(self):
+        parse_files_from_s3_bucket("exam B", "test-zipped/")
+
+        # Should create one event
+        self.assertEqual(Metro2Event.objects.count(), 1)
+        event = Metro2Event.objects.first()
+        self.assertEqual(event.name, "exam B")
+
+        # The test directory in S3 should contain one file
+        self.assertEqual(M2DataFile.objects.count(), 1)
+        file = M2DataFile.objects.first()
+        expected_name = "s3:test-zipped/one_small_file.zip:m2_2k_lines_deidentified.TXT"
+        self.assertEqual(file.file_name, expected_name)
+
+        # The test file should contain 1997 valid base segments and one unparseable
+        self.assertEqual(AccountHolder.objects.count(), 1997)
+        self.assertEqual(UnparseableData.objects.count(), 1)

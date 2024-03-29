@@ -1,11 +1,12 @@
 import zipfile
 import boto3
-import os
+import io
 import logging
 from django.conf import settings
 
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
+from parse_m2.parse_utils import file_type_valid, zip_file
 
 ############################################
 # Methods for parsing files from the S3 bucket
@@ -35,6 +36,23 @@ def s3_bucket_files(bucket_directory: str, bucket_name: str):
     bucket = s3.Bucket(bucket_name)
     return bucket.objects.filter(Prefix=bucket_directory)
 
+def parse_zip_file_S3(zip_obj, event, zipfile_name):
+    logger = logging.getLogger('parse_m2.parse_zip_file_s3')
+    with io.BytesIO(zip_obj.get()["Body"].read()) as fstream:
+        with zipfile.ZipFile(fstream, mode='r') as zipf:
+            for file in zipf.filelist:
+                name = file.filename
+                logger.info(f"Encountered file within ZIP: {name}")
+                if file_type_valid(name):
+                    full_name = f"s3:{zipfile_name}:{name}"
+                    parser = M2FileParser(event, full_name)
+                    size = file.file_size
+                    logger.debug(f"Parsing file {full_name}...")
+                    parser.parse_file_contents(zipf.open(name), size)
+                    logger.debug(f"File {full_name} written to database")
+                else:
+                    logger.info(f"Skipping. Does not match an allowed file type.")
+
 def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, bucket_name: str = "") -> Metro2Event:
     logger = logging.getLogger('parse_m2.parse_files_from_s3_bucket')
 
@@ -52,7 +70,10 @@ def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, buc
         logger.info(f"Encountered file: {file.key}")
         # TODO: Handle errors connecting to bucket and opening files
         if file_type_valid(file.key):
-            parse_s3_file(file, event)
+            if zip_file(file.key):
+                parse_zip_file_S3(file, event, file.key)
+            else:
+                parse_s3_file(file, event)
         else:
             logger.info(f"Skipping. Does not match an allowed file type.")
 
