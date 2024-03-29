@@ -34,15 +34,16 @@ def parse_zip_file(zip_path: str, event: Metro2Event):
         for f in zipf.filelist:
             filename = f.filename
             logger.info(f"Encountered file in zipfile: {filename}")
+            full_name = f"local:ZIP:{zip_path}:{filename}"
+            parser = M2FileParser(event, full_name)
             if data_file(filename):
-                full_name = f"local:ZIP:{zip_path}:{filename}"
-                parser = M2FileParser(event, full_name)
                 fstream = zipf.open(filename)
                 file_size = f.file_size
                 logger.debug(f"Parsing file {full_name}...")
                 parser.parse_file_contents(fstream, file_size)
                 logger.info(f"file written to db")
             else:
+                parser.record_unparseable_file()
                 logger.info(f"Skipping file within zip. Does not match an allowed file type.")
 
 
@@ -71,6 +72,7 @@ def parse_files_from_local_filesystem(event_identifier: str, data_directory: str
             elif data_file(filename):
                 parse_local_file(event, filepath)
             else:
+                M2FileParser(event, filepath).record_unparseable_file()
                 logger.info(f"Skipping. Does not match an allowed file type.")
 
     return event

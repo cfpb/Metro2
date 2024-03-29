@@ -23,8 +23,8 @@ class InitiateLocalParsingTestCase(TestCase):
         event = Metro2Event.objects.first()
         self.assertEqual(event.name, "exam Z")
 
-        # one M2DataFile object for each file that was opened
-        self.assertEqual(M2DataFile.objects.count(), 2)
+        # one M2DataFile object for each file
+        self.assertEqual(M2DataFile.objects.count(), 3)
         # 3 records in the first file, 2 in the second
         self.assertEqual(AccountHolder.objects.count(), 5)
 
