@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.db import models
 from django.core.management import call_command
 
@@ -35,9 +35,6 @@ class Metro2Event(models.Model):
         access to this event.
         """
         return self.user_group in user.groups.all()
-
-    def __str__(self) -> str:
-        return self.name
 
 class M2DataFile(models.Model):
     class Meta:

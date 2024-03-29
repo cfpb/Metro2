@@ -54,7 +54,7 @@ def parse_zip_file_S3(zip_obj, event, zipfile_name):
                         logger.debug(f"File {full_name} written to database")
                 else:
                     parser.record_unparseable_file()
-                    logger.info(f"Skipping. Does not match an allowed file type.")
+                    logger.info("Skipping. Does not match an allowed file type.")
 
 def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, bucket_name: str = "") -> Metro2Event:
     """
@@ -86,6 +86,6 @@ def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, buc
             parse_s3_file(file, event)
         else:
             M2FileParser(event, file.key).record_unparseable_file()
-            logger.info(f"Skipping. Does not match an allowed file type.")
+            logger.info("Skipping. Does not match an allowed file type.")
 
     return event

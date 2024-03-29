@@ -37,10 +37,10 @@ def parse_zip_file(zip_path: str, event: Metro2Event):
                 with zipf.open(filename) as fstream:
                     logger.debug(f"Parsing file {full_name}...")
                     parser.parse_file_contents(fstream, f.file_size)
-                    logger.info(f"file written to db")
+                    logger.info("file written to db")
             else:
                 parser.record_unparseable_file()
-                logger.info(f"Skipping file within zip. Does not match an allowed file type.")
+                logger.info("Skipping file within zip. Does not match an allowed file type.")
 
 
 def parse_files_from_local_filesystem(event_identifier: str, data_directory: str) -> Metro2Event:
@@ -69,6 +69,6 @@ def parse_files_from_local_filesystem(event_identifier: str, data_directory: str
                 parse_local_file(event, filepath)
             else:
                 M2FileParser(event, filepath).record_unparseable_file()
-                logger.info(f"Skipping. Does not match an allowed file type.")
+                logger.info("Skipping. Does not match an allowed file type.")
 
     return event
