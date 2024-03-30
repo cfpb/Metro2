@@ -1,25 +1,40 @@
 @import (reference) './index.less';
 
+// set heights & layout so the loader can cover
+// a section of the page to bottom of viewport
+html,
+body,
+#root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
 // global layout pattern
-// provides left / right padding
+// provides left / right padding and flex layout for the loader
 .content-row {
-	padding: unit((@grid_gutter-width / 2 / @base-font-size-px), em)
-           unit((@grid_gutter-width / @base-font-size-px), em);
+  padding: unit((@grid_gutter-width / 2 / @base-font-size-px), em)
+    unit((@grid_gutter-width / @base-font-size-px), em);
+  display: flex;
+  flex-direction: column;
 }
 
 .error-container {
-    .error-message {
-        max-width: 500px;
-        margin: auto;
+  .error-message {
+    max-width: 500px;
+    margin: auto;
 
-        .m-btn-group .a-btn + .a-btn {
-            margin-left: 2rem;
-            .respond-to-max(@bp-sm-min, {margin: 0.5rem 0;});
+    .m-btn-group .a-btn + .a-btn {
+      margin-left: 2rem;
+      .respond-to-max(@bp-sm-min, {margin: 0.5rem 0;});
 
-            svg{
-                padding-left: .5rem;
-                padding-top: .1rem;
-            }
-        }
+      svg {
+        padding-left: 0.5rem;
+        padding-top: 0.1rem;
+      }
     }
+  }
 }
