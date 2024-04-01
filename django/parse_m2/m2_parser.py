@@ -25,6 +25,18 @@ class M2FileParser():
         self.file_record: M2DataFile = M2DataFile(event=event, file_name=filepath)
         self.file_record.save()
 
+    def record_unparseable_file(self) -> None:
+        """
+        If the file can't even be opened, still note it in the UnparseableData table.
+        """
+        file_ext = parse_utils.get_extension(self.file_record.file_name)
+        msg = f"File skipped because of invalid file extension: .{file_ext}"
+        UnparseableData.objects.create(
+            data_file=self.file_record,
+            unparseable_line="",
+            error_description=msg
+        )
+
     def get_next_line(self, f) -> str:
         """
         Depending on whether the file is being read from the filesytem or from S3,
