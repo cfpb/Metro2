@@ -19,7 +19,6 @@ class ParserTestCase(TestCase):
 
         self.extras_str = "K1ORIGNALCREDITORNAME           03K22SOLDTONAME                     L12NEWACCTNUMBER                                      "
 
-
         event = Metro2Event(name='test_exam')
         event.save()
         self.parser = M2FileParser(event=event, filepath="file.txt")
@@ -52,6 +51,14 @@ class ParserTestCase(TestCase):
             self.assertEqual(K3.objects.count(), 0)
             self.assertEqual(K4.objects.count(), 0)
             self.assertEqual(N1.objects.count(), 0)
+
+    def test_report_file_outcome(self):
+        file_size = os.path.getsize(self.tiny_file)
+
+        with open(self.tiny_file, mode='r') as filestream:
+            self.parser.parse_file_contents(filestream, file_size)
+            file = self.parser.file_record
+            self.assertEqual(file.parsing_status, "Finished")
 
     def test_parse_file_with_error(self):
         # error_file is identical to _tiny_file except that one line was modified
@@ -162,13 +169,14 @@ class ParserTestCase(TestCase):
         with open(bad_header_file, mode='r') as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
-            # Only one record should be saved by the parser:
-            self.assertEqual(UnparseableData.objects.count(), 1)
-            record = UnparseableData.objects.first()
-            self.assertIn("BADHEADER", record.unparseable_line)
-            self.assertEqual(record.error_description, "First line of file isn't a header")
+            # The file record should show that the parsing failed
+            file = self.parser.file_record
+            self.assertEqual(file.parsing_status, "Not parsed")
+            self.assertIn("isn't a header", file.error_message)
+            self.assertIn("BADHEADER", file.error_message)
 
             # Everything else should be empty
+            self.assertEqual(UnparseableData.objects.count(), 0)
             self.assertEqual(AccountHolder.objects.count(), 0)
             self.assertEqual(AccountActivity.objects.count(), 0)
             self.assertEqual(K1.objects.count(), 0)

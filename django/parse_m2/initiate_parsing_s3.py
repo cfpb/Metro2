@@ -6,7 +6,7 @@ from django.conf import settings
 
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
-from parse_m2.parse_utils import data_file, zip_file
+from parse_m2.parse_utils import data_file, zip_file, get_extension
 
 ############################################
 # Methods for parsing files from the S3 bucket
@@ -47,14 +47,16 @@ def parse_zip_file_S3(zip_obj, event, zipfile_name):
                 logger.info(f"Encountered file within ZIP: {name}")
                 full_name = f"s3:{zipfile_name}:{name}"
                 parser = M2FileParser(event, full_name)
-                if data_file(name):
-                    with zipf.open(name) as fstream:
-                        logger.debug(f"Parsing file {full_name}...")
-                        parser.parse_file_contents(fstream, f.file_size)
-                        logger.debug(f"File {full_name} written to database")
-                else:
-                    parser.record_unparseable_file()
-                    logger.info("Skipping. Does not match an allowed file type.")
+                if not f.is_dir():
+                    if data_file(name):
+                        with zipf.open(name) as fstream:
+                            logger.debug(f"Parsing file {full_name}...")
+                            parser.parse_file_contents(fstream, f.file_size)
+                            logger.debug(f"File {full_name} written to database")
+                    else:
+                        error_message = f"File skipped because of invalid file extension: .{get_extension(name)}"
+                        parser.record_unparseable_file(error_message)
+                        logger.info("Skipping. Does not match an allowed file type.")
 
 def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, bucket_name: str = "") -> Metro2Event:
     """
@@ -85,7 +87,8 @@ def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, buc
         elif data_file(file.key):
             parse_s3_file(file, event)
         else:
-            M2FileParser(event, file.key).record_unparseable_file()
+            error_message = f"File skipped because of invalid file extension: .{get_extension(file.key)}"
+            M2FileParser(event, file.key).record_unparseable_file(error_message)
             logger.info("Skipping. Does not match an allowed file type.")
 
     return event

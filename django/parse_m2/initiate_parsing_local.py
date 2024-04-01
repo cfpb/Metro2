@@ -4,7 +4,7 @@ import logging
 
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
-from parse_m2.parse_utils import data_file, zip_file
+from parse_m2.parse_utils import data_file, zip_file, get_extension
 
 
 ############################################
@@ -33,14 +33,17 @@ def parse_zip_file(zip_path: str, event: Metro2Event):
             logger.info(f"Encountered file in zipfile: {filename}")
             full_name = f"local:ZIP:{zip_path}:{filename}"
             parser = M2FileParser(event, full_name)
-            if data_file(filename):
-                with zipf.open(filename) as fstream:
-                    logger.debug(f"Parsing file {full_name}...")
-                    parser.parse_file_contents(fstream, f.file_size)
-                    logger.info("file written to db")
-            else:
-                parser.record_unparseable_file()
-                logger.info("Skipping file within zip. Does not match an allowed file type.")
+            if not f.is_dir():
+                if data_file(filename):
+                    with zipf.open(filename) as fstream:
+                        logger.debug(f"Parsing file {full_name}...")
+                        parser.parse_file_contents(fstream, f.file_size)
+                        logger.info("file written to db")
+                else:
+                    file_ext = get_extension(filename)
+                    error_message = f"File skipped because of invalid file extension: .{file_ext}"
+                    parser.record_unparseable_file(error_message)
+                    logger.info("Skipping file within zip. Does not match an allowed file type.")
 
 
 def parse_files_from_local_filesystem(event_identifier: str, data_directory: str) -> Metro2Event:
@@ -68,7 +71,9 @@ def parse_files_from_local_filesystem(event_identifier: str, data_directory: str
             elif data_file(filename):
                 parse_local_file(event, filepath)
             else:
-                M2FileParser(event, filepath).record_unparseable_file()
+                file_ext = get_extension(filename)
+                error_message = f"File skipped because of invalid file extension: .{file_ext}"
+                M2FileParser(event, filepath).record_unparseable_file(error_message)
                 logger.info("Skipping. Does not match an allowed file type.")
 
     return event
