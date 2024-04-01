@@ -15,6 +15,7 @@ class M2FileParser():
     chunk_size = 2000  # TODO: determine a good number for this
     header_format = r'.{4}HEADER$'
     trailer_format = r'.{4}TRAILER$'
+    any_non_whitespace = r'\S'
 
     def __init__(self, event: Metro2Event, filepath: str) -> None:
         """
@@ -67,7 +68,8 @@ class M2FileParser():
         segment is, parse its values, add the values to the `parsed` dict, and
         call this method again with whatever is left of the string.
         """
-        if len(line) < 2:
+        # If there's only whitespace left in this line, return
+        if not re.match(self.any_non_whitespace, line):
             return parsed
 
         acct_activity = parsed["AccountActivity"]

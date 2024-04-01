@@ -117,6 +117,19 @@ class ParserTestCase(TestCase):
         with self.assertRaises(parse_utils.UnreadableLineException):
             self.parser.parse_extra_segments(str, records)
 
+    def test_extra_whitespace_at_end(self):
+        # Extra segment has extra whitespace at the end
+        extra_space_str = "K1ORIGNALCREDITORNAME                                  "
+        records = {"AccountActivity": self.account_activity}
+        result = self.parser.parse_extra_segments(extra_space_str, records)
+        self.assertNotIn("j1", result)
+        self.assertNotIn("j2", result)
+        self.assertEqual(result["k1"].orig_creditor_name, "ORIGNALCREDITORNAME")
+        self.assertNotIn("k2", result)
+        self.assertNotIn("l1", result)
+        self.assertNotIn("k4", result)
+        self.assertNotIn("n1", result)
+
     ############################
     # Tests for parsing the header
     def test_header_doesnt_match_format(self):
