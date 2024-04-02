@@ -35,10 +35,13 @@ def parse_zip_file(zip_path: str, event: Metro2Event):
             parser = M2FileParser(event, full_name)
             if not f.is_dir():
                 if data_file(filename):
-                    with zipf.open(filename) as fstream:
-                        logger.debug(f"Parsing file {full_name}...")
-                        parser.parse_file_contents(fstream, f.file_size)
-                        logger.info("file written to db")
+                    try:
+                        with zipf.open(filename) as fstream:
+                            logger.debug(f"Parsing file {full_name}...")
+                            parser.parse_file_contents(fstream, f.file_size)
+                            logger.info("file written to db")
+                    except NotImplementedError as e:
+                        parser.record_unparseable_file(f"File skipped: {e}")
                 else:
                     file_ext = get_extension(filename)
                     error_message = f"File skipped because of invalid file extension: .{file_ext}"

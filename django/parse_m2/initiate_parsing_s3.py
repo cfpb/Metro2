@@ -49,10 +49,13 @@ def parse_zip_file_S3(zip_obj, event, zipfile_name):
                 parser = M2FileParser(event, full_name)
                 if not f.is_dir():
                     if data_file(name):
-                        with zipf.open(name) as fstream:
-                            logger.debug(f"Parsing file {full_name}...")
-                            parser.parse_file_contents(fstream, f.file_size)
-                            logger.debug(f"File {full_name} written to database")
+                        try:
+                            with zipf.open(name) as fstream:
+                                logger.debug(f"Parsing file {full_name}...")
+                                parser.parse_file_contents(fstream, f.file_size)
+                                logger.debug(f"File {full_name} written to database")
+                        except NotImplementedError as e:
+                            parser.record_unparseable_file(f"File skipped: {e}")
                     else:
                         error_message = f"File skipped because of invalid file extension: .{get_extension(name)}"
                         parser.record_unparseable_file(error_message)
