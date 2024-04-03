@@ -1013,29 +1013,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:4.29.7":
-  version: 4.29.7
-  resolution: "@tanstack/query-core@npm:4.29.7"
-  checksum: f28441a1fc17881d770ebacbe3a2fcf58bd065ac0cf58f8dc544d367f00d7f65213e09a1a1280e021eef25a50b307cac6884173b5acf32570e755baf29b741aa
+"@tanstack/history@npm:1.22.8":
+  version: 1.22.8
+  resolution: "@tanstack/history@npm:1.22.8"
+  checksum: 1f43b5f525c5b2abd8259f9f30ae20b690f8a99427a6be8603d5c8226b4b7d5ed75d803860d8595b41960ebdc2f8b4caad9b9a920cd071af957f11e04d61b500
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:4.29.7":
-  version: 4.29.7
-  resolution: "@tanstack/react-query@npm:4.29.7"
+"@tanstack/query-core@npm:5.28.9":
+  version: 5.28.9
+  resolution: "@tanstack/query-core@npm:5.28.9"
+  checksum: f2ee703fad514cf8d87636e79315f969a087f2300be8130c0ab6ee6549154fdda1bec267b1091abb77671e9bb9ef027a6d84cc65913d5fd59386247983db19ac
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.28.9":
+  version: 5.28.9
+  resolution: "@tanstack/react-query@npm:5.28.9"
   dependencies:
-    "@tanstack/query-core": 4.29.7
-    use-sync-external-store: ^1.2.0
+    "@tanstack/query-core": 5.28.9
   peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-    react-native: "*"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 9db2fb78e18f299c0e58f3c177261f6010fdea63a5f950e4c93a7cf7a46da019aa3171c77759fa7b327e35763e3379f0a885c71dafd9aa99bf2ddda9f264de90
+    react: ^18.0.0
+  checksum: 2bcaec4c7d1c46a15996bf3295cc65cd56510e2dc31820e714a4f03b92253b57a5280fbf4ac1977b830fa87d681b6197f5d0dd80c52f7d5943ed2693c87e4d13
   languageName: node
   linkType: hard
 
@@ -1054,18 +1053,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-router@npm:^1.16.2":
-  version: 1.16.6
-  resolution: "@tanstack/react-router@npm:1.16.6"
+"@tanstack/react-router@npm:^1.24.0":
+  version: 1.24.0
+  resolution: "@tanstack/react-router@npm:1.24.0"
   dependencies:
-    "@tanstack/history": 1.15.13
+    "@tanstack/history": 1.22.8
     "@tanstack/react-store": ^0.2.1
     tiny-invariant: ^1.3.1
     tiny-warning: ^1.0.3
   peerDependencies:
-    react: ">=16"
-    react-dom: ">=16"
-  checksum: f0ca9b967e0edb578fbda2e6fe51b79216a74decb83bff6c4341df49cf32acd49f6dbbc189718c23b773d6c6059ed1021b72a097c216bf20c234d6621bac93b5
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: 3306b80d3e8860df725c66e4017789fbc6c9b5a3649e0639d5e40fb4fab8ff44e6ad2c748ec4b5f832a6aeee4dc111b7b4f68589c046e3e78c1b388bdc9b9713
   languageName: node
   linkType: hard
 
@@ -4161,8 +4160,8 @@ __metadata:
   dependencies:
     "@cfpb/cfpb-design-system": 0.26.1
     "@nabla/vite-plugin-eslint": 1.5.0
-    "@tanstack/react-query": 4.29.7
-    "@tanstack/react-router": ^1.16.2
+    "@tanstack/react-query": ^5.28.9
+    "@tanstack/react-router": ^1.24.0
     "@tanstack/router-devtools": ^1.17.4
     "@testing-library/cypress": 9.0.0
     "@testing-library/dom": 9.3.0

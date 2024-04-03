@@ -1,18 +1,22 @@
+import type { QueryClient } from '@tanstack/react-query'
 import type { ReactElement } from 'react'
-import { Suspense } from 'react'
-import { createRootRoute, Outlet } from '@tanstack/react-router'
-// import { TanStackRouterDevtools } from '@tanstack/router-devtools'
-import LoadingOrError from '../components/LoadingOrError'
-import NotFound from 'components/NotFound'
 
-const rootRoute = createRootRoute({
+import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import { Suspense } from 'react'
+import LoadingOrError from '../components/LoadingOrError'
+// import { TanStackRouterDevtools } from '@tanstack/router-devtools'
+
+interface RouterContext {
+  queryClient: QueryClient
+}
+
+const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: (): ReactElement => (
-      <Suspense fallback={ <LoadingOrError /> }>
-        <Outlet />
-        {/* <TanStackRouterDevtools /> */}
-      </Suspense>
-    ),
-    notFoundComponent: NotFound
+    <Suspense fallback={<LoadingOrError />}>
+      <Outlet />
+      {/* <TanStackRouterDevtools /> */}
+    </Suspense>
+  )
 })
 
 export default rootRoute

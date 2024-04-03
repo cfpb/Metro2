@@ -21,8 +21,8 @@
 	},
 	"dependencies": {
 		"@cfpb/cfpb-design-system": "0.26.1",
-		"@tanstack/react-query": "4.29.7",
-		"@tanstack/react-router": "^1.16.2",
+		"@tanstack/react-query": "^5.28.9",
+		"@tanstack/react-router": "^1.24.0",
 		"@tanstack/router-devtools": "^1.17.4",
 		"ag-grid-react": "^31.1.1",
 		"react": "18.2.0",

@@ -1,27 +1,27 @@
 export interface EvaluatorMetadata {
-  id: string,
-  name: string,
-  description: string,
-  hits: number | null,
-  accounts: number | null,
-  long_description?: string,
-  category?: string | null,
-  ipl?: string | null,
-  product_line?: string[] | null,
-  fields_used?: string[] | null,
-  fields_display?: string[] | null,
-  risk_level?: string | null,
-  crrg_topics?: string | null,
-  crrg_page?: number | null,
-  pdf_page?: number | null,
-  use_notes?: string | null,
+  id: string
+  name: string
+  description: string
+  hits: number | null
+  accounts: number | null
+  long_description?: string
+  category?: string | null
+  ipl?: string | null
+  product_line?: string[] | null
+  fields_used?: string[] | null
+  fields_display?: string[] | null
+  risk_level?: string | null
+  crrg_topics?: string | null
+  crrg_page?: number | null
+  pdf_page?: number | null
+  use_notes?: string | null
   alternative_explanation?: string | null
 }
 
 export interface Event {
-  id: number,
-  name: string,
-  start_date: string,
-  end_date: string,
-  results: EvaluatorMetadata[]
+  id: number
+  name: string
+  start_date: string
+  end_date: string
+  evaluators: EvaluatorMetadata[]
 }
