@@ -91,8 +91,8 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
 
     except UnreadableLineException as e:
         # Add context to the error message that comes out of cast_to_type
-        msg = f"Field name: `{field_name}`. Indices: {field_start}-{field_end}. Field_type `{field_type}`. " \
-               + f"Input: `{line}`. Issue detail: " + str(e)
+        msg = f"Field name: `{field_name}`. Indices: {field_start}-{field_end}. " \
+               + f"Field_type `{field_type}`. Issue detail: " + str(e)
         raise UnreadableLineException(msg)
 
     return result
