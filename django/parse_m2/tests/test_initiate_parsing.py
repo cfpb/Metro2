@@ -27,6 +27,12 @@ class InitiateLocalParsingTestCase(TestCase):
         # 3 records in the first file, 2 in the second
         self.assertEqual(AccountHolder.objects.count(), 5)
 
+    def test_file_with_bad_extension(self):
+        parse_files_from_local_filesystem("exam Z", self.test_local_data_directory)
+        bad_file = M2DataFile.objects.get(file_name__endswith="without_extension")
+        self.assertIn("invalid file extension", bad_file.error_message)
+        self.assertEqual("Not parsed", bad_file.parsing_status)
+
     def test_directory_does_not_exist(self):
         # Since this would only happen in the event of programmer error, it's fine that
         # this exception is uncaught.

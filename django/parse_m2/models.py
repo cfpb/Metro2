@@ -42,6 +42,8 @@ class M2DataFile(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=200)
     timestamp = models.DateTimeField(auto_now_add=True)
+    parsing_status = models.CharField(max_length=200, default="Not started")
+    error_message = models.CharField(max_length=2000, blank=True)
 
     def __str__(self) -> str:
         return self.file_name

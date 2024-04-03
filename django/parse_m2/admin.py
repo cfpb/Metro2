@@ -101,7 +101,15 @@ class Metro2EventAdmin(admin.ModelAdmin):
         return True
 
 class M2DataFileAdmin(admin.ModelAdmin):
-    list_display = ['id', 'event', 'file_name', 'timestamp']
+    list_display = ['id', 'event', 'file_name', 'parsing_status',
+                    'parsed_lines', 'unparseable_lines', 'timestamp',
+                    'error_message']
+
+    def parsed_lines(self, obj):
+        return obj.accountholder_set.count()
+
+    def unparseable_lines(self, obj):
+        return obj.unparseabledata_set.count()
 
     def has_add_permission(self, request, obj=None):
         return False
