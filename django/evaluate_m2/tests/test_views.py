@@ -225,6 +225,17 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(response.json(), expected)
 
+    def test_account_summary_view_no_accountactivity_for_event(self):
+        self.create_activity_data()
+        error='AccountActivity record(s) not found for account number 0039.'
+        response = self.client.get('/api/events/1/account/0039/')
+
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        self.assertEqual(response.json()['message'], error)
+
     def test_account_pii_view(self):
         self.create_activity_data()
         expected = {'id': 1, 'surname': 'Doe', 'first_name': 'Jane', 'middle_name': 'A',

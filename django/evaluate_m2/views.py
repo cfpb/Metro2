@@ -2,8 +2,9 @@ import csv
 import logging
 
 from datetime import date
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 
+from django.shortcuts import get_list_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -103,8 +104,10 @@ def account_summary_view(request, event_id, account_number):
     logger = logging.getLogger('views.account_summary_view')
     try:
         event = Metro2Event.objects.get(id=event_id)
-        event_activities=event.get_all_account_activity().filter(
-            cons_acct_num=account_number)
+        event_activities=get_list_or_404(event.get_all_account_activity().filter(
+            cons_acct_num=account_number))
+        if not event_activities:
+            raise Http404()
         activities_serializer = AccountActivitySerializer(event_activities, many=True)
         eval_results = EvaluatorResult.objects.filter(
             acct_num=account_number,
@@ -120,6 +123,7 @@ def account_summary_view(request, event_id, account_number):
                 'account_activity': activities_serializer.data}
         return JsonResponse(data)
     except (
+        Http404,
         Metro2Event.DoesNotExist,
         EvaluatorMetadata.DoesNotExist,
         EvaluatorResult.DoesNotExist,
