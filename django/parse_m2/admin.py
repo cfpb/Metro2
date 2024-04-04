@@ -165,7 +165,7 @@ class AccountActivityAdmin(admin.ModelAdmin):
         return False
 
 class J1Admin(admin.ModelAdmin):
-    list_display = ['account_activity', 'surname', 'surname',
+    list_display = ['account_activity', 'surname',
                     'first_name', 'middle_name', 'gen_code','ssn',
                     'dob', 'phone_num', 'ecoa', 'cons_info_ind']
 
@@ -179,7 +179,7 @@ class J1Admin(admin.ModelAdmin):
         return False
 
 class J2Admin(admin.ModelAdmin):
-    list_display = ['account_activity', 'surname', 'surname',
+    list_display = ['account_activity', 'surname',
                     'first_name', 'middle_name', 'gen_code','ssn',
                     'dob', 'phone_num', 'ecoa', 'cons_info_ind',
                     'country_cd', 'addr_line_1', 'addr_line_2',
