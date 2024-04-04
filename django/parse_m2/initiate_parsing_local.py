@@ -31,9 +31,9 @@ def parse_zip_file(zip_path: str, event: Metro2Event):
         for f in zipf.filelist:
             filename = f.filename
             logger.info(f"Encountered file in zipfile: {filename}")
-            full_name = f"local:ZIP:{zip_path}:{filename}"
-            parser = M2FileParser(event, full_name)
             if not f.is_dir():
+                full_name = f"local:ZIP:{zip_path}:{filename}"
+                parser = M2FileParser(event, full_name)
                 if data_file(filename):
                     try:
                         with zipf.open(filename) as fstream:
