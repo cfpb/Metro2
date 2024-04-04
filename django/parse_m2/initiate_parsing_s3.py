@@ -6,7 +6,7 @@ from django.conf import settings
 
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
-from parse_m2.parse_utils import data_file, zip_file, get_extension
+from parse_m2.initiate_parsing_utils import data_file, zip_file, get_extension, parse_file_from_zip
 
 ############################################
 # Methods for parsing files from the S3 bucket
@@ -36,30 +36,14 @@ def s3_bucket_files(bucket_directory: str, bucket_name: str):
     bucket = s3.Bucket(bucket_name)
     return bucket.objects.filter(Prefix=bucket_directory)
 
-def parse_zip_file_S3(zip_obj, event, zipfile_name):
-    logger = logging.getLogger('parse_m2.parse_zip_file_s3')
+def parse_zip_file_contents_S3(zip_obj, event, zipfile_name):
     # TODO: If the files are large (>2GB), this method of streaming
     # zipfiles might fail. If that happens, we'll have to try another approach
     with io.BytesIO(zip_obj.get()["Body"].read()) as fstream:
         with zipfile.ZipFile(fstream, mode='r') as zipf:
             for f in zipf.filelist:
-                name = f.filename
-                logger.info(f"Encountered file within ZIP: {name}")
-                if not f.is_dir():
-                    full_name = f"s3:{zipfile_name}:{name}"
-                    parser = M2FileParser(event, full_name)
-                    if data_file(name):
-                        try:
-                            with zipf.open(name) as fstream:
-                                logger.debug(f"Parsing file {full_name}...")
-                                parser.parse_file_contents(fstream, f.file_size)
-                                logger.debug(f"File {full_name} written to database")
-                        except NotImplementedError as e:
-                            parser.record_unparseable_file(f"File skipped: {e}")
-                    else:
-                        error_message = f"File skipped because of invalid file extension: .{get_extension(name)}"
-                        parser.record_unparseable_file(error_message)
-                        logger.info("Skipping. Does not match an allowed file type.")
+                full_name = f"s3:{zipfile_name}:{f.filename}"
+                parse_file_from_zip(f, zipf, full_name, event)
 
 def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, bucket_name: str = "") -> Metro2Event:
     """
@@ -86,7 +70,7 @@ def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, buc
         # TODO: Handle errors connecting to bucket and opening files
 
         if zip_file(file.key):
-            parse_zip_file_S3(file, event, file.key)
+            parse_zip_file_contents_S3(file, event, file.key)
         elif data_file(file.key):
             parse_s3_file(file, event)
         else:

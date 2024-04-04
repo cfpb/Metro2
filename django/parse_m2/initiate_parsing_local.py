@@ -4,7 +4,7 @@ import logging
 
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
-from parse_m2.parse_utils import data_file, zip_file, get_extension
+from parse_m2.initiate_parsing_utils import data_file, zip_file, get_extension, parse_file_from_zip
 
 
 ############################################
@@ -25,29 +25,11 @@ def parse_local_file(event: Metro2Event, filepath):
     except FileNotFoundError as e:
         logger.error(f"There was an error opening the file: {e}")
 
-def parse_zip_file(zip_path: str, event: Metro2Event):
-    logger = logging.getLogger('parse_m2.parse_zipfile')
+def parse_zip_file_contents(zip_path: str, event: Metro2Event):
     with zipfile.ZipFile(zip_path, 'r') as zipf:
         for f in zipf.filelist:
-            filename = f.filename
-            logger.info(f"Encountered file in zipfile: {filename}")
-            if not f.is_dir():
-                full_name = f"local:ZIP:{zip_path}:{filename}"
-                parser = M2FileParser(event, full_name)
-                if data_file(filename):
-                    try:
-                        with zipf.open(filename) as fstream:
-                            logger.debug(f"Parsing file {full_name}...")
-                            parser.parse_file_contents(fstream, f.file_size)
-                            logger.info("file written to db")
-                    except NotImplementedError as e:
-                        parser.record_unparseable_file(f"File skipped: {e}")
-                else:
-                    file_ext = get_extension(filename)
-                    error_message = f"File skipped because of invalid file extension: .{file_ext}"
-                    parser.record_unparseable_file(error_message)
-                    logger.info("Skipping file within zip. Does not match an allowed file type.")
-
+            full_name = f"local:ZIP:{zip_path}:{f.filename}"
+            parse_file_from_zip(f, zipf, full_name, event)
 
 def parse_files_from_local_filesystem(event_identifier: str, data_directory: str) -> Metro2Event:
     """
@@ -70,7 +52,7 @@ def parse_files_from_local_filesystem(event_identifier: str, data_directory: str
 
         if os.path.isfile(filepath):
             if zip_file(filename):
-                parse_zip_file(filepath, event)
+                parse_zip_file_contents(filepath, event)
             elif data_file(filename):
                 parse_local_file(event, filepath)
             else:
