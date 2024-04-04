@@ -45,9 +45,9 @@ def parse_zip_file_S3(zip_obj, event, zipfile_name):
             for f in zipf.filelist:
                 name = f.filename
                 logger.info(f"Encountered file within ZIP: {name}")
-                full_name = f"s3:{zipfile_name}:{name}"
-                parser = M2FileParser(event, full_name)
                 if not f.is_dir():
+                    full_name = f"s3:{zipfile_name}:{name}"
+                    parser = M2FileParser(event, full_name)
                     if data_file(name):
                         try:
                             with zipf.open(name) as fstream:
