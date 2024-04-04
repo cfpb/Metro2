@@ -136,6 +136,12 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'INFO',
     },
+    'loggers': {
+        'django_auth_adfs': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
 }
 
 if len(sys.argv) > 1 and sys.argv[1] == 'test':
