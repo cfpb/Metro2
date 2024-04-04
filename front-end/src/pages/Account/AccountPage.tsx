@@ -7,7 +7,7 @@ import Summary from './AccountSummary'
 const routeApi = getRouteApi('/events/$eventId/accounts/$accountId')
 
 export default function AccountPage(): ReactElement {
-  const { eventId } = routeApi.useParams()
+  const { eventId }: { eventId: string } = routeApi.useParams()
   const accountData: Account = routeApi.useLoaderData()
 
   return (
