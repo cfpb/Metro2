@@ -7,10 +7,10 @@ import { M2_FIELD_LOOKUPS } from './constants'
  * and returns either the definition corresponding with
  * the value provided for the field or undefined.
  */
-export default function getM2CodeDefinition(
+export const getM2Definition = (
   fieldId: string,
   fieldValue?: number | string | null
-): string | undefined {
+): string | undefined => {
   if (fieldValue != null && fieldId in M2_FIELD_LOOKUPS) {
     const lookup = M2_FIELD_LOOKUPS[fieldId as keyof typeof M2_FIELD_LOOKUPS]
     if (fieldValue in lookup) {
