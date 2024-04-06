@@ -1,6 +1,12 @@
 import type { NotFoundError } from '@tanstack/react-router'
 import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
+import errors from './ErrorList'
+
+let title = ""
+let description = ""
+let cta1 = ""
+let cta2 = ""
 
 export default function NotFound({ data }: NotFoundError): ReactElement {
   // Todo: use the data value that is optionally passed in
@@ -9,32 +15,54 @@ export default function NotFound({ data }: NotFoundError): ReactElement {
   // 'account', 'evaluator', or 'event'
   // Default to the generic not found content if data is undefined
   console.log(data)
+
+  switch (data.data) {
+    case 'accounts':
+      title = errors.accounts.title
+      description = errors.accounts.description
+      cta1 = errors.accounts.cta1
+      cta2 = errors.accounts.cta2
+    break
+
+    case 'event':
+      title = errors.events.title
+      description = errors.events.description
+      cta1 = errors.events.cta1
+      cta2 = errors.events.cta2
+    break
+
+    case 'evaluators':
+      title = errors.evaluators.title
+      description = errors.evaluators.description
+      cta1 = errors.evaluators.cta1
+      cta2 = errors.evaluators.cta2
+    break
+  }
+
   return (
-    <div className='error-container content-row' data-testid='error-container'>
-      <div data-testid='error-message' className='error-message'>
-        <h2 data-testid='title' className='h1'>
-          This page doesn&apos;t exist.
-        </h2>
-        <p data-testid='description'>
-          We can&apos;t find the page you&apos;re looking for. If you believe
-          you are seeing this in error double check that the URL is correct. If
-          you need additional help, please contact an administrator for help.
-        </p>
-        <div className='m-btn-group'>
-          <Link data-testid='button' to='/' className='a-btn a-btn__full-on-xs'>
-            Back to Metro 2 homepage
-          </Link>
-          <Link to='/' className='a-btn a-btn__link a-btn__full-on-xs'>
-            Contact an administrator
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='cf-icon-svg cf-icon-svg__email a-btn__link'
-              viewBox='0 0 17 19'>
-              <path d='M16.417 6.823v7.809a.557.557 0 0 1-.556.555H1.139a.557.557 0 0 1-.556-.555V6.823a.557.557 0 0 1 .556-.555h14.722a.557.557 0 0 1 .556.555m-14.722.92v6.146l4.463-2.89zm12.223-.364H3.082l4.463 3.257a1.777 1.777 0 0 0 1.91 0zM3.45 14.076h10.096L9.864 11.69a2.926 2.926 0 0 1-2.728 0zm11.855-.184v-6.15L10.842 11z' />
-            </svg>
-          </Link>
-        </div>
+  <div className='error-container content-row' data-testid='error-container'>
+    <div data-testid='error-message' className='error-message'>
+      <h2 data-testid='title' className='h1'>
+        {title}
+      </h2>
+      <p data-testid='description'>
+        {description}
+      </p>
+      <div className='m-btn-group'>
+        <Link data-testid='button' to='/' className='a-btn a-btn__full-on-xs'>
+          {cta1}
+        </Link>
+        <Link to='/' className='a-btn a-btn__link a-btn__full-on-xs'>
+        {cta2}
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            className='cf-icon-svg cf-icon-svg__email a-btn__link'
+            viewBox='0 0 17 19'>
+            <path d='M16.417 6.823v7.809a.557.557 0 0 1-.556.555H1.139a.557.557 0 0 1-.556-.555V6.823a.557.557 0 0 1 .556-.555h14.722a.557.557 0 0 1 .556.555m-14.722.92v6.146l4.463-2.89zm12.223-.364H3.082l4.463 3.257a1.777 1.777 0 0 0 1.91 0zM3.45 14.076h10.096L9.864 11.69a2.926 2.926 0 0 1-2.728 0zm11.855-.184v-6.15L10.842 11z' />
+          </svg>
+        </Link>
       </div>
     </div>
+  </div>
   )
 }
