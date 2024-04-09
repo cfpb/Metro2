@@ -59,6 +59,11 @@ export const fetchData = async <TData>(
     // If response is successful, return JSON.
     // If unsuccessful, throw an error with the response
     // status (404, 500, etc) as its message.
+
+    // Temporary hack to show loading view
+    // eslint-disable-next-line no-promise-executor-return
+    await new Promise(r => setTimeout(r, 2000))
+
     const response = await fetch(url)
     if (response.ok) return (await response.json()) as TData
     throw new Error(String(response.status))

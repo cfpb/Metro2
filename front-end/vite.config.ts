@@ -5,46 +5,46 @@ import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(({ mode }) => ({
-	base: '/static/',
+  base: '/static/',
   build: {
     // generate manifest.json in outDir
     manifest: true,
     rollupOptions: {
       input: {
-        main: './src/main.tsx',
+        main: './src/main.tsx'
       },
       output: {
-        chunkFileNames: undefined,
-      },
+        chunkFileNames: undefined
+      }
     },
     commonjsOptions: {
-      include: /node_modules/,
-    },
+      include: /node_modules/
+    }
   },
-	test: {
-		css: false,
-		include: ['src/**/__tests__/*'],
-		globals: true,
-		environment: 'jsdom',
-		setupFiles: 'src/setupTests.ts',
-		clearMocks: true,
-		coverage: {
-			provider: 'istanbul',
-			enabled: true,
-			'100': true,
-			reporter: ['text', 'lcov'],
-			reportsDirectory: 'coverage'
-		}
-	},
-	plugins: [
-		tsconfigPaths(),
-		react(),
-		...(mode === 'test' ? [] : [eslintPlugin()])
-	],
-	server: {
-		port: 3000,
-		host: true,
-		// Needed by django-vite to serve media files
-		origin: 'http://localhost:3000'
-	}
+  test: {
+    css: false,
+    include: ['src/**/__tests__/*'],
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: 'src/setupTests.ts',
+    clearMocks: true,
+    coverage: {
+      provider: 'istanbul',
+      enabled: true,
+      '100': true,
+      reporter: ['text', 'lcov'],
+      reportsDirectory: 'coverage'
+    }
+  },
+  plugins: [
+    tsconfigPaths(),
+    react(),
+    ...(mode === 'test' ? [] : [eslintPlugin()])
+  ],
+  server: {
+    port: 3000,
+    host: true,
+    // Needed by django-vite to serve media files
+    origin: 'http://localhost:3000'
+  }
 }))

@@ -2,7 +2,6 @@ import logging
 
 from django.contrib import admin, messages
 from django.contrib.admin import AdminSite
-from django.core.management import call_command
 from django.shortcuts import redirect
 
 from parse_m2.forms import  Metro2EventForm
@@ -66,6 +65,7 @@ class Metro2EventAdmin(admin.ModelAdmin):
                 obj.evaluate()
                 messages.success(request, f"Finished running evaluators for event ID: {obj.id} and saving results.")
             except (ValueError, TypeError):
+                logger.info(f'The evaluators were not run for event ID: {obj.id}')
                 pass
             return redirect(".")
         return  super(Metro2EventAdmin, self).response_change(request, obj)

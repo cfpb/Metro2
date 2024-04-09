@@ -3,8 +3,8 @@ import renderWithProviders from '../../testUtils'
 import Breadcrumbs from '../LocatorBar/Breadcrumbs'
 
 describe('<Breadcrumbs />', () => {
-	it('displays breadcrumb', async () => {
-    renderWithProviders(<Breadcrumbs/>)
+  it('displays breadcrumb', async () => {
+    renderWithProviders(<Breadcrumbs />)
     expect(await screen.findByText(/Back to results/)).toBeVisible()
-	})
+  })
 })
