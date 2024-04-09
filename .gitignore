@@ -8,6 +8,8 @@
 !front-end/**
 !helm/
 !helm/**
+!build-utils/
+!build-utils/**  
 
 # ...and the following files
 !Dockerfile
@@ -21,6 +23,7 @@
 !helm-install-local.sh
 !build-images.sh
 !.editorconfig
+!buildspec.yaml
 
 # ... but still ignore compiled files
 *.pyc

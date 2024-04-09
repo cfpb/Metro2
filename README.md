@@ -23,18 +23,51 @@ The front-end provides a React-based interface for authenticated and authorized 
 
 # Deployments
 
-Running the project in AWS Alto.
-TODO: add documentation about how to deploy, how to upload data in a deployed environment, how to configure a deployment, etc.
+Metro2 is deployed to the internal accounts of ALTO's 3 Environments: Dev, Staging, and Prod.
 
-## Alto Dev
+## ALTO Dev-Internal
 
-- [Metro2 ALTO Dev-Internal Jenkins](https://INTERNAL)
+Inside the ALTO Dev-Internal account, a Codebuild Job, `cfpb-team-metro2-metro2-dev-deploy` has been set up from the [Service Catalog](https://GHE/aws/service-catalog-cdk/blob/master/products/shared/codebuild-project-eks/v1/product.yml).  `cfpb-team-metro2-metro2-dev-deploy` is pointed to Metro2's [dev branch](https://GHE/Metro2/metro2/tree/dev).  Whenever a change is pushed to [dev branch](https://GHE/Metro2/metro2/tree/dev), `cfpb-team-metro2-metro2-dev-deploy` is automatically triggered and begins running branch's [buildspec](./buildspec.yaml).
 
-## Alto Staging
+
+### [Dev Branch Buildspec](./buildspec.yaml)
+
+The [buildspec](./buildspec.yaml) opens by configuring the environment with the necessary env vars from the Dev-Internal Parameter Store and Dev-Internal Secrets Manager!
+
+Three important env vars that will affect your deployment are:
+- DOCKER_TAG: the tag you want for the `metro2-django` image
+    - default: `YYYY-MM-DD-H-m` 
+- ENABLE_SSO: if you want SSO enabled
+    - default: false
+- RELEASE_NAME: the name of the metro2 release 
+    - default: `metro2`
+
+The [buildspec](./buildspec.yaml) is broken into three phases:
+
+- [install:](https://GHE/Metro2/metro2/blob/4bf5b4ce4f65f743746aa49f315e1514586815bf/buildspec.yaml#L26)
+    - Installs necessary libraries and binaries for the codebuild job to run successfully
+    - Configures the job to point to the `***REMOVED***-standard` cluster. 
+
+- [pre_build:](https://GHE/Metro2/metro2/blob/4bf5b4ce4f65f743746aa49f315e1514586815bf/buildspec.yaml#L60)
+    - connects to the ALTO Admin ECR Repo that contains the[metro2-django image](./django/Dockerfile)
+    - configures a default image tag if not supplied
+        - the default tag is (YEAR-MONTH-DATE-HOUR-MINUTE)
+    - builds the [metro2-django image](./django/Dockerfile)
+    - uses prisma cloud to scan the docker image 
+    - pushes the image to ECR if primsa cloud scan is passed
+- [build:](https://GHE/Metro2/metro2/blob/4bf5b4ce4f65f743746aa49f315e1514586815bf/buildspec.yaml#L84)
+    - sets a default release name
+        - the default release name is `metro2`
+    - configures the DNS HOST for the Helm Chart
+        - ${RELEASE_NAME}-eksINTERNAL 
+    - builds the Helm Chart dependencies
+    - install the Helm Chart
+
+## ALTO Staging
 
 - [Metro2 ALTO Staging-Internal Jenkins](https://INTERNAL)
 
-## Alto Prod
+## ALTO Prod
 
 Not currently available
 
