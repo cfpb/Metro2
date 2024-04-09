@@ -3,11 +3,6 @@ import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 import errors from './ErrorList'
 
-let title = ""
-let description = ""
-let cta1 = ""
-let cta2 = ""
-
 export default function NotFound({ data }: NotFoundError): ReactElement {
   // Todo: use the data value that is optionally passed in
   // to the NotFound component to determine which not found content to show.
@@ -16,44 +11,30 @@ export default function NotFound({ data }: NotFoundError): ReactElement {
   // Default to the generic not found content if data is undefined
   console.log(data)
 
-  switch (data.data) {
-    case 'accounts':
-      title = errors.accounts.title
-      description = errors.accounts.description
-      cta1 = errors.accounts.cta1
-      cta2 = errors.accounts.cta2
-    break
+  //default messages aer in the event message
+  let eventError = errors.event
 
-    case 'event':
-      title = errors.events.title
-      description = errors.events.description
-      cta1 = errors.events.cta1
-      cta2 = errors.events.cta2
-    break
+  const errorType = data?.data
 
-    case 'evaluators':
-      title = errors.evaluators.title
-      description = errors.evaluators.description
-      cta1 = errors.evaluators.cta1
-      cta2 = errors.evaluators.cta2
-    break
+  if (errorType in errors){
+    eventError = errors[errorType as keyof typeof errors]
   }
 
   return (
   <div className='error-container content-row' data-testid='error-container'>
     <div data-testid='error-message' className='error-message'>
       <h2 data-testid='title' className='h1'>
-        {title}
+        {eventError.title}
       </h2>
       <p data-testid='description'>
-        {description}
+        {eventError.description}
       </p>
       <div className='m-btn-group'>
         <Link data-testid='button' to='/' className='a-btn a-btn__full-on-xs'>
-          {cta1}
+          {eventError.cta1}
         </Link>
         <Link to='/' className='a-btn a-btn__link a-btn__full-on-xs'>
-        {cta2}
+        {eventError.cta2}
           <svg
             xmlns='http://www.w3.org/2000/svg'
             className='cf-icon-svg cf-icon-svg__email a-btn__link'
