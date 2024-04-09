@@ -1,10 +1,25 @@
 @import (reference) './index.less';
 
+// set heights & layout so the loader can cover
+// a section of the page to bottom of viewport
+html,
+body,
+#root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
 // global layout pattern
-// provides left / right padding
+// provides left / right padding and flex layout for the loader
 .content-row {
   padding: unit((@grid_gutter-width / 2 / @base-font-size-px), em)
     unit((@grid_gutter-width / @base-font-size-px), em);
+  display: flex;
+  flex-direction: column;
 }
 
 .error-container {
