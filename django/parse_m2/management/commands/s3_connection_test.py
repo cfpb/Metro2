@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from parse_m2.initiate_parsing import s3_bucket_files
+from parse_m2.initiate_parsing_s3 import s3_bucket_files
 from django.conf import settings
 
 
@@ -32,6 +32,5 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Total files found: {count}")
         self.stdout.write(
-            self.style.SUCCESS(f"Successfully connected to the S3 bucket.")
+            self.style.SUCCESS("Successfully connected to the S3 bucket.")
         )
-

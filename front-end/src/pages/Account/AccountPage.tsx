@@ -1,19 +1,23 @@
-import type { ReactElement } from 'react'
 import { getRouteApi } from '@tanstack/react-router'
 import LocatorBar from 'components/LocatorBar/LocatorBar'
+import type { ReactElement } from 'react'
+import type Account from './Account'
 import Summary from './AccountSummary'
-import account from '../../fixtures/account.json'
+
+const routeApi = getRouteApi('/events/$eventId/accounts/$accountId')
 
 export default function AccountPage(): ReactElement {
-	const routeApi = getRouteApi('/events/$eventId/accounts/$accountId')
-  const { eventId } = routeApi.useParams()
+  const { eventId }: { eventId: string } = routeApi.useParams()
+  const accountData: Account = routeApi.useLoaderData()
 
-	return (
-		<>
-			<LocatorBar eyebrow='Account'
-							    heading={ account.cons_acct_num }
-                  breadcrumbs/>
-			<Summary accountData={ account } eventId={eventId}/>
-		</>
-	)
+  return (
+    <>
+      <LocatorBar
+        eyebrow='Account'
+        heading={accountData.cons_acct_num}
+        breadcrumbs
+      />
+      <Summary accountData={accountData} eventId={eventId} />
+    </>
+  )
 }

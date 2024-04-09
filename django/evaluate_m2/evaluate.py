@@ -25,21 +25,24 @@ class Evaluate():
         logger = logging.getLogger('evaluate.run_evaluators')  # noqa: F841
 
         record_set = event.get_all_account_activity()
-        # run evaluators
-        for eval_name, func in self.evaluators.items():
-            logger.info(f"Running evaluator: {eval_name}")
-            results = func(record_set)
-            if results:
-                # generate evaluator results summary and save before accessed to generate
-                # the evaluator results
-                result_summary = self.prepare_result_summary(event, eval_name, results)
-                evaluator_results = list()
-                for row_data in results:
-                    result=self.prepare_result(result_summary, row_data)
-                    evaluator_results.append(result)
-                if (len(evaluator_results) > 0):
-                    EvaluatorResult.objects.bulk_create(evaluator_results)
-                    logger.info(f"Evaluator results written to the database: {len(evaluator_results)}")
+        # run evaluators only if there are records in the record_set
+        if record_set:
+            for eval_name, func in self.evaluators.items():
+                logger.info(f"Running evaluator: {eval_name}")
+                results = func(record_set)
+                if results:
+                    # generate evaluator results summary and save before accessed to generate
+                    # the evaluator results
+                    result_summary = self.prepare_result_summary(event, eval_name, results)
+                    evaluator_results = list()
+                    for row_data in results:
+                        result=self.prepare_result(result_summary, row_data)
+                        evaluator_results.append(result)
+                    if (len(evaluator_results) > 0):
+                        EvaluatorResult.objects.bulk_create(evaluator_results)
+                        logger.info(f"Evaluator results written to the database: {len(evaluator_results)}")
+        else:
+            logger.info(f"No AccountActivity found for the event '{event.name}'")
 
     def prepare_result(self, result_summary: EvaluatorResultSummary,
                        data: dict) -> EvaluatorResult:

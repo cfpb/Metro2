@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.db import models
 from django.core.management import call_command
 
@@ -36,15 +36,14 @@ class Metro2Event(models.Model):
         """
         return self.user_group in user.groups.all()
 
-    def __str__(self) -> str:
-        return self.name
-
 class M2DataFile(models.Model):
     class Meta:
         verbose_name_plural = "Metro2 Data Files"
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=200)
     timestamp = models.DateTimeField(auto_now_add=True)
+    parsing_status = models.CharField(max_length=200, default="Not started")
+    error_message = models.CharField(max_length=2000, blank=True)
 
     def __str__(self) -> str:
         return self.file_name

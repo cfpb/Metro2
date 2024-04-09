@@ -15,6 +15,7 @@ class M2FileParser():
     chunk_size = 2000  # TODO: determine a good number for this
     header_format = r'.{4}HEADER$'
     trailer_format = r'.{4}TRAILER$'
+    any_non_whitespace = r'\S'
 
     def __init__(self, event: Metro2Event, filepath: str) -> None:
         """
@@ -22,8 +23,29 @@ class M2FileParser():
                     line of data came from. Used as a foreign key when
                     saving the records in the line.
         """
-        self.file_record: M2DataFile = M2DataFile(event=event, file_name=filepath)
+        self.file_record: M2DataFile = M2DataFile(
+            event=event,
+            file_name=filepath,
+            parsing_status="In progress"
+        )
         self.file_record.save()
+
+    def record_unparseable_file(self, error_message: str) -> None:
+        """
+        If the file can't be parsed, update the M2DataFile record with details.
+        """
+        file = self.file_record
+        file.parsing_status = "Not parsed"
+        file.error_message = error_message
+        file.save()
+
+    def record_parsing_success(self):
+        """
+        After successfully parsing a file, update the M2DataFile record with details.
+        """
+        file = self.file_record
+        file.parsing_status = "Finished"
+        file.save()
 
     def get_next_line(self, f) -> str:
         """
@@ -55,7 +77,8 @@ class M2FileParser():
         segment is, parse its values, add the values to the `parsed` dict, and
         call this method again with whatever is left of the string.
         """
-        if len(line) < 2:
+        # If there's only whitespace left in this line, return
+        if not re.match(self.any_non_whitespace, line):
             return parsed
 
         acct_activity = parsed["AccountActivity"]
@@ -260,18 +283,17 @@ class M2FileParser():
             parse_utils.UnreadableFileException,
             parse_utils.UnreadableLineException
         ) as e:
-            # if the header couldn't be parsed, save the header as
-            # UnparseableData, and don't try to parse the rest of the file
+            # if the header couldn't be parsed, record the error,
+            # and don't try to parse the rest of the file
             if len(header_line) > 2000:
-                header_line = header_line[:1997] + "..."
-            UnparseableData.objects.create(
-                data_file=self.file_record,
-                unparseable_line=header_line,
-                error_description=str(e)
-            )
+                header_line = header_line[:1500] + "..."
+            error_message = f"{e}. Source line: `{header_line}`"
+            self.record_unparseable_file(error_message)
             return
 
         # parse the rest of the file until it is done
         while f.tell() < file_size:
             values = self.parse_chunk(f, self.chunk_size, activity_date)
             self.save_values_bulk(values)
+
+        self.record_parsing_success()
