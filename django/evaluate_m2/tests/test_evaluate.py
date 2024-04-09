@@ -134,3 +134,17 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         with self.assertRaises(TypeError) as cm:
             evaluator.run_evaluators()
         self.assertEqual(cm.exception.args[0], "Evaluate.run_evaluators() missing 1 required positional argument: 'event'")
+
+    def test_run_evaluators_with_no_records_does_not_raise_exception(self):
+        event = Metro2Event(name='test_no_activity_exam')
+        event.save()
+        data_file = M2DataFile(event=self.event, file_name='file.txt')
+        data_file.save()
+        evaluator.evaluators = {"ADDL-DOFD-1": addl_dofd_1_func,
+                                "ADDL-DOFD-2": addl_dofd_2_func}
+        evaluator.run_evaluators(event)
+
+        self.assertEqual(0, AccountActivity.objects.count())
+        self.assertEqual(0, EvaluatorResult.objects.count())
+        self.assertEqual(0, EvaluatorResultSummary.objects.count())
+        self.assertEqual(0, EvaluatorMetadata.objects.count())
