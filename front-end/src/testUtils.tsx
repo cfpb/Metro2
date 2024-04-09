@@ -1,5 +1,9 @@
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import {createRouter, createRootRoute, RouterProvider} from '@tanstack/react-router'
+import {
+  createRouter,
+  createRootRoute,
+  RouterProvider
+} from '@tanstack/react-router'
 import { render } from '@testing-library/react'
 import type { PropsWithChildren, ReactElement } from 'react'
 
@@ -18,19 +22,15 @@ export const DESKTOP_RESOLUTION_HEIGHT = 800
 export const MOBILE_RESOLUTION_WIDTH = 414
 export const MOBILE_RESOLUTION_HEIGHT = 896
 
-export default function renderWithProviders(
-	ui: ReactElement
-): void {
-	render(ui, {
-		wrapper: ({ children }: PropsWithChildren): ReactElement => {
-			const router = createRouter({
-				routeTree: createRootRoute({
-					notFoundComponent: () => children
-				})
-			})
-			return (
-				<RouterProvider router={router} />
-			)
-		} 
-	})
+export default function renderWithProviders(ui: ReactElement): void {
+  render(ui, {
+    wrapper: ({ children }: PropsWithChildren): ReactElement => {
+      const router = createRouter({
+        routeTree: createRootRoute({
+          notFoundComponent: () => children
+        })
+      })
+      return <RouterProvider router={router} />
+    }
+  })
 }

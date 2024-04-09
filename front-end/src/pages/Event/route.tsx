@@ -28,5 +28,6 @@ export const eventIndexRoute = createRoute({
   path: '/',
   getParentRoute: () => eventRoute,
   component: EventPage,
-  loader: async ({ context: { queryClient }, params: { eventId } }) => queryClient.ensureQueryData(eventQueryOptions(eventId))
+  loader: async ({ context: { queryClient }, params: { eventId } }) =>
+    queryClient.ensureQueryData(eventQueryOptions(eventId))
 })

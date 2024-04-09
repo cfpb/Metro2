@@ -6,18 +6,20 @@ const numberFormatter = new Intl.NumberFormat('en', {
 
 // TOOD: consider whether this needs any other type guards
 export function formatNumber(val: number | null | undefined): string {
-  return val == null ? '' : numberFormatter.format(val) 
+  return val == null ? '' : numberFormatter.format(val)
 }
 
 export const ColumnTypes = {
-  wrappableText: { 
+  wrappableText: {
     wrapText: true,
     autoHeight: true,
     cellStyle: { wordBreak: 'normal' }
   },
   formattedNumber: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    valueFormatter: ({value}: ValueFormatterParams<any, number | null> ): string => formatNumber(value),
+    valueFormatter: ({
+      value
+    }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ValueFormatterParams<any, number | null>): string => formatNumber(value),
     cellClass: 'ag-right-aligned-cell',
     headerClass: 'ag-right-aligned-header'
   }
