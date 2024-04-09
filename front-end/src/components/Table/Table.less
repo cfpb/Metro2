@@ -4,27 +4,27 @@
 
 .ag-theme-alpine {
   // Override defaults to approximate Design System table styles
-  --ag-font-family: "Avenir Next", arial, sans-serif !important;
-  --ag-font-size: unit( ( 16px / @base-font-size-px ), em);
+  --ag-font-family: 'Avenir Next', arial, sans-serif !important;
+  --ag-font-size: unit((16px / @base-font-size-px), em);
   --ag-border-color: @table-border;
   --ag-header-column-resize-handle-color: @table-border;
   --ag-secondary-border-color: @table-border;
   --ag-odd-row-background-color: @white;
 
   .ag-cell {
-    font-size: unit( ( 14px / @base-font-size-px ), em);
+    font-size: unit((14px / @base-font-size-px), em);
   }
 
   .ag-cell-value {
     line-height: 20px !important;
-    word-break: normal; 
-    padding-top: 10px; 
-    padding-bottom: 10px; 
+    word-break: normal;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   .ag-header {
     text-transform: uppercase;
-    font-size: unit( ( 13px / @base-font-size-px ), em);
+    font-size: unit((13px / @base-font-size-px), em);
   }
 
   // make the row borders take up full width even if row content
@@ -39,9 +39,9 @@
     min-height: unset !important;
   }
 
-  // prevents doubling of row border with border of container 
+  // prevents doubling of row border with border of container
   // when there's no bottom scrollbar
-  .ag-row.ag-row-last  {
+  .ag-row.ag-row-last {
     border-bottom-width: 0 !important;
   }
 
@@ -59,8 +59,8 @@
 }
 
 .ag-root-wrapper {
-  margin: unit((@grid_gutter-width / 2 / @base-font-size-px), em) 
-          unit((@grid_gutter-width / @base-font-size-px), em);
+  margin: unit((@grid_gutter-width / 2 / @base-font-size-px), em)
+    unit((@grid_gutter-width / @base-font-size-px), em);
 }
 
 // grid container fills width of screen

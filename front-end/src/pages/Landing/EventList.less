@@ -1,15 +1,16 @@
 @import (reference) '../../index.less';
 
 .event-item {
-	h3, h4 {
-		margin-bottom: 8px;
-	}
+  h3,
+  h4 {
+    margin-bottom: 8px;
+  }
 
-	h3 + h4 {
-		margin-top: 0;
-	}
+  h3 + h4 {
+    margin-top: 0;
+  }
 
-	 & + & {
-		margin-top: unit((@grid_gutter-width  / @base-font-size-px), em) 
-	 }
+  & + & {
+    margin-top: unit((@grid_gutter-width / @base-font-size-px), em);
+  }
 }

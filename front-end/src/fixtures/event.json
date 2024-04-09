@@ -10,7 +10,12 @@
       "description": "The special comment code indicates account paid, but the account status does not show paid.",
       "long_description": "<p><b>Special comment code indicates that the account was paid</b></p><p>Special comment code: AU (Account Paid in Full for Less than the Full Balance), AX (Account paid from collateral), BP (Account paid through insurance), or C (Paid by Co-maker or Guarantor)</p><p></p><p><b>But account status does not show paid</b></p><p>Account status ≠ 13 (Paid or closed, zero balance), ≠ 61 (Paid in full, voluntary surrender), ≠ 62 (Paid in full, collection account), ≠ 63 (Paid in full, repossession), ≠ 64 (Paid in full, charge-off), or ≠ 65 (Paid in full, foreclosure started)</p>",
       "fields_used": ["acct_stat", "spc_com_cd"],
-      "fields_display": ["amt_past_due", "current_bal", "date_closed", "k2_purch_sold_ind"],
+      "fields_display": [
+        "amt_past_due",
+        "current_bal",
+        "date_closed",
+        "k2_purch_sold_ind"
+      ],
       "ipl": "All",
       "product_line": [],
       "category": "Paid/Not paid",
@@ -42,7 +47,7 @@
       "hits": 40393,
       "accounts": 11771
     },
-    { 
+    {
       "id": "prog-dofd-1",
       "name": "Current DOFD does not match prior DOFD",
       "description": "This period's date of first delinquency does not match the previous period when both periods had delinquent account statuses.",
@@ -64,7 +69,7 @@
       "alternative_explanation": "",
       "risk_level": "High",
       "hits": 16770,
-      "accounts":2951 
+      "accounts": 2951
     },
     {
       "id": "addl-doai-1",
@@ -121,7 +126,7 @@
       "alternative_explanation": "",
       "risk_level": "High",
       "hits": 3019,
-      "accounts": 446 
+      "accounts": 446
     },
     {
       "id": "prog-status-10",
@@ -204,8 +209,8 @@
       "name": "Lease but no original loan amount",
       "description": "Account is an auto lease, but there is no original loan amount.",
       "long_description": "",
-       "fields_used": [],
-        "fields_display": null,
+      "fields_used": [],
+      "fields_display": null,
       "ipl": "",
       "product_line": ["Auto loan"],
       "category": "",
@@ -235,7 +240,7 @@
       "alternative_explanation": "",
       "risk_level": "High",
       "hits": 12,
-      "accounts": 12 
+      "accounts": 12
     }
   ]
 }
