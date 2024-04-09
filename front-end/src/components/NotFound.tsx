@@ -11,7 +11,7 @@ export default function NotFound({ data }: NotFoundError): ReactElement {
   // Default to the generic not found content if data is undefined
   console.log(data)
 
-  //the "event" message is the default not found error message
+  // the "event" message is the default not found error message
   let eventError = errors.event
 
   const errorType = data?.data
