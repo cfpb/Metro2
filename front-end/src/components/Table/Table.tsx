@@ -3,11 +3,7 @@ import { AgGridReact } from 'ag-grid-react'
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import './Table.less'
-<<<<<<< HEAD
 import { columnDefaults, columnTypes } from './tableUtils'
-=======
-import { columnDefaults, gridOptionDefaults } from './tableUtils'
->>>>>>> main
 
 /* Table props
  * height: defaults to 'fixed'
