@@ -36,7 +36,7 @@ export const getM2Definition = (
 export const generateColumnDefinitions = (
   // all the values in these arrays should appear in the M2_FIELDS list
   fields: (typeof M2_FIELDS)[number][],
-  pinnedLeft: (typeof M2_FIELDS)[number][]
+  pinnedLeft: (typeof M2_FIELDS)[number][] = []
 ): ColDef[] =>
   fields.map(field => ({
     field,
@@ -62,7 +62,7 @@ export const fetchData = async <TData>(
 
     // Temporary hack to show loading view
     // eslint-disable-next-line no-promise-executor-return
-    await new Promise(r => setTimeout(r, 2000))
+    // await new Promise(r => setTimeout(r, 2000))
 
     const response = await fetch(url)
     if (response.ok) return (await response.json()) as TData

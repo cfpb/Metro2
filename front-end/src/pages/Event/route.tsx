@@ -3,7 +3,7 @@ import { queryOptions } from '@tanstack/react-query'
 import { createRoute } from '@tanstack/react-router'
 import { fetchData } from 'utils/utils'
 import rootRoute from '../rootRoute'
-import type { Event } from './Event'
+import type Event from './Event'
 import EventPage from './EventPage'
 
 export const fetchEvent = async (eventId: string): Promise<Event> =>
@@ -27,7 +27,5 @@ export const eventRoute = createRoute({
 export const eventIndexRoute = createRoute({
   path: '/',
   getParentRoute: () => eventRoute,
-  component: EventPage,
-  loader: async ({ context: { queryClient }, params: { eventId } }) =>
-    queryClient.ensureQueryData(eventQueryOptions(eventId))
+  component: EventPage
 })

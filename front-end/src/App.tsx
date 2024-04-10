@@ -24,7 +24,7 @@ const router = createRouter({
     queryClient
   },
   // delay before showing pending component
-  defaultPendingMs: 250,
+  defaultPendingMs: 0,
   defaultPendingComponent: Loader,
   defaultErrorComponent: ErrorComponent,
   defaultNotFoundComponent: NotFound
