@@ -1,26 +1,85 @@
+// List of all M2 fields that can be displayed for a tradeline
+export const M2_FIELDS = [
+  'activity_date',
+  'acct_stat',
+  'current_bal',
+  'amt_past_due',
+  'dofd',
+  'pmt_rating',
+  'php',
+  'smpa',
+  'actual_pmt_amt',
+  'hcola',
+  'orig_chg_off_amt',
+  'date_open',
+  'date_closed',
+  'spc_com_cd',
+  'compl_cond_cd',
+  'doai',
+  'dolp',
+  'credit_limit',
+  'port_type',
+  'acct_type',
+  'terms_dur',
+  'terms_freq'
+  // 'int_type_ind'
+]
+
 // Maps the ids of Metro2 fields to their human-readable names.
 export const FIELD_NAMES_LOOKUP = {
-  hcola: 'HCOLA',
-  smpa: 'Scheduled monthly payment amount',
-  actual_pmt_amt: 'Actual payment amount',
   acct_stat: 'Account status',
-  pmt_rating: 'Payment rating',
-  php: 'Payment history profile',
-  current_bal: 'Current balance',
-  amt_past_due: 'Amount past due',
-  orig_chg_off_amt: 'Original charge-off amount',
-  date_closed: 'Date closed',
-  spc_com_cd: 'Special comment code',
-  compl_cond_cd: 'Compliance condition code',
-  dofd: 'DOFD',
-  k2_purch_sold_ind: 'K2 purchased-sold indicator',
-  cons_acct_num: 'Account number',
-  port_type: 'Portfolio type',
   acct_type: 'Account type',
-  terms_dur: 'Terms duration',
-  terms_freq: 'Terms frequency',
+  activity_date: 'Activity date',
+  actual_pmt_amt: 'Actual payment amount',
+  amt_past_due: 'Amount past due',
+  compl_cond_cd: 'Compliance condition code',
+  cons_acct_num: 'Account number',
+  credit_limit: 'Credit limit',
+  current_bal: 'Current balance',
   date_open: 'Date open',
-  activity_date: 'Activity date'
+  date_closed: 'Date closed',
+  doai: 'Date of account information',
+  dofd: 'DOFD',
+  dolp: 'Date of last payment',
+  hcola: 'HCOLA',
+  k2_purch_sold_ind: 'K2 purchased-sold indicator',
+  orig_chg_off_amt: 'Original charge-off amount',
+  php: 'Payment history profile',
+  pmt_rating: 'Payment rating',
+  port_type: 'Portfolio type',
+  smpa: 'Scheduled monthly payment amount',
+  spc_com_cd: 'Special comment code',
+  terms_dur: 'Terms duration',
+  terms_freq: 'Terms frequency'
+}
+
+// Maps the ids of Metro2 fields to their data types
+// For use in AgGrid column definitions
+export const FIELD_TYPES_LOOKUP = {
+  acct_stat: 'annotatedText',
+  acct_type: 'annotatedText',
+  activity_date: 'formattedDate',
+  actual_pmt_amt: 'currency',
+  amt_past_due: 'currency',
+  compl_cond_cd: 'annotatedText',
+  cons_acct_num: 'plainText', // TODO: figure out what this should be, if anything
+  credit_limit: 'currency',
+  current_bal: 'currency',
+  date_open: 'formattedDate',
+  date_closed: 'formattedDate',
+  doai: 'formattedDate',
+  dofd: 'formattedDate',
+  dolp: 'formattedDate',
+  hcola: 'currency',
+  k2_purch_sold_ind: 'annotatedText',
+  orig_chg_off_amt: 'currency',
+  php: 'annotatedText',
+  pmt_rating: 'annotatedText',
+  port_type: 'annotatedText',
+  smpa: 'currency',
+  spc_com_cd: 'annotatedText',
+  terms_dur: 'plainText', // TODO: figure out what this should be, if anything
+  terms_freq: 'annotatedText'
 }
 
 // Many Metro2 fields contain coded data that needs to be translated
@@ -85,7 +144,6 @@ export const PAYMENT_HISTORY_PROFILE_LOOKUP = {
 }
 
 export const SPECIAL_COMMENT_CODE_LOOKUP = {
-  '': 'Blank',
   B: 'Account payments managed by financial counseling program.',
   C: 'Paid by Co-maker or Guarantor.',
   H: 'Loan assumed by another party.',
@@ -249,7 +307,7 @@ export const TERMS_FREQUENCY_LOOKUP = {
 
 // Enables accessing a field's lookup by the field's id.
 export const M2_FIELD_LOOKUPS = {
-  acct_status: ACCOUNT_STATUS_LOOKUP,
+  acct_stat: ACCOUNT_STATUS_LOOKUP,
   acct_type: ACCOUNT_TYPE_LOOKUP,
   compl_cond_cd: COMPLIANCE_CONDTION_CODE_LOOKUP,
   k2_purch_sold_ind: K2_PURCHASED_SOLD_INDICATOR_LOOKUP,

@@ -3,7 +3,7 @@ import { AgGridReact } from 'ag-grid-react'
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import './Table.less'
-import { columnDefaults, gridOptionDefaults } from './tableUtils'
+import { columnDefaults, columnTypes } from './tableUtils'
 
 /* Table props
  * height: defaults to 'fixed'
@@ -64,7 +64,8 @@ export default function Table<T extends object>({
           autoSizeStrategy={
             resizableColumns ? { type: 'fitCellContents' } : undefined
           }
-          {...gridOptionDefaults}
+          columnTypes={columnTypes}
+          enableCellTextSelection
         />
       </div>
     </div>

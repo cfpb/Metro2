@@ -4,7 +4,7 @@
   "bracketSpacing": true,
   "jsxSingleQuote": true,
   "plugins": [],
-  "printWidth": 80,
+  "printWidth": 85,
   "quoteProps": "as-needed",
   "semi": false,
   "singleQuote": true,
