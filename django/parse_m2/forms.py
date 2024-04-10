@@ -4,8 +4,6 @@ from django.core.management import call_command
 
 from parse_m2.models import Metro2Event
 
-import os
-
 
 class Metro2EventForm(forms.ModelForm):
     class Meta:

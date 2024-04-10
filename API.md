@@ -4,7 +4,11 @@ This documentation describes the API that the Django application provides for qu
 
 ## Authentication
 
-TODO: Add info on how auth tokens need to be included/handled in API requests
+Users authenticate through SSO to access the Metro2 application. After a successful login, a cookie is stored in the browser session.
+All API requests will need to include that cookie in the header to successfully authenticate with the Django backend.
+
+**Example header:**
+`Cookie: csrftoken=08px9D0G8M0CSbpupDmXzm1i8zcFL6u6; sessionid=pwnfvjvonnpmvyrl732rzt6w3gszijjt`
 
 ## API endpoints
 

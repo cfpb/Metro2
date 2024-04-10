@@ -6,10 +6,10 @@ import accountRoute from 'pages/Account/route'
 
 const routeTree = rootRoute.addChildren([
   eventRoute,
-	eventIndexRoute,
-	evaluatorRoute,
-	accountRoute,
-	indexRoute
+  eventIndexRoute,
+  evaluatorRoute,
+  accountRoute,
+  indexRoute
 ])
 
 export default routeTree

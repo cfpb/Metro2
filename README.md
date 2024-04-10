@@ -55,7 +55,7 @@ With that in place, you must do the following:
     1. Ensure that your Docker daemon is running.
         - Without Docker running, your docker-desktop cluster will not be running.
     2. Run `build-images.sh -e local`
-    3. Run `helm-install.sh`
+    3. Run `helm-install-local.sh`
 
 This will deploy the Metro2 Application to the Docker Desktop Cluster and create three images:
     1. metro2-frontend:local
