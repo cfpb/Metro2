@@ -14,6 +14,7 @@ export default function NotFound({ data }: NotFoundError): ReactElement {
   // the "event" message is the default not found error message
   let eventError = errors.event
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const errorType = data?.data
 
   if (errorType in errors){
