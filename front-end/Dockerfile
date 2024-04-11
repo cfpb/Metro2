@@ -1,4 +1,4 @@
-FROM node:16-alpine as base
+FROM node:20-alpine as base
 
 # Ensure that the environment uses UTF-8 encoding by default
 ENV LANG en_US.UTF-8

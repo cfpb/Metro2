@@ -3,8 +3,8 @@ import renderWithProviders from '../../testUtils'
 import EvaluatorPage from 'pages/Evaluator/EvaluatorPage'
 
 describe('<EvaluatorPage />', () => {
-	it('renders Evaluator page', async () => {
-		renderWithProviders(<EvaluatorPage/>)
-		expect(await screen.findByText('Inconsistency')).toBeVisible()
-	})
+  it('renders Evaluator page', async () => {
+    renderWithProviders(<EvaluatorPage />)
+    expect(await screen.findByText('Inconsistency')).toBeVisible()
+  })
 })

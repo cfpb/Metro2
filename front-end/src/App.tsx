@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import ErrorComponent from 'components/ErrorComponent'
 import HeaderNavbar from 'components/HeaderNavbar'
+import Loader from 'components/Loader/Loader'
 import NotFound from 'components/NotFound'
 import type { ReactElement } from 'react'
 import './App.less'
@@ -24,8 +25,9 @@ const router = createRouter({
   },
   // delay before showing pending component
   defaultPendingMs: 250,
+  defaultPendingComponent: Loader,
   defaultErrorComponent: ErrorComponent,
-  defaultNotFoundComponent: NotFound
+  defaultNotFoundComponent: NotFound,
 })
 
 // Register the router instance for type safety

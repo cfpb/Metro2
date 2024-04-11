@@ -1,25 +1,23 @@
 {
-	"extends": [
-		"stylelint-config-standard",
-		"stylelint-config-recommended-less",
-		"stylelint-config-prettier"
-	],
-	"customSyntax": "postcss-less",
-	"rules": {
-		"at-rule-no-unknown": [
-			true,
-			{
-				"ignoreAtRules": ["layer"]
-			}
-		],
-		"function-no-unknown": [
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-recommended-less",
+    "stylelint-config-prettier"
+  ],
+  "customSyntax": "postcss-less",
+  "rules": {
+    "at-rule-no-unknown": [
       true,
-      { 
-				"ignoreFunctions": ["unit"] 
-			}
+      {
+        "ignoreAtRules": ["layer"]
+      }
     ],
-		"selector-class-pattern": null
-	}
+    "function-no-unknown": [
+      true,
+      {
+        "ignoreFunctions": ["unit"]
+      }
+    ],
+    "selector-class-pattern": null
+  }
 }
-
-

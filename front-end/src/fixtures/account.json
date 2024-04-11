@@ -1,12 +1,12 @@
-{ 
+{
   "cons_acct_num": "123456789",
   "inconsistencies": [
     {
-      "name": "ADDL-DOFD-1", 
+      "name": "ADDL-DOFD-1",
       "id": "addl-dofd-1"
     },
     {
-      "name": "ADDL-DOFD-2", 
+      "name": "ADDL-DOFD-2",
       "id": "addl-dofd-2"
     }
   ],

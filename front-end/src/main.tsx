@@ -5,10 +5,10 @@ import './index.less'
 
 const container = document.querySelector('#root')
 if (container) {
-	const root = createRoot(container)
-	root.render(
-		<StrictMode>
-			<App />
-		</StrictMode>
-	)
+  const root = createRoot(container)
+  root.render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  )
 }

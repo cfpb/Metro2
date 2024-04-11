@@ -3,10 +3,10 @@ import { render, screen } from '@testing-library/react'
 import Table from '../Table/Table'
 
 interface CarManufacturer {
-  company: string,
-  model: string,
-  start_date: string,
-  end_date: string,
+  company: string
+  model: string
+  start_date: string
+  end_date: string
   number_produced: number
 }
 
@@ -35,35 +35,35 @@ const data = [
 ]
 
 const colDefs: ColDef<CarManufacturer>[] = [
-	{
-		field: 'company',
-		headerName: 'Company name',
-		type: 'wrappableText',
-	},
   {
-		field: 'model',
-		headerName: 'Model name',
-	},
+    field: 'company',
+    headerName: 'Company name',
+    type: 'wrappableText'
+  },
   {
-		field: 'start_date',
-		headerName: 'Production begins',
-	},
+    field: 'model',
+    headerName: 'Model name'
+  },
   {
-		field: 'end_date',
-		headerName: 'Production ends',
-	},
-	{
-		field: 'number_produced',
-		headerName: 'Number produced',
-		type: 'formattedNumber'
-	}
+    field: 'start_date',
+    headerName: 'Production begins'
+  },
+  {
+    field: 'end_date',
+    headerName: 'Production ends'
+  },
+  {
+    field: 'number_produced',
+    headerName: 'Number produced',
+    type: 'formattedNumber'
+  }
 ]
 
 describe('<Table />', () => {
-	it('renders with default props', () => {
-	  render(<Table<CarManufacturer> rows={ data } columnDefinitions={ colDefs }/>)
+  it('renders with default props', () => {
+    render(<Table<CarManufacturer> rows={data} columnDefinitions={colDefs} />)
     const container = screen.getByTestId('data-grid-container')
     expect(container).toBeVisible()
     expect(container).toHaveClass('data-grid-container--fixed-height')
-	})
+  })
 })
