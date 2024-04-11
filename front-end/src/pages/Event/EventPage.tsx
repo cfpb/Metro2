@@ -2,12 +2,11 @@ import { useLoaderData } from '@tanstack/react-router'
 import LocatorBar from 'components/LocatorBar/LocatorBar'
 import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
-import type { Event } from './Event'
+import type Event from './Event'
 import columnDefinitions from './columnDefinitions'
 
 export default function EventPage(): ReactElement {
-  const eventData: Event = useLoaderData({ from: '/events/$eventId/' })
-  console.log(eventData)
+  const eventData: Event = useLoaderData({ from: '/events/$eventId' })
 
   return (
     <>

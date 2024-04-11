@@ -1,4 +1,30 @@
-// List of all M2 fields that can be displayed for a tradeline
+// all M2 fields that might be displayed for a tradeline
+export interface AccountRecord {
+  cons_acct_num?: string | null
+  activity_date?: string | null
+  acct_stat?: string | null
+  current_bal?: number | null
+  amt_past_due?: number | null
+  dofd?: string | null
+  pmt_rating?: string | null
+  php?: string | null
+  smpa?: number | null
+  actual_pmt_amt?: number | null
+  hcola?: number | null
+  orig_chg_off_amt?: number | null
+  date_open?: string | null
+  date_closed?: string | null
+  spc_com_cd?: string | null
+  compl_cond_cd?: string | null
+  doai?: string | null
+  dolp?: string | null
+  credit_limit?: number | null
+  port_type?: string | null
+  acct_type?: string | null
+  terms_dur?: string | null
+  terms_freq?: string | null
+}
+
 export const M2_FIELDS = [
   'activity_date',
   'acct_stat',

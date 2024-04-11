@@ -5,7 +5,7 @@ import './DefinitionList.less'
 interface DefinitionListProperties {
   items: {
     term: string
-    definition: ReactElement | number | string
+    definition: ReactElement | number | string | null | undefined
   }[]
 }
 
@@ -15,10 +15,7 @@ export default function DefinitionList({
   return (
     <dl className='definition-list'>
       {items.map(item => (
-        <div
-          key={item.term}
-          className='definition-list__item'
-          data-testid='dl-item'>
+        <div key={item.term} className='definition-list__item' data-testid='dl-item'>
           <dt>{item.term}</dt>
           <dd>{item.definition}</dd>
         </div>

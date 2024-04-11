@@ -1,12 +1,27 @@
+import { Link } from '@tanstack/react-router'
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community'
+import type { ReactElement } from 'react'
+import type EvaluatorMetadata from '../Evaluator/Evaluator'
+import type Event from './Event'
 
-const columnDefinitions: ColDef[] = [
+const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
   {
     field: 'id',
     headerName: 'Inconsistency',
     type: 'wrappableText',
     valueFormatter: ({ value }: ValueFormatterParams): string =>
-      typeof value === 'string' ? value.toUpperCase() : ''
+      typeof value === 'string' ? value.toUpperCase() : '',
+    cellRenderer: ({
+      data,
+      value
+    }: {
+      data: Event
+      value: string
+    }): ReactElement => (
+        <Link to='evaluators/$evaluatorId' params={{ evaluatorId: data.id }}>
+          {value}
+        </Link>
+      )
   },
   {
     field: 'description',
