@@ -13,7 +13,9 @@ export default function LandingPage(): ReactElement {
         eyebrow={`Welcome, ${userData.username}`}
         heading='Here is your events list'
       />
-      <EventList events={userData.assigned_events} heading='Active' />
+      {userData.assigned_events.length > 0 ? (
+        <EventList events={userData.assigned_events} heading='Active' />
+      ) : null}
     </>
   )
 }
