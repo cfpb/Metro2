@@ -1,18 +1,11 @@
-import type { ReactElement } from 'react'
 import { Link } from '@tanstack/react-router'
+import type { EventMetadata } from 'pages/Event/Event'
+import type { ReactElement } from 'react'
 import './EventList.less'
-
-interface Event {
-  id: number
-  name: string
-  start_date: string
-  end_date: string
-  description: string
-}
 
 interface EventListProperties {
   heading: string
-  events: Event[]
+  events: EventMetadata[]
 }
 
 export default function EventList({
@@ -29,10 +22,16 @@ export default function EventList({
           key={event.id}
           className='m-list_item event-item'
           data-testid='event-item'>
-          <h3>
-            {event.name} - {event.start_date} - {event.end_date}
-          </h3>
-          <h4>{event.description}</h4>
+          {event.start_date && event.end_date ? (
+            <h3 data-testid='event-header'>
+              {event.name} - {event.start_date} - {event.end_date}
+            </h3>
+          ) : (
+            <h3 data-testid='event-header'>{event.name}</h3>
+          )}
+          {event.description ? (
+            <h4 data-testid='event-description'>{event.description}</h4>
+          ) : null}
           <Link
             to='/events/$eventId'
             params={{ eventId: String(event.id) }}

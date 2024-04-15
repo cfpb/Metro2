@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react'
-import renderWithProviders from '../../testUtils'
 import EventList from 'pages/Landing/EventList'
+import renderWithProviders from '../../testUtils'
 
 const events = [
   {
@@ -12,10 +12,7 @@ const events = [
   },
   {
     id: 2,
-    name: 'Bank B Mortgage Exam',
-    start_date: 'October 1, 2020',
-    end_date: 'October 1, 2022',
-    description: '8 high risk inconsistencies'
+    name: 'Bank B Mortgage Exam'
   }
 ]
 
@@ -26,9 +23,29 @@ describe('<EventList />', () => {
     const eventItems = await screen.findAllByTestId('event-item')
     expect(eventHeading).toHaveTextContent('Test events')
     expect(eventItems).toHaveLength(2)
-    expect(within(eventItems[0]).getByText(/Bank A Auto Exam/)).toBeVisible()
-    expect(within(eventItems[0]).getByText(/January 1, 2018/)).toBeVisible()
-    expect(within(eventItems[0]).getByText(/January 1, 2021/)).toBeVisible()
-    expect(within(eventItems[0]).getByText(/10 inconsistencies/)).toBeVisible()
+  })
+
+  it('renders an event with dates and description', async () => {
+    renderWithProviders(<EventList heading='Test events' events={events} />)
+    const eventItems = await screen.findAllByTestId('event-item')
+    expect(eventItems).toHaveLength(2)
+    const header = within(eventItems[0]).queryByTestId('event-header')
+    expect(header).toBeVisible()
+    expect(header).toHaveTextContent(
+      'Bank A Auto Exam - January 1, 2018 - January 1, 2021'
+    )
+    const description = within(eventItems[0]).queryByTestId('event-description')
+    expect(description).toBeVisible()
+    expect(description).toHaveTextContent('10 inconsistencies')
+  })
+
+  it('renders an event without dates or description', async () => {
+    renderWithProviders(<EventList heading='Test events' events={events} />)
+    const eventItems = await screen.findAllByTestId('event-item')
+    const header = within(eventItems[1]).queryByTestId('event-header')
+    expect(header).toBeVisible()
+    expect(header).toHaveTextContent('Bank B Mortgage Exam')
+    const description = within(eventItems[1]).queryByTestId('event-description')
+    expect(description).not.toBeInTheDocument()
   })
 })
