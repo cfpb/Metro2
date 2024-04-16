@@ -750,7 +750,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(
             self.event, 'Status-APD-2', expected)
 
-        def test_eval_status_date_closed_1_func(self):
+    def test_eval_status_date_closed_1_func(self):
         # Hits when all conditions are met:
         # 1. acct_stat == '05', '13', '62', '64', '65', '89', '94'
         # 3. date_closed == None
