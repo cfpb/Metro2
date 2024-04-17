@@ -46,7 +46,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.eval3 = EvaluatorMetadata.create_from_dict({
             'id': 'Status-DOFD-4',
             'name':'',
-            'description': 'description for a third addl-dofd eval',
+            'description': 'description for a third status-dofd eval',
             'long_description': '',
             'fields_used': 'account status;dofd;php',
             'fields_display': 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
@@ -271,7 +271,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                 'use_notes': '', 'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 'risk_level': 'High'
             }, {
                 'hits': 1, 'id': 'Status-DOFD-4', 'name': '', 'description':
-                    'description for a third addl-dofd eval', 'long_description': '',
+                    'description for a third status-dofd eval', 'long_description': '',
                     'fields_used': ['account status', 'dofd', 'php'],
                     'fields_display': ['original charge-off amount',
                         'scheduled monthly payment amount', 'special comment code',
