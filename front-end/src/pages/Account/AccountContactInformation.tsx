@@ -15,7 +15,7 @@ export const fetchAccountPII = async (
   return fetchData<AccountHolder>(url, 'account')
 }
 
-export default function AccountHolderComponent({
+export default function AccountContactInformation({
   accountId,
   eventId
 }: AccountHolderProperties): ReactElement {

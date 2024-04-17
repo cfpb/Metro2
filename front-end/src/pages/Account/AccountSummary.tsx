@@ -6,7 +6,7 @@ import type { AccountRecord } from '../../utils/constants'
 import { FIELD_NAMES_LOOKUP } from '../../utils/constants'
 import { getM2Definition } from '../../utils/utils'
 import type Account from './Account'
-import AccountHolderComponent from './AccountHolderComponent'
+import AccountContactInformation from './AccountContactInformation'
 
 interface AccountSummaryProperties {
   accountData: Account
@@ -60,7 +60,7 @@ export default function AccountSummary({
   // TODO: ensure records are sorted by date or sort them
   const latestRecord = accountData.account_activity[0]
   const contactComponent = (
-    <AccountHolderComponent
+    <AccountContactInformation
       eventId={eventId}
       accountId={accountData.cons_acct_num}
     />
