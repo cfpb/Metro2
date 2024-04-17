@@ -62,7 +62,7 @@ class Addl_Bk_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'j1__cons_info_ind': 'K', 'j2__cons_info_ind': 'D',
             'dofd': None
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-BK-1', expected)
+        self.assert_evaluator_correct(self.event, 'Bankruptcy-DOFD-4', expected)
 
     def test_eval_addl_bk_1_no_j1_segment(self):
         create_j1_data=False
@@ -82,7 +82,7 @@ class Addl_Bk_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'j1__cons_info_ind': None, 'j2__cons_info_ind': 'D',
             'dofd': None
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-BK-1', expected)
+        self.assert_evaluator_correct(self.event, 'Bankruptcy-DOFD-4', expected)
 
     def test_eval_addl_bk_1_two_j1_segments(self):
         create_j1_data=True
@@ -116,7 +116,7 @@ class Addl_Bk_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'j1__cons_info_ind': 'K', 'j2__cons_info_ind': 'D',
             'dofd': None
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-BK-1', expected)
+        self.assert_evaluator_correct(self.event, 'Bankruptcy-DOFD-4', expected)
 
     def test_eval_addl_bk_1_two_entry_for_one_j2_segment(self):
         create_j1_data=True
@@ -150,4 +150,4 @@ class Addl_Bk_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'j1__cons_info_ind': 'O', 'j2__cons_info_ind': 'D',
             'dofd': None
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-BK-1', expected)
+        self.assert_evaluator_correct(self.event, 'Bankruptcy-DOFD-4', expected)
