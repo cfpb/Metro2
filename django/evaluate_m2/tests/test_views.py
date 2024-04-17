@@ -14,9 +14,9 @@ from parse_m2.models import AccountHolder, M2DataFile, Metro2Event
 class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self) -> None:
         self.eval1 = EvaluatorMetadata.create_from_dict({
-            'id': 'ADDL-DOFD-1',
+            'id': 'Status-DOFD-1',
             'name': 'Additional evaluator for Date of First Delinquency',
-            'description': 'description of addl-dofd-1',
+            'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
@@ -130,12 +130,12 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def test_download_evaluator_results_csv(self):
         self.create_activity_data()
 
-        response = self.client.get('/api/events/1/evaluator/ADDL-DOFD-1/csv/')
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/csv/')
 
         # the response should be a CSV
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'text/csv')
-        self.assertIn(f'filename=test_exam_ADDL-DOFD-1_{date.today()}.csv',
+        self.assertIn(f'filename=test_exam_Status-DOFD-1_{date.today()}.csv',
             response.headers['Content-Disposition'])
 
         # the CSV should contain info about the evaluator_results
@@ -154,7 +154,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                              {'record': 2, 'acct_type': 'n'}]}
         self.create_activity_data()
 
-        response = self.client.get('/api/events/1/evaluator/ADDL-DOFD-1/')
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
@@ -171,7 +171,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             status_code=404)
 
     def test_evaluator_results_view_with_error_no_event(self):
-        response = self.client.get('/api/events/1/evaluator/ADDL-DOFD-1/')
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
 
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response, 'Event ID: 1 does not exist.', status_code=404)
@@ -190,7 +190,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'cons_acct_num': '0033',
             'inconsistencies': [
                 {
-                    'id': 'ADDL-DOFD-1',
+                    'id': 'Status-DOFD-1',
                     'name': 'Additional evaluator for Date of First Delinquency'
                 }
             ],
@@ -210,7 +210,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         expected = {
             'cons_acct_num': '0032',
             'inconsistencies': [
-                { 'id': 'ADDL-DOFD-1',
+                { 'id': 'Status-DOFD-1',
                   'name': 'Additional evaluator for Date of First Delinquency' },
                 { 'id': 'ADDL-DOFD-3', 'name': '' },
             ],
@@ -260,9 +260,9 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'id': 1,
             'name': 'test_exam',
             'evaluators': [{
-                'hits': 2, 'id': 'ADDL-DOFD-1',
+                'hits': 2, 'id': 'Status-DOFD-1',
                 'name': 'Additional evaluator for Date of First Delinquency',
-                'description': 'description of addl-dofd-1', 'long_description': '',
+                'description': 'description of Status-DOFD-1', 'long_description': '',
                 'fields_used': ['account status', 'date of first delinquency'],
                 'fields_display': ['amount past due', 'compliance condition code',
                     'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',

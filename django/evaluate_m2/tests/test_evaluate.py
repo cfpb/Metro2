@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from datetime import date
 from evaluate_m2.evaluate import evaluator
-from evaluate_m2.m2_evaluators.addl_dofd_evals import addl_dofd_1_func, addl_dofd_2_func
+from evaluate_m2.m2_evaluators.addl_dofd_evals import eval_status_dofd_1_func, addl_dofd_2_func
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
@@ -61,7 +61,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
         self.create_bulk_activities(self.data_file, activities, 4)
 
-        evaluator.evaluators = {"ADDL-DOFD-1": addl_dofd_1_func}
+        evaluator.evaluators = {"Status-DOFD-1": eval_status_dofd_1_func}
 
         evaluator.run_evaluators(self.event)
 
@@ -79,14 +79,14 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         # 3: NO HIT 4: Evaluator1 - HIT
         self.create_bulk_activities(self.data_file, activities, 4)
 
-        evaluator.evaluators = {"ADDL-DOFD-1": addl_dofd_1_func,
+        evaluator.evaluators = {"Status-DOFD-1": eval_status_dofd_1_func,
                                 "ADDL-DOFD-2": addl_dofd_2_func}
         evaluator.run_evaluators(self.event)
         self.assertEqual(2, EvaluatorResultSummary.objects.count())
         self.assertEqual(2, EvaluatorMetadata.objects.count())
 
         # first evaluator metadata and results
-        eval1 = EvaluatorMetadata.objects.get(id="ADDL-DOFD-1")
+        eval1 = EvaluatorMetadata.objects.get(id="Status-DOFD-1")
         summary1 = eval1.evaluatorresultsummary_set.first()
         self.assertEqual(2, summary1.hits)
         self.assertEqual(2, summary1.evaluatorresult_set.count())
@@ -106,7 +106,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         # 1: HIT, 2: NO-acct_stat=66, 3: NO-acct_stat=11, 4: NO-dofd=01012020
         self.create_bulk_activities(self.data_file, activities, 3)
 
-        eval_id = "ADDL-DOFD-1"
+        eval_id = "Status-DOFD-1"
         result_summary = evaluator.prepare_result_summary(self.event, eval_id, self.expected)
         result = evaluator.prepare_result(result_summary, self.expected[0])
 
@@ -120,7 +120,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
 
     def test_prepare_result_summary_creates_an_object(self):
         # should correctly create one EvaluatorResultSummary object
-        eval_id = "ADDL-DOFD-1"
+        eval_id = "Status-DOFD-1"
         return_value = evaluator.prepare_result_summary(self.event, eval_id, self.expected)
 
         self.assertEqual(eval_id, return_value.evaluator.id)
@@ -140,7 +140,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         event.save()
         data_file = M2DataFile(event=self.event, file_name='file.txt')
         data_file.save()
-        evaluator.evaluators = {"ADDL-DOFD-1": addl_dofd_1_func,
+        evaluator.evaluators = {"Status-DOFD-1": eval_status_dofd_1_func,
                                 "ADDL-DOFD-2": addl_dofd_2_func}
         evaluator.run_evaluators(event)
 

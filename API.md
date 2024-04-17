@@ -35,7 +35,7 @@ File name: `evaluator-metadata-2024-03-18.csv`
 File contents:
 ```csv
 id,name,description,long_description,fields_used,fields_display,ipl,crrg_topics,crrg_page,pdf_page,use_notes,alternative_explanation,risk_level
-ADDL-DOFD-1,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,41,79,,,High
+
 ADDL-DOFD-2,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
 ADDL-DOFD-3,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
 ADDL-DOFD-4,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
@@ -105,7 +105,7 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
     "inconsistencies": [
         {
             "id": "2",
-            "name": "ADDL-DOFD-1",
+            "name": "Status-DOFD-1",
         },
         # ...etc.
     ],

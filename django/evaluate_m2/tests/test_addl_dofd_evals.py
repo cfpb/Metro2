@@ -44,7 +44,7 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-1', expected)
 
     def test_eval_addl_dofd_2(self):
     # Hits when all conditions met:
