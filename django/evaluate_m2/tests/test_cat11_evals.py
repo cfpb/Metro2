@@ -418,7 +418,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'account_holder__cons_info_ind': '', 'j1__cons_info_ind': None, 'j2__cons_info_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event, '11-Current but DOFD', expected)
+            self.event, 'Status-DOFD-6', expected)
 
     def test_eval_11_current_delinquent_not_closed_but_date_closed(self):
     # Hits when all conditions are met:
