@@ -31,7 +31,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.eval2 = EvaluatorMetadata.create_from_dict({
             'id': 'Status-DOFD-2',
             'name': '',
-            'description': 'description for the other addl-dofd eval',
+            'description': 'description for the other status-dofd eval',
             'long_description': '',
             'fields_used': 'account status;dofd;php',
             'fields_display': 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
