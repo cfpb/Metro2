@@ -326,7 +326,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(
             self.event,
-            '11-Foreclosure with current payment rating but amount past due',
+            'Rating-APD-1',
             expected)
 
     def test_eval_11_fcl_with_delinquent_pmt_rtg_but_no_amt_past_due(self):
