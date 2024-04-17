@@ -62,7 +62,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         }]
         self.assert_evaluator_correct(
             self.event,
-            '7-1A-SCC Indicates Paid But Account Status Does Not Indicate Paid', expected)
+            'SCC-Status-1', expected)
 
     def test_eval_7_paid_but_account_has_balance(self):
         # Hits when both conditions met:
