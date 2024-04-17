@@ -87,7 +87,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event, '7-1B-SCC Indicates Paid But Account Has Current Balance',
+            self.event, 'SCC-Balance-1',
             expected)
 
     def test_eval_7_paid_but_account_has_APD(self):
