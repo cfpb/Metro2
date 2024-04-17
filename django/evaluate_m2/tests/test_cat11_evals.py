@@ -4,7 +4,6 @@ from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import (
     EvaluatorTestHelper,
     acct_record,
-
 )
 from parse_m2.models import Metro2Event, M2DataFile
 
@@ -106,8 +105,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'current_bal':0, 'date_closed': None, 'orig_chg_off_amt': 0,
             'smpa':0, 'spc_com_cd':"", 'terms_freq':"00"
         }]
-        self.assert_evaluator_correct(
-            self.event, 'Status-DOFD-3', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-3', expected)
 
     def test_eval_status_balance_1(self):
     # Hits when all conditions are met:
@@ -148,8 +146,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': None, 'orig_chg_off_amt': 0,
             'smpa':0, 'terms_freq':"00"
         }]
-        self.assert_evaluator_correct(
-            self.event, 'Status-Balance-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-1', expected)
 
     def test_eval_status_smpa_1(self):
     # Hits when all conditions are met:
@@ -189,8 +186,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': None, 'dofd': None, 'orig_chg_off_amt': 0,
             'terms_freq':"00"
         }]
-        self.assert_evaluator_correct(
-            self.event, 'Status-SMPA-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-SMPA-1', expected)
 
     def test_eval_11_charged_off_but_no_charge_off_amount(self):
     # Hits when all conditions are met:
@@ -232,8 +228,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': None, 'orig_chg_off_amt': 0, 'smpa':0,
             'spc_com_cd':"", 'terms_freq':"00"
         }]
-        self.assert_evaluator_correct(
-            self.event, 'Status-ChargeOff-2', expected)
+        self.assert_evaluator_correct(self.event, 'Status-ChargeOff-2', expected)
 
     def test_eval_ccc_date_closed_3(self):
     # Hits when all conditions are met:
@@ -324,10 +319,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'terms_freq': '00', 'acct_type': '', 'port_type': 'A'
         }]
 
-        self.assert_evaluator_correct(
-            self.event,
-            'Rating-APD-1',
-            expected)
+        self.assert_evaluator_correct(self.event, 'Rating-APD-1', expected)
 
     def test_eval_11_fcl_with_delinquent_pmt_rtg_but_no_amt_past_due(self):
     # Hits when all conditions are met:
@@ -374,10 +366,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'terms_freq': '00', 'acct_type': '', 'port_type': 'A'
         }]
 
-        self.assert_evaluator_correct(
-            self.event,
-            'Rating-APD-2',
-            expected)
+        self.assert_evaluator_correct(self.event, 'Rating-APD-2', expected)
 
     def test_eval_11_current_but_dofd(self):
     # Hits when all conditions are met:
@@ -788,5 +777,4 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
              'dofd': None, 'orig_chg_off_amt': 0, 'smpa':0,
             'terms_freq':"00"
         }]
-        self.assert_evaluator_correct( self.event,
-            'Status-DateClosed-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DateClosed-1', expected)
