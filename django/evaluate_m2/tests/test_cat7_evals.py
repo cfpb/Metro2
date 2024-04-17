@@ -113,7 +113,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event, '7-1C-SCC Indicates Paid But Account Has Amount Past Due',
+            self.event, 'SCC-APD-1',
             expected)
 
     def test_eval_7_transferred_purchased_but_account_has_balance(self):
