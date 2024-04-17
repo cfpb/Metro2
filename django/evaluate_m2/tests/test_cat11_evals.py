@@ -233,7 +233,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'spc_com_cd':"", 'terms_freq':"00"
         }]
         self.assert_evaluator_correct(
-            self.event, '11-charged off but no charge off amount', expected)
+            self.event, 'Status-ChargeOff-2', expected)
 
     def test_eval_ccc_date_closed_3(self):
     # Hits when all conditions are met:
