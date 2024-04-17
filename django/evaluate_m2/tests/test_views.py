@@ -44,7 +44,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'risk_level': 'High'
         })
         self.eval3 = EvaluatorMetadata.create_from_dict({
-            'id': 'ADDL-DOFD-3',
+            'id': 'Status-DOFD-4',
             'name':'',
             'description': 'description for a third addl-dofd eval',
             'long_description': '',
@@ -212,7 +212,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'inconsistencies': [
                 { 'id': 'Status-DOFD-1',
                   'name': 'Additional evaluator for Date of First Delinquency' },
-                { 'id': 'ADDL-DOFD-3', 'name': '' },
+                { 'id': 'Status-DOFD-4', 'name': '' },
             ],
             'account_activity': self.get_account_activity(id=32)
         }
@@ -270,7 +270,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                 'ipl': '', 'crrg_topics': '', 'crrg_page': '400', 'pdf_page': '',
                 'use_notes': '', 'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 'risk_level': 'High'
             }, {
-                'hits': 1, 'id': 'ADDL-DOFD-3', 'name': '', 'description':
+                'hits': 1, 'id': 'Status-DOFD-4', 'name': '', 'description':
                     'description for a third addl-dofd eval', 'long_description': '',
                     'fields_used': ['account status', 'dofd', 'php'],
                     'fields_display': ['original charge-off amount',

@@ -37,7 +37,7 @@ File contents:
 id,name,description,long_description,fields_used,fields_display,ipl,crrg_topics,crrg_page,pdf_page,use_notes,alternative_explanation,risk_level
 
 
-ADDL-DOFD-3,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
+
 ADDL-DOFD-4,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
 ```
 
