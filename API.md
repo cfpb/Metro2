@@ -35,10 +35,10 @@ File name: `evaluator-metadata-2024-03-18.csv`
 File contents:
 ```csv
 id,name,description,long_description,fields_used,fields_display,ipl,crrg_topics,crrg_page,pdf_page,use_notes,alternative_explanation,risk_level
-ADDL-DOFD-1,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,41,79,,,High
-ADDL-DOFD-2,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
-ADDL-DOFD-3,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
-ADDL-DOFD-4,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
+
+
+
+
 ```
 
 ### Exporting evaluator results CSV
@@ -50,7 +50,7 @@ GET - returns a CSV of evaluator results for a single evaluator (whose ID matche
 Users can import this CSV into Excel in order to sort, filter, and analyze the results. The CSV contains one row for each `EvaluatorResult` for the given event + evaluator combo. It has a column for each field in the "fields used" column of the Evaluator Source of Truth spreadsheet.
 
 **Example response:**
-File name: `hyundai2024_ADDL-DOFD-2_12-31-2023.csv`
+File name: `hyundai2024_Status-DOFD-2_12-31-2023.csv`
 
 File contents:
 ```csv
@@ -105,7 +105,7 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
     "inconsistencies": [
         {
             "id": "2",
-            "name": "ADDL-DOFD-1",
+            "name": "Status-DOFD-1",
         },
         # ...etc.
     ],
@@ -186,8 +186,8 @@ GET - returns a JSON information about an event, including its name and all eval
     "evaluators": [
         {
             "hits": 4209,
-            "id":"ADDL-DOFD-4",
-            "name": "ADDL-DOFD-4",
+            "id":"DOAI-DOFD-1",
+            "name": "DOAI-DOFD-1",
             "description": "Account reports date of first delinquency longer than 7 years.",
             "long_description": "",
             "fields_used": [

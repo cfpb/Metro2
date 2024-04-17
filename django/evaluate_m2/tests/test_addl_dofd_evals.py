@@ -44,7 +44,7 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
             'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-1', expected)
 
     def test_eval_addl_dofd_2(self):
     # Hits when all conditions met:
@@ -78,7 +78,7 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-2', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-2', expected)
 
     def test_eval_addl_dofd_3(self):
     # Hits when all conditions met:
@@ -114,7 +114,7 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
             'terms_freq': '0'
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-3', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-4', expected)
 
     def test_eval_addl_dofd_4(self):
     # Hits condition is met:
@@ -147,4 +147,4 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'cons_acct_num': '0033', 'dofd': date(2015, 12, 31),
             'doai': date(2023, 1, 1)
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-4', expected)
+        self.assert_evaluator_correct(self.event, 'DOAI-DOFD-1', expected)
