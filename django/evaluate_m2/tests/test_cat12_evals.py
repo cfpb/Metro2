@@ -105,4 +105,4 @@ class Cat12_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '0C', 'port_type': 'O', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
-        self.assert_evaluator_correct(self.event, "12-Open no HCOLA", expected)
+        self.assert_evaluator_correct(self.event, "Type-HCOLA-3", expected)
