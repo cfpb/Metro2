@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from datetime import date
 from evaluate_m2.evaluate import evaluator
-from evaluate_m2.m2_evaluators.addl_dofd_evals import eval_status_dofd_1_func, addl_dofd_2_func
+from evaluate_m2.m2_evaluators.addl_dofd_evals import eval_status_dofd_1_func, eval_status_dofd_2_func
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
@@ -80,7 +80,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.create_bulk_activities(self.data_file, activities, 4)
 
         evaluator.evaluators = {"Status-DOFD-1": eval_status_dofd_1_func,
-                                "ADDL-DOFD-2": addl_dofd_2_func}
+                                "Status-DOFD-2": eval_status_dofd_2_func}
         evaluator.run_evaluators(self.event)
         self.assertEqual(2, EvaluatorResultSummary.objects.count())
         self.assertEqual(2, EvaluatorMetadata.objects.count())
@@ -92,7 +92,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(2, summary1.evaluatorresult_set.count())
 
         # second evaluator metadata and results
-        eval2 = EvaluatorMetadata.objects.get(id="ADDL-DOFD-2")
+        eval2 = EvaluatorMetadata.objects.get(id="Status-DOFD-2")
         summary2 = eval2.evaluatorresultsummary_set.first()
         self.assertEqual(1, summary2.hits)
         self.assertEqual(1, summary2.evaluatorresult_set.count())
@@ -141,7 +141,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         data_file = M2DataFile(event=self.event, file_name='file.txt')
         data_file.save()
         evaluator.evaluators = {"Status-DOFD-1": eval_status_dofd_1_func,
-                                "ADDL-DOFD-2": addl_dofd_2_func}
+                                "Status-DOFD-2": eval_status_dofd_2_func}
         evaluator.run_evaluators(event)
 
         self.assertEqual(0, AccountActivity.objects.count())

@@ -29,7 +29,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'risk_level': 'High'
         })
         self.eval2 = EvaluatorMetadata.create_from_dict({
-            'id': 'ADDL-DOFD-2',
+            'id': 'Status-DOFD-2',
             'name': '',
             'description': 'description for the other addl-dofd eval',
             'long_description': '',
@@ -178,7 +178,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_evaluator_results_view_with_error_no_evaluator_results_summary(self):
         self.create_activity_data()
-        response = self.client.get('/api/events/1/evaluator/ADDL-DOFD-2/')
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-2/')
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response,
             'EvaluatorResultSummary record(s) not found for event ID 1.',
