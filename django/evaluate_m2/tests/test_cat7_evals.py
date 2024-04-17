@@ -266,4 +266,4 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'current_bal': 9, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event, "7-Account satisfied but has APD", expected)
+            self.event, "SCC-APD-3", expected)
