@@ -559,7 +559,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
         }]
 
         self.assert_evaluator_correct(
-            self.event, '11-repossession but no amount past due', expected)
+            self.event, 'Status-APD-3', expected)
 
     def test_eval_ccc_date_closed_2(self):
     # Hits when all conditions are met:
