@@ -15,9 +15,9 @@ class EvaluatorMetadataSerializerTestCase(TestCase):
     def setUp(self) -> None:
         # Create an EvaluatorMetadata record
         self.eval1 = EvaluatorMetadata.create_from_dict({
-            'id': 'ADDL-DOFD-1',
+            'id': 'Status-DOFD-1',
             'name': 'Additional evaluator for Date of First Delinquency',
-            'description': 'description of addl-dofd-1',
+            'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
@@ -30,9 +30,9 @@ class EvaluatorMetadataSerializerTestCase(TestCase):
             'risk_level': 'High'
         })
 
-        self.json_representation = {'id': 'ADDL-DOFD-1',
+        self.json_representation = {'id': 'Status-DOFD-1',
             'name': 'Additional evaluator for Date of First Delinquency',
-            'description': 'description of addl-dofd-1',
+            'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
@@ -58,9 +58,9 @@ class EvaluatorMetadataSerializerTestCase(TestCase):
 class EvaluatorResultsViewSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.eval1 = EvaluatorMetadata.create_from_dict({
-            'id': 'ADDL-DOFD-1',
+            'id': 'Status-DOFD-1',
             'name': 'Additional evaluator for Date of First Delinquency',
-            'description': 'description of addl-dofd-1',
+            'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
@@ -127,9 +127,9 @@ class EventsViewSerializerTestCase(TestCase):
     def setUp(self) -> None:
         # Create an EvaluatorMetadata record
         self.eval = EvaluatorMetadata.create_from_dict({
-            'id': 'ADDL-DOFD-1',
+            'id': 'Status-DOFD-1',
             'name': 'Additional evaluator for Date of First Delinquency',
-            'description': 'description of addl-dofd-1',
+            'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
@@ -151,9 +151,9 @@ class EventsViewSerializerTestCase(TestCase):
         self.eval_rs.save()
 
         self.json_representation = {
-                'hits': 2, 'id': 'ADDL-DOFD-1',
+                'hits': 2, 'id': 'Status-DOFD-1',
                 'name': 'Additional evaluator for Date of First Delinquency',
-                'description': 'description of addl-dofd-1', 'long_description': '',
+                'description': 'description of Status-DOFD-1', 'long_description': '',
                 'fields_used': ['account status', 'date of first delinquency'],
                 'fields_display': ['amount past due', 'compliance condition code',
                     'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',

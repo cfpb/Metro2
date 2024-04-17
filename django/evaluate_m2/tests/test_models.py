@@ -8,7 +8,7 @@ from parse_m2.models import Metro2Event
 class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
     def test_eval_create_from_dict(self):
         input_json = {
-            'id': 'ADDL-DOFD-1',
+            'id': 'Status-DOFD-1',
             'name': '',
             'description': 'Account status indicates a delinquent, or paid and previously delinquent, account but there is no date of first delinquency.',
             'long_description': '',
