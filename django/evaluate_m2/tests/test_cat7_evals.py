@@ -241,7 +241,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'current_bal': -9, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
-            self.event, '7-Account satisfied but has balance', expected)
+            self.event, 'SCC-Balance-3', expected)
 
     def test_eval_7_account_satisfied_but_has_APD(self):
         # Hits when both conditions met:
