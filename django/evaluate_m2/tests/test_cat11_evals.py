@@ -60,7 +60,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'spc_com_cd':"", 'terms_freq':"00"
         }]
         self.assert_evaluator_correct(
-            self.event, '11-not charged off but original charge off amount', expected)
+            self.event, 'Status-ChargeOff-1', expected)
 
     def test_eval_11_transferred_delinquent_pmt_rtg_no_dofd(self):
     # Hits when all conditions are met:
