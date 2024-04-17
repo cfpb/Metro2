@@ -107,7 +107,7 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'smpa':0, 'spc_com_cd':"", 'terms_freq':"00"
         }]
         self.assert_evaluator_correct(
-            self.event, '11-Transferred delinquent payment rating no DOFD', expected)
+            self.event, 'Status-DOFD-3', expected)
 
     def test_eval_status_balance_1(self):
     # Hits when all conditions are met:
