@@ -147,4 +147,4 @@ class Addl_Dofd_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'cons_acct_num': '0033', 'dofd': date(2015, 12, 31),
             'doai': date(2023, 1, 1)
         }]
-        self.assert_evaluator_correct(self.event, 'ADDL-DOFD-4', expected)
+        self.assert_evaluator_correct(self.event, 'DOAI-DOFD-1', expected)

@@ -38,7 +38,7 @@ id,name,description,long_description,fields_used,fields_display,ipl,crrg_topics,
 
 
 
-ADDL-DOFD-4,"description","<p><span class="font5">description</span><p>","account status;date of first delinquency",,,,,42-51,,,,High
+
 ```
 
 ### Exporting evaluator results CSV
@@ -186,8 +186,8 @@ GET - returns a JSON information about an event, including its name and all eval
     "evaluators": [
         {
             "hits": 4209,
-            "id":"ADDL-DOFD-4",
-            "name": "ADDL-DOFD-4",
+            "id":"DOAI-DOFD-1",
+            "name": "DOAI-DOFD-1",
             "description": "Account reports date of first delinquency longer than 7 years.",
             "long_description": "",
             "fields_used": [
