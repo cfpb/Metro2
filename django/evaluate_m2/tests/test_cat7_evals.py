@@ -167,7 +167,7 @@ class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
         }]
 
         self.assert_evaluator_correct(
-            self.event, '7-Transferred/purchased but account has APD', expected)
+            self.event, 'SCC-APD-2', expected)
 
     def test_eval_7_terminated_owing_balance_but_no_current_balance(self):
         # Hits when both conditions met:
