@@ -32,9 +32,11 @@ Users can export this CSV into Excel in order to sort, filter, and analyze the m
 **Example response:**
 File name: `evaluator-metadata-2024-03-18.csv`
 
+*To do:* Update this sample response with more realistic data once eval metadata is ingested in the system.
+
 File contents:
 ```csv
-id,name,description,long_description,fields_used,fields_display,ipl,crrg_topics,crrg_page,pdf_page,use_notes,alternative_explanation,risk_level
+id,description,long_description,fields_used,fields_display,crrg_reference,potential_harm,rationale,alternate_explanation
 
 
 
@@ -202,11 +204,10 @@ GET - returns a JSON information about an event, including its name and all eval
                 "special comment code",
                 "terms frequency"
             ],
-            "crrg_topics": "",
-            "crrg_page": "",
-            "pdf_page": "",
-            "use_notes": "",
-            "alternative_explanation": "",
+            "crrg_reference": "",
+            "potential_harm": "",
+            "rationale": "",
+            "alternate_explanation": "",
         },
         # ... etc.
     ]
