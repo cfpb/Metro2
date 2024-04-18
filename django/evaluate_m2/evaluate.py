@@ -6,7 +6,7 @@ from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_ev
 from evaluate_m2.m2_evaluators.scc_evals import evaluators as scc_evals
 from evaluate_m2.m2_evaluators.cat9_evals import evaluators as cat9_evals
 from evaluate_m2.m2_evaluators.cat11_evals import evaluators as cat11_evals
-from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
+from evaluate_m2.m2_evaluators.type_evals import evaluators as type_evals
 from evaluate_m2.m2_evaluators.ccc_evals import evaluators as ccc_evals
 from evaluate_m2.m2_evaluators.status_evals import evaluators as status_evals
 from parse_m2.models import Metro2Event
@@ -17,8 +17,8 @@ class Evaluate():
         #  When evaluators are provided by additional files, add them here
         #   e.g. self.evaluators = cat7_evals | cat9_evals | ...
         self.evaluators = addl_bk_evals | addl_dofd_evals |  \
-                          cat9_evals | cat11_evals | cat12_evals | \
-                          ccc_evals | status_evals | scc_evals
+                          cat9_evals | cat11_evals |  \
+                          ccc_evals | status_evals | scc_evals | type_evals 
 
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):
