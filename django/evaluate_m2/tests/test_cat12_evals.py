@@ -46,7 +46,7 @@ class Cat12_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '00', 'port_type': 'I', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
-        self.assert_evaluator_correct(self.event, '12-Installment loan no HCOLA', expected)
+        self.assert_evaluator_correct(self.event, 'Type-HCOLA-1', expected)
 
     def test_eval_12_mortgage_no_HCOLA(self):
         # Hits when all conditions are met:
@@ -75,7 +75,7 @@ class Cat12_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '2C', 'port_type': 'M', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
-        self.assert_evaluator_correct(self.event, '12-Mortgage no HCOLA', expected)
+        self.assert_evaluator_correct(self.event, 'Type-HCOLA-2', expected)
 
     def test_eval_12_open_no_HCOLA(self):
         # Hits when all conditions are met:
@@ -105,4 +105,4 @@ class Cat12_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '0C', 'port_type': 'O', 'hcola': 0,
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
-        self.assert_evaluator_correct(self.event, "12-Open no HCOLA", expected)
+        self.assert_evaluator_correct(self.event, "Type-HCOLA-3", expected)
