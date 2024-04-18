@@ -15,10 +15,6 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
 
-    ############################
-    # Tests for the category 11 evaluators
-
-
 
     def test_eval_11_fcl_with_curr_pmt_rtg_but_amt_past_due(self):
     # Hits when all conditions are met:
@@ -113,8 +109,3 @@ class Cat11_EvalsTestCase(TestCase, EvaluatorTestHelper):
         }]
 
         self.assert_evaluator_correct(self.event, 'Rating-APD-2', expected)
-
-
-
-
-
