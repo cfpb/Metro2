@@ -14,6 +14,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.event.save()
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
+        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V'))
 
     def test_eval_11_not_charged_off_but_original_charge_off_amount(self):
     # Hits when all conditions are met:
@@ -492,3 +493,103 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             'terms_freq':"00"
         }]
         self.assert_evaluator_correct(self.event, 'Status-DateClosed-1', expected)
+
+    def test_eval_addl_dofd_1(self):
+    # Hits when all conditions met:
+    # 1. acct_stat == '61', '62', '63', '64', '65', '71', '78', '80','82',
+    #                 '83', '84', '88', '89', '94', '95', '96', '93', '97'
+    # 2. dofd == None
+
+        # Create the Account Activities data
+        activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
+            'account_holder':('Z','Y','X','W'),
+            'acct_stat':('71','97','11','65'),
+            'dofd':(None,None,None,date(2019, 12, 31))}
+        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
+        self.create_bulk_activities(self.data_file, activities, 4)
+
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0032', 'acct_stat': '71', 'dofd': None,
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
+            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0033', 'acct_stat': '97', 'dofd': None,
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
+            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
+        }]
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-1', expected)
+
+    def test_eval_addl_dofd_2(self):
+    # Hits when all conditions met:
+    # 1. acct_stat == '13'
+    # 2. pmt_rating == '1', '2', '3', '4', '5', '6', 'G', 'L'
+    # 2. dofd == None
+
+        # Create the Account Activities data
+        activities = { 'id':(32,33,34,35,36),
+            'cons_acct_num':('0032','0033','0034','0035', '0036'),
+            'account_holder':('Z','Y','X','W','V'),
+            'acct_stat':('13','13','11','13','13'),
+            'dofd':(None,None,None,None,date(2019, 12, 31)),
+            'pmt_rating':('1','2','3','0','L')}
+        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-pmt_rating=0, 5: NO-dofd=01012020
+        self.create_bulk_activities(self.data_file, activities, 5)
+
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0032', 'acct_stat': '13', 'dofd': None,
+            'pmt_rating':'1', 'amt_past_due': 0, 'compl_cond_cd':'0',
+            'current_bal': 0, 'date_closed': date(2020, 1, 1),
+            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
+            'terms_freq': '0'
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0033', 'acct_stat': '13', 'dofd': None,
+            'pmt_rating':'2', 'amt_past_due': 0, 'compl_cond_cd':'0',
+            'current_bal': 0, 'date_closed': date(2020, 1, 1),
+            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
+            'terms_freq': '0'
+        }]
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-2', expected)
+
+    def test_eval_addl_dofd_3(self):
+    # Hits when all conditions met:
+    # 1. acct_stat == '13'
+    # 2. pmt_rating == '0'
+    # 3. dofd != None
+
+        # Create the Account Activities data
+        activities = { 'id':(32,33,34,35,36),
+            'cons_acct_num':('0032','0033','0034','0035', '0036'),
+            'account_holder':('Z','Y','X','W','V'),
+            'acct_stat':('13','13','11','13','13'),
+            'dofd':(date(2019, 12, 31),date(2019, 12, 31),None,None,None),
+            'pmt_rating':('0','0','0','3','0')}
+        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: pmt_rating=3, 5: NO-dofd=01012020
+        self.create_bulk_activities(self.data_file, activities, 5)
+
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0032', 'acct_stat': '13',
+            'dofd': date(2019, 12, 31), 'pmt_rating':'0',
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': date(2020, 1, 1),
+            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
+            'terms_freq': '0'
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0033', 'acct_stat': '13',
+            'dofd': date(2019, 12, 31), 'pmt_rating':'0',
+            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
+            'date_closed': date(2020, 1, 1),
+            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': 'X',
+            'terms_freq': '0'
+        }]
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-4', expected)

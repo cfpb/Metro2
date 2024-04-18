@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from datetime import date
 from evaluate_m2.evaluate import evaluator
-from evaluate_m2.m2_evaluators.addl_dofd_evals import eval_status_dofd_1_func, eval_status_dofd_2_func
+from evaluate_m2.m2_evaluators.status_evals import eval_status_dofd_1_func, eval_status_dofd_2_func
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
