@@ -105,7 +105,6 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
     "inconsistencies": [
         {
             "id": "2",
-            "name": "Status-DOFD-1",
         },
         # ...etc.
     ],
@@ -187,7 +186,6 @@ GET - returns a JSON information about an event, including its name and all eval
         {
             "hits": 4209,
             "id":"DOAI-DOFD-1",
-            "name": "DOAI-DOFD-1",
             "description": "Account reports date of first delinquency longer than 7 years.",
             "long_description": "",
             "fields_used": [
@@ -204,13 +202,11 @@ GET - returns a JSON information about an event, including its name and all eval
                 "special comment code",
                 "terms frequency"
             ],
-            "ipl": "",
             "crrg_topics": "",
             "crrg_page": "",
             "pdf_page": "",
             "use_notes": "",
             "alternative_explanation": "",
-            "risk_level": "",
         },
         # ... etc.
     ]

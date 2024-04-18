@@ -12,20 +12,15 @@ class EvaluatorMetadata(models.Model):
     # Use the identifier as the primary key instead of an auto_numbered ID.
     # id values may not be blank and must be unique
     id = models.CharField(max_length=200, primary_key=True)
-    name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)  # plain language description
+    description = models.TextField(blank=True)  # short plain language description
     long_description = models.TextField(blank=True)
     fields_used = JSONField(encoder=DjangoJSONEncoder, null=True)
     fields_display = JSONField(encoder=DjangoJSONEncoder, null=True)
-    ipl = models.CharField(max_length=200, blank=True)
-    # category -- tbd how to model this
-    # filters -- tbd how to model this
     crrg_topics = models.CharField(max_length=200, blank=True)
     crrg_page = models.CharField(max_length=200, blank=True)
     pdf_page = models.CharField(max_length=200, blank=True)
     use_notes = models.TextField(blank=True)
     alternative_explanation = models.TextField(blank=True)
-    risk_level = models.CharField(max_length=200, blank=True)
 
     func: any
 
@@ -37,34 +32,28 @@ class EvaluatorMetadata(models.Model):
         # using .create means we don't have to call .save manually
         return cls.objects.create(
             id=json["id"],
-            name=json["name"],
             description=json["description"],
             long_description=json["long_description"],
             fields_used=json["fields_used"].split(";"),
             fields_display=json["fields_display"].split(";"),
-            ipl=json["ipl"],
             crrg_topics=json["crrg_topics"],
             crrg_page=json["crrg_page"],
             pdf_page=json["pdf_page"],
             use_notes=json["use_notes"],
             alternative_explanation=json["alternative_explanation"],
-            risk_level=json["risk_level"],
         )
 
     def update_from_dict(self, json: dict):
         # self.id shouldn't be updated
-        self.name=json["name"]
         self.description=json["description"]
         self.long_description=json["long_description"]
         self.fields_used=json["fields_used"].split(";")
         self.fields_display=json["fields_display"].split(";")
-        self.ipl=json["ipl"]
         self.crrg_topics=json["crrg_topics"]
         self.crrg_page=json["crrg_page"]
         self.pdf_page=json["pdf_page"]
         self.use_notes=json["use_notes"]
         self.alternative_explanation=json["alternative_explanation"]
-        self.risk_level=json["risk_level"]
         self.save()
         return self
 
