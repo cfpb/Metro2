@@ -4,7 +4,7 @@ from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResu
 from evaluate_m2.m2_evaluators.bankruptcy_evals import evaluators as bankruptcy_evals
 from evaluate_m2.m2_evaluators.doai_evals import evaluators as doai_evals
 from evaluate_m2.m2_evaluators.scc_evals import evaluators as scc_evals
-from evaluate_m2.m2_evaluators.cat9_evals import evaluators as cat9_evals
+from evaluate_m2.m2_evaluators.php_evals import evaluators as php_evals
 from evaluate_m2.m2_evaluators.rating_evals import evaluators as rating_evals
 from evaluate_m2.m2_evaluators.type_evals import evaluators as type_evals
 from evaluate_m2.m2_evaluators.deferred_evals import evaluators as deferred_evals
@@ -17,10 +17,9 @@ class Evaluate():
     def __init__(self):
         #  When evaluators are provided by additional files, add them here
         #   e.g. self.evaluators = cat7_evals | cat9_evals | ...
-        self.evaluators = cat9_evals |   \
-                          ccc_evals | status_evals | scc_evals | type_evals | \
+        self.evaluators = ccc_evals | status_evals | scc_evals | type_evals | \
                           deferred_evals | rating_evals | bankruptcy_evals | \
-                          doai_evals
+                          doai_evals | php_evals
 
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):
