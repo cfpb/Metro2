@@ -20,11 +20,10 @@ class EvaluatorMetadataSerializerTestCase(TestCase):
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_topics': '',
-            'crrg_page': '400',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         })
 
         self.json_representation = {'id': 'Status-DOFD-1',
@@ -32,11 +31,10 @@ class EvaluatorMetadataSerializerTestCase(TestCase):
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_topics': '',
-            'crrg_page': '400',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         }
 
     def test_evaluator_metadata_serializer(self):
@@ -58,11 +56,10 @@ class EvaluatorResultsViewSerializerTestCase(TestCase):
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_topics': '',
-            'crrg_page': '400',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         })
         # Create an EvaluatorResults record
         event = Metro2Event(name="tst")
@@ -124,11 +121,10 @@ class EventsViewSerializerTestCase(TestCase):
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_topics': '',
-            'crrg_page': '400',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         })
 
         # Create the parent records for the AccountActivity data
@@ -146,8 +142,8 @@ class EventsViewSerializerTestCase(TestCase):
                 'fields_display': ['amount past due', 'compliance condition code',
                     'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',
                     'terms frequency'],
-                'crrg_topics': '', 'crrg_page': '400', 'pdf_page': '',
-                'use_notes': '', 'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+                'crrg_reference': '400', 'potential_harm': '',
+                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }
 
     def test_evaluator_metadata_serializer(self):

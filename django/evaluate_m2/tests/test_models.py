@@ -13,11 +13,10 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_topics': '',
-            'crrg_page': '41',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'crrg_reference': '41',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         }
         eval = EvaluatorMetadata.create_from_dict(input_json)
         # check that the evaluator was saved in the database
@@ -31,7 +30,7 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
             id = "Betsy Test 3",
             description = "Another test evaluator",
             fields_used = ["credit limit", "date closed"],
-            crrg_page = "444",
+            crrg_reference = "444",
         )
         input_json = {
             'id': 'Betsy Test 3',
@@ -39,15 +38,14 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_topics': '',
-            'crrg_page': '41',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'crrg_reference': '41',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         }
 
         result = eval1.update_from_dict(input_json)
-        self.assertEqual(result.crrg_page, "41")
+        self.assertEqual(result.crrg_reference, "41")
 
 
     def test_eval_res_create_csv_header(self):

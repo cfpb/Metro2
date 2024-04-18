@@ -16,11 +16,10 @@ class EvaluatorMetadata(models.Model):
     long_description = models.TextField(blank=True)
     fields_used = JSONField(encoder=DjangoJSONEncoder, null=True)
     fields_display = JSONField(encoder=DjangoJSONEncoder, null=True)
-    crrg_topics = models.CharField(max_length=200, blank=True)
-    crrg_page = models.CharField(max_length=200, blank=True)
-    pdf_page = models.CharField(max_length=200, blank=True)
-    use_notes = models.TextField(blank=True)
-    alternative_explanation = models.TextField(blank=True)
+    crrg_reference = models.TextField(blank=True)
+    potential_harm = models.TextField(blank=True)
+    rationale = models.TextField(blank=True)
+    alternate_explanation = models.TextField(blank=True)
 
     func: any
 
@@ -36,11 +35,10 @@ class EvaluatorMetadata(models.Model):
             long_description=json["long_description"],
             fields_used=json["fields_used"].split(";"),
             fields_display=json["fields_display"].split(";"),
-            crrg_topics=json["crrg_topics"],
-            crrg_page=json["crrg_page"],
-            pdf_page=json["pdf_page"],
-            use_notes=json["use_notes"],
-            alternative_explanation=json["alternative_explanation"],
+            crrg_reference=json["crrg_reference"],
+            potential_harm=json["potential_harm"],
+            rationale=json["rationale"],
+            alternate_explanation=json["alternate_explanation"],
         )
 
     def update_from_dict(self, json: dict):
@@ -49,11 +47,10 @@ class EvaluatorMetadata(models.Model):
         self.long_description=json["long_description"]
         self.fields_used=json["fields_used"].split(";")
         self.fields_display=json["fields_display"].split(";")
-        self.crrg_topics=json["crrg_topics"]
-        self.crrg_page=json["crrg_page"]
-        self.pdf_page=json["pdf_page"]
-        self.use_notes=json["use_notes"]
-        self.alternative_explanation=json["alternative_explanation"]
+        self.crrg_reference=json["crrg_reference"]
+        self.potential_harm=json["potential_harm"]
+        self.rationale=json["rationale"]
+        self.alternate_explanation=json["alternate_explanation"]
         self.save()
         return self
 
