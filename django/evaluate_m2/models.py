@@ -28,18 +28,11 @@ class EvaluatorMetadata(models.Model):
 
     @classmethod
     def create_from_dict(cls, json: dict):
-        # using .create means we don't have to call .save manually
-        return cls.objects.create(
-            id=json["id"],
-            description=json["description"],
-            long_description=json["long_description"],
-            fields_used=json["fields_used"].split(";"),
-            fields_display=json["fields_display"].split(";"),
-            crrg_reference=json["crrg_reference"],
-            potential_harm=json["potential_harm"],
-            rationale=json["rationale"],
-            alternate_explanation=json["alternate_explanation"],
-        )
+        # Save the ID from the JSON
+        new = cls(id=json["id"])
+        # Update the remaining fields from the JSON
+        return new.update_from_dict(json)
+
 
     def update_from_dict(self, json: dict):
         # self.id shouldn't be updated
