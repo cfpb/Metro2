@@ -9,7 +9,7 @@
 !helm/
 !helm/**
 !build-utils/
-!build-utils/**  
+!build-utils/**
 
 # ...and the following files
 !Dockerfile
