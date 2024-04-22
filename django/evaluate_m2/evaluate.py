@@ -1,21 +1,23 @@
 import logging
 
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
-from evaluate_m2.m2_evaluators.addl_bk_evals import evaluators as addl_bk_evals
-from evaluate_m2.m2_evaluators.addl_dofd_evals import evaluators as addl_dofd_evals
-from evaluate_m2.m2_evaluators.cat7_evals import evaluators as cat7_evals
-from evaluate_m2.m2_evaluators.cat9_evals import evaluators as cat9_evals
-from evaluate_m2.m2_evaluators.cat11_evals import evaluators as cat11_evals
-from evaluate_m2.m2_evaluators.cat12_evals import evaluators as cat12_evals
+from evaluate_m2.m2_evaluators.bankruptcy_evals import evaluators as bankruptcy_evals
+from evaluate_m2.m2_evaluators.ccc_evals import evaluators as ccc_evals
+from evaluate_m2.m2_evaluators.deferred_evals import evaluators as deferred_evals
+from evaluate_m2.m2_evaluators.doai_evals import evaluators as doai_evals
+from evaluate_m2.m2_evaluators.php_evals import evaluators as php_evals
+from evaluate_m2.m2_evaluators.rating_evals import evaluators as rating_evals
+from evaluate_m2.m2_evaluators.scc_evals import evaluators as scc_evals
+from evaluate_m2.m2_evaluators.status_evals import evaluators as status_evals
+from evaluate_m2.m2_evaluators.type_evals import evaluators as type_evals
 from parse_m2.models import Metro2Event
 
 
 class Evaluate():
     def __init__(self):
-        #  When evaluators are provided by additional files, add them here
-        #   e.g. self.evaluators = cat7_evals | cat9_evals | ...
-        self.evaluators = addl_bk_evals | addl_dofd_evals | cat7_evals | \
-                          cat9_evals | cat11_evals | cat12_evals
+        self.evaluators = bankruptcy_evals |ccc_evals | deferred_evals |  \
+                          doai_evals | php_evals | rating_evals | \
+                          scc_evals | status_evals | type_evals
 
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):

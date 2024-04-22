@@ -9,7 +9,7 @@ from evaluate_m2.tests.evaluator_test_helper import (
 )
 from parse_m2.models import Metro2Event, M2DataFile
 
-class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
+class PHPEvalsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self):
         # Create the parent records for the previous AccountActivity data
         self.event = Metro2Event(name='test_exam')
@@ -139,7 +139,7 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'prev_current_bal': 10
         }]
         self.assert_evaluator_correct(self.event,
-            '9-3A Account Status current but PHP not current', expected)
+            'PHP-Status-2', expected)
 
     def test_eval_9_3A_acct_stat_current_PHP_missing_j1_segment(self):
         # Create previous Account Activities data
@@ -175,7 +175,7 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'prev_current_bal': 10
         }]
         self.assert_evaluator_correct(self.event,
-            '9-3A Account Status current but PHP not current', expected)
+            'PHP-Status-2', expected)
 
     def test_eval_9_3A_acct_stat_current_PHP_many_j1_segments(self):
         # Create previous Account Activities data
@@ -219,7 +219,7 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'prev_current_bal': 10
         }]
         self.assert_evaluator_correct(self.event,
-            '9-3A Account Status current but PHP not current', expected)
+            'PHP-Status-2', expected)
 
     def test_eval_9_3A_acct_stat_current_PHP_not_current_between_years(self):
         # Create previous Account Activities data
@@ -255,4 +255,4 @@ class Cat9_EvalsTestCase(TestCase, EvaluatorTestHelper):
             'prev_j1__cons_info_ind': '', 'prev_j2__cons_info_ind': '',
             'prev_current_bal': 10
         }]
-        self.assert_evaluator_correct(self.event, '9-3A Account Status current but PHP not current', expected)
+        self.assert_evaluator_correct(self.event, 'PHP-Status-2', expected)

@@ -5,7 +5,7 @@ from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import K2, Metro2Event, M2DataFile
 
 
-class Cat7_EvalsTestCase(TestCase, EvaluatorTestHelper):
+class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self):
         # Create the parent records for the AccountActivity data
         self.event = Metro2Event(name='test_exam')
