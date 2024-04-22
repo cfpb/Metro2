@@ -16,33 +16,26 @@ class EvaluatorMetadataSerializerTestCase(TestCase):
         # Create an EvaluatorMetadata record
         self.eval1 = EvaluatorMetadata.create_from_dict({
             'id': 'Status-DOFD-1',
-            'name': 'Additional evaluator for Date of First Delinquency',
             'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'ipl': '',
-            'crrg_topics': '',
-            'crrg_page': '400',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            'risk_level': 'High'
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         })
 
         self.json_representation = {'id': 'Status-DOFD-1',
-            'name': 'Additional evaluator for Date of First Delinquency',
             'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'ipl': '',
-            'crrg_topics': '',
-            'crrg_page': '400',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            'risk_level': 'High'}
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        }
 
     def test_evaluator_metadata_serializer(self):
         serializer = EvaluatorMetadataSerializer(self.eval1)
@@ -59,18 +52,14 @@ class EvaluatorResultsViewSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.eval1 = EvaluatorMetadata.create_from_dict({
             'id': 'Status-DOFD-1',
-            'name': 'Additional evaluator for Date of First Delinquency',
             'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'ipl': '',
-            'crrg_topics': '',
-            'crrg_page': '400',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            'risk_level': 'High'
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         })
         # Create an EvaluatorResults record
         event = Metro2Event(name="tst")
@@ -128,18 +117,14 @@ class EventsViewSerializerTestCase(TestCase):
         # Create an EvaluatorMetadata record
         self.eval = EvaluatorMetadata.create_from_dict({
             'id': 'Status-DOFD-1',
-            'name': 'Additional evaluator for Date of First Delinquency',
             'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'ipl': '',
-            'crrg_topics': '',
-            'crrg_page': '400',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            'risk_level': 'High'
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         })
 
         # Create the parent records for the AccountActivity data
@@ -152,14 +137,13 @@ class EventsViewSerializerTestCase(TestCase):
 
         self.json_representation = {
                 'hits': 2, 'id': 'Status-DOFD-1',
-                'name': 'Additional evaluator for Date of First Delinquency',
                 'description': 'description of Status-DOFD-1', 'long_description': '',
                 'fields_used': ['account status', 'date of first delinquency'],
                 'fields_display': ['amount past due', 'compliance condition code',
                     'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',
                     'terms frequency'],
-                'ipl': '', 'crrg_topics': '', 'crrg_page': '400', 'pdf_page': '',
-                'use_notes': '', 'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 'risk_level': 'High'
+                'crrg_reference': '400', 'potential_harm': '',
+                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }
 
     def test_evaluator_metadata_serializer(self):

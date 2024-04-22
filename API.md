@@ -32,9 +32,11 @@ Users can export this CSV into Excel in order to sort, filter, and analyze the m
 **Example response:**
 File name: `evaluator-metadata-2024-03-18.csv`
 
+*To do:* Update this sample response with more realistic data once eval metadata is ingested in the system.
+
 File contents:
 ```csv
-id,name,description,long_description,fields_used,fields_display,ipl,crrg_topics,crrg_page,pdf_page,use_notes,alternative_explanation,risk_level
+id,description,long_description,fields_used,fields_display,crrg_reference,potential_harm,rationale,alternate_explanation
 
 
 
@@ -105,7 +107,6 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
     "inconsistencies": [
         {
             "id": "2",
-            "name": "Status-DOFD-1",
         },
         # ...etc.
     ],
@@ -187,7 +188,6 @@ GET - returns a JSON information about an event, including its name and all eval
         {
             "hits": 4209,
             "id":"DOAI-DOFD-1",
-            "name": "DOAI-DOFD-1",
             "description": "Account reports date of first delinquency longer than 7 years.",
             "long_description": "",
             "fields_used": [
@@ -204,13 +204,10 @@ GET - returns a JSON information about an event, including its name and all eval
                 "special comment code",
                 "terms frequency"
             ],
-            "ipl": "",
-            "crrg_topics": "",
-            "crrg_page": "",
-            "pdf_page": "",
-            "use_notes": "",
-            "alternative_explanation": "",
-            "risk_level": "",
+            "crrg_reference": "",
+            "potential_harm": "",
+            "rationale": "",
+            "alternate_explanation": "",
         },
         # ... etc.
     ]

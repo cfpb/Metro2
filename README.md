@@ -81,13 +81,12 @@ Both the **Django** and **Front-end** code bases can be run locally. See the REA
 
 # Handling evaluator metadata
 
-Each evaluator has several metadata fields associated with it, such as name, short description, long description, fields used, risk level, and more.
+Each evaluator has several metadata fields associated with it, such as name, short description, long description, fields used, rationale, and more.
 We seed the database with initial metadata about each evaluator, then allow users to modify some of the fields.
 
 ## Evaluator CSV format
 When importing and exporting evaluator metadata, we use a CSV with the following columns:
-`id`, `name`, `description`, `long_description`, `fields_used`, `fields_display`, `ipl`, `crrg_topics`, `crrg_page`, `pdf_page`, `use_notes`, `alternative_explanation`, `risk_level`.
-(Note that this list will change as we improve our implementation of the metadata system).
+`id`, `description`, `long_description`, `fields_used`, `fields_display`, `crrg_reference`, `potential_harm`, `rationale`, and `alternate_explanation`.
 Column headers in the file should match the column names in this list.
 For columns contain a list of fields (`fields_used` and `fields_display`, currently), the items in each list should be separated by colons (`;`).
 

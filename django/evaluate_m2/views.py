@@ -114,8 +114,7 @@ def account_summary_view(request, event_id, account_number):
             result_summary__event=event)
         eval_metadata=[]
         for e in eval_results:
-            eval={'id': e.result_summary.evaluator.id,
-                'name': e.result_summary.evaluator.name}
+            eval={'id': e.result_summary.evaluator.id }
             if eval not in eval_metadata:
                 eval_metadata.append(eval)
         data = {'cons_acct_num': account_number,

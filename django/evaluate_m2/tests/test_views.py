@@ -15,48 +15,36 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self) -> None:
         self.eval1 = EvaluatorMetadata.create_from_dict({
             'id': 'Status-DOFD-1',
-            'name': 'Additional evaluator for Date of First Delinquency',
             'description': 'description of Status-DOFD-1',
             'long_description': '',
             'fields_used': 'account status;date of first delinquency',
             'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'ipl': '',
-            'crrg_topics': '',
-            'crrg_page': '400',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            'risk_level': 'High'
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         })
         self.eval2 = EvaluatorMetadata.create_from_dict({
             'id': 'Status-DOFD-2',
-            'name': '',
             'description': 'description for the other status-dofd eval',
             'long_description': '',
             'fields_used': 'account status;dofd;php',
             'fields_display': 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'ipl': '',
-            'crrg_topics': '',
-            'crrg_page': '41',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            'risk_level': 'High'
+            'crrg_reference': '41',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         })
         self.eval3 = EvaluatorMetadata.create_from_dict({
             'id': 'Status-DOFD-4',
-            'name':'',
             'description': 'description for a third status-dofd eval',
             'long_description': '',
             'fields_used': 'account status;dofd;php',
             'fields_display': 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'ipl': '',
-            'crrg_topics': '',
-            'crrg_page': '41',
-            'pdf_page': '',
-            'use_notes': '',
-            'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            'risk_level': 'High'
+            'crrg_reference': '410',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         })
     def get_account_activity(self, id: int):
         return [{ 'id': id, 'activity_date': '2019-12-31', 'port_type': 'X',
@@ -189,10 +177,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         expected = {
             'cons_acct_num': '0033',
             'inconsistencies': [
-                {
-                    'id': 'Status-DOFD-1',
-                    'name': 'Additional evaluator for Date of First Delinquency'
-                }
+                {'id': 'Status-DOFD-1'}
             ],
             'account_activity': self.get_account_activity(id=33)
         }
@@ -210,9 +195,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         expected = {
             'cons_acct_num': '0032',
             'inconsistencies': [
-                { 'id': 'Status-DOFD-1',
-                  'name': 'Additional evaluator for Date of First Delinquency' },
-                { 'id': 'Status-DOFD-4', 'name': '' },
+                {'id': 'Status-DOFD-1'},
+                {'id': 'Status-DOFD-4'},
             ],
             'account_activity': self.get_account_activity(id=32)
         }
@@ -261,23 +245,22 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'name': 'test_exam',
             'evaluators': [{
                 'hits': 2, 'id': 'Status-DOFD-1',
-                'name': 'Additional evaluator for Date of First Delinquency',
                 'description': 'description of Status-DOFD-1', 'long_description': '',
                 'fields_used': ['account status', 'date of first delinquency'],
                 'fields_display': ['amount past due', 'compliance condition code',
                     'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',
                     'terms frequency'],
-                'ipl': '', 'crrg_topics': '', 'crrg_page': '400', 'pdf_page': '',
-                'use_notes': '', 'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 'risk_level': 'High'
+                'crrg_reference': '400', 'potential_harm': '',
+                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }, {
-                'hits': 1, 'id': 'Status-DOFD-4', 'name': '', 'description':
+                'hits': 1, 'id': 'Status-DOFD-4', 'description':
                     'description for a third status-dofd eval', 'long_description': '',
                     'fields_used': ['account status', 'dofd', 'php'],
                     'fields_display': ['original charge-off amount',
                         'scheduled monthly payment amount', 'special comment code',
                         'terms frequency'],
-                'ipl': '', 'crrg_topics': '', 'crrg_page': '41', 'pdf_page': '',
-                'use_notes': '', 'alternative_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua', 'risk_level': 'High'
+                'crrg_reference': '410', 'potential_harm': '',
+                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }]}
 
 

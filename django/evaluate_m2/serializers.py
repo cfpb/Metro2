@@ -11,10 +11,10 @@ class EventsViewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EvaluatorMetadata
-        fields = ['hits','id','name','description','long_description',
-                  'fields_used','fields_display','ipl','crrg_topics',
-                  'crrg_page','pdf_page','use_notes','alternative_explanation',
-                  'risk_level']
+        fields = ['hits','id','description','long_description',
+                  'fields_used','fields_display',
+                  'crrg_reference','potential_harm','rationale',
+                  'alternate_explanation']
 
     def get_hits(self, obj):
         event = self.context.get("event")
@@ -26,9 +26,9 @@ class EvaluatorMetadataSerializer(serializers.ModelSerializer):
     fields_display = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = EvaluatorMetadata
-        fields = ['id', 'name', 'description', 'long_description', 'fields_used',
-            'fields_display', 'ipl', 'crrg_topics', 'crrg_page', 'pdf_page',
-            'use_notes', 'alternative_explanation', 'risk_level']
+        fields = ['id', 'description', 'long_description', 'fields_used',
+            'fields_display', 'crrg_reference','potential_harm','rationale',
+            'alternate_explanation']
 
     def get_fields_used(self, obj):
         if obj.fields_used:
