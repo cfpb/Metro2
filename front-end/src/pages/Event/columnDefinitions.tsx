@@ -18,10 +18,10 @@ const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
       data: Event
       value: string
     }): ReactElement => (
-        <Link to='evaluators/$evaluatorId' params={{ evaluatorId: data.id }}>
-          {value}
-        </Link>
-      )
+      <Link to='evaluators/$evaluatorId' params={{ evaluatorId: data.id }}>
+        {value}
+      </Link>
+    )
   },
   {
     field: 'description',

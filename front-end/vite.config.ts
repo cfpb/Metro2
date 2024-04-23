@@ -36,11 +36,7 @@ export default defineConfig(({ mode }) => ({
       reportsDirectory: 'coverage'
     }
   },
-  plugins: [
-    tsconfigPaths(),
-    react(),
-    ...(mode === 'test' ? [] : [eslintPlugin()])
-  ],
+  plugins: [tsconfigPaths(), react(), ...(mode === 'test' ? [] : [eslintPlugin()])],
   server: {
     port: 3000,
     host: true,

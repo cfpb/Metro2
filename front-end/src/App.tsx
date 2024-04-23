@@ -27,7 +27,7 @@ const router = createRouter({
   defaultPendingMs: 0,
   defaultPendingComponent: Loader,
   defaultErrorComponent: ErrorComponent,
-  defaultNotFoundComponent: NotFound,
+  defaultNotFoundComponent: NotFound
 })
 
 // Register the router instance for type safety

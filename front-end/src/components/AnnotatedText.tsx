@@ -19,7 +19,6 @@ export default function AnnotatedText({
         {value} ({definition})
       </span>
     )
-  } 
-    return <span>{value}</span>
-  
+  }
+  return <span>{value}</span>
 }
