@@ -1,4 +1,5 @@
 import DefinitionList from 'components/DefinitionList/DefinitionList'
+import { Expandable, ExpandableGroup } from 'design-system-react'
 import type { ReactElement } from 'react'
 import { formatNumber } from 'utils/utils'
 import type EvaluatorMetadata from './Evaluator'
@@ -32,10 +33,19 @@ export default function EvaluatorSummary({
           <h3>Details</h3>
           <DefinitionList items={summaryItems} />
         </div>
-        <div className='content-l_col content-l_col-1-3'>
+        <div className='content-l_col content-l_col-2-3'>
           <h3>Description</h3>
           <p>{metadata.description}</p>
-          {/* <div dangerouslySetInnerHTML={{ __html: metadata.long_description }} /> */}
+          <ExpandableGroup accordion groupId='AccordionGroup'>
+            <Expandable header='Criteria evaluated'>
+              <div
+                dangerouslySetInnerHTML={{ __html: metadata.long_description ?? '' }}
+              />
+            </Expandable>
+            <Expandable header='More metadata'>
+              <p>Metadata goes here</p>
+            </Expandable>
+          </ExpandableGroup>
         </div>
       </div>
     </div>

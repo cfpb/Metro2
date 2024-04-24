@@ -12,6 +12,7 @@ export default function EventPage(): ReactElement {
     <>
       <LocatorBar
         heading={eventData.name}
+        icon='bank-round'
         subhead={
           eventData.start_date && eventData.end_date
             ? `Data from ${eventData.start_date} - ${eventData.end_date}`

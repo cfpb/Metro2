@@ -12,6 +12,7 @@ export default function LandingPage(): ReactElement {
       <LocatorBar
         eyebrow={`Welcome, ${userData.username}`}
         heading='Here is your events list'
+        icon='bank-round'
       />
       {userData.assigned_events.length > 0 ? (
         <EventList events={userData.assigned_events} heading='Active' />

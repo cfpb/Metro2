@@ -38,3 +38,16 @@ body,
     }
   }
 }
+
+// expandable overrides that should be handled by RDS
+
+// no background expandable variant
+.o-expandable {
+  background-color: inherit !important;
+  border-width: 1px 0 !important;
+}
+
+// remove double border in accordion
+.o-expandable-group .o-expandable__padded + .o-expandable__padded {
+  margin-top: -1px;
+}

@@ -26,6 +26,7 @@
     "@tanstack/react-router": "^1.24.0",
     "@tanstack/router-devtools": "^1.17.4",
     "ag-grid-react": "^31.1.1",
+    "design-system-react": "https://github.com/cfpb/design-system-react.git",
     "postcss": "^8.4.38",
     "react": "18.2.0",
     "react-dom": "18.2.0"
