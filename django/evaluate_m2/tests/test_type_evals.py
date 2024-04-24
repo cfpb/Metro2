@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from datetime import date
-from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
+from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper, acct_record
 from parse_m2.models import Metro2Event, M2DataFile
 
 
@@ -106,3 +106,64 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             'terms_freq': 'W', 'credit_limit': 50, 'terms_dur': '25'
         }]
         self.assert_evaluator_correct(self.event, "Type-HCOLA-3", expected)
+
+    def test_type_balance_1(self):
+        # Hits when all conditions are met:
+        # 1. port_type == 'I'
+        # 2. acct_stat == '11'
+        # 3. acct_type == '00', '01', '02', '03', '04', '05', '06', '10', '11',
+        #                 '13', '17', '20', '29', '65', '66', '67', '68', '69',
+        #                 '70', '71', '72', '73', '74', '75', '91', '95', '0A',
+        #                 '0F', '3A', '6A', '6D', '7B', '9A'
+        # 4. spc_com_cd == 'BS'
+        # 5. current_bal > 0
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'00',
+                'spc_com_cd': 'BS', 'current_bal': 25
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'01',
+                'spc_com_cd': 'BS', 'current_bal': 20
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'C', 'acct_stat':'11', 'acct_type':'02',
+                'spc_com_cd': 'BS', 'current_bal': 15
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'I', 'acct_stat':'05', 'acct_type':'03',
+                'spc_com_cd': 'BS', 'current_bal': 10
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'07',
+                'spc_com_cd': 'BS', 'current_bal': 5
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'04',
+                'spc_com_cd': 'AU', 'current_bal': 1
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'05',
+                'spc_com_cd': 'BS', 'current_bal': 0
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 1: HIT, 2: NO-port_type=C, 3: NO-acct_stat=5, 4: NO-acct_type=07,
+        # 5: NO-spc_com_cd=AU, 6: NO-current_bal=0
+
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032', 'acct_type': '00', 'acct_stat': '11', 'port_type': 'I', 'current_bal': 25,
+            'spc_com_cd': 'BS', 'amt_past_due': 0, 'compl_cond_cd': '',
+            'date_closed': None,  'dofd': None,'orig_chg_off_amt': 0, 'smpa':0,
+            'terms_freq':"00"
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033', 'acct_type': '01', 'acct_stat': '11', 'port_type': 'I', 'current_bal': 20,
+            'spc_com_cd': 'BS', 'amt_past_due': 0, 'compl_cond_cd': '',
+            'date_closed': None,  'dofd': None,'orig_chg_off_amt': 0, 'smpa':0,
+            'terms_freq':"00"
+        }]
+        self.assert_evaluator_correct(self.event, "Type-Balance-1", expected)
