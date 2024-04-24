@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import { RouterProvider, createRouter, Link } from '@tanstack/react-router'
+import { PageHeader } from 'design-system-react'
 import ErrorComponent from 'components/ErrorComponent'
-import HeaderNavbar from 'components/HeaderNavbar'
 import Loader from 'components/Loader/Loader'
 import NotFound from 'components/NotFound'
 import type { ReactElement } from 'react'
@@ -40,10 +40,7 @@ declare module '@tanstack/react-router' {
 export default function App(): ReactElement {
   return (
     <>
-      <HeaderNavbar />
-      <header className='content-row'>
-        <h1 className='h2 u-mb0'>Metro2 Evaluator Tool</h1>
-      </header>
+      <PageHeader />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
