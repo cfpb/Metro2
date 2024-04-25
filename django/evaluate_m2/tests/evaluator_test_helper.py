@@ -126,6 +126,32 @@ def acct_record(file: M2DataFile, custom_values: dict):
     acct_activity.save()
     return acct_activity
 
+def l1_record(custom_values: dict):
+    """
+    Returns an L1 record for use in tests, using the values
+    provided, or defaulting to basic values where none are provided.
+
+    Inputs:
+    - custom_values: Dict of values to override the defaults. Keys should match
+                     the field names in the AccountActivity and AccountHolder models
+    """
+    # Set basic defaults for all values in L1.
+    default_values = {
+        'account_activity': '1',
+        'change_ind': '1',
+        'new_acc_num': '',
+        'new_id_num': ''
+    }
+    # Override defaults with provided values
+    values = default_values | custom_values
+    l1 = L1(
+        account_activity=AccountActivity.objects.get(id=values['id']),
+        change_ind=values['change_ind'],
+        new_acc_num=values['new_acc_num'],
+        new_id_num=values['new_id_num']
+    )
+    l1.save()
+    return l1
 
 def create_bulk_acct_record(file: M2DataFile, value_list: dict, size: int):
     """
@@ -314,12 +340,6 @@ class EvaluatorTestHelper():
     def create_k2(self, id: int, purch_sold_ind: str, purch_sold_name: str):
         return  K2(account_activity=AccountActivity.objects.get(id=id),
                    purch_sold_ind=purch_sold_ind, purch_sold_name=purch_sold_name)
-
-
-    def create_l1(self, id=1, change_ind='1', new_acc_num='9876543210',
-                  new_id_num='1234567890'):
-        return  L1(account_activity=AccountActivity.objects.get(id=id),
-                   change_ind=change_ind, new_acc_num=new_acc_num, new_id_num=new_id_num)
 
     def assert_evaluator_correct(self, event: Metro2Event, eval_name: str, expected_result: list[dict]):
         # Test that the evaluator:
