@@ -128,12 +128,12 @@ def acct_record(file: M2DataFile, custom_values: dict):
 
 def l1_record(custom_values: dict):
     """
-    Returns an L1 record for use in tests, using the values
+    Returns a L1 record for use in tests, using the values
     provided, or defaulting to basic values where none are provided.
 
     Inputs:
     - custom_values: Dict of values to override the defaults. Keys should match
-                     the field names in the AccountActivity and AccountHolder models
+                     the field names in the L1 model
     """
     # Set basic defaults for all values in L1.
     default_values = {
