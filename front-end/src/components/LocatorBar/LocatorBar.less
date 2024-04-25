@@ -10,10 +10,21 @@
     padding-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
   }
 
-  h2,
-  h3,
-  h4,
-  h5 {
-    margin: 2px !important;
+  .header-with-icon {
+    display: flex;
+    gap: 10px;
+
+    h2,
+    h3,
+    h4,
+    h5,
+    h4 + h2 {
+      margin: 2px !important;
+    }
+
+    .cf-icon-svg-wrapper {
+      position: relative;
+      top: -1px;
+    }
   }
 }

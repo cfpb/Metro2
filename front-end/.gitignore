@@ -9,3 +9,6 @@ coverage
 .stylelintcache
 cypress/videos
 .yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/sdks

@@ -20,6 +20,7 @@ export default function AccountPage(): ReactElement {
       <LocatorBar
         eyebrow='Account'
         heading={accountData.cons_acct_num}
+        icon='user-round'
         breadcrumbs
       />
       <Summary accountData={accountData} eventId={eventId} />

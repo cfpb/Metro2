@@ -1,9 +1,11 @@
+import { Icon } from 'design-system-react'
 import type { ReactElement } from 'react'
 import Breadcrumbs from './Breadcrumbs'
 import './Breadcrumbs.less'
 import './LocatorBar.less'
 
 interface LocatorBarProperties {
+  icon: string
   heading: string
   eyebrow?: string
   subhead?: string
@@ -12,6 +14,7 @@ interface LocatorBarProperties {
 
 export default function LocatorBar({
   heading,
+  icon,
   eyebrow,
   subhead,
   breadcrumbs = false
@@ -22,13 +25,18 @@ export default function LocatorBar({
   return (
     <div className={className}>
       {breadcrumbs ? <Breadcrumbs /> : null}
-      {eyebrow ? (
-        <h4 className='h5 eyebrow' data-testid='eyebrow'>
-          {eyebrow}
-        </h4>
-      ) : null}
-      <h2 data-testid='heading'>{heading}</h2>
-      {subhead ? <h3 data-testid='subhead'>{subhead}</h3> : null}
+      <div className='header-with-icon'>
+        <Icon name={icon} size='46px' />
+        <div>
+          {eyebrow ? (
+            <h4 className='h5 eyebrow' data-testid='eyebrow'>
+              {eyebrow}
+            </h4>
+          ) : null}
+          <h2 data-testid='heading'>{heading}</h2>
+          {subhead ? <h3 data-testid='subhead'>{subhead}</h3> : null}
+        </div>
+      </div>
     </div>
   )
 }
