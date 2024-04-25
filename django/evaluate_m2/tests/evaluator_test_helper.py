@@ -2,7 +2,7 @@ from datetime import date, timedelta
 from evaluate_m2.evaluate import evaluator
 
 from parse_m2.models import (
-    AccountActivity, AccountHolder, J1,
+    K4, AccountActivity, AccountHolder, J1,
     J2, K2, L1, M2DataFile, Metro2Event
 )
 import calendar
@@ -126,6 +126,34 @@ def acct_record(file: M2DataFile, custom_values: dict):
     acct_activity.save()
     return acct_activity
 
+def k4_record(custom_values: dict):
+    """
+    Returns a K4 record for use in tests, using the values
+    provided, or defaulting to basic values where none are provided.
+
+    Inputs:
+    - custom_values: Dict of values to override the defaults. Keys should match
+                     the field names in the K4 model
+    """
+    # Set basic defaults for all values in K4.
+    default_values = {
+        'account_activity': '1',
+        'spc_pmt_ind': '1',
+        'deferred_pmt_st_dt': None,
+        'balloon_pmt_due_dt': None,
+        'balloon_pmt_amt': 0
+    }
+    # Override defaults with provided values
+    values = default_values | custom_values
+    k4 = K4(
+        account_activity=AccountActivity.objects.get(id=values['id']),
+        spc_pmt_ind=values['spc_pmt_ind'],
+        deferred_pmt_st_dt=values['deferred_pmt_st_dt'],
+        balloon_pmt_due_dt=values['balloon_pmt_due_dt'],
+        balloon_pmt_amt=values['balloon_pmt_amt']
+    )
+    k4.save()
+    return k4
 
 def create_bulk_acct_record(file: M2DataFile, value_list: dict, size: int):
     """
