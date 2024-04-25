@@ -74,7 +74,7 @@ class AccountChangeEvalsTestCase(TestCase, EvaluatorTestHelper):
         ]
         for item in l1_activities:
             l1_record(item)
-        # 32: HIT, 33: NO-l1__new_acc_num=0035,
+        # 32: HIT, 33: NO-missing L1 segment,
         # 34: NO-l1__new_acc_num=0036
 
         # Create the segment data
