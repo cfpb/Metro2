@@ -1,6 +1,7 @@
 import logging
 
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
+from evaluate_m2.m2_evaluators.balance_evals import evaluators as balance_evals
 from evaluate_m2.m2_evaluators.bankruptcy_evals import evaluators as bankruptcy_evals
 from evaluate_m2.m2_evaluators.ccc_evals import evaluators as ccc_evals
 from evaluate_m2.m2_evaluators.deferred_evals import evaluators as deferred_evals
@@ -15,8 +16,8 @@ from parse_m2.models import Metro2Event
 
 class Evaluate():
     def __init__(self):
-        self.evaluators = bankruptcy_evals |ccc_evals | deferred_evals |  \
-                          doai_evals | php_evals | rating_evals | \
+        self.evaluators = balance_evals | bankruptcy_evals |ccc_evals | \
+                          deferred_evals | doai_evals | php_evals | rating_evals | \
                           scc_evals | status_evals | type_evals
 
     # runs evaluators to produce results
