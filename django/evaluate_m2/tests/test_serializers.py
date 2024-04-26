@@ -10,43 +10,54 @@ from evaluate_m2.serializers import (
 )
 from parse_m2.models import AccountActivity, AccountHolder, M2DataFile, Metro2Event
 
-
-class EvaluatorMetadataSerializerTestCase(TestCase):
+class NewEvalSerializerTestCase(TestCase):
     def setUp(self) -> None:
-        # Create an EvaluatorMetadata record
-        self.eval1 = EvaluatorMetadata.create_from_dict({
-            'id': 'Status-DOFD-1',
-            'description': 'description of Status-DOFD-1',
-            'long_description': '',
-            'fields_used': 'account status;date of first delinquency',
-            'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_reference': '400',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        })
+        self.multi_line_text="""Here is some text.
+        It is split over two lines."""
 
-        self.json_representation = {'id': 'Status-DOFD-1',
-            'description': 'description of Status-DOFD-1',
-            'long_description': '',
-            'fields_used': 'account status;date of first delinquency',
-            'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_reference': '400',
+        self.e1 = EvaluatorMetadata(
+            id="Betsy-1",
+            description="desc 1",
+            long_description=self.multi_line_text,
+            fields_used=["one", "two"],
+            fields_display=["three", "four"],
+            crrg_reference="PDF page 3",
+        )
+
+        self.e1_json = {
+            'id': 'Betsy-1',
+            'description': 'desc 1',
+            'long_description': self.multi_line_text,
+            'fields_used': ["one", "two"],
+            'fields_display': ["three", "four"],
+            'crrg_reference': 'PDF page 3',
             'potential_harm': '',
             'rationale': '',
-            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'alternate_explanation': '',
         }
 
-    def test_evaluator_metadata_serializer(self):
-        serializer = EvaluatorMetadataSerializer(self.eval1)
-        self.assertEqual(serializer.data, self.json_representation)
+    def test_to_json(self):
+        to_json = EvaluatorMetadataSerializer(self.e1)
+        self.assertEqual(to_json.data, self.e1_json)
 
-    def test_group_serializer_many_true(self):
-        eval_metadata = [self.eval1]
+    def test_from_json(self):
+        json = self.e1_json.copy()
+        json['id'] = "BETSY-NEW"
+        from_json = EvaluatorMetadataSerializer(data=json)
+        self.assertTrue(from_json.is_valid())
+        record = from_json.save()
+        self.assertEqual(record.id, "BETSY-NEW")
+        self.assertEqual(record.description, self.e1_json['description'])
+        self.assertEqual(record.fields_used, self.e1_json['fields_used'])
+        self.assertEqual(record.fields_display, self.e1_json['fields_display'])
+
+    def test_many_to_json(self):
+        eval_metadata = [self.e1]
         serializer = EvaluatorMetadataSerializer(eval_metadata, many=True)
         json_output = JSONRenderer().render(serializer.data)
-        expected = JSONRenderer().render([self.json_representation])
+        expected = JSONRenderer().render([self.e1_json])
         self.assertEqual(json_output, expected)
+
 
 class EvaluatorResultsViewSerializerTestCase(TestCase):
     def setUp(self) -> None:
