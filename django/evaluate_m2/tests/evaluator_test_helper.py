@@ -335,11 +335,6 @@ class EvaluatorTestHelper():
         else:
             return  J2(account_activity=AccountActivity.objects.get(id=id), cons_info_ind=cons_info_ind)
 
-    def create_k2(self, id: int, purch_sold_ind: str, purch_sold_name: str):
-        return  K2(account_activity=AccountActivity.objects.get(id=id),
-                   purch_sold_ind=purch_sold_ind, purch_sold_name=purch_sold_name)
-
-
     def create_l1(self, id=1, change_ind='1', new_acc_num='9876543210',
                   new_id_num='1234567890'):
         return  L1(account_activity=AccountActivity.objects.get(id=id),
