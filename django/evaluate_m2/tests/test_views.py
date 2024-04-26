@@ -13,39 +13,34 @@ from parse_m2.models import AccountHolder, M2DataFile, Metro2Event
 
 class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self) -> None:
-        self.eval1 = EvaluatorMetadata.create_from_dict({
-            'id': 'Status-DOFD-1',
-            'description': 'description of Status-DOFD-1',
-            'long_description': '',
-            'fields_used': 'account status;date of first delinquency',
-            'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_reference': '400',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        })
-        self.eval2 = EvaluatorMetadata.create_from_dict({
-            'id': 'Status-DOFD-2',
-            'description': 'description for the other status-dofd eval',
-            'long_description': '',
-            'fields_used': 'account status;dofd;php',
-            'fields_display': 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_reference': '41',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        })
-        self.eval3 = EvaluatorMetadata.create_from_dict({
-            'id': 'Status-DOFD-4',
-            'description': 'description for a third status-dofd eval',
-            'long_description': '',
-            'fields_used': 'account status;dofd;php',
-            'fields_display': 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_reference': '410',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        })
+        self.eval1 = EvaluatorMetadata.objects.create(
+            id='Status-DOFD-1',
+            description='description of Status-DOFD-1',
+            long_description='',
+            fields_used='account status;date of first delinquency',
+            fields_display='amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            crrg_reference='400',
+            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        )
+        self.eval2 = EvaluatorMetadata.objects.create(
+            id='Status-DOFD-2',
+            description='description for the other status-dofd eval',
+            long_description='',
+            fields_used= 'account status;dofd;php',
+            fields_display= 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            crrg_reference='41',
+            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        )
+        self.eval3 = EvaluatorMetadata.objects.create(
+            id='Status-DOFD-4',
+            description= 'description for a third status-dofd eval',
+            long_description='',
+            fields_used= 'account status;dofd;php',
+            fields_display= 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            crrg_reference='410',
+            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        )
+
     def get_account_activity(self, id: int):
         return [{ 'id': id, 'activity_date': '2019-12-31', 'port_type': 'X',
                  'acct_type': '00', 'date_open': '2020-01-01', 'credit_limit': 0,
@@ -246,19 +241,15 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'evaluators': [{
                 'hits': 2, 'id': 'Status-DOFD-1',
                 'description': 'description of Status-DOFD-1', 'long_description': '',
-                'fields_used': ['account status', 'date of first delinquency'],
-                'fields_display': ['amount past due', 'compliance condition code',
-                    'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',
-                    'terms frequency'],
+                'fields_used': 'account status;date of first delinquency',
+                'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
                 'crrg_reference': '400', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }, {
                 'hits': 1, 'id': 'Status-DOFD-4', 'description':
                     'description for a third status-dofd eval', 'long_description': '',
-                    'fields_used': ['account status', 'dofd', 'php'],
-                    'fields_display': ['original charge-off amount',
-                        'scheduled monthly payment amount', 'special comment code',
-                        'terms frequency'],
+                    'fields_used': 'account status;dofd;php',
+                    'fields_display': 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
                 'crrg_reference': '410', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }]}

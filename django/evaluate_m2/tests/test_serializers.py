@@ -61,17 +61,15 @@ class NewEvalSerializerTestCase(TestCase):
 
 class EvaluatorResultsViewSerializerTestCase(TestCase):
     def setUp(self) -> None:
-        self.eval1 = EvaluatorMetadata.create_from_dict({
-            'id': 'Status-DOFD-1',
-            'description': 'description of Status-DOFD-1',
-            'long_description': '',
-            'fields_used': 'account status;date of first delinquency',
-            'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_reference': '400',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        })
+        self.eval1 = EvaluatorMetadata.objects.create(
+            id='Status-DOFD-1',
+            description='description of Status-DOFD-1',
+            long_description='',
+            fields_used='account status;date of first delinquency',
+            fields_display='amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            crrg_reference='400',
+            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        )
         # Create an EvaluatorResults record
         event = Metro2Event(name="tst")
         event.save()
@@ -126,17 +124,17 @@ class EvaluatorResultsViewSerializerTestCase(TestCase):
 class EventsViewSerializerTestCase(TestCase):
     def setUp(self) -> None:
         # Create an EvaluatorMetadata record
-        self.eval = EvaluatorMetadata.create_from_dict({
-            'id': 'Status-DOFD-1',
-            'description': 'description of Status-DOFD-1',
-            'long_description': '',
-            'fields_used': 'account status;date of first delinquency',
-            'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_reference': '400',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        })
+        self.eval = EvaluatorMetadata.objects.create(
+            id='Status-DOFD-1',
+            description='description of Status-DOFD-1',
+            long_description='',
+            fields_used=['placeholder', 'date of first delinquency'],
+            fields_display=['amount past due', 'compliance condition code',
+                    'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',
+                    'terms frequency'],
+            crrg_reference='400',
+            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        )
 
         # Create the parent records for the AccountActivity data
         self.event = Metro2Event(id=1, name='test_exam')
