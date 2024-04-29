@@ -4,13 +4,29 @@ from rest_framework.renderers import JSONRenderer
 
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
-    EvaluatorMetadataSerializer,
+    ImportEvaluatorMetadataSerializer,
     EvaluatorResultsViewSerializer,
     EventsViewSerializer
 )
 from parse_m2.models import AccountActivity, AccountHolder, M2DataFile, Metro2Event
 
-class NewEvalSerializerTestCase(TestCase):
+
+expected_fields_used = """
+Identifying information
+DB record id
+activity date
+customer account number
+
+Fields used for evaluator
+one
+two
+
+Helpful fields that are also displayed currently
+three
+four
+"""
+
+class ImportEvalSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.multi_line_text="""Here is some text.
         It is split over two lines."""
@@ -28,8 +44,7 @@ class NewEvalSerializerTestCase(TestCase):
             'id': 'Betsy-1',
             'description': 'desc 1',
             'long_description': self.multi_line_text,
-            'fields_used': ["one", "two"],
-            'fields_display': ["three", "four"],
+            'fields_used': expected_fields_used,
             'crrg_reference': 'PDF page 3',
             'potential_harm': '',
             'rationale': '',
@@ -37,23 +52,22 @@ class NewEvalSerializerTestCase(TestCase):
         }
 
     def test_to_json(self):
-        to_json = EvaluatorMetadataSerializer(self.e1)
+        to_json = ImportEvaluatorMetadataSerializer(self.e1)
         self.assertEqual(to_json.data, self.e1_json)
 
     def test_from_json(self):
         json = self.e1_json.copy()
         json['id'] = "BETSY-NEW"
-        from_json = EvaluatorMetadataSerializer(data=json)
+        from_json = ImportEvaluatorMetadataSerializer(data=json)
         self.assertTrue(from_json.is_valid())
         record = from_json.save()
         self.assertEqual(record.id, "BETSY-NEW")
         self.assertEqual(record.description, self.e1_json['description'])
         self.assertEqual(record.fields_used, self.e1_json['fields_used'])
-        self.assertEqual(record.fields_display, self.e1_json['fields_display'])
 
     def test_many_to_json(self):
         eval_metadata = [self.e1]
-        serializer = EvaluatorMetadataSerializer(eval_metadata, many=True)
+        serializer = ImportEvaluatorMetadataSerializer(eval_metadata, many=True)
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render([self.e1_json])
         self.assertEqual(json_output, expected)

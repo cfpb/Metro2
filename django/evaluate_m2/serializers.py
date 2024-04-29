@@ -20,7 +20,21 @@ class EventsViewSerializer(serializers.ModelSerializer):
         event = self.context.get("event")
         return EvaluatorResultSummary.objects.get(evaluator=obj, event=event).hits
 
-class EvaluatorMetadataSerializer(serializers.Serializer):
+
+fields_used_format = """
+Identifying information
+DB record id
+activity date
+customer account number
+
+Fields used for evaluator
+used_fields
+
+Helpful fields that are also displayed currently
+display_fields
+"""
+
+class ImportEvaluatorMetadataSerializer(serializers.Serializer):
     class Meta:
         fields = [
             'id', 'description', 'long_description', 'fields_used',
@@ -53,6 +67,23 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         instance.alternate_explanation = validated_data.get('alternate_explanation', instance.alternate_explanation)
         instance.save()
         return instance
+
+    def to_representation(self, instance):
+        # First, get the default representation for the fields
+        json = super().to_representation(instance)
+        # Then override fields_used with our representation
+        fields_string =  fields_used_format \
+            .replace('used_fields', '\n'.join(instance.fields_used)) \
+            .replace('display_fields', '\n'.join(instance.fields_display))
+        json['fields_used'] = fields_string
+        # Remove fields_display, since that isn't a separate column in the csv
+        json.pop('fields_display')
+        return json
+
+    def to_internal_value(self, data):
+        vals = super().to_internal_value(data)
+        import pdb; pdb.set_trace()
+        return vals
 
 class EvaluatorResultsViewSerializer(serializers.ModelSerializer):
     class Meta:
