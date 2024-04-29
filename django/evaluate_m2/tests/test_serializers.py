@@ -11,7 +11,7 @@ from evaluate_m2.serializers import (
 from parse_m2.models import AccountActivity, AccountHolder, M2DataFile, Metro2Event
 
 
-expected_fields_used = """
+e1_expected_fields_used = """
 Identifying information
 DB record id
 activity date
@@ -24,6 +24,20 @@ date of last payment
 Helpful fields that are also displayed currently
 special comment code
 date of first delinquency
+"""
+
+e2_expected_fields_used = """
+Identifying information
+DB record id
+activity date
+customer account number
+
+Fields used for evaluator
+wrong
+misspelled
+
+Helpful fields that are also displayed currently
+other
 """
 
 class ImportEvalSerializerTestCase(TestCase):
@@ -44,7 +58,7 @@ class ImportEvalSerializerTestCase(TestCase):
             'id': 'Betsy-1',
             'description': 'desc 1',
             'long_description': self.multi_line_text,
-            'fields_used': expected_fields_used,
+            'fields_used': e1_expected_fields_used,
             'crrg_reference': 'PDF page 3',
             'potential_harm': '',
             'rationale': '',
@@ -54,6 +68,26 @@ class ImportEvalSerializerTestCase(TestCase):
     def test_to_json(self):
         to_json = ImportEvaluatorMetadataSerializer(self.e1)
         self.assertEqual(to_json.data, self.e1_json)
+
+    def test_default_value_if_field_name_nonexistent(self):
+        e2 = EvaluatorMetadata(
+            id="TEST-11",
+            fields_used=["wrong", "misspelled"],
+            fields_display=["other"],
+        )
+        e2_json = {
+            'id': 'TEST-11',
+            'description': '',
+            'long_description': '',
+            'fields_used': e2_expected_fields_used,
+            'crrg_reference': '',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': '',
+        }
+
+        to_json = ImportEvaluatorMetadataSerializer(e2)
+        self.assertEqual(to_json.data, e2_json)
 
     def test_from_json(self):
         json = self.e1_json.copy()

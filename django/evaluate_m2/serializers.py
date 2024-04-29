@@ -67,8 +67,8 @@ class ImportEvaluatorMetadataSerializer(serializers.Serializer):
         json = super().to_representation(instance)
 
         # Then translate the fields from code to plain language
-        fields_used = [code_to_plain_field_map[k] for k in json['fields_used']]
-        fields_display = [code_to_plain_field_map[k] for k in json['fields_display']]
+        fields_used = [code_to_plain_field_map.get(k, k) for k in json['fields_used']]
+        fields_display = [code_to_plain_field_map.get(k, k) for k in json['fields_display']]
 
         # Then override fields_used with the newline-delimited string version
         json['fields_used'] = format_fields_used_for_csv(fields_used, fields_display)
@@ -88,8 +88,8 @@ class ImportEvaluatorMetadataSerializer(serializers.Serializer):
         vals['fields_display'] = parse_fields_display_from_csv(source_fields_used)
 
         # Then translate the fields from plain language to code
-        vals['fields_used'] = [plain_to_code_field_map[k] for k in vals['fields_used']]
-        vals['fields_display'] = [plain_to_code_field_map[k] for k in vals['fields_display']]
+        vals['fields_used'] = [plain_to_code_field_map.get(k, k) for k in vals['fields_used']]
+        vals['fields_display'] = [plain_to_code_field_map.get(k, k) for k in vals['fields_display']]
 
         return vals
 
