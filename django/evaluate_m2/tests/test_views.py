@@ -17,8 +17,9 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             id='Status-DOFD-1',
             description='description of Status-DOFD-1',
             long_description='',
-            fields_used='account status;date of first delinquency',
-            fields_display='amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            fields_used=['placeholder', 'dofd'],
+            fields_display=['amt_past_due', 'compl_cond_cd',
+                'smpa', 'spc_com_cd', 'terms_freq'],
             crrg_reference='400',
             alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         )
@@ -26,8 +27,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             id='Status-DOFD-2',
             description='description for the other status-dofd eval',
             long_description='',
-            fields_used= 'account status;dofd;php',
-            fields_display= 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            fields_used=['placeholder', 'dofd', 'php'],
+            fields_display= ['orig_chg_off_amt'],
             crrg_reference='41',
             alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         )
@@ -35,8 +36,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             id='Status-DOFD-4',
             description= 'description for a third status-dofd eval',
             long_description='',
-            fields_used= 'account status;dofd;php',
-            fields_display= 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            fields_used= ['smpa'],
+            fields_display= ['orig_chg_off_amt', 'terms_freq'],
             crrg_reference='410',
             alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         )
@@ -241,15 +242,15 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'evaluators': [{
                 'hits': 2, 'id': 'Status-DOFD-1',
                 'description': 'description of Status-DOFD-1', 'long_description': '',
-                'fields_used': 'account status;date of first delinquency',
-                'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+                'fields_used': ['acct_stat', 'dofd'],
+                'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa', 'spc_com_cd', 'terms_freq'],
                 'crrg_reference': '400', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }, {
                 'hits': 1, 'id': 'Status-DOFD-4', 'description':
                     'description for a third status-dofd eval', 'long_description': '',
-                    'fields_used': 'account status;dofd;php',
-                    'fields_display': 'original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+                    'fields_used': ['smpa'],
+                    'fields_display': ['orig_chg_off_amt', 'terms_freq'],
                 'crrg_reference': '410', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }]}

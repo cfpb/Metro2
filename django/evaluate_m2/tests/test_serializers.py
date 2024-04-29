@@ -18,12 +18,12 @@ activity date
 customer account number
 
 Fields used for evaluator
-one
-two
+consumer information indicator
+date of last payment
 
 Helpful fields that are also displayed currently
-three
-four
+special comment code
+date of first delinquency
 """
 
 class ImportEvalSerializerTestCase(TestCase):
@@ -35,8 +35,8 @@ class ImportEvalSerializerTestCase(TestCase):
             id="Betsy-1",
             description="desc 1",
             long_description=self.multi_line_text,
-            fields_used=["one", "two"],
-            fields_display=["three", "four"],
+            fields_used=["cons_info_ind", "dolp"],
+            fields_display=["spc_com_cd", "dofd"],
             crrg_reference="PDF page 3",
         )
 
@@ -63,8 +63,8 @@ class ImportEvalSerializerTestCase(TestCase):
         record = from_json.save()
         self.assertEqual(record.id, "BETSY-NEW")
         self.assertEqual(record.description, self.e1_json['description'])
-        self.assertEqual(record.fields_used, ['one', 'two'])
-        self.assertEqual(record.fields_display, ['three', 'four'])
+        self.assertEqual(record.fields_used, ['cons_info_ind', 'dolp'])
+        self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd'])
 
     def test_many_to_json(self):
         eval_metadata = [self.e1]

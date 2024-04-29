@@ -6,6 +6,8 @@ from .models import (
     EvaluatorResultSummary
 )
 from evaluate_m2.metadata_utils import (
+    code_to_plain_field_map,
+    plain_to_code_field_map,
     format_fields_used_for_csv,
     parse_fields_display_from_csv,
     parse_fields_used_from_csv
@@ -63,19 +65,32 @@ class ImportEvaluatorMetadataSerializer(serializers.Serializer):
     def to_representation(self, instance):
         # First, get the default representation
         json = super().to_representation(instance)
-        # Then override fields_used with our representation
-        json['fields_used'] = format_fields_used_for_csv(instance)
+
+        # Then translate the fields from code to plain language
+        fields_used = [code_to_plain_field_map[k] for k in json['fields_used']]
+        fields_display = [code_to_plain_field_map[k] for k in json['fields_display']]
+
+        # Then override fields_used with the newline-delimited string version
+        json['fields_used'] = format_fields_used_for_csv(fields_used, fields_display)
+
         # Remove fields_display, since that isn't a separate column in the csv
         json.pop('fields_display')
         return json
 
     def to_internal_value(self, data):
+        # First, get the default values
         vals = super().to_internal_value(data)
+
         # from the `fields_used` column in the spreadsheet, get the
-        # fields_used and fields_display values
+        # fields_used and fields_display values from the newline-delimited string
         source_fields_used = vals['fields_used']
         vals['fields_used'] = parse_fields_used_from_csv(source_fields_used)
         vals['fields_display'] = parse_fields_display_from_csv(source_fields_used)
+
+        # Then translate the fields from plain language to code
+        vals['fields_used'] = [plain_to_code_field_map[k] for k in vals['fields_used']]
+        vals['fields_display'] = [plain_to_code_field_map[k] for k in vals['fields_display']]
+
         return vals
 
 class EvaluatorResultsViewSerializer(serializers.ModelSerializer):
