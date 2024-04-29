@@ -1,5 +1,7 @@
 # Translate from the plain language field names in the source of
 # truth spreadsheet to code names that match the database columns
+#
+# Any fields that don't appear in the SSOTS are commented out
 code_to_plain_field_map = {
     # code : plain language
 
@@ -33,28 +35,28 @@ code_to_plain_field_map = {
     # "int_type_ind": "",  # looks like this ins't used in any evals?
 
     # # J segments
-    # "j1__ecoa": "",
-    # "j1__cons_info_ind": "",
-    # "j2__ecoa": "",
-    # "j2__cons_info_ind": "",
+    "j1__ecoa": "J1 ECOA",
+    "j1__cons_info_ind": "J1 consumer information indicator",
+    "j2__ecoa": "J2 ECOA",
+    "j2__cons_info_ind": "J2 consumer information indicator",
 
     # # K segments
     # "k1__orig_creditor_name": "",
     # "k1__creditor_classification": "",
-    # "k2__purch_sold_ind": "",
-    # "k2__purch_sold_name": "",
+    "k2__purch_sold_ind": "K2 purchased - sold indicator",
+    "k2__purch_sold_name": "K2 purchased - sold name",
     # "k3__agency_id": "",
     # "k3__agency_acct_num": "",
     # "k3__min": "",
     # "k4__spc_pmt_ind": "",
     # "k4__deferred_pmt_st_dt": "",
     # "k4__balloon_pmt_due_dt": "",
-    # "k4__balloon_pmt_amt": "",
+    "k4__balloon_pmt_amt": "balloon payment amount",
 
     # # L segment
-    # "l1__change_ind": "",
-    # "l1__new_acc_num": "",
-    # "l1__new_id_num": "",
+    "l1__change_ind": "L1 change indicator",
+    "l1__new_acc_num": "L1 new account number",
+    "l1__new_id_num": "L1 new id number",
 
     # # N segment
     # "n1__employer_name": "",
