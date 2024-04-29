@@ -4,7 +4,7 @@ from rest_framework.renderers import JSONRenderer
 
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
-    ImportEvaluatorMetadataSerializer,
+    EvaluatorMetadataSerializer,
     EvaluatorResultsViewSerializer,
     EventsViewSerializer
 )
@@ -40,7 +40,7 @@ Helpful fields that are also displayed currently
 other
 """
 
-class ImportEvalSerializerTestCase(TestCase):
+class EvalSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.multi_line_text="""Here is some text.
         It is split over two lines."""
@@ -66,7 +66,7 @@ class ImportEvalSerializerTestCase(TestCase):
         }
 
     def test_to_json(self):
-        to_json = ImportEvaluatorMetadataSerializer(self.e1)
+        to_json = EvaluatorMetadataSerializer(self.e1)
         self.assertEqual(to_json.data, self.e1_json)
 
     def test_default_value_if_field_name_nonexistent(self):
@@ -86,13 +86,13 @@ class ImportEvalSerializerTestCase(TestCase):
             'alternate_explanation': '',
         }
 
-        to_json = ImportEvaluatorMetadataSerializer(e2)
+        to_json = EvaluatorMetadataSerializer(e2)
         self.assertEqual(to_json.data, e2_json)
 
     def test_from_json(self):
         json = self.e1_json.copy()
         json['id'] = "BETSY-NEW"
-        from_json = ImportEvaluatorMetadataSerializer(data=json)
+        from_json = EvaluatorMetadataSerializer(data=json)
         self.assertTrue(from_json.is_valid())
         record = from_json.save()
         self.assertEqual(record.id, "BETSY-NEW")
@@ -102,7 +102,7 @@ class ImportEvalSerializerTestCase(TestCase):
 
     def test_many_to_json(self):
         eval_metadata = [self.e1]
-        serializer = ImportEvaluatorMetadataSerializer(eval_metadata, many=True)
+        serializer = EvaluatorMetadataSerializer(eval_metadata, many=True)
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render([self.e1_json])
         self.assertEqual(json_output, expected)
@@ -114,8 +114,8 @@ class EvaluatorResultsViewSerializerTestCase(TestCase):
             id='Status-DOFD-1',
             description='description of Status-DOFD-1',
             long_description='',
-            fields_used='account status;date of first delinquency',
-            fields_display='amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
+            fields_used=['placeholder', 'dofd'],
+            fields_display=['amount past due', 'compliance condition code', 'current balance'],
             crrg_reference='400',
             alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         )
@@ -179,7 +179,7 @@ class EventsViewSerializerTestCase(TestCase):
             long_description='',
             fields_used=['placeholder', 'date of first delinquency'],
             fields_display=['amount past due', 'compliance condition code',
-                    'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',
+                    'current balance', 'date closed', 'original charge-off amount',
                     'terms frequency'],
             crrg_reference='400',
             alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
@@ -198,7 +198,7 @@ class EventsViewSerializerTestCase(TestCase):
                 'description': 'description of Status-DOFD-1', 'long_description': '',
                 'fields_used': ['account status', 'date of first delinquency'],
                 'fields_display': ['amount past due', 'compliance condition code',
-                    'current balance', 'date closed', 'original charge-off amount', 'scheduled monthly payment amount', 'special comment code',
+                    'current balance', 'date closed', 'original charge-off amount',
                     'terms frequency'],
                 'crrg_reference': '400', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',

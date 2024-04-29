@@ -28,7 +28,13 @@ class EventsViewSerializer(serializers.ModelSerializer):
         return EvaluatorResultSummary.objects.get(evaluator=obj, event=event).hits
 
 
-class ImportEvaluatorMetadataSerializer(serializers.Serializer):
+class EvaluatorMetadataSerializer(serializers.Serializer):
+    """
+    This serializer is used when importing the evaluator metadata CSV
+    (using the import_evaluator_metadata management command), and when
+    exporting metadata with the /api/all-evaluator-metadata/ endpoint.
+    It uses the format in our evaluator source of truth spreadsheet.
+    """
     class Meta:
         fields = [
             'id', 'description', 'long_description', 'fields_used',
@@ -63,6 +69,10 @@ class ImportEvaluatorMetadataSerializer(serializers.Serializer):
         return instance
 
     def to_representation(self, instance):
+        """
+        Convert an instance of the EvaluatorMetadata class to JSON,
+        so it can be written to CSV.
+        """
         # First, get the default representation
         json = super().to_representation(instance)
 
@@ -78,6 +88,10 @@ class ImportEvaluatorMetadataSerializer(serializers.Serializer):
         return json
 
     def to_internal_value(self, data):
+        """
+        Convert a JSON object (as it comes from the evaluator CSV) to
+        an instance of EvaluatorMetadata
+        """
         # First, get the default values
         vals = super().to_internal_value(data)
 

@@ -12,7 +12,7 @@ from rest_framework import status
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
-    ImportEvaluatorMetadataSerializer,
+    EvaluatorMetadataSerializer,
     EvaluatorResultsViewSerializer,
     EventsViewSerializer)
 from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
@@ -27,10 +27,10 @@ def download_evaluator_metadata_csv(request):
         headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
-    eval_metadata_serializer = ImportEvaluatorMetadataSerializer(
+    eval_metadata_serializer = EvaluatorMetadataSerializer(
         EvaluatorMetadata.objects.all(), many=True
     )
-    header = ImportEvaluatorMetadataSerializer.Meta.fields
+    header = EvaluatorMetadataSerializer.Meta.fields
     # Add the header to the CSV response
     writer = csv.DictWriter(response, fieldnames=header)
     writer.writeheader()

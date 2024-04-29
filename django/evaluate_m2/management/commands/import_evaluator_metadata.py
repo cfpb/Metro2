@@ -1,7 +1,7 @@
 import csv
 from django.core.management.base import BaseCommand
 from evaluate_m2.models import EvaluatorMetadata
-from evaluate_m2.serializers import ImportEvaluatorMetadataSerializer
+from evaluate_m2.serializers import EvaluatorMetadataSerializer
 
 class Command(BaseCommand):
     """
@@ -40,7 +40,7 @@ class Command(BaseCommand):
                 id = row["id"]
                 try:
                     eval = EvaluatorMetadata.objects.get(id=id)
-                    from_json = ImportEvaluatorMetadataSerializer(eval, data=row)
+                    from_json = EvaluatorMetadataSerializer(eval, data=row)
                     if from_json.is_valid():
                         from_json.save()
                         updated += 1
@@ -48,7 +48,7 @@ class Command(BaseCommand):
                         self.stdout.write(f"Error prevented updating {id}: {from_json.errors}")
                         skipped += 1
                 except EvaluatorMetadata.DoesNotExist:
-                    from_json = ImportEvaluatorMetadataSerializer(data=row)
+                    from_json = EvaluatorMetadataSerializer(data=row)
                     if from_json.is_valid():
                         from_json.save()
                         new += 1
