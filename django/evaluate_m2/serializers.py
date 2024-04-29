@@ -5,6 +5,11 @@ from .models import (
     EvaluatorResult,
     EvaluatorResultSummary
 )
+from evaluate_m2.metadata_utils import (
+    format_fields_used_for_csv,
+    parse_fields_display_from_csv,
+    parse_fields_used_from_csv
+)
 
 class EventsViewSerializer(serializers.ModelSerializer):
     hits = serializers.SerializerMethodField(read_only=True)
@@ -20,19 +25,6 @@ class EventsViewSerializer(serializers.ModelSerializer):
         event = self.context.get("event")
         return EvaluatorResultSummary.objects.get(evaluator=obj, event=event).hits
 
-
-fields_used_format = """
-Identifying information
-DB record id
-activity date
-customer account number
-
-Fields used for evaluator
-used_fields
-
-Helpful fields that are also displayed currently
-display_fields
-"""
 
 class ImportEvaluatorMetadataSerializer(serializers.Serializer):
     class Meta:
@@ -69,20 +61,21 @@ class ImportEvaluatorMetadataSerializer(serializers.Serializer):
         return instance
 
     def to_representation(self, instance):
-        # First, get the default representation for the fields
+        # First, get the default representation
         json = super().to_representation(instance)
         # Then override fields_used with our representation
-        fields_string =  fields_used_format \
-            .replace('used_fields', '\n'.join(instance.fields_used)) \
-            .replace('display_fields', '\n'.join(instance.fields_display))
-        json['fields_used'] = fields_string
+        json['fields_used'] = format_fields_used_for_csv(instance)
         # Remove fields_display, since that isn't a separate column in the csv
         json.pop('fields_display')
         return json
 
     def to_internal_value(self, data):
         vals = super().to_internal_value(data)
-        import pdb; pdb.set_trace()
+        # from the `fields_used` column in the spreadsheet, get the
+        # fields_used and fields_display values
+        source_fields_used = vals['fields_used']
+        vals['fields_used'] = parse_fields_used_from_csv(source_fields_used)
+        vals['fields_display'] = parse_fields_display_from_csv(source_fields_used)
         return vals
 
 class EvaluatorResultsViewSerializer(serializers.ModelSerializer):

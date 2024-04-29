@@ -63,7 +63,8 @@ class ImportEvalSerializerTestCase(TestCase):
         record = from_json.save()
         self.assertEqual(record.id, "BETSY-NEW")
         self.assertEqual(record.description, self.e1_json['description'])
-        self.assertEqual(record.fields_used, self.e1_json['fields_used'])
+        self.assertEqual(record.fields_used, ['one', 'two'])
+        self.assertEqual(record.fields_display, ['three', 'four'])
 
     def test_many_to_json(self):
         eval_metadata = [self.e1]
