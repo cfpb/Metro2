@@ -11,11 +11,11 @@
 
 ### Requirements
 
-- Node.js (at least v18)
+- Node.js (v18+)
 - yarn (berry)
 - pnpm
 
-The API provided by the Django app must be running to succesfully run the front end. There are a couple of ways to do this:
+To run successfully, the front end needs access to the API provided by the Django app. There are a couple of ways to accomplish this:
 
 1. The simplest option is to run the full app with docker-compose as described in the main README (`docker-compose build` and `docker-compose up`).
 
