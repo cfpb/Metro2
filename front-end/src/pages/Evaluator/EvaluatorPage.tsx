@@ -35,7 +35,7 @@ export default function EvaluatorPage(): ReactElement {
 
   // Get fields from first account activity record in hits
   // TODO: should get the fields from evaluator metadata once available
-  const fields = Object.keys(hits[0] || {})
+  const fields = Object.keys(hits[0] || {}).filter(i => i !== 'cons_acct_num')
 
   // Generate colDefs for this group of fields
   const colDefs = generateColumnDefinitions(fields)
@@ -48,6 +48,7 @@ export default function EvaluatorPage(): ReactElement {
       <LocatorBar
         eyebrow='Inconsistency'
         heading={evaluatorMetadata.name || evaluatorMetadata.id}
+        icon='flag-round'
         breadcrumbs
       />
       <EvaluatorSummary metadata={evaluatorMetadata} />

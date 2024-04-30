@@ -1,4 +1,5 @@
 @import (reference) './index.less';
+@import url('design-system-react/style.css');
 
 // set heights & layout so the loader can cover
 // a section of the page to bottom of viewport
@@ -13,6 +14,12 @@ body,
   flex-direction: column;
 }
 
+// design system overrides needed for full-width layout
+.wrapper,
+.grid {
+  max-width: none !important;
+}
+
 // global layout pattern
 // provides left / right padding and flex layout for the loader
 .content-row {
@@ -20,6 +27,10 @@ body,
     unit((@grid_gutter-width / @base-font-size-px), em);
   display: flex;
   flex-direction: column;
+}
+
+header h1 a {
+  color: black !important;
 }
 
 .error-container {
@@ -37,4 +48,17 @@ body,
       }
     }
   }
+}
+
+// expandable overrides that should be handled by RDS
+
+// no background expandable variant
+.o-expandable {
+  background-color: inherit !important;
+  border-width: 1px 0 !important;
+}
+
+// remove double border in accordion
+.o-expandable-group .o-expandable__padded + .o-expandable__padded {
+  margin-top: -1px;
 }
