@@ -26,28 +26,6 @@ class EvaluatorMetadata(models.Model):
     def __str__(self) -> str:
         return self.id
 
-    @classmethod
-    def create_from_dict(cls, json: dict):
-        # Save the ID from the JSON
-        new = cls(id=json["id"])
-        # Update the remaining fields from the JSON
-        return new.update_from_dict(json)
-
-
-    def update_from_dict(self, json: dict):
-        # self.id shouldn't be updated
-        self.description=json["description"]
-        self.long_description=json["long_description"]
-        self.fields_used=json["fields_used"].split(";")
-        self.fields_display=json["fields_display"].split(";")
-        self.crrg_reference=json["crrg_reference"]
-        self.potential_harm=json["potential_harm"]
-        self.rationale=json["rationale"]
-        self.alternate_explanation=json["alternate_explanation"]
-        self.save()
-        return self
-
-
 class EvaluatorResultSummary(models.Model):
     class Meta:
         verbose_name_plural = "Evaluator Result Summaries"
