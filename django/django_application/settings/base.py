@@ -33,7 +33,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django_vite',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -104,13 +103,9 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / STATIC_URL
 
 # Copy over built front end assets with collectstatic
-STATICFILES_DIRS = [
-    FRONT_END_DIR / 'dist',
-]
-
-# Tells django-vite the port where vite is serving live
-# front end assets (defaults to 5173)
-DJANGO_VITE_DEV_SERVER_PORT = 3000
+# STATICFILES_DIRS = [
+#     FRONT_END_DIR / 'dist',
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

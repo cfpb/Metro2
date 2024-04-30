@@ -6,4 +6,3 @@ ruff==0.1.11
 boto3==1.33.10
 djangorestframework==3.14.0
 django-auth-adfs==1.14.0
-django-vite==3.0.3
