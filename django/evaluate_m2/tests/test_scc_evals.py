@@ -1,8 +1,13 @@
 from django.test import TestCase
 
 from datetime import date
-from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper, l1_record
-from parse_m2.models import K2, Metro2Event, M2DataFile
+from evaluate_m2.tests.evaluator_test_helper import (
+    EvaluatorTestHelper,
+    acct_record,
+    k2_record,
+    l1_record
+)
+from parse_m2.models import Metro2Event, M2DataFile
 
 
 class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
@@ -12,21 +17,22 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.event.save()
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
-        # Create the Account Holders
-        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
 
-    def create_data(self, activities, size):
-        self.create_bulk_activities(self.data_file, activities, size)
+    def create_data(self, activities: dict):
+        for item in activities:
+            acct_record(self.data_file, item)
         # Create the segment data
         self.create_bulk_k2()
 
     def create_bulk_k2(self):
         # Create the segment data
-        self.k2 = K2.objects.bulk_create([
-            self.create_k2(32, 'a', 'hit'),
-            self.create_k2(34, 'b', 'no1'),
-            self.create_k2(35, 'c', 'no2')
-        ])
+        k2_segments = [
+            {'id': 32, 'purch_sold_ind': 'a', 'purch_sold_name': 'hit'},
+            {'id': 34, 'purch_sold_ind': 'b', 'purch_sold_name': 'no1'},
+            {'id': 35, 'purch_sold_ind': 'c', 'purch_sold_name': 'no2'}
+        ]
+        for item in k2_segments:
+            k2_record(item)
 
     def create_other_segments(self):
         # Create the other segment data
@@ -38,27 +44,43 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.l1.save()
 
     ############################
-    # Tests for the category 7 evaluators
+    # Tests for the category SCC evaluators
     def test_eval_7_paid_but_account_status_shows_not_paid(self):
         # hits when both conditions met:
         # 1. spc_com_cd == 'AU', 'AX', 'BP', 'C'
         # 2. acct_stat != '13', '61', '62', '63', '64', '65'
         # Create the Account Activities data
-        activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'amt_past_due':(0,9,0,0), 'current_bal':(0,9,0,0),
-            'spc_com_cd':('C','AX','WT','AU')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-acct_stat=65
-        self.create_data(activities, 4)
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71', 'amt_past_due': 0, 'current_bal': 0,
+                'spc_com_cd': 'C'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'amt_past_due': 9, 'current_bal': 9,
+                'spc_com_cd': 'AX'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'71', 'amt_past_due': 0, 'current_bal': 0,
+                'spc_com_cd': 'WT'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'amt_past_due': 0, 'current_bal': 0,
+                'spc_com_cd': 'AU'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=WT, 35: NO-acct_stat=65
 
+        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'C', 'acct_stat': '71', 'amt_past_due': 0, 'current_bal': 0,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
+            'date_closed': None, 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'AX', 'acct_stat': '11', 'amt_past_due': 9, 'current_bal': 9,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
+            'date_closed': None, 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event,
@@ -70,21 +92,37 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 2. current_bal != 0
 
         # Create the Account Activities data
-        activities = {'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'amt_past_due':(0,9,0,0), 'current_bal':(200,-9,100,0),
-            'spc_com_cd':('C','AX','WT','AU')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-current_bal=0
-        self.create_data(activities, 4)
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71', 'amt_past_due': 0, 'current_bal': 200,
+                'spc_com_cd': 'C'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'amt_past_due': 9, 'current_bal': -9,
+                'spc_com_cd': 'AX'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'71', 'amt_past_due': 0, 'current_bal': 100,
+                'spc_com_cd': 'WT'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'amt_past_due': 0, 'current_bal': 0,
+                'spc_com_cd': 'AU'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=WT, 35: NO-current_bal=0
 
+        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'C', 'acct_stat': '71', 'amt_past_due': 0, 'current_bal': 200,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
+            'date_closed': None, 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'AX', 'acct_stat': '11', 'amt_past_due': 9, 'current_bal': -9,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
+            'date_closed': None, 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, 'SCC-Balance-1',
@@ -96,21 +134,37 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 2. amt_past_due != 0
 
         # Create the Account Activities data
-        activities = {'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'amt_past_due':(200,9,20,0), 'current_bal':(0,9,0,0),
-            'spc_com_cd':('C','AX','WT','AU')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-amt_past_due=0
-        self.create_data(activities, 4)
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71', 'amt_past_due': 200, 'current_bal': 0,
+                'spc_com_cd': 'C'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'amt_past_due': 9, 'current_bal': 9,
+                'spc_com_cd': 'AX'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'71', 'amt_past_due': 20, 'current_bal': 0,
+                'spc_com_cd': 'WT'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'amt_past_due': 0, 'current_bal': 0,
+                'spc_com_cd': 'AU'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=WT, 35: NO-amt_past_due=0
 
+        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'C', 'acct_stat': '71', 'amt_past_due': 200, 'current_bal': 0,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
+            'date_closed': None, 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'AX', 'acct_stat': '11', 'amt_past_due': 9, 'current_bal': 9,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
+            'date_closed': None, 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, 'SCC-APD-1',
@@ -122,21 +176,37 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 2. current_bal != 0
 
         # Create the Account Activities data
-        activities = {'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'amt_past_due':(0,9,0,0), 'current_bal':(200,9,100,0),
-            'spc_com_cd':('AT','O','WT','AH')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-current_bal=0
-        self.create_data(activities, 4)
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71', 'amt_past_due': 0, 'current_bal': 200,
+                'spc_com_cd': 'AT'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'amt_past_due': 9, 'current_bal': 9,
+                'spc_com_cd': 'O'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'71', 'amt_past_due': 0, 'current_bal': 100,
+                'spc_com_cd': 'WT'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'amt_past_due': 0, 'current_bal': 0,
+                'spc_com_cd': 'AH'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=WT, 35: NO-current_bal=0
 
+        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'AT', 'acct_stat': '71', 'amt_past_due': 0, 'current_bal': 200,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
+            'date_closed': None, 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'O', 'acct_stat': '11', 'amt_past_due': 9, 'current_bal': 9,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
+            'date_closed': None, 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, 'SCC-Balance-2', expected)
@@ -147,23 +217,40 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 2. amt_past_due != 0
 
         # Create the Account Activities data
-        activities = {'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'), 'amt_past_due':(200,-9,10,0), 'current_bal':(0,9,0,100),
-            'spc_com_cd':('AT','O','WT','AH')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=WT, 4: NO-amt_past_due=0
-        self.create_data(activities, 4)
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71', 'amt_past_due': 200, 'current_bal': 0,
+                'spc_com_cd': 'AT'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'amt_past_due': -9, 'current_bal': 9,
+                'spc_com_cd': 'O'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'71', 'amt_past_due': 10, 'current_bal': 0,
+                'spc_com_cd': 'WT'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'amt_past_due': 0, 'current_bal': 100,
+                'spc_com_cd': 'AH'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=WT, 35: NO-amt_past_due=0
         self.create_other_segments()
 
+        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'account_holder__cons_info_ind': 'Z', 'spc_com_cd': 'AT', 'acct_stat': '71', 'amt_past_due': 200,
-            'current_bal': 0, 'date_closed': date(2020, 1, 1), 'j1__cons_info_ind': 'a1',
-            'j2__cons_info_ind': 'a2', 'k2__purch_sold_ind': 'a', 'l1__change_ind': '1'
+            'account_holder__cons_info_ind': '', 'spc_com_cd': 'AT', 'acct_stat': '71', 'amt_past_due': 200, 'current_bal': 0, 'date_closed': None,
+            'j1__cons_info_ind': 'a1', 'j2__cons_info_ind': 'a2',
+            'k2__purch_sold_ind': 'a', 'l1__change_ind': '1'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'account_holder__cons_info_ind': 'Y', 'spc_com_cd': 'O', 'acct_stat': '11', 'amt_past_due': -9,
-            'current_bal': 9, 'date_closed': date(2020, 1, 1), 'j1__cons_info_ind': None,
-            'j2__cons_info_ind': None, 'k2__purch_sold_ind': None, 'l1__change_ind': None
+            'account_holder__cons_info_ind': '', 'spc_com_cd': 'O', 'acct_stat': '11', 'amt_past_due': -9, 'current_bal': 9, 'date_closed': None,
+            'j1__cons_info_ind': None, 'j2__cons_info_ind': None,
+            'k2__purch_sold_ind': None, 'l1__change_ind': None
         }]
 
         self.assert_evaluator_correct(
@@ -175,21 +262,35 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 2. current_bal <= 0
 
         # Create the Account Activities data
-        activities = {'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'acct_type':('08','26','0','0'), 'amt_past_due':(200,9,0,0),
-            'current_bal':(-1,0,-1,5), 'spc_com_cd':('BD','BK','AI','BG')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=AI, 4: NO-current_bal=5
-        self.create_data(activities, 4)
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71', 'acct_type': '08', 'amt_past_due': 200,
+                'current_bal': -1, 'spc_com_cd': 'BD'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'acct_type': '26', 'amt_past_due': 9,
+                'current_bal': 0, 'spc_com_cd': 'BK'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'71', 'acct_type': '0', 'amt_past_due': 0,
+                'current_bal': -1, 'spc_com_cd': 'AI'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'acct_type': '0', 'amt_past_due': 0,
+                'current_bal': 5, 'spc_com_cd': 'BG'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=AI, 35: NO-current_bal=5
 
+        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'spc_com_cd': 'BD', 'acct_stat': '71', 'acct_type': '08','amt_past_due': 200, 'current_bal': -1,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
+            'spc_com_cd': 'BD', 'acct_stat': '71', 'acct_type': '08','amt_past_due': 200, 'current_bal': -1, 'date_closed': None, 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'spc_com_cd': 'BK', 'acct_stat': '11',  'acct_type': '26','amt_past_due': 9, 'current_bal': 0,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
+            'spc_com_cd': 'BK', 'acct_stat': '11',  'acct_type': '26','amt_past_due': 9, 'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, 'SCC-Balance-4', expected)
@@ -200,20 +301,38 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 2. amt_past_due <= 0
 
         # Create the Account Activities data
-        activities = {'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'), 'acct_stat':('71','11','71','65'),
-            'acct_type':('08','26','0','0'), 'amt_past_due':(-200,0,-1,1),
-            'current_bal':(0,9,10,100), 'spc_com_cd':('BD','BK','AI','BG')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=AI, 4: NO-amt_past_due=1
-        self.create_data(activities, 4)
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71', 'acct_type': '08', 'amt_past_due': -200,
+                'current_bal': 0, 'spc_com_cd': 'BD'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'acct_type': '26', 'amt_past_due': 0,
+                'current_bal': 9, 'spc_com_cd': 'BK'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'71', 'acct_type': '0', 'amt_past_due': -1,
+                'current_bal': 10, 'spc_com_cd': 'AI'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'acct_type': '0', 'amt_past_due': 1,
+                'current_bal': 100, 'spc_com_cd': 'BG'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=AI, 35: NO-amt_past_due=1
+
+        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'spc_com_cd': 'BD', 'acct_stat': '71', 'acct_type': '08','amt_past_due': -200, 'current_bal': 0,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
+            'spc_com_cd': 'BD', 'acct_stat': '71', 'acct_type': '08',
+            'amt_past_due': -200, 'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'spc_com_cd': 'BK', 'acct_stat': '11',  'acct_type': '26','amt_past_due': 0, 'current_bal': 9,
-            'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
+            'spc_com_cd': 'BK', 'acct_stat': '11',  'acct_type': '26',
+            'amt_past_due': 0, 'current_bal': 9, 'date_closed': None,
+            'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, 'SCC-APD-4', expected)
@@ -224,21 +343,37 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 2. current_bal != 0
 
         # Create the Account Activities data
-        activities = {'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','W','X'), 'acct_stat':('71','11','71','65'),
-            'acct_type':('08','26','0','0'), 'amt_past_due':(0,9,0,0),
-            'current_bal':(200,-9,10,0), 'spc_com_cd':('BC','BJ','BP','BF')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=BP, 4: NO-current_bal=0
-        self.create_data(activities, 4)
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71', 'acct_type': '08', 'amt_past_due': 0,
+                'current_bal': 200, 'spc_com_cd': 'BC'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'acct_type': '26', 'amt_past_due': 9,
+                'current_bal': -9, 'spc_com_cd': 'BJ'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'71', 'acct_type': '0', 'amt_past_due': 0,
+                'current_bal': 10, 'spc_com_cd': 'BP'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'acct_type': '0', 'amt_past_due': 0,
+                'current_bal': 0, 'spc_com_cd': 'BF'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=BP, 35: NO-current_bal=0
 
+        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'BC', 'acct_stat': '71', 'acct_type': '08','amt_past_due': 0,
-            'current_bal': 200, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
+            'current_bal': 200, 'date_closed': None, 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'BJ', 'acct_stat': '11',  'acct_type': '26','amt_past_due': 9,
-            'current_bal': -9, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
+            'current_bal': -9, 'date_closed': None, 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, 'SCC-Balance-3', expected)
@@ -249,21 +384,74 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 2. amt_past_due != 0
 
         # Create the Account Activities data
-        activities = {'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','W','X'), 'acct_stat':('71','11','71','65'),
-            'acct_type':('08','26','0A','0G'), 'amt_past_due':(200,-9,10,0),
-            'current_bal':(0,9,10,100), 'spc_com_cd':('BC','BJ','BP','BF')}
-        # 1: HIT, 2: HIT, 3: NO-spc_com_cd=BP, 4: NO-amt_past_due=0
-        self.create_data(activities, 4)
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71', 'acct_type': '08', 'amt_past_due': 200,
+                'current_bal': 0, 'spc_com_cd': 'BC'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'acct_type': '26', 'amt_past_due': -9,
+                'current_bal': 9, 'spc_com_cd': 'BJ'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'71', 'acct_type': '0A', 'amt_past_due': 10,
+                'current_bal': 10, 'spc_com_cd': 'BP'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'acct_type': '0G', 'amt_past_due': 0,
+                'current_bal': 100, 'spc_com_cd': 'BF'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=BP, 35: NO-amt_past_due=0
 
+        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'spc_com_cd': 'BC', 'acct_stat': '71', 'acct_type': '08','amt_past_due': 200,
-            'current_bal': 0, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': 'a'
+            'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'spc_com_cd': 'BJ', 'acct_stat': '11',  'acct_type': '26','amt_past_due': -9,
-            'current_bal': 9, 'date_closed': date(2020, 1, 1), 'k2__purch_sold_ind': None
+            'current_bal': 9, 'date_closed': None, 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(
             self.event, "SCC-APD-3", expected)
+
+    def test_eval_7_paid_but_account_status_shows_not_paid(self):
+        # hits when both conditions met:
+        # 1. spc_com_cd == 'BF'
+        # 2. acct_stat != '13', '62', '64'
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'08', 'spc_com_cd': 'BF'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'26', 'spc_com_cd': 'BF'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'13', 'spc_com_cd': 'BF'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'0G', 'spc_com_cd': 'BC',
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: NO-spc_com_cd=BC
+        self.create_bulk_k2()
+
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'acct_stat': '08', 'spc_com_cd': 'BF', 'acct_type':'', 'amt_past_due': 0,
+            'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': 'a'
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+            'acct_stat': '26', 'spc_com_cd': 'BF', 'acct_type':'', 'amt_past_due': 0,
+            'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': None
+        }]
+        self.assert_evaluator_correct(self.event, 'SCC-Status-6', expected)

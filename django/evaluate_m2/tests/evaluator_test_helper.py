@@ -126,6 +126,31 @@ def acct_record(file: M2DataFile, custom_values: dict):
     acct_activity.save()
     return acct_activity
 
+def k2_record(custom_values: dict):
+    """
+    Returns a K2 record for use in tests, using the values
+    provided, or defaulting to basic values where none are provided.
+    Inputs:
+    - custom_values: Dict of values to override the defaults. Keys should match
+                     the field names in the K2 model
+    """
+    # Set basic defaults for all values in K2.
+    default_values = {
+        'account_activity': '1',
+        'purch_sold_ind': '',
+        'purch_sold_name': '',
+    }
+
+    # Override defaults with provided values
+    values = default_values | custom_values
+    k2 = K2(
+        account_activity=AccountActivity.objects.get(id=values['id']),
+        purch_sold_ind=values['purch_sold_ind'],
+        purch_sold_name=values['purch_sold_name']
+    )
+    k2.save()
+    return k2
+
 def k4_record(custom_values: dict):
     """
     Returns a K4 record for use in tests, using the values
@@ -365,10 +390,6 @@ class EvaluatorTestHelper():
             return  J1(account_activity=AccountActivity.objects.get(id=id), cons_info_ind=cons_info_ind)
         else:
             return  J2(account_activity=AccountActivity.objects.get(id=id), cons_info_ind=cons_info_ind)
-
-    def create_k2(self, id: int, purch_sold_ind: str, purch_sold_name: str):
-        return  K2(account_activity=AccountActivity.objects.get(id=id),
-                   purch_sold_ind=purch_sold_ind, purch_sold_name=purch_sold_name)
 
     def assert_evaluator_correct(self, event: Metro2Event, eval_name: str, expected_result: list[dict]):
         # Test that the evaluator:
