@@ -70,7 +70,7 @@ If docker desktop is not already installed, please [download and install it](htt
 
 `docker-compose up` or `docker-compose up -d` to run the application.
 
-The front end is served by Vite in development mode at https://localhost:3000. The Django app runs on port 8000 and the admin can be accessed at https://localhost:8000/admin/.
+The front end is served by Vite in development mode at http://localhost:3000. The Django app runs on port 8000 and the admin can be accessed at http://localhost:8000/admin/.
 
 To connect to a running container, (e.g. to run scripts or tests), `docker-compose exec [container-name] sh`, where `[container-name]` is one of the services named in [docker-compose.yml](/docker-compose.yml), i.e. `django` or `frontend`.
 
