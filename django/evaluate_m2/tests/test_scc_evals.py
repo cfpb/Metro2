@@ -4,7 +4,8 @@ from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import (
     EvaluatorTestHelper,
     acct_record,
-    k2_record
+    k2_record,
+    l1_record
 )
 from parse_m2.models import Metro2Event, M2DataFile
 
@@ -39,7 +40,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.j1.save()
         self.j2 = self.create_jsegment(32, 'j2', 'a2')
         self.j2.save()
-        self.l1 = self.create_l1(32)
+        self.l1 = l1_record({'id':32})
         self.l1.save()
 
     ############################
