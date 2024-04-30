@@ -1,6 +1,7 @@
 import csv
 from django.core.management.base import BaseCommand
 from evaluate_m2.models import EvaluatorMetadata
+from evaluate_m2.serializers import EvaluatorMetadataSerializer
 
 class Command(BaseCommand):
     """
@@ -32,18 +33,29 @@ class Command(BaseCommand):
             reader = csv.DictReader(f)
             new = 0
             updated = 0
+            skipped=0
             rows_count = 0
             for row in reader:
                 rows_count += 1
                 id = row["id"]
                 try:
                     eval = EvaluatorMetadata.objects.get(id=id)
-                    eval.update_from_dict(row)
-                    updated += 1
+                    from_json = EvaluatorMetadataSerializer(eval, data=row)
+                    if from_json.is_valid():
+                        from_json.save()
+                        updated += 1
+                    else:
+                        self.stdout.write(f"Error prevented updating {id}: {from_json.errors}")
+                        skipped += 1
                 except EvaluatorMetadata.DoesNotExist:
-                    eval = EvaluatorMetadata.create_from_dict(row)
-                    new += 1
+                    from_json = EvaluatorMetadataSerializer(data=row)
+                    if from_json.is_valid():
+                        from_json.save()
+                        new += 1
+                    else:
+                        self.stdout.write(f"Error prevented creating {id}: {from_json.errors}")
+                        skipped += 1
 
         self.stdout.write(f"Read all {rows_count} rows of the CSV.")
-        self.stdout.write(f"Created {new} and updated {updated} existing evaluators.")
+        self.stdout.write(f"Created {new} and updated {updated} existing evaluators. Skipped {skipped}.")
         self.stdout.write(f"{EvaluatorMetadata.objects.count()} total evaluators now exist.")

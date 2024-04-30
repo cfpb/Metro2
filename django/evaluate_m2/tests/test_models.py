@@ -6,48 +6,6 @@ from parse_m2.models import Metro2Event
 
 
 class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
-    def test_eval_create_from_dict(self):
-        input_json = {
-            'id': 'Status-DOFD-1',
-            'description': 'Account status indicates a delinquent, or paid and previously delinquent, account but there is no date of first delinquency.',
-            'long_description': '',
-            'fields_used': 'account status;date of first delinquency',
-            'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_reference': '41',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        }
-        eval = EvaluatorMetadata.create_from_dict(input_json)
-        # check that the evaluator was saved in the database
-        self.assertIsNotNone(eval.id)
-        # check that the properties are correct
-        self.assertEqual(eval.id, input_json['id'])
-        self.assertEqual(eval.fields_used, ["account status", "date of first delinquency"])
-
-    def test_eval_update_from_dict(self):
-        eval1 = EvaluatorMetadata(
-            id = "Betsy Test 3",
-            description = "Another test evaluator",
-            fields_used = ["credit limit", "date closed"],
-            crrg_reference = "444",
-        )
-        input_json = {
-            'id': 'Betsy Test 3',
-            'description': 'Account status indicates a delinquent, or paid and previously delinquent, account but there is no date of first delinquency.',
-            'long_description': '',
-            'fields_used': 'account status;date of first delinquency',
-            'fields_display': 'amount past due;compliance condition code;current balance;date closed;original charge-off amount;scheduled monthly payment amount;special comment code;terms frequency',
-            'crrg_reference': '41',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        }
-
-        result = eval1.update_from_dict(input_json)
-        self.assertEqual(result.crrg_reference, "41")
-
-
     def test_eval_res_create_csv_header(self):
         field_values_json = {
             'field1': 'value1',
