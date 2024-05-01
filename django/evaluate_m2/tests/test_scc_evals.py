@@ -245,7 +245,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'account_holder__cons_info_ind': '', 'spc_com_cd': 'AT', 'acct_stat': '71', 'amt_past_due': 200, 'current_bal': 0, 'date_closed': None,
             'j1__cons_info_ind': 'a1', 'j2__cons_info_ind': 'a2',
-            'k2__purch_sold_ind': 'a', 'l1__change_ind': '1'
+            'k2__purch_sold_ind': 'a', 'l1__change_ind': ''
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'account_holder__cons_info_ind': '', 'spc_com_cd': 'O', 'acct_stat': '11', 'amt_past_due': -9, 'current_bal': 9, 'date_closed': None,
@@ -455,3 +455,46 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
             'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(self.event, 'SCC-Status-6', expected)
+
+    def test_eval_scc_acct_change_1(self):
+        # hits when both conditions met:
+        # 1. spc_com_cd == 'O'
+        # 2. L1.change_ind != '1', '2', '3'
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'spc_com_cd': 'O'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'spc_com_cd': 'O'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'spc_com_cd': 'BC'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'spc_com_cd': 'O',
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=BC, 35: NO-L1.change_ind=1
+
+
+        # Create the segment data
+        l1_segments = [
+            {'id': 32, 'change_ind': ''},
+            {'id': 35, 'change_ind': '1'}
+        ]
+        for item in l1_segments:
+            l1_record(item)
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'spc_com_cd': 'O', 'l1__change_ind':'', 'acct_stat': '', 'amt_past_due': 0,
+            'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': 'a'
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+            'spc_com_cd': 'O', 'l1__change_ind': None, 'acct_stat': '', 'amt_past_due': 0,
+            'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': None
+        }]
+        self.assert_evaluator_correct(self.event, 'SCC-AccountChange-1', expected)
