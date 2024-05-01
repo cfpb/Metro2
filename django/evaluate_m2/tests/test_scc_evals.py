@@ -440,10 +440,8 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'0G', 'spc_com_cd': 'BC',
             }]
-        for item in activities:
-            acct_record(self.data_file, item)
+        self.create_data(activities)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=71, 35: NO-spc_com_cd=BC
-        self.create_bulk_k2()
 
         # Create the segment data
         expected = [{
@@ -477,10 +475,8 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'62', 'spc_com_cd': 'CK',
             }]
-        for item in activities:
-            acct_record(self.data_file, item)
+        self.create_data(activities)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: NO-spc_com_cd=CK
-        self.create_bulk_k2()
 
         # Create the segment data
         expected = [{
@@ -514,10 +510,8 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'0G', 'spc_com_cd': 'BF',
             }]
-        for item in activities:
-            acct_record(self.data_file, item)
+        self.create_data(activities)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: NO-spc_com_cd=BF
-        self.create_bulk_k2()
 
         # Create the segment data
         expected = [{
@@ -551,10 +545,8 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'63', 'spc_com_cd': 'BC',
             }]
-        for item in activities:
-            acct_record(self.data_file, item)
+        self.create_data(activities)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=66, 35: NO-spc_com_cd=BC
-        self.create_bulk_k2()
 
         # Create the segment data
         expected = [{
@@ -588,10 +580,8 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'0G', 'spc_com_cd': 'BC',
             }]
-        for item in activities:
-            acct_record(self.data_file, item)
+        self.create_data(activities)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: NO-spc_com_cd=BC
-        self.create_bulk_k2()
 
         # Create the segment data
         expected = [{
