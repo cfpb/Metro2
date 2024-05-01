@@ -406,9 +406,9 @@ class EvaluatorTestHelper():
                 output = func(record_set)
                 results = sorted(output, key=lambda x: x['id'])
                 expected = sorted(expected_result, key=lambda x: x['id'])
-                print('-'*50, '\n', eval_name, '\n', '-'*50,)
-                print('\nRESULTS: ', results, '\n')
-                print('\nEXPECTED: ', expected, '\n\n')
+                # print('-'*50, '\n', eval_name, '\n', '-'*50,)
+                # print('\nRESULTS: ', results, '\n')
+                # print('\nEXPECTED: ', expected, '\n\n')
         # Exactly one evaluator should have run
         self.assertEqual(evaluators_matching, 1)
 
