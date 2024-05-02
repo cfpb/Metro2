@@ -75,8 +75,8 @@ class AccountChangeEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         l1_activities = [
             {'id': 32, 'change_ind': '1', 'new_acc_num': ''},
-            {'id': 34, 'change_ind': '2','new_acc_num': ''},
-            {'id': 35, 'new_acc_num': '0036'},
+            {'id': 34, 'change_ind': '2', 'new_acc_num': ''},
+            {'id': 35, 'change_ind': '3', 'new_acc_num': '0036'},
         ]
         for item in l1_activities:
             l1_record(item)
