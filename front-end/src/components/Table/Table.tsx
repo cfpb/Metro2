@@ -4,6 +4,8 @@ import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import './Table.less'
 import { columnDefaults, columnTypes } from './tableUtils'
+import { Button } from 'design-system-react'
+import Modal from 'components/DownloadCSV'
 
 /* Table props
  * height: defaults to 'fixed'
@@ -51,8 +53,12 @@ export default function Table<T extends object>({
     setRowData(rows)
   }, [rows])
 
+  const [isOpen, setIsOpen] = useState(false)
   return (
     <div className='u-mt15 u-mb30'>
+      <Button appearance="primary" label="This will be a passed prop" data-testid='csv-download-button' className="csv-download-button" onClick={() => setIsOpen(true)} size="default" />
+      <Modal open={isOpen} onClose={() => setIsOpen(false)} />
+      <div id="portal"></div>
       <div
         className={`ag-theme-alpine data-grid-container data-grid-container--${height}-height`}
         data-testid='data-grid-container'>
