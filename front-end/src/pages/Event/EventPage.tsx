@@ -7,6 +7,7 @@ import columnDefinitions from './columnDefinitions'
 
 export default function EventPage(): ReactElement {
   const eventData: Event = useLoaderData({ from: '/events/$eventId' })
+  console.log(eventData)
 
   return (
     <>
@@ -19,7 +20,7 @@ export default function EventPage(): ReactElement {
             : undefined
         }
       />
-      <div className='block'>
+      <div className='block block__sub content-row'>
         <Table
           rows={eventData.evaluators}
           columnDefinitions={columnDefinitions}

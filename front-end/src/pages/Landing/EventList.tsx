@@ -14,9 +14,9 @@ export default function EventList({
 }: EventListProperties): ReactElement {
   return (
     <div className='content-row block u-mt15'>
-      <h2 className='h5' data-testid='event-heading'>
+      {/* <h2 className='h5' data-testid='event-heading'>
         {heading}
-      </h2>
+      </h2> */}
       {events.map(event => (
         <div
           key={event.id}
@@ -29,15 +29,18 @@ export default function EventList({
           ) : (
             <h3 data-testid='event-header'>{event.name}</h3>
           )}
+          <h4>Data from:</h4>
           {event.description ? (
             <h4 data-testid='event-description'>{event.description}</h4>
           ) : null}
-          <Link
-            to='/events/$eventId'
-            params={{ eventId: String(event.id) }}
-            className='m-list-link'>
-            View event results
-          </Link>
+          <p>
+            <Link
+              to='/events/$eventId'
+              params={{ eventId: String(event.id) }}
+              className='m-list-link'>
+              Open evaluator results
+            </Link>
+          </p>
         </div>
       ))}
     </div>

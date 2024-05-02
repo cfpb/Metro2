@@ -1,4 +1,4 @@
-// all M2 fields that might be displayed for a tradeline
+// M2 fields that can be displayed for an account record
 export interface AccountRecord {
   cons_acct_num?: string | null
   activity_date?: string | null
@@ -23,8 +23,15 @@ export interface AccountRecord {
   acct_type?: string | null
   terms_dur?: string | null
   terms_freq?: string | null
+  account_holder__cons_info_ind?: string | null
+  j1__cons_info_ind?: string | null
+  j2__cons_info_ind?: string | null
+  k4__balloon_pmt_amt?: number | null
 }
 
+// Canonical list of M2 fields for an account record.
+// Full list will appear as columns in the account view table.
+// Evaluator-specific subset will appear as columns in evaluator results table.
 export const M2_FIELDS = [
   'activity_date',
   'acct_stat',
@@ -47,7 +54,11 @@ export const M2_FIELDS = [
   'port_type',
   'acct_type',
   'terms_dur',
-  'terms_freq'
+  'terms_freq',
+  'account_holder__cons_info_ind',
+  'j1__cons_info_ind',
+  'j2__cons_info_ind',
+  'k4__balloon_pmt_amt'
   // 'int_type_ind'
 ]
 
@@ -55,6 +66,7 @@ export const M2_FIELDS = [
 export const FIELD_NAMES_LOOKUP = {
   acct_stat: 'Account status',
   acct_type: 'Account type',
+  account_holder__cons_info_ind: 'Consumer information indicator',
   activity_date: 'Activity date',
   actual_pmt_amt: 'Actual payment amount',
   amt_past_due: 'Amount past due',
@@ -68,13 +80,15 @@ export const FIELD_NAMES_LOOKUP = {
   dofd: 'DOFD',
   dolp: 'Date of last payment',
   hcola: 'HCOLA',
+  j1__cons_info_ind: 'J1 consumer information indicator',
+  j2__cons_info_ind: 'J2 consumer information indicator',
   k2_purch_sold_ind: 'K2 purchased-sold indicator',
+  k4__balloon_pmt_amt: 'K4 balloon payment amount',
   orig_chg_off_amt: 'Original charge-off amount',
   php: 'Payment history profile',
   pmt_rating: 'Payment rating',
   port_type: 'Portfolio type',
   smpa: 'Scheduled monthly payment amount',
-  spc_com_cd: 'Special comment code',
   terms_dur: 'Terms duration',
   terms_freq: 'Terms frequency'
 }
@@ -84,6 +98,7 @@ export const FIELD_NAMES_LOOKUP = {
 export const FIELD_TYPES_LOOKUP = {
   acct_stat: 'annotatedText',
   acct_type: 'annotatedText',
+  account_holder__cons_info_ind: 'annotatedText',
   activity_date: 'formattedDate',
   actual_pmt_amt: 'currency',
   amt_past_due: 'currency',
@@ -97,7 +112,10 @@ export const FIELD_TYPES_LOOKUP = {
   dofd: 'formattedDate',
   dolp: 'formattedDate',
   hcola: 'currency',
+  j1__cons_info_ind: 'annotatedText',
+  j2__cons_info_ind: 'annotatedText',
   k2_purch_sold_ind: 'annotatedText',
+  k4__balloon_pmt_amt: 'currency',
   orig_chg_off_amt: 'currency',
   php: 'annotatedText',
   pmt_rating: 'annotatedText',
@@ -331,6 +349,19 @@ export const TERMS_FREQUENCY_LOOKUP = {
   Y: 'Annually'
 }
 
+export const CONSUMER_INFORMATION_INDICATOR_LOOKUP = {
+  A: 'Petition for Chapter 7 Bankruptcy',
+  B: 'Petition for Chapter 11 Bankruptcy',
+  C: 'Petition for Chapter 12 Bankruptcy',
+  D: 'Petition for Chapter 13 Bankruptcy',
+  E: 'Discharged through Bankruptcy Chapter 7',
+  F: 'Discharged through Bankruptcy Chapter 11',
+  G: 'Discharged through Bankruptcy Chapter 12',
+  H: 'Discharged/Completed through Bankruptcy Chapter 13',
+  '1A': 'Personal Receivership',
+  Q: 'Removes previously reported Bankruptcy Indicator or reports bankruptcy has been closed, terminated, dismissed or withdrawn, without being discharged.'
+}
+
 // Enables accessing a field's lookup by the field's id.
 export const M2_FIELD_LOOKUPS = {
   acct_stat: ACCOUNT_STATUS_LOOKUP,
@@ -341,5 +372,8 @@ export const M2_FIELD_LOOKUPS = {
   pmt_rating: PAYMENT_RATING_LOOKUP,
   spc_com_cd: SPECIAL_COMMENT_CODE_LOOKUP,
   port_type: PORTFOLIO_TYPE_LOOKUP,
-  terms_freq: TERMS_FREQUENCY_LOOKUP
+  terms_freq: TERMS_FREQUENCY_LOOKUP,
+  j1__cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
+  j2__cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
+  account_holder__cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP
 }

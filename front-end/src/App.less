@@ -29,8 +29,53 @@ body,
   flex-direction: column;
 }
 
-header h1 a {
+// Styles for summary content on evaluator and account pages
+.summary-row {
+  margin-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  ol,
+  ul {
+    margin-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
+  }
+}
+
+// styles for download button rows
+.download-row {
+  display: flex;
+  // justify-content: space-between;
+  align-items: end;
+  margin-bottom: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
+
+  a,
+  button {
+    margin-left: auto;
+  }
+
+  // temp styles for button
+  .a-btn__icon--on-right {
+    padding-left: 0.6875em;
+    border-left: 1px solid @pacific-60;
+    margin-left: 0.4375em;
+  }
+}
+
+// Metro 2 header is a link but doesn't need link styling
+header h2 a {
   color: black !important;
+}
+
+// styles for contact info inline loader
+.inline-loader {
+  svg {
+    margin-right: 4px;
+    position: relative;
+    top: 1px;
+  }
 }
 
 .error-container {
