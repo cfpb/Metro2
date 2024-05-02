@@ -18,7 +18,7 @@ class AccountChangeEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_eval_account_change_id_1(self):
     # Hits when all conditions are met:
-    # 1. l1_change_ind == '1', '3'
+    # 1. l1_change_ind == '2', '3'
     # 2. l1__new_id_num == ''
 
         # Create the Account Activities data
@@ -37,19 +37,19 @@ class AccountChangeEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
 
         l1_activities = [
-            {'id': 32, 'change_ind': '1', 'new_id_num':'', 'new_acc_num': '32'},
-            {'id': 34, 'change_ind': '2', 'new_id_num':'a', 'new_acc_num': ''},
+            {'id': 32, 'change_ind': '2', 'new_id_num':'', 'new_acc_num': '32'},
+            {'id': 34, 'change_ind': '1', 'new_id_num':'a', 'new_acc_num': ''},
             {'id': 35, 'change_ind': '3', 'new_id_num':'2', 'new_acc_num': '35'},
         ]
         for item in l1_activities:
             l1_record(item)
         # 32: HIT, 33: NO-missing L1 segment,
-        # 34: NO-l1_change_ind=2, 35: NO-l1__new_id_num=2
+        # 34: NO-l1_change_ind=1, 35: NO-l1__new_id_num=2
 
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'l1__change_ind':'1',
+            'cons_acct_num': '0032', 'l1__change_ind':'2',
             'l1__new_acc_num':'32', 'l1__new_id_num': ''
         }]
         self.assert_evaluator_correct(
