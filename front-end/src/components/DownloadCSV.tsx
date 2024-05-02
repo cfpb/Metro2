@@ -27,9 +27,6 @@ export default function Modal({ open, onClose }) {
     const [hasAccepted, setHasAccepted] = React.useState(false)
     const handleChange = () => {
         setHasAccepted(!hasAccepted);
-        if (hasAccepted===true){
-
-        }
     };
 
     if (!open) return null
