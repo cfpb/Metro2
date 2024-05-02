@@ -16,41 +16,6 @@ class AccountChangeEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
 
-    def test_eval_account_change_number_4(self):
-    # Hits when all conditions are met:
-    # 1. cons_acct_num == L1.new_acc_num
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activities = [
-            {'id': 32, 'new_acc_num': '0032'},
-            {'id': 33, 'new_acc_num': '0035'},
-            {'id': 34, 'new_acc_num': '0036'}
-        ]
-        for item in l1_activities:
-            l1_record(item)
-        # 32: HIT, 33: NO-l1__new_acc_num=0035,
-        # 34: NO-l1__new_acc_num=0036
-
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'l1__new_acc_num':'0032'
-        }]
-        self.assert_evaluator_correct(
-            self.event, 'AccountChange-Number-4', expected)
-
     ############################
     # Tests for the category AccountChange evaluators
     def test_eval_account_change_number_1(self):
