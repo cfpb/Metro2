@@ -37,30 +37,6 @@ export default function Modal({ open, onClose }) {
             <div style={MODAL_STYLES}>
             <img className='o-header_logo-img' src={CFPBLogo} alt='CFPB Logo' />
 
-            {/* Remove radio buttons - will be implemented in another module
-
-            <Heading type="1" style={{marginTop: "1rem"}} >Download .csv</Heading>
-
-            <Paragraph>
-                <strong>Note:</strong> Choosing "Create .csv file" will make a .csv file containing the results in the table only by default.
-            </Paragraph>
-
-            <Paragraph>
-                <Heading type="2">Choose .csv options:</Heading>
-
-                <RadioButton
-                id="evaluatorResults"
-                label="Create a .csv that contains all of this evaluators results"
-                name="downloadCSV" />
-
-                <RadioButton
-                id="tableResults"
-                label="Create a .csv with only the results in the table"
-                name="downloadCSV" />
-
-            </Paragraph>
-            */}
-
             <Paragraph>
                 <Heading type="2">Personally identifiable information:</Heading>
                 <Checkbox
