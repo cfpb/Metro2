@@ -141,26 +141,34 @@ class AccountChangeEvalsTestCase(TestCase, EvaluatorTestHelper):
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032'
             }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033'
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': 'O33'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035'
             }]
         for item in activities:
             acct_record(self.data_file, item)
 
         l1_activities = [
             {'id': 32, 'new_acc_num': '0032'},
-            {'id': 34, 'new_acc_num': '0036'}
+            {'id': 33, 'new_acc_num': 'o33'},
+            {'id': 35, 'new_acc_num': '0037'},
         ]
         for item in l1_activities:
             l1_record(item)
-        # 32: HIT, 33: NO-missing L1 segment,
-        # 34: NO-l1__new_acc_num=0036
+        # 32: HIT, 33: HIT - lowercase/uppercase O,
+        # 34: NO-missing L1 segment,
+        # 35: NO-l1__new_acc_num=0037
 
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0032', 'l1__new_acc_num':'0032'
+        },
+        {
+            'id': 33, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': 'O33', 'l1__new_acc_num':'o33'
         }]
         self.assert_evaluator_correct(
             self.event, 'AccountChange-Number-4', expected)
