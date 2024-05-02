@@ -192,7 +192,7 @@ def l1_record(custom_values: dict):
     # Set basic defaults for all values in L1.
     default_values = {
         'account_activity': '1',
-        'change_ind': '1',
+        'change_ind': '',
         'new_acc_num': '',
         'new_id_num': ''
     }
