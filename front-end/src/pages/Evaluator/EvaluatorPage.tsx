@@ -6,6 +6,7 @@ import type { ReactElement } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import { generateColumnDefinitions } from 'utils/utils'
 import type EvaluatorMetadata from './Evaluator'
+import EvaluatorDownloader from './EvaluatorDownloader'
 import EvaluatorSummary from './EvaluatorSummary'
 
 interface EvaluatorData {
@@ -52,6 +53,9 @@ export default function EvaluatorPage(): ReactElement {
         breadcrumbs
       />
       <EvaluatorSummary metadata={evaluatorMetadata} />
+      <div className='content-row'>
+        <EvaluatorDownloader />
+      </div>
       <Table rows={hits} columnDefinitions={colDefs} />
     </>
   )

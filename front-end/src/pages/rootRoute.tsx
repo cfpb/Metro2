@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query'
 import type { ReactElement } from 'react'
 
-import { Outlet, createRootRouteWithContext, Link } from '@tanstack/react-router'
+import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { Suspense } from 'react'
 import LoadingOrError from '../components/LoadingOrError'
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools'
