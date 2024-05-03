@@ -3,33 +3,13 @@ import {
   ButtonGroup,
   Checkbox,
   Heading,
-  Link,
-  Paragraph
+  Link
 } from 'design-system-react'
 import type { ReactElement } from 'react'
 import React from 'react'
 import ReactDom from 'react-dom'
 import CFPBLogo from '../../public/images/logo_237x50@2x.png'
-
-const MODAL_STYLES = {
-  position: 'fixed',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  backgroundColor: '#fff',
-  padding: '2rem',
-  zIndex: 1000
-}
-
-const OVERLAY_STYLES = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, .7)',
-  zIndex: 1000
-}
+import './DownloadCSV.less'
 
 interface DownloadModalProperties {
   open: boolean
@@ -51,11 +31,11 @@ export default function Modal({
 
   return ReactDom.createPortal(
     <>
-      <div style={OVERLAY_STYLES} />
-      <div style={MODAL_STYLES}>
+      <div className={'OVERLAY_STYLES'} />
+      <div className={'MODAL_STYLES'}>
         <img className='o-header_logo-img' src={CFPBLogo} alt='CFPB Logo' />
         <h1 className='u-mt15'>Create .csv file</h1>
-        <Paragraph>
+        <div className='modal-p-padding'>
           <Heading type='2'>Personally identifiable information:</Heading>
           <Checkbox
             id='confirmPII'
@@ -64,48 +44,50 @@ export default function Modal({
             label='I confirm that I am knowingly downloading PII or CI and understand that I am responsible for safeguarding this data.'
             onChange={handleChange}
           />
-        </Paragraph>
+        </div>
 
-        <Paragraph>
+        <div className='modal-p-padding'>
           <Heading type='2'>
             Confirmation of ability to d/l PII or CI Statement:
           </Heading>
 
-          <Paragraph>
+          <p>
             I understand that by downloading data from this system, I will be
             accessing Personally Identifiable Inforamtion (PII) and Confidential
             Information (CI).
-          </Paragraph>
+          </p>
 
-          <Paragraph>
+          <p>
             I confirm that I have an authorized need to access this data and that I
             understand my responsibilities to safeguard all CFPB information.
-          </Paragraph>
+          </p>
 
-          <Paragraph>
+          <p>
             I agree to only save downloaded data in an access-controlled location
             within the CFPB network and I will not share data with anyone that is not
             authorized and does not have a need-to-know.
-          </Paragraph>
+          </p>
 
-          <Paragraph>
+          <p>
             I understand that this data is sensitive and for internal use only.
-          </Paragraph>
+          </p>
 
-          <Paragraph>
-            I understand that unauthorized access, disclosure, and use of PII and CI
-            constitutes a breach. All suspected and confirmed breaches of PII and CI
-            must be reported through the{' '}
-            <Link
-              href='https://cfpbprod.servicenowservices.com/servicecenter?id=sd_home'
-              target='_blank'
-              rel='noreferrer'>
-              Service Center
-            </Link>{' '}
-            or to the CFPB Privacy Office at{' '}
-            <Link href='mailto:privacy@cfpb.gov'>privacy@cfpb.gov</Link>
-          </Paragraph>
-        </Paragraph>
+          <div className='modal-p-padding'>
+            <p>
+                I understand that unauthorized access, disclosure, and use of PII and CI
+                constitutes a breach. All suspected and confirmed breaches of PII and CI
+                must be reported through the{' '}
+                <Link
+                href='https://cfpbprod.servicenowservices.com/servicecenter?id=sd_home'
+                target='_blank'
+                rel='noreferrer'>
+                Service Center
+                </Link>{' '}
+                or to the CFPB Privacy Office at{' '}
+                <Link href='mailto:privacy@cfpb.gov'>privacy@cfpb.gov</Link>
+            </p>
+          </div>
+        </div>
 
         <ButtonGroup>
           <Button
