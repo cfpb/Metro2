@@ -1,5 +1,5 @@
-import type { ColDef } from 'ag-grid-community'
 import { render, screen } from '@testing-library/react'
+import type { ColDef } from 'ag-grid-community'
 import Table from '../Table/Table'
 
 interface CarManufacturer {
@@ -64,6 +64,6 @@ describe('<Table />', () => {
     render(<Table<CarManufacturer> rows={data} columnDefinitions={colDefs} />)
     const container = screen.getByTestId('data-grid-container')
     expect(container).toBeVisible()
-    expect(container).toHaveClass('data-grid-container--fixed-height')
+    expect(container).toHaveClass('data-grid-container--full-height')
   })
 })

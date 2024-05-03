@@ -44,7 +44,7 @@ export default function EvaluatorSummary({
               />
             </Expandable>
             <Expandable header='How to evaluate these results'>
-              <p></p>
+              <p />
             </Expandable>
           </ExpandableGroup>
         </div>

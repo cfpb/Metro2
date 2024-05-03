@@ -17,10 +17,9 @@ interface EvaluatorData {
 }
 
 export default function EvaluatorPage(): ReactElement {
-  const { evaluatorHits, eventData, evaluatorMetadata }: EvaluatorData =
-    useLoaderData({
-      from: '/events/$eventId/evaluators/$evaluatorId'
-    })
+  const { evaluatorHits, evaluatorMetadata }: EvaluatorData = useLoaderData({
+    from: '/events/$eventId/evaluators/$evaluatorId'
+  })
 
   return (
     <>
@@ -33,15 +32,9 @@ export default function EvaluatorPage(): ReactElement {
       <EvaluatorSummary metadata={evaluatorMetadata} />
       <Suspense fallback={<Loader message='Your data is loading' />}>
         <Await promise={evaluatorHits}>
-          {data => {
-            return (
-              <EvaluatorTable
-                hits={data.hits}
-                evaluatorMetadata={evaluatorMetadata}
-                eventId={eventData.id}
-              />
-            )
-          }}
+          {(data): ReactElement => (
+            <EvaluatorTable hits={data.hits} evaluatorMetadata={evaluatorMetadata} />
+          )}
         </Await>
       </Suspense>
     </>

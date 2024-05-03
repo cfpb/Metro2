@@ -10,7 +10,6 @@ import type EvaluatorMetadata from './Evaluator'
 interface EvaluatorTableData {
   hits: AccountRecord[]
   evaluatorMetadata: EvaluatorMetadata
-  eventId: number
 }
 
 const accountColDef = {
@@ -29,8 +28,7 @@ const accountColDef = {
 
 export default function EvaluatorTable({
   hits,
-  evaluatorMetadata,
-  eventId
+  evaluatorMetadata
 }: EvaluatorTableData): ReactElement {
   // Get fields from first account activity record in hits
   // TODO: should get the fields from evaluator metadata once available
@@ -52,9 +50,9 @@ export default function EvaluatorTable({
     <div className='content-row'>
       <div className='download-row'>
         <h4 className='u-mb0'>
-          {`Showing ${Math.min(hits.length, 50)} of ${
+          {`Showing ${Math.min(hits.length, 50)} of ${String(
             evaluatorMetadata.hits
-          } results`}
+          )} results`}
         </h4>
         <Button label='Download evaluator results' />
       </div>

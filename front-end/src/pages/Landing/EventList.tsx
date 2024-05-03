@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 import './EventList.less'
 
 interface EventListProperties {
-  heading: string
+  heading?: string
   events: EventMetadata[]
 }
 
@@ -14,9 +14,11 @@ export default function EventList({
 }: EventListProperties): ReactElement {
   return (
     <div className='content-row block u-mt15'>
-      {/* <h2 className='h5' data-testid='event-heading'>
-        {heading}
-      </h2> */}
+      {heading ? (
+        <h2 className='h5' data-testid='event-heading'>
+          {heading}
+        </h2>
+      ) : null}
       {events.map(event => (
         <div
           key={event.id}

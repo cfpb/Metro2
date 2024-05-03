@@ -29,6 +29,11 @@ body,
   flex-direction: column;
 }
 
+// Metro 2 header is a link but doesn't need link styling
+header h2 a {
+  color: black !important;
+}
+
 // Styles for summary content on evaluator and account pages
 .summary-row {
   margin-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
@@ -64,11 +69,6 @@ body,
   }
 }
 
-// Metro 2 header is a link but doesn't need link styling
-header h2 a {
-  color: black !important;
-}
-
 // styles for contact info inline loader
 .inline-loader {
   svg {
@@ -96,7 +96,6 @@ header h2 a {
 }
 
 // expandable overrides that should be handled by RDS
-
 // no background expandable variant
 .o-expandable {
   background-color: inherit !important;
