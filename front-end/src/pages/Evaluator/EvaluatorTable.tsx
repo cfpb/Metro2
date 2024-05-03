@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import Table from 'components/Table/Table'
-import { Icon } from 'design-system-react'
+import { Button } from 'design-system-react'
 import type { ReactElement } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import { M2_FIELDS } from 'utils/constants'
@@ -48,8 +48,6 @@ export default function EvaluatorTable({
   // Add account colDef to colDefs
   colDefs.unshift(accountColDef)
 
-  const csvUrl = `/api/events/${eventId}/evaluator/${evaluatorMetadata.id}/csv/`
-
   return (
     <div className='content-row'>
       <div className='download-row'>
@@ -58,12 +56,7 @@ export default function EvaluatorTable({
             evaluatorMetadata.hits
           } results`}
         </h4>
-        <a className='a-btn' href={csvUrl}>
-          Download evaluator results
-          <span className='a-btn__icon a-btn__icon--on-right'>
-            <Icon name='download' />
-          </span>
-        </a>
+        <Button label='Download evaluator results' />
       </div>
       <Table rows={hits} columnDefinitions={colDefs} />
     </div>
