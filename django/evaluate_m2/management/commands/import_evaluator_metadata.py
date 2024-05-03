@@ -37,7 +37,7 @@ class Command(BaseCommand):
             rows_count = 0
             for row in reader:
                 rows_count += 1
-                id = row["id"]
+                id = row["id"].strip()
                 try:
                     eval = EvaluatorMetadata.objects.get(id=id)
                     from_json = EvaluatorMetadataSerializer(eval, data=row)
