@@ -78,13 +78,13 @@ export default function Modal({
           </Paragraph>
 
           <Paragraph>
-            I confirm thta I have an authorized need to access this data and that I
-            understand my respomsobilities to safeguard all CFPB information.
+            I confirm that I have an authorized need to access this data and that I
+            understand my responsibilities to safeguard all CFPB information.
           </Paragraph>
 
           <Paragraph>
             I agree to only save downloaded data in an access-controlled location
-            within the CFPB network and I will not share sata with anyone that is not
+            within the CFPB network and I will not share data with anyone that is not
             authorized and does not have a need-to-know.
           </Paragraph>
 
