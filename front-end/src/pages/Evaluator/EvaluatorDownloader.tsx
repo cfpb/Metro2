@@ -1,6 +1,7 @@
 import Modal from 'components/DownloadCSV'
 import { Button } from 'design-system-react'
-import { ReactElement, useState } from 'react'
+import type { ReactElement} from 'react';
+import { useState } from 'react'
 
 export default function EvaluatorDownloader({}): ReactElement {
   const [isOpen, setIsOpen] = useState(false)
@@ -33,7 +34,7 @@ export default function EvaluatorDownloader({}): ReactElement {
         onClose={() => setIsOpen(false)}
         onDownload={downloadCSV}
       />
-      <div id='portal'></div>
+      <div id='portal' />
     </div>
   )
 }

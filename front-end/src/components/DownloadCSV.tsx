@@ -31,8 +31,8 @@ export default function Modal({
 
   return ReactDom.createPortal(
     <>
-      <div className={'OVERLAY_STYLES'} />
-      <div className={'MODAL_STYLES'}>
+      <div className="OVERLAY_STYLES" />
+      <div className="MODAL_STYLES">
         <img className='o-header_logo-img' src={CFPBLogo} alt='CFPB Logo' />
         <h1 className='u-mt15'>Create .csv file</h1>
         <div className='modal-p-padding'>
@@ -113,6 +113,6 @@ export default function Modal({
         </ButtonGroup>
       </div>
     </>,
-    document.getElementById('portal')! // assert element is not null
+    document.querySelector('#portal')! // assert element is not null
   )
 }
