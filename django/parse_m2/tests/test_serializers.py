@@ -55,6 +55,7 @@ class AccountActivitySerializerTestCase(TestCase):
             "date_open": "2020-03-17",
             "credit_limit": 9000,
             "hcola": 90210,
+            "id_num": "",
             "terms_dur": "terms_dur",
             "terms_freq": "terms_freq",
             "smpa": 5,

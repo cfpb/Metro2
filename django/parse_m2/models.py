@@ -158,6 +158,7 @@ class AccountActivity(models.Model):
     date_open = models.DateField()
     credit_limit = models.IntegerField()
     hcola = models.IntegerField()
+    id_num = models.CharField(max_length=200, default='')
     terms_dur = models.CharField(max_length=200)
     terms_freq = models.CharField(max_length=200)
     smpa = models.IntegerField()
@@ -188,6 +189,7 @@ class AccountActivity(models.Model):
             date_open = get_field_value(fields.base_fields, "date_open", base_seg),
             credit_limit = get_field_value(fields.base_fields, "credit_limit", base_seg),
             hcola = get_field_value(fields.base_fields, "hcola", base_seg),
+            id_num = get_field_value(fields.base_fields, "id_num", base_seg),
             terms_dur = get_field_value(fields.base_fields, "terms_dur", base_seg),
             terms_freq = get_field_value(fields.base_fields, "terms_freq", base_seg),
             smpa = get_field_value(fields.base_fields, "smpa", base_seg),
