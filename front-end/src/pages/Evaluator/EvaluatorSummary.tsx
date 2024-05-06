@@ -12,7 +12,8 @@ export default function EvaluatorSummary({
   metadata
 }: EvaluatorSummaryProperties): ReactElement {
   const summaryItems = [
-    { term: 'Duration', definition: '' },
+    { term: 'Data from', definition: '' },
+    { term: 'Duration of inconsistency', definition: '' },
     {
       term: 'Total inconsistencies',
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -27,14 +28,14 @@ export default function EvaluatorSummary({
   ]
 
   return (
-    <div className='content-row u-mt30'>
+    <div className='content-row summary-row'>
       <div className='content-l'>
         <div className='content-l_col content-l_col-1-3'>
-          <h3>Details</h3>
+          <h2>Details</h2>
           <DefinitionList items={summaryItems} />
         </div>
         <div className='content-l_col content-l_col-2-3'>
-          <h3>Description</h3>
+          <h2>Description</h2>
           <p>{metadata.description}</p>
           <ExpandableGroup accordion groupId='AccordionGroup'>
             <Expandable header='Criteria evaluated'>
@@ -42,8 +43,8 @@ export default function EvaluatorSummary({
                 dangerouslySetInnerHTML={{ __html: metadata.long_description ?? '' }}
               />
             </Expandable>
-            <Expandable header='More metadata'>
-              <p>Metadata goes here</p>
+            <Expandable header='How to evaluate these results'>
+              <p />
             </Expandable>
           </ExpandableGroup>
         </div>

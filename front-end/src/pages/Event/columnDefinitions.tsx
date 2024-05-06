@@ -7,7 +7,7 @@ import type Event from './Event'
 const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
   {
     field: 'id',
-    headerName: 'Inconsistency',
+    headerName: 'Evaluator',
     type: 'wrappableText',
     valueFormatter: ({ value }: ValueFormatterParams): string =>
       typeof value === 'string' ? value.toUpperCase() : '',

@@ -67,18 +67,18 @@ export default function AccountSummary({
   )
 
   return (
-    <div className='content-row u-mt15'>
+    <div className='content-row summary-row'>
       <div className='content-l'>
         <div className='content-l_col content-l_col-1-3' data-testid='details'>
-          <h3>Account Details</h3>
+          <h2>Account Details</h2>
           <DefinitionList items={getSummaryItems(latestRecord, contactComponent)} />
         </div>
         {accountData.inconsistencies.length > 0 ? (
           <div
             className='content-l_col content-l_col-1-3'
             data-testid='inconsistencies'>
-            <h3>Inconsistencies found</h3>
-            <ul>
+            <h2>Inconsistencies found</h2>
+            <ol>
               {accountData.inconsistencies.map(inconsistency => (
                 <li key={inconsistency.id}>
                   <Link
@@ -88,7 +88,7 @@ export default function AccountSummary({
                   </Link>
                 </li>
               ))}
-            </ul>
+            </ol>
           </div>
         ) : null}
       </div>

@@ -52,7 +52,8 @@ export const generateColumnDefinitions = (
  */
 export const fetchData = async <TData>(
   url: string,
-  dataType: string
+  dataType: string,
+  delay?: number
 ): Promise<TData> => {
   try {
     // Fetch data from URL.
@@ -60,9 +61,11 @@ export const fetchData = async <TData>(
     // If unsuccessful, throw an error with the response
     // status (404, 500, etc) as its message.
 
-    // Temporary hack to show loading view
-    // eslint-disable-next-line no-promise-executor-return
-    // await new Promise(r => setTimeout(r, 2000))
+    if (delay) {
+      // Temporary hack to show loading view
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise(r => setTimeout(r, delay))
+    }
 
     const response = await fetch(url)
     if (response.ok) return (await response.json()) as TData

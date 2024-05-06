@@ -24,7 +24,9 @@ export default function AccountPage(): ReactElement {
         breadcrumbs
       />
       <Summary accountData={accountData} eventId={eventId} />
-      <Table rows={accountData.account_activity} columnDefinitions={colDefs} />
+      <div className='content-row'>
+        <Table rows={accountData.account_activity} columnDefinitions={colDefs} />
+      </div>
     </>
   )
 }

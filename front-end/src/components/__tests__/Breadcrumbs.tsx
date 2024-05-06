@@ -5,6 +5,6 @@ import Breadcrumbs from '../LocatorBar/Breadcrumbs'
 describe('<Breadcrumbs />', () => {
   it('displays breadcrumb', async () => {
     renderWithProviders(<Breadcrumbs />)
-    expect(await screen.findByText(/Back to results/)).toBeVisible()
+    expect(await screen.findByText(/Back to event results/)).toBeVisible()
   })
 })
