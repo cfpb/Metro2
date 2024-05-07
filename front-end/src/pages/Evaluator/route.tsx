@@ -8,13 +8,12 @@ import { eventQueryOptions, eventRoute } from '../Event/route'
 import type EvaluatorMetadata from './Evaluator'
 import EvaluatorPage from './EvaluatorPage'
 
-export async function getEvaluator(
-  eventData: Promise<Event>,
+export function getEvaluator(
+  eventData: Event,
   evaluatorId: string
-): Promise<EvaluatorMetadata> {
+): EvaluatorMetadata {
   try {
-    const event = await eventData
-    const evaluator = event.evaluators.find(result => result.id === evaluatorId)
+    const evaluator = eventData.evaluators.find(result => result.id === evaluatorId)
     if (evaluator) return evaluator
     // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw new Error('404')
@@ -32,7 +31,7 @@ export const fetchEvaluatorHits = async (
   evaluatorId: string
 ): Promise<Account[]> => {
   const url = `/api/events/${eventId}/evaluator/${evaluatorId}/`
-  return fetchData(url, 'hits')
+  return fetchData(url, 'hits', 2000)
 }
 
 export const hitsQueryOptions = (
@@ -54,13 +53,14 @@ const evaluatorRoute = createRoute({
     // have been included when we fetched the event data on the event parent route.
     // Instead, we ensure that the event data has been received and call getEvaluator
     // to find the evaluator's metadata on the event object.
-    const eventData = queryClient.ensureQueryData(eventQueryOptions(eventId))
-    const evaluatorMetadata = await getEvaluator(eventData, evaluatorId)
+    const eventData = await queryClient.ensureQueryData(eventQueryOptions(eventId))
+    const evaluatorMetadata = getEvaluator(eventData, evaluatorId)
     const evaluatorHits = queryClient.ensureQueryData(
       hitsQueryOptions(eventId, evaluatorId)
     )
     return {
       evaluatorMetadata,
+      eventData,
       evaluatorHits: defer(evaluatorHits)
     }
   }

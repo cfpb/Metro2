@@ -11,6 +11,11 @@
   --ag-secondary-border-color: @table-border;
   --ag-odd-row-background-color: @white;
 
+  .ag-root-wrapper {
+    margin: unit((5px / @base-font-size-px), em) 0
+      unit((30px / @base-font-size-px), em);
+  }
+
   .ag-cell {
     font-size: unit((14px / @base-font-size-px), em);
   }
@@ -67,9 +72,15 @@
 .data-grid-container {
   width: 100%;
 
-  // fixed height container takes up max of 90% of viewport height
+  // fixed height container takes up 90% of viewport height
+  // with a max of 900px (~20 rows)
   &--fixed-height {
     height: 90vh;
+    max-height: 900px;
     margin-bottom: 3vh;
   }
+}
+
+.ag-cell-wrapper a {
+  border-bottom-width: 1px;
 }

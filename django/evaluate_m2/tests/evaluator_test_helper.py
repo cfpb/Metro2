@@ -3,7 +3,7 @@ from evaluate_m2.evaluate import evaluator
 
 from parse_m2.models import (
     AccountActivity, AccountHolder, J1,
-    J2, K2, L1, M2DataFile, Metro2Event
+    J2, K2, K4, L1, M2DataFile, Metro2Event
 )
 import calendar
 
@@ -66,6 +66,7 @@ def acct_record(file: M2DataFile, custom_values: dict):
         "date_open": date(2018, 2, 28),
         "credit_limit": 0,
         "hcola": 0,
+        "id_num": "",
         "terms_dur": "00",
         "terms_freq": "00",
         "smpa": 0,
@@ -105,6 +106,7 @@ def acct_record(file: M2DataFile, custom_values: dict):
         date_open = values["date_open"],
         credit_limit = values["credit_limit"],
         hcola = values["hcola"],
+        id_num = values["id_num"],
         terms_dur = values["terms_dur"],
         terms_freq = values["terms_freq"],
         smpa = values["smpa"],
@@ -126,6 +128,86 @@ def acct_record(file: M2DataFile, custom_values: dict):
     acct_activity.save()
     return acct_activity
 
+def k2_record(custom_values: dict):
+    """
+    Returns a K2 record for use in tests, using the values
+    provided, or defaulting to basic values where none are provided.
+    Inputs:
+    - custom_values: Dict of values to override the defaults. Keys should match
+                     the field names in the K2 model
+    """
+    # Set basic defaults for all values in K2.
+    default_values = {
+        'account_activity': '1',
+        'purch_sold_ind': '',
+        'purch_sold_name': '',
+    }
+
+    # Override defaults with provided values
+    values = default_values | custom_values
+    k2 = K2(
+        account_activity=AccountActivity.objects.get(id=values['id']),
+        purch_sold_ind=values['purch_sold_ind'],
+        purch_sold_name=values['purch_sold_name']
+    )
+    k2.save()
+    return k2
+
+def k4_record(custom_values: dict):
+    """
+    Returns a K4 record for use in tests, using the values
+    provided, or defaulting to basic values where none are provided.
+
+    Inputs:
+    - custom_values: Dict of values to override the defaults. Keys should match
+                     the field names in the K4 model
+    """
+    # Set basic defaults for all values in K4.
+    default_values = {
+        'account_activity': '1',
+        'spc_pmt_ind': '1',
+        'deferred_pmt_st_dt': None,
+        'balloon_pmt_due_dt': None,
+        'balloon_pmt_amt': 0
+    }
+    # Override defaults with provided values
+    values = default_values | custom_values
+    k4 = K4(
+        account_activity=AccountActivity.objects.get(id=values['id']),
+        spc_pmt_ind=values['spc_pmt_ind'],
+        deferred_pmt_st_dt=values['deferred_pmt_st_dt'],
+        balloon_pmt_due_dt=values['balloon_pmt_due_dt'],
+        balloon_pmt_amt=values['balloon_pmt_amt']
+    )
+    k4.save()
+    return k4
+
+def l1_record(custom_values: dict):
+    """
+    Returns a L1 record for use in tests, using the values
+    provided, or defaulting to basic values where none are provided.
+
+    Inputs:
+    - custom_values: Dict of values to override the defaults. Keys should match
+                     the field names in the L1 model
+    """
+    # Set basic defaults for all values in L1.
+    default_values = {
+        'account_activity': '1',
+        'change_ind': '',
+        'new_acc_num': '',
+        'new_id_num': ''
+    }
+    # Override defaults with provided values
+    values = default_values | custom_values
+    l1 = L1(
+        account_activity=AccountActivity.objects.get(id=values['id']),
+        change_ind=values['change_ind'],
+        new_acc_num=values['new_acc_num'],
+        new_id_num=values['new_id_num']
+    )
+    l1.save()
+    return l1
 
 def create_bulk_acct_record(file: M2DataFile, value_list: dict, size: int):
     """
@@ -310,16 +392,6 @@ class EvaluatorTestHelper():
             return  J1(account_activity=AccountActivity.objects.get(id=id), cons_info_ind=cons_info_ind)
         else:
             return  J2(account_activity=AccountActivity.objects.get(id=id), cons_info_ind=cons_info_ind)
-
-    def create_k2(self, id: int, purch_sold_ind: str, purch_sold_name: str):
-        return  K2(account_activity=AccountActivity.objects.get(id=id),
-                   purch_sold_ind=purch_sold_ind, purch_sold_name=purch_sold_name)
-
-
-    def create_l1(self, id=1, change_ind='1', new_acc_num='9876543210',
-                  new_id_num='1234567890'):
-        return  L1(account_activity=AccountActivity.objects.get(id=id),
-                   change_ind=change_ind, new_acc_num=new_acc_num, new_id_num=new_id_num)
 
     def assert_evaluator_correct(self, event: Metro2Event, eval_name: str, expected_result: list[dict]):
         # Test that the evaluator:

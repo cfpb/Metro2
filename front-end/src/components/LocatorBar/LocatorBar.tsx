@@ -26,7 +26,7 @@ export default function LocatorBar({
     <div className={className}>
       {breadcrumbs ? <Breadcrumbs /> : null}
       <div className='header-with-icon'>
-        <Icon name={icon} size='46px' />
+        <Icon name={icon} size='47px' />
         <div>
           {eyebrow ? (
             <h4 className='h5 eyebrow' data-testid='eyebrow'>

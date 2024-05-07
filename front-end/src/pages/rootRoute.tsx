@@ -14,9 +14,9 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: (): ReactElement => (
     <Suspense fallback={<LoadingOrError />}>
       <header className='content-row'>
-        <h1 className='h2 u-mb0'>
+        <h2 className='h4 u-mb0'>
           <Link to='/'>Metro2 Evaluator Tool</Link>
-        </h1>
+        </h2>
       </header>
       <Outlet />
       {/* <TanStackRouterDevtools /> */}

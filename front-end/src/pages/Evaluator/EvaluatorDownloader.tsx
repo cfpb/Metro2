@@ -1,6 +1,6 @@
 import Modal from 'components/DownloadCSV'
 import { Button } from 'design-system-react'
-import type { ReactElement} from 'react';
+import type { ReactElement } from 'react'
 import { useState } from 'react'
 
 export default function EvaluatorDownloader({}): ReactElement {
@@ -21,7 +21,7 @@ export default function EvaluatorDownloader({}): ReactElement {
   }
 
   return (
-    <div className='u-mt15 u-mb30'>
+    <div className='downloader'>
       <Button
         appearance='primary'
         label='Download evaluator results'

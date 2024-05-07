@@ -1,3 +1,4 @@
+import { Icon } from 'design-system-react'
 import './Loader.less'
 
 interface Properties {
@@ -13,7 +14,7 @@ export default function Loader({
     <div className={`loader ${hasBackground ? 'loader__background' : ''}`}>
       <div className='loader_container'>
         <div className='loader_message'>
-          {/* <Icon name='updating' size='32px'/> */}
+          <Icon name='updating' size='32px' />
           <span className='loader_text'>{message}</span>
         </div>
       </div>

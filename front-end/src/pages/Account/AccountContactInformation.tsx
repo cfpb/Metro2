@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { Icon } from 'design-system-react'
 import type { ReactElement } from 'react'
 import { fetchData } from 'utils/utils'
 import type { AccountHolder } from './Account'
@@ -12,7 +13,7 @@ export const fetchAccountPII = async (
   accountId: string
 ): Promise<AccountHolder> => {
   const url = `/api/events/${eventId}/account/${accountId}/account_holder/`
-  return fetchData<AccountHolder>(url, 'account')
+  return fetchData<AccountHolder>(url, 'account', 2000)
 }
 
 export default function AccountContactInformation({
@@ -26,7 +27,12 @@ export default function AccountContactInformation({
   })
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <div className='inline-loader'>
+        <Icon name='updating' />
+        Loading...
+      </div>
+    )
   }
 
   function onClickHandler(): void {

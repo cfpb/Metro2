@@ -50,8 +50,8 @@ export const columnDefaults = {
   minWidth: 150
 }
 
-// export const gridOptionDefaults = {
-//   enableCellTextSelection: true,
-//   ensureDomOrder: true,
-//   skipHeaderOnAutoSize: true
-// }
+export const gridOptionDefaults = {
+  enableCellTextSelection: true,
+  ensureDomOrder: true,
+  skipHeaderOnAutoSize: true
+}

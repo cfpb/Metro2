@@ -3,7 +3,7 @@ import { AgGridReact } from 'ag-grid-react'
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import './Table.less'
-import { columnDefaults, columnTypes } from './tableUtils'
+import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
 
 /* Table props
  * height: defaults to 'fixed'
@@ -46,6 +46,8 @@ export default function Table<T extends object>({
   // store row data in state
   const [rowData, setRowData] = useState(rows)
 
+  const tableHeight = rows.length < 20 ? 'full' : height
+
   // Update table when new row data loads
   useEffect(() => {
     setRowData(rows)
@@ -53,16 +55,16 @@ export default function Table<T extends object>({
 
   return (
     <div
-      className={`ag-theme-alpine data-grid-container data-grid-container--${height}-height`}
+      className={`ag-theme-alpine data-grid-container data-grid-container--${tableHeight}-height`}
       data-testid='data-grid-container'>
       <AgGridReact
         rowData={rowData}
         columnDefs={columnDefinitions}
         defaultColDef={{ resizable: resizableColumns, ...columnDefaults }}
-        domLayout={height === 'fixed' ? 'normal' : 'autoHeight'}
+        domLayout={tableHeight === 'fixed' ? 'normal' : 'autoHeight'}
         autoSizeStrategy={resizableColumns ? { type: 'fitCellContents' } : undefined}
         columnTypes={columnTypes}
-        enableCellTextSelection
+        {...gridOptionDefaults}
       />
     </div>
   )
