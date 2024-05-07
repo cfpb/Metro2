@@ -7,4 +7,4 @@ boto3==1.33.10
 djangorestframework==3.14.0
 django-auth-adfs==1.14.0
 gunicorn==22.0.0
-# TBD whether whitenoise==6.6.0 is needed
+whitenoise==6.6.0
