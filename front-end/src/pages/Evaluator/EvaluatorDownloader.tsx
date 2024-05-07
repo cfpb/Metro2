@@ -1,12 +1,20 @@
-import Modal from 'components/DownloadCSV'
+import Modal from 'components/DownloadModal'
 import { Button } from 'design-system-react'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 
-export default function EvaluatorDownloader({}): ReactElement {
+export default function EvaluatorDownloader(): ReactElement {
   const [isOpen, setIsOpen] = useState(false)
 
-  const downloadCSV = () => {
+  const onClose = (): void => {
+    setIsOpen(false)
+  }
+
+  const onClick = (): void => {
+    setIsOpen(true)
+  }
+
+  const onDownload = (): void => {
     // TODO: this is a temporary hack to test the download functionality
     window.location.assign('/api/events/1/evaluator/Bankruptcy-DOFD-4/csv/')
     // TODO: consider approach for dismissing modal on download
@@ -26,14 +34,10 @@ export default function EvaluatorDownloader({}): ReactElement {
         appearance='primary'
         label='Download evaluator results'
         iconRight='download'
-        onClick={() => setIsOpen(true)}
+        onClick={onClick}
         size='default'
       />
-      <Modal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        onDownload={downloadCSV}
-      />
+      <Modal open={isOpen} onClose={onClose} onDownload={onDownload} />
       <div id='portal' />
     </div>
   )
