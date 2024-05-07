@@ -1,11 +1,11 @@
 import { Link } from '@tanstack/react-router'
 import Table from 'components/Table/Table'
-import { Button } from 'design-system-react'
 import type { ReactElement } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import { M2_FIELDS } from 'utils/constants'
 import { generateColumnDefinitions } from 'utils/utils'
 import type EvaluatorMetadata from './Evaluator'
+import EvaluatorDownloader from './EvaluatorDownloader'
 
 interface EvaluatorTableData {
   hits: AccountRecord[]
@@ -54,7 +54,7 @@ export default function EvaluatorTable({
             evaluatorMetadata.hits
           )} results`}
         </h4>
-        <Button label='Download evaluator results' />
+        <EvaluatorDownloader />
       </div>
       <Table rows={hits} columnDefinitions={colDefs} />
     </div>
