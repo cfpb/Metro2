@@ -2,7 +2,9 @@ from django.test import TestCase
 
 from datetime import date
 from evaluate_m2.evaluate import evaluator
-from evaluate_m2.m2_evaluators.status_evals import eval_status_dofd_1_func, eval_status_dofd_2_func
+from evaluate_m2.m2_evaluators.status_evals import (
+    eval_status_dofd_1_func,
+    eval_status_dofd_2_func)
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
@@ -122,9 +124,41 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         # should correctly create one EvaluatorResultSummary object
         eval_id = "Status-DOFD-1"
         return_value = evaluator.prepare_result_summary(self.event, eval_id, self.expected)
-
         self.assertEqual(eval_id, return_value.evaluator.id)
         self.assertEqual(2, return_value.hits)
+        self.assertEqual(2, return_value.accounts_affected)
+        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_start)
+        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_end)
+
+    def test_prepare_result_summary_creates_an_object(self):
+        # should correctly create one EvaluatorResultSummary object
+        eval_id = "Status-DOFD-1"
+        return_value = evaluator.prepare_result_summary(self.event, eval_id, self.expected)
+        self.assertEqual(eval_id, return_value.evaluator.id)
+        self.assertEqual(2, return_value.hits)
+        self.assertEqual(2, return_value.accounts_affected)
+        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_start)
+        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_end)
+
+    def test_prepare_result_summary(self):
+        # should correctly create one EvaluatorResultSummary object
+        eval_id = "Status-DOFD-1"
+
+        results = [{
+            'id': 32, 'activity_date': date(2019, 10, 31), 'cons_acct_num': '0032'
+        }, {
+            'id': 33, 'activity_date': date(2019, 11, 30), 'cons_acct_num': '0033',
+        }, {
+            'id': 34, 'activity_date': date(2019, 1, 31), 'cons_acct_num': '0034',
+        }, {
+            'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+        }]
+        return_value = evaluator.prepare_result_summary(self.event, eval_id, results)
+        self.assertEqual(eval_id, return_value.evaluator.id)
+        self.assertEqual(4, return_value.hits)
+        self.assertEqual(3, return_value.accounts_affected)
+        self.assertEqual(date(2019, 1, 31), return_value.inconsistency_start)
+        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_end)
 
     def test_run_evaluators_missing_parameter_raises_exception(self):
         # should raise an exception when the source_record does not exist
