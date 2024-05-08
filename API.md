@@ -105,14 +105,18 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
 {
     "cons_acct_num": "1234567890",
     "inconsistencies": [
-        {
-            "id": "2",
-        },
-        # ...etc.
+        "SCC-Balance-8",
+        "PROG-Bankruptcy-1",
+        "Type-APD-2",
+        "Balloon-Balance-1",
     ],
     "account_activity": [
         {
             "id": 3,
+            "inconsistencies": [
+                "SCC-Balance-8",
+                "Type-APD-2",
+            ],
             "activity_date": "11/30/2023",
             "port_type": "I",
             "acct_type": "00",
