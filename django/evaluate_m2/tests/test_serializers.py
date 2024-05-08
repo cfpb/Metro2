@@ -170,11 +170,6 @@ class EventsViewSerializerTestCase(TestCase):
             event=self.event, evaluator=self.eval, hits=2, accounts_affected=1,
             inconsistency_start=date(2021, 1, 1), inconsistency_end=date(2021, 2, 1))
         self.eval_rs.save()
-        self.eval_result = EvaluatorResult(
-            result_summary=self.eval_rs, date=date(2021, 1, 1),
-            field_values={'record': 1, 'acct_type':'y'},
-            source_record= acct_activity, acct_num='0032')
-        self.eval_result.save()
 
         self.json_representation = {
             'hits': 2, 'accounts_affected': 1, 'inconsistency_start':date(2021, 1, 1),

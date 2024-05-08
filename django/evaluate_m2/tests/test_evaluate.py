@@ -130,16 +130,6 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(date(2019, 12, 31), return_value.inconsistency_start)
         self.assertEqual(date(2019, 12, 31), return_value.inconsistency_end)
 
-    def test_prepare_result_summary_creates_an_object(self):
-        # should correctly create one EvaluatorResultSummary object
-        eval_id = "Status-DOFD-1"
-        return_value = evaluator.prepare_result_summary(self.event, eval_id, self.expected)
-        self.assertEqual(eval_id, return_value.evaluator.id)
-        self.assertEqual(2, return_value.hits)
-        self.assertEqual(2, return_value.accounts_affected)
-        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_start)
-        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_end)
-
     def test_prepare_result_summary(self):
         # should correctly create one EvaluatorResultSummary object
         eval_id = "Status-DOFD-1"
