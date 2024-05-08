@@ -1,6 +1,6 @@
 from datetime import date
 from django.test import TestCase
-from evaluate_m2.evaluate_utils import get_activity_date_range, every_month_in_range
+from evaluate_m2.evaluate_utils import get_activity_date_range, every_month_in_range, get_activity_date_range_from_list
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import Metro2Event, M2DataFile
 
@@ -21,6 +21,25 @@ class EvaluatorUtilsTestCase(TestCase):
             "latest": date(2011, 2, 5),
         }
         output = get_activity_date_range(record_set)
+        self.assertEqual(output, expected)
+
+    def test_get_activity_date_range_from_list(self):
+        # Create data
+        data = [{
+            'id': 32, 'activity_date': date(2019, 10, 31), 'cons_acct_num': '0032'
+        }, {
+            'id': 33, 'activity_date': date(2019, 11, 30), 'cons_acct_num': '0033',
+        }, {
+            'id': 34, 'activity_date': date(2010, 11, 5), 'cons_acct_num': '0034',
+        }, {
+            'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+        }]
+
+        expected = {
+            "earliest": date(2010, 11, 5),
+            "latest": date(2019, 12, 31),
+        }
+        output = get_activity_date_range_from_list(data)
         self.assertEqual(output, expected)
 
     def test_get_months_in_range(self):

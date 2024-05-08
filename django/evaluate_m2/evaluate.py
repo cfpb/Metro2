@@ -1,5 +1,6 @@
 import logging
 
+from evaluate_m2.evaluate_utils import get_activity_date_range_from_list
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.m2_evaluators.account_change_evals import evaluators as acct_change_evals
 from evaluate_m2.m2_evaluators.balance_evals import evaluators as balance_evals
@@ -72,6 +73,8 @@ class Evaluate():
         record, so the "except" clause here is just a failsafe in case we messed up
         the Metadata import.
         """
+        accounts_affected = list(set(d['cons_acct_num'] for d in data))
+        date_range = get_activity_date_range_from_list(data)
         try:
             eval_metadata = EvaluatorMetadata.objects.get(id=eval_id)
         except EvaluatorMetadata.DoesNotExist:
@@ -80,7 +83,10 @@ class Evaluate():
         return EvaluatorResultSummary.objects.create(
             event=event,
             evaluator=eval_metadata,
-            hits=len(data)
+            hits=len(data),
+            accounts_affected = len(accounts_affected),
+            inconsistency_start = date_range["earliest"],
+            inconsistency_end = date_range["latest"]
         )
 
 # create instance of evaluator

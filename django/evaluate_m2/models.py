@@ -32,6 +32,9 @@ class EvaluatorResultSummary(models.Model):
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     evaluator = models.ForeignKey(EvaluatorMetadata, on_delete=models.CASCADE)
     hits = models.IntegerField()
+    accounts_affected = models.IntegerField(null=True)
+    inconsistency_start = models.DateField(null=True)
+    inconsistency_end = models.DateField(null=True)
 
     def __str__(self) -> str:
         return f"Event: {self.event} - {self.evaluator}"

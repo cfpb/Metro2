@@ -72,10 +72,12 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                       'cons_acct_num':('0032', '0033')}
         acct_actvities = self.create_bulk_activities(data_file, activities, 2)
         eval_rs = EvaluatorResultSummary(
-            event=event, evaluator=self.eval1, hits=2)
+            event=event, evaluator=self.eval1, hits=2, accounts_affected=1,
+            inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
         eval_rs.save()
         eval_rs2 = EvaluatorResultSummary(
-            event=event, evaluator=self.eval3, hits=1)
+            event=event, evaluator=self.eval3, hits=1, accounts_affected=1,
+            inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
         eval_rs2.save()
         eval_r1 = EvaluatorResult(
             result_summary=eval_rs, date=date(2021, 1, 1),
@@ -240,17 +242,26 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'id': 1,
             'name': 'test_exam',
             'evaluators': [{
-                'hits': 2, 'id': 'Status-DOFD-1',
+                'hits': 2,
+                'accounts_affected': 1,
+                'inconsistency_start': '2023-12-31',
+                'inconsistency_end': '2023-12-31',
+                'id': 'Status-DOFD-1',
                 'description': 'description of Status-DOFD-1', 'long_description': '',
                 'fields_used': ['acct_stat', 'dofd'],
                 'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa', 'spc_com_cd', 'terms_freq'],
                 'crrg_reference': '400', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }, {
-                'hits': 1, 'id': 'Status-DOFD-4', 'description':
-                    'description for a third status-dofd eval', 'long_description': '',
-                    'fields_used': ['smpa'],
-                    'fields_display': ['orig_chg_off_amt', 'terms_freq'],
+                'hits': 1,
+                'accounts_affected': 1,
+                'inconsistency_start': '2023-12-31',
+                'inconsistency_end': '2023-12-31',
+                'id': 'Status-DOFD-4',
+                'description': 'description for a third status-dofd eval',
+                'long_description': '',
+                'fields_used': ['smpa'],
+                'fields_display': ['orig_chg_off_amt', 'terms_freq'],
                 'crrg_reference': '410', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }]}

@@ -187,6 +187,9 @@ GET - returns a JSON information about an event, including its name and all eval
     "evaluators": [
         {
             "hits": 4209,
+            "accounts_affected": 1194,
+            "inconsistency_start": "2024-02-29",
+            "inconsistency_end": "2024-08-29",
             "id":"DOAI-DOFD-1",
             "description": "Account reports date of first delinquency longer than 7 years.",
             "long_description": "",
