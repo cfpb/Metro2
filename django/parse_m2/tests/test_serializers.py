@@ -49,6 +49,7 @@ class AccountActivitySerializerTestCase(TestCase):
 
         self.json_representation = {
             "id": self.acct_activity.id,
+            "inconsistencies": [],
             "activity_date": "2023-11-20",
             "port_type": "port_type",
             "acct_type": "acct_type",
