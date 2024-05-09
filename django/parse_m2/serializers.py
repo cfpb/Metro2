@@ -14,13 +14,8 @@ class AccountActivitySerializer(serializers.ModelSerializer):
                   'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp','int_type_ind']
 
     def get_inconsistencies(self, obj):
-        inconsistencies = []
-        eval_results = obj.evaluatorresult_set.all()
-        for er in eval_results:
-            evaluator = er.result_summary.evaluator.id
-            inconsistencies.append(evaluator)
-
-        return inconsistencies
+        eval_ids = obj.evaluatorresult_set.values_list('result_summary__evaluator__id')
+        return [x[0] for x in eval_ids]
 
 class AccountHolderSerializer(serializers.ModelSerializer):
     class Meta:
