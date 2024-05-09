@@ -2,7 +2,8 @@ import Modal from 'components/DownloadModal'
 import { Button } from 'design-system-react'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
-import type { AccountRecord, M2_FIELDS } from 'utils/constants'
+import type { AccountRecord, M2_FIELDS } from 'utils/constants';
+import { FIELD_NAMES_LOOKUP } from 'utils/constants'
 import { downloadData, generateDownloadData } from 'utils/utils'
 
 interface AccountDownloadInterface {
@@ -25,7 +26,7 @@ export default function AccountDownloader({
   }
 
   const onDownload = async (): Promise<void> => {
-    const csv = generateDownloadData<AccountRecord>(fields, rows)
+    const csv = generateDownloadData<AccountRecord>(fields, rows, FIELD_NAMES_LOOKUP)
     try {
       await downloadData(csv, 'account.csv')
       setIsOpen(false)

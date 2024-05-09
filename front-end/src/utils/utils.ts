@@ -25,11 +25,21 @@ export const getM2Definition = (
   return undefined
 }
 
-export const getM2Header = (field: keyof typeof FIELD_NAMES_LOOKUP): string =>
-  FIELD_NAMES_LOOKUP[field]
+// Iterates through array of account records and adds parenthetical
+// annotations to record's values where they exist
+export const annotateData = (records: AccountRecord[]): AccountRecord[] =>
+  records.map(record => {
+    const obj: Record<string, number | string | null | undefined> = {}
+    for (const field of Object.keys(record)) {
+      const val = record[field as keyof AccountRecord]
+      const annotation = getM2Definition(field, val)
+      obj[field] = annotation ? `${val} (${annotation})` : val
+    }
+    return obj
+  })
 
-export const getM2Headers = (fields: [keyof typeof FIELD_NAMES_LOOKUP]): string[] =>
-  fields.map(field => FIELD_NAMES_LOOKUP[field])
+// Checks whether a string is in the list of Metro 2 fields
+export const isM2Field = (str: string): boolean => !!M2_FIELDS.includes(str)
 
 // Given a list of M2 fields and a list of M2 fields to pin,
 // generate an array of AgGrid column definition objects
@@ -114,26 +124,18 @@ export function formatUSD(val: any): any {
   return typeof val === 'number' ? currencyFormatter.format(val) : val
 }
 
-// Iterates through array of account records and adds parenthetical
-// annotations to record's values where they exist
-export const annotateData = (records: AccountRecord[]): AccountRecord[] =>
-  records.map(record => {
-    const obj: Record<string, number | string | null | undefined> = {}
-    for (const field of Object.keys(record)) {
-      const val = record[field as keyof AccountRecord]
-      const annotation = getM2Definition(field, val)
-      obj[field] = annotation ? `${val} (${annotation})` : val
-    }
-    return obj
-  })
-
-// Checks whether a string is in the list of Metro 2 fields
-export const isM2Field = (str: string): boolean => !!M2_FIELDS.includes(str)
-
-// Takes an ordered list of fields and an array of objects
-// Outputs a CSV containing each record's data for the provided fields
-export const generateDownloadData = <T>(fields: string[], records: T[]): string => {
-  const csvHeader = fields.map(field => field).join(',')
+// Takes an ordered list of fields, a header lookup, and an array of records
+// Generates header by getting values for each field from the header lookup
+// (doing the lookup here seems safer: both header and body rows get their order
+// from the list of fields)
+// Outputs a CSV containing header and each record's data for the provided fields
+export const generateDownloadData = <T>(
+  fields: string[],
+  records: T[],
+  headerLookup: Record<string, string>
+): string => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const csvHeader = fields.map(field => headerLookup[field] ?? field).join(',')
   const csvBody = records
     .map(record => fields.map(field => record[field as keyof T]).join(','))
     .join('\n')
