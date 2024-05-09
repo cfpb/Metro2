@@ -1,6 +1,4 @@
-import type { ColDef as ColDefType, ValueFormatterParams } from 'ag-grid-community'
-import AnnotatedText from 'components/AnnotatedText'
-import type { ReactElement } from 'react'
+import type { ValueFormatterParams } from 'ag-grid-community'
 import { formatNumber, formatUSD } from 'utils/utils'
 
 export const columnTypes = {
@@ -29,16 +27,6 @@ export const columnTypes = {
     headerClass: 'ag-right-aligned-header',
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     valueFormatter: ({ value }: ValueFormatterParams): any => formatUSD(value)
-  },
-  annotatedText: {
-    cellDataType: 'text',
-    cellRenderer: ({
-      colDef,
-      value
-    }: {
-      colDef: ColDefType
-      value: number | string | null | undefined
-    }): ReactElement | null => <AnnotatedText field={colDef.field} value={value} />
   }
 }
 

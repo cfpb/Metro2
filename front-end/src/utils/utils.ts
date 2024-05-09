@@ -1,9 +1,10 @@
 import { notFound } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
-import type { M2_FIELDS } from './constants'
+import type { AccountRecord } from './constants'
 import {
   FIELD_NAMES_LOOKUP,
   FIELD_TYPES_LOOKUP,
+  M2_FIELDS,
   M2_FIELD_LOOKUPS
 } from './constants'
 
@@ -105,4 +106,63 @@ export function formatNumber(val: any): any {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatUSD(val: any): any {
   return typeof val === 'number' ? currencyFormatter.format(val) : val
+}
+
+// Iterates through array of account records and adds parenthetical
+// annotations to record's values where they exist
+export const annotateData = (records: AccountRecord[]): AccountRecord[] =>
+  records.map(record => {
+    const obj: Record<string, number | string | null | undefined> = {}
+    for (const field of Object.keys(record)) {
+      const val = record[field as keyof AccountRecord]
+      const annotation = getM2Definition(field, val)
+      obj[field] = annotation ? `${val} (${annotation})` : val
+    }
+    return obj
+  })
+
+// Checks whether a string is in the list of Metro 2 fields
+export const isM2Field = (str: string): boolean => !!M2_FIELDS.includes(str)
+
+// Takes an ordered list of Metro2 fields and an array of records
+// and outputs a CSV containing each record's data for the provided fields
+export const generateDownloadData = (
+  fields: (typeof M2_FIELDS)[number][],
+  records: AccountRecord[]
+): string => {
+  const csvHeader = fields
+    .map(field => FIELD_NAMES_LOOKUP[field as keyof typeof FIELD_NAMES_LOOKUP])
+    .join(',')
+  const csvBody = records
+    .map(record =>
+      fields.map(field => record[field as keyof AccountRecord]).join(',')
+    )
+    .join('\n')
+  return [csvHeader, csvBody].join('\n')
+}
+
+// Takes a CSV string and a suggested file name,
+// opens a file picker prompting the user to download the
+// CSV to the documents directory with the suggested name,
+// and writes the file to the user's system if they select save
+export const downloadData = async (
+  blob: string,
+  fileName: string
+): Promise<void> => {
+  const handle = await showSaveFilePicker({
+    suggestedName: fileName,
+    // @ts-expect-error Typescript doesn't handle File System API well
+    startIn: 'documents',
+    types: [
+      {
+        description: 'CSVs',
+        accept: {
+          'text/csv': ['.csv']
+        }
+      }
+    ]
+  })
+  const writable = await handle.createWritable()
+  await writable.write(blob)
+  return writable.close()
 }
