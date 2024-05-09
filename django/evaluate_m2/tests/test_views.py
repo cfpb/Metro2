@@ -7,12 +7,14 @@ from evaluate_m2.models import (
     EvaluatorResultSummary
 )
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
-from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
+from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper, acct_record
 from parse_m2.models import AccountHolder, M2DataFile, Metro2Event
 
 
 class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self) -> None:
+        self.event = None
+        self.data_file = None
         self.eval1 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-1',
             description='description of Status-DOFD-1',
@@ -41,6 +43,15 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             crrg_reference='410',
             alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         )
+        self.eval4 = EvaluatorMetadata.objects.create(
+            id='Status-DOFD-6',
+            description= 'description for a fourth status-dofd eval',
+            long_description='',
+            fields_used= ['smpa'],
+            fields_display= ['orig_chg_off_amt', 'terms_freq'],
+            crrg_reference='410',
+            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+        )
 
     def get_account_activity(self, id: int):
         return [{ 'id': id, 'activity_date': '2019-12-31', 'port_type': 'X',
@@ -54,31 +65,35 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
     def create_activity_data(self):
         # Create the parent records for the AccountActivity data
-        event = Metro2Event(id=1, name='test_exam')
-        event.save()
-        data_file = M2DataFile(event=event, file_name='file.txt')
-        data_file.save()
+        self.event = Metro2Event(id=1, name='test_exam')
+        self.event.save()
+        self.data_file = M2DataFile(event=self.event, file_name='file.txt')
+        self.data_file.save()
         # Create the Account Holders
-        acct_holder = AccountHolder(id=1, data_file=data_file,
+        acct_holder = AccountHolder(id=1, data_file=self.data_file,
             activity_date=date(2023, 11, 30), surname='Doe', first_name='Jane',
             middle_name='A', gen_code='F', ssn='012345678', dob='01012000',
             phone_num='0123456789', ecoa='0', cons_info_ind='Z', cons_acct_num='012345')
         acct_holder.save()
-        acct_holder2 = AccountHolder(id=2, data_file=data_file,
+        acct_holder2 = AccountHolder(id=2, data_file=self.data_file,
             activity_date=date(2023, 11, 30), cons_info_ind='Y', cons_acct_num='012345')
         acct_holder2.save()
         # Create the Account Activities data
         activities = {'id':(32,33), 'account_holder':('Z','Y'),
                       'cons_acct_num':('0032', '0033')}
-        acct_actvities = self.create_bulk_activities(data_file, activities, 2)
+        acct_actvities = self.create_bulk_activities(self.data_file, activities, 2)
         eval_rs = EvaluatorResultSummary(
-            event=event, evaluator=self.eval1, hits=2, accounts_affected=1,
+            event=self.event, evaluator=self.eval1, hits=2, accounts_affected=1,
             inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
         eval_rs.save()
         eval_rs2 = EvaluatorResultSummary(
-            event=event, evaluator=self.eval3, hits=1, accounts_affected=1,
+            event=self.event, evaluator=self.eval3, hits=1, accounts_affected=1,
             inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
         eval_rs2.save()
+        self.eval_rs3 = EvaluatorResultSummary(
+            event=self.event, evaluator=self.eval4, hits=25, accounts_affected=1,
+            inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
+        self.eval_rs3.save()
         eval_r1 = EvaluatorResult(
             result_summary=eval_rs, date=date(2021, 1, 1),
             field_values={'record': 1, 'acct_type':'y'},
@@ -147,6 +162,25 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
         # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(response.json(), expected)
+
+    def test_evaluator_results_view_max_20_results(self):
+        self.create_activity_data()
+        activity = {'id': 32, 'activity_date': date(2023, 12, 31),
+                    'cons_acct_num': '0032'}
+
+        record = acct_record(self.data_file, activity)
+        for index in range(25):
+            er = EvaluatorResult(
+                result_summary=self.eval_rs3, date=date(2021, 1, 1),
+                field_values={'record': index, 'acct_type':'y'},
+                source_record= record, acct_num='0032')
+            er.save()
+
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-6/')
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['hits']), 20)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
 
     def test_evaluator_results_view_with_error_no_evaluator_metadata(self):
         self.create_activity_data()
@@ -264,7 +298,20 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                 'fields_display': ['orig_chg_off_amt', 'terms_freq'],
                 'crrg_reference': '410', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            }]}
+            }, {
+                'hits': 25,
+                'accounts_affected': 1,
+                'inconsistency_start': '2023-12-31',
+                'inconsistency_end': '2023-12-31',
+                'id': 'Status-DOFD-6',
+                'description': 'description for a fourth status-dofd eval', 'long_description': '',
+                'fields_used': ['smpa'],
+                'fields_display': ['orig_chg_off_amt', 'terms_freq'],
+                'crrg_reference': '410',
+                'potential_harm': '',
+                'rationale': '',
+                'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+        }]}
 
 
         response = self.client.get('/api/events/1/')
@@ -273,5 +320,5 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
         # the response should a hits field with a list of EvaluatorResult field_values
-        self.assertEqual(len(response.json()['evaluators']), 2)
+        self.assertEqual(len(response.json()['evaluators']), 3)
         self.assertEqual(response.json(), expected)

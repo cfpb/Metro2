@@ -82,6 +82,7 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
 @api_view()
 def evaluator_results_view(request, event_id, evaluator_id):
     logger = logging.getLogger('views.evaluator_results_view')
+    RESULTS_PAGE_SIZE = 20
     try:
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
@@ -90,7 +91,7 @@ def evaluator_results_view(request, event_id, evaluator_id):
             event=event,
             evaluator=EvaluatorMetadata.objects.get(id=evaluator_id))
         eval_result_serializer = EvaluatorResultsViewSerializer(
-            eval_result_summary.evaluatorresult_set.all()[:50], many=True)
+            eval_result_summary.evaluatorresult_set.all()[:RESULTS_PAGE_SIZE], many=True)
 
         response = {'hits': eval_result_serializer.data}
         return JsonResponse(response)
