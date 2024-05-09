@@ -25,6 +25,12 @@ export const getM2Definition = (
   return undefined
 }
 
+export const getM2Header = (field: keyof typeof FIELD_NAMES_LOOKUP): string =>
+  FIELD_NAMES_LOOKUP[field]
+
+export const getM2Headers = (fields: [keyof typeof FIELD_NAMES_LOOKUP]): string[] =>
+  fields.map(field => FIELD_NAMES_LOOKUP[field])
+
 // Given a list of M2 fields and a list of M2 fields to pin,
 // generate an array of AgGrid column definition objects
 // with the following format:
@@ -124,29 +130,22 @@ export const annotateData = (records: AccountRecord[]): AccountRecord[] =>
 // Checks whether a string is in the list of Metro 2 fields
 export const isM2Field = (str: string): boolean => !!M2_FIELDS.includes(str)
 
-// Takes an ordered list of Metro2 fields and an array of records
-// and outputs a CSV containing each record's data for the provided fields
-export const generateDownloadData = (
-  fields: (typeof M2_FIELDS)[number][],
-  records: AccountRecord[]
-): string => {
-  const csvHeader = fields
-    .map(field => FIELD_NAMES_LOOKUP[field as keyof typeof FIELD_NAMES_LOOKUP])
-    .join(',')
+// Takes an ordered list of fields and an array of objects
+// Outputs a CSV containing each record's data for the provided fields
+export const generateDownloadData = <T>(fields: string[], records: T[]): string => {
+  const csvHeader = fields.map(field => field).join(',')
   const csvBody = records
-    .map(record =>
-      fields.map(field => record[field as keyof AccountRecord]).join(',')
-    )
+    .map(record => fields.map(field => record[field as keyof T]).join(','))
     .join('\n')
   return [csvHeader, csvBody].join('\n')
 }
 
-// Takes a CSV string and a suggested file name,
+// Takes a comma-formatted CSV string and a suggested file name,
 // opens a file picker prompting the user to download the
 // CSV to the documents directory with the suggested name,
 // and writes the file to the user's system if they select save
 export const downloadData = async (
-  blob: string,
+  csvString: string,
   fileName: string
 ): Promise<void> => {
   const handle = await showSaveFilePicker({
@@ -163,6 +162,6 @@ export const downloadData = async (
     ]
   })
   const writable = await handle.createWritable()
-  await writable.write(blob)
+  await writable.write(csvString)
   return writable.close()
 }

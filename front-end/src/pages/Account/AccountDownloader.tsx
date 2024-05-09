@@ -25,7 +25,7 @@ export default function AccountDownloader({
   }
 
   const onDownload = async (): Promise<void> => {
-    const csv = generateDownloadData(fields, rows)
+    const csv = generateDownloadData<AccountRecord>(fields, rows)
     try {
       await downloadData(csv, 'account.csv')
       setIsOpen(false)
