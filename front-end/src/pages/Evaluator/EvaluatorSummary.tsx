@@ -1,7 +1,7 @@
 import DefinitionList from 'components/DefinitionList/DefinitionList'
 import { Expandable, ExpandableGroup } from 'design-system-react'
 import type { ReactElement } from 'react'
-import { formatNumber } from 'utils/utils'
+import { formatDate, formatNumber } from 'utils/utils'
 import type EvaluatorMetadata from './Evaluator'
 
 interface EvaluatorSummaryProperties {
@@ -11,9 +11,15 @@ interface EvaluatorSummaryProperties {
 export default function EvaluatorSummary({
   metadata
 }: EvaluatorSummaryProperties): ReactElement {
+  console.log(metadata)
   const summaryItems = [
-    { term: 'Data from', definition: '' },
-    { term: 'Duration of inconsistency', definition: '' },
+    // { term: 'Data from', definition: '' },
+    {
+      term: 'Duration of inconsistency',
+      definition: `${formatDate(metadata.inconsistency_start)} - ${formatDate(
+        metadata.inconsistency_end
+      )}`
+    },
     {
       term: 'Total inconsistencies',
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -22,9 +28,9 @@ export default function EvaluatorSummary({
     {
       term: 'Total accounts affected',
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      definition: formatNumber(metadata.accounts)
-    },
-    { term: 'Category', definition: metadata.category }
+      definition: formatNumber(metadata.accounts_affected)
+    }
+    // { term: 'Category', definition: metadata.category }
   ]
 
   return (

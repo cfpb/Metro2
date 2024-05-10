@@ -1,7 +1,7 @@
 import type { ColDef as ColDefType, ValueFormatterParams } from 'ag-grid-community'
 import AnnotatedText from 'components/AnnotatedText'
 import type { ReactElement } from 'react'
-import { formatNumber, formatUSD } from 'utils/utils'
+import { formatDate, formatNumber, formatUSD } from 'utils/utils'
 
 export const columnTypes = {
   wrappableText: {
@@ -18,7 +18,8 @@ export const columnTypes = {
     valueFormatter: ({ value }: ValueFormatterParams): any => formatNumber(value)
   },
   formattedDate: {
-    cellDataType: 'dateString'
+    cellDataType: 'dateString',
+    valueFormatter: ({ value }: ValueFormatterParams): string => formatDate(value)
   },
   plainText: {
     cellDataType: 'text'

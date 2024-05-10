@@ -106,3 +106,11 @@ export function formatNumber(val: any): any {
 export function formatUSD(val: any): any {
   return typeof val === 'number' ? currencyFormatter.format(val) : val
 }
+
+export const formatDate = (
+  val: string | null | undefined
+): string | null | undefined => {
+  return typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}$/)
+    ? new Date(`${val}T00:00:00`).toLocaleDateString('en-us')
+    : val
+}

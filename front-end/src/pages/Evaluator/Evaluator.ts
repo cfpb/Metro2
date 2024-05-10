@@ -3,17 +3,15 @@ export default interface EvaluatorMetadata {
   name: string
   description: string
   hits: number | null
-  accounts: number | null
-  long_description?: string
-  category?: string | null
-  ipl?: string | null
-  product_line?: string[] | null
-  fields_used?: string[] | null
-  fields_display?: string[] | null
-  risk_level?: string | null
-  crrg_topics?: string | null
-  crrg_page?: number | null
-  pdf_page?: number | null
-  use_notes?: string | null
-  alternative_explanation?: string | null
+  accounts_affected: number | null
+  inconsistency_start: string
+  inconsistency_end: string
+  long_description: string
+  fields_used: string[]
+  fields_display: string[]
+  category?: string[]
+  alternate_explanation?: string | null
+  crrg_reference?: string | null
+  potential_harm?: string | null
+  rationale?: string | null
 }
