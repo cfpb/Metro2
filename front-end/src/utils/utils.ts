@@ -52,8 +52,8 @@ export const generateColumnDefinitions = (
  */
 export const fetchData = async <TData>(
   url: string,
-  dataType: string,
-  delay?: number
+  dataType: string
+  // delay?: number
 ): Promise<TData> => {
   try {
     // Fetch data from URL.
@@ -61,11 +61,11 @@ export const fetchData = async <TData>(
     // If unsuccessful, throw an error with the response
     // status (404, 500, etc) as its message.
 
-    if (delay) {
-      // Temporary hack to show loading view
-      // eslint-disable-next-line no-promise-executor-return
-      await new Promise(r => setTimeout(r, delay))
-    }
+    // if (delay) {
+    //   // Temporary hack to show loading view
+    //   // eslint-disable-next-line no-promise-executor-return
+    //   await new Promise(r => setTimeout(r, delay))
+    // }
 
     const response = await fetch(url)
     if (response.ok) return (await response.json()) as TData
@@ -90,27 +90,21 @@ export const currencyFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2
 })
 
-// TODO: formatters should only be called on numbers / null,
-// but consider how / if to handle non-numeric values
-
 // Given a number, returns a formatted numeric string
-// Returns the raw value if any other data type is passed in
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatNumber(val: any): any {
-  return typeof val === 'number' ? numberFormatter.format(val) : val
+// Returns empty string if any other data type is passed in
+export function formatNumber(val: number | string | null | undefined): string {
+  return typeof val === 'number' ? numberFormatter.format(val) : ''
 }
 
 // Given a number, returns a USD-formatted string
-// Returns the raw value if any other data type is passed in
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatUSD(val: any): any {
-  return typeof val === 'number' ? currencyFormatter.format(val) : val
+// Returns empty string if any other data type is passed in
+export function formatUSD(val: number | string | null | undefined): string {
+  return typeof val === 'number' ? currencyFormatter.format(val) : ''
 }
 
-export const formatDate = (
-  val: string | null | undefined
-): string | null | undefined => {
-  return typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}$/)
+// Given a date string in format yyyy-mm-dd, returns a mm/dd/yyyy formatted string
+// Returns empty string if any other data type is passed in
+export const formatDate = (val: string | null | undefined): string =>
+  typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)
     ? new Date(`${val}T00:00:00`).toLocaleDateString('en-us')
-    : val
-}
+    : ''

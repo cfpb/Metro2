@@ -14,11 +14,12 @@ export const columnTypes = {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
     headerClass: 'ag-right-aligned-header',
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    valueFormatter: ({ value }: ValueFormatterParams): any => formatNumber(value)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    valueFormatter: ({ value }: ValueFormatterParams): string => formatNumber(value)
   },
   formattedDate: {
     cellDataType: 'dateString',
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     valueFormatter: ({ value }: ValueFormatterParams): string => formatDate(value)
   },
   plainText: {
@@ -28,8 +29,8 @@ export const columnTypes = {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
     headerClass: 'ag-right-aligned-header',
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    valueFormatter: ({ value }: ValueFormatterParams): any => formatUSD(value)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    valueFormatter: ({ value }: ValueFormatterParams): string => formatUSD(value)
   },
   annotatedText: {
     cellDataType: 'text',

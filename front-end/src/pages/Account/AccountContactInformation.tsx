@@ -13,7 +13,7 @@ export const fetchAccountPII = async (
   accountId: string
 ): Promise<AccountHolder> => {
   const url = `/api/events/${eventId}/account/${accountId}/account_holder/`
-  return fetchData<AccountHolder>(url, 'account', 2000)
+  return fetchData<AccountHolder>(url, 'account')
 }
 
 export default function AccountContactInformation({

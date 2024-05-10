@@ -31,7 +31,7 @@ export const fetchEvaluatorHits = async (
   evaluatorId: string
 ): Promise<Account[]> => {
   const url = `/api/events/${eventId}/evaluator/${evaluatorId}/`
-  return fetchData(url, 'hits', 2000)
+  return fetchData(url, 'hits')
 }
 
 export const hitsQueryOptions = (
