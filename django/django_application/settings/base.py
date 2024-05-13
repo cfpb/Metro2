@@ -27,7 +27,7 @@ FRONT_END_DIR = BASE_DIR.parent / 'front-end'
 SECRET_KEY = 'django-insecure-10krwij0mgdzw=r2$jq5=!i27!_)-9#r8(*42*)+0n54$k5g0f'
 
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 
 # Application definition
