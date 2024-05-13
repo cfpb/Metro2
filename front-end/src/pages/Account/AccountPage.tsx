@@ -3,8 +3,9 @@ import LocatorBar from 'components/LocatorBar/LocatorBar'
 import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
 import { M2_FIELDS } from 'utils/constants'
-import { generateColumnDefinitions } from 'utils/utils'
+import { annotateData, generateColumnDefinitions } from 'utils/utils'
 import type Account from './Account'
+import AccountDownloader from './AccountDownloader'
 import Summary from './AccountSummary'
 
 const routeApi = getRouteApi('/events/$eventId/accounts/$accountId')
@@ -14,6 +15,7 @@ const colDefs = generateColumnDefinitions(M2_FIELDS, ['activity_date'])
 export default function AccountPage(): ReactElement {
   const { eventId }: { eventId: string } = routeApi.useParams()
   const accountData: Account = routeApi.useLoaderData()
+  const rows = annotateData(accountData.account_activity)
 
   return (
     <>
@@ -24,8 +26,12 @@ export default function AccountPage(): ReactElement {
         breadcrumbs
       />
       <Summary accountData={accountData} eventId={eventId} />
+
       <div className='content-row'>
-        <Table rows={accountData.account_activity} columnDefinitions={colDefs} />
+        <div className='download-row'>
+          <AccountDownloader rows={rows} fields={M2_FIELDS} />
+        </div>
+        <Table rows={rows} columnDefinitions={colDefs} />
       </div>
     </>
   )

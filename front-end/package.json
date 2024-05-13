@@ -4,7 +4,7 @@
   "type": "module",
   "version": "0.0.0",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build --base=/static/",
     "dev": "vite",
     "preview": "vite preview",
     "preview:test": "start-server-and-test preview http://localhost:4173",
@@ -43,6 +43,7 @@
     "@types/react-dom": "18.2.4",
     "@types/react-router-dom": "5.3.3",
     "@types/testing-library__jest-dom": "5.14.5",
+    "@types/wicg-file-system-access": "^2023.10.5",
     "@typescript-eslint/eslint-plugin": "5.59.6",
     "@typescript-eslint/parser": "5.59.6",
     "@vitejs/plugin-react": "^4.2.1",

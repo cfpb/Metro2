@@ -2,8 +2,7 @@ import { Link } from '@tanstack/react-router'
 import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
 import type { AccountRecord } from 'utils/constants'
-import { M2_FIELDS } from 'utils/constants'
-import { generateColumnDefinitions } from 'utils/utils'
+import { annotateData, generateColumnDefinitions, isM2Field } from 'utils/utils'
 import type EvaluatorMetadata from './Evaluator'
 import EvaluatorDownloader from './EvaluatorDownloader'
 
@@ -30,20 +29,27 @@ export default function EvaluatorTable({
   hits,
   evaluatorMetadata
 }: EvaluatorTableData): ReactElement {
-  // Get fields from first account activity record in hits
-  // TODO: should get the fields from evaluator metadata once available
-  const fields = Object.keys(hits[0] || {}).filter(
-    i => !['cons_acct_num', 'id'].includes(i)
-  )
+  const rows = annotateData(hits)
 
-  // temporarily sort according to M2_FIELDS order
-  // this won't be necessary once we get list of fields from evaluator metadata
-  fields.sort((a, b) => M2_FIELDS.indexOf(a) - M2_FIELDS.indexOf(b))
+  // Build list of evaluator table columns from the
+  // fields_used and fields_display metadata values
+  // Filter out anything that's not a M2 field
+  // TODO: remove filter
+  const fields = [
+    ...evaluatorMetadata.fields_used,
+    ...evaluatorMetadata.fields_display
+  ].filter(field => isM2Field(field))
+
+  // activity_date and cons_acct_num aren't included in the metadata
+  // lists of fields because they're returned in every evaluator's results
+  // We add them to the start of the fields list here
+
+  fields.unshift('activity_date')
 
   // Generate colDefs for this group of fields
   const colDefs = generateColumnDefinitions(fields)
 
-  // Add account colDef to colDefs
+  // add account number column to colDefs
   colDefs.unshift(accountColDef)
 
   return (
@@ -54,9 +60,9 @@ export default function EvaluatorTable({
             evaluatorMetadata.hits
           )} results`}
         </h4>
-        <EvaluatorDownloader />
+        <EvaluatorDownloader rows={rows} fields={['cons_acct_num', ...fields]} />
       </div>
-      <Table rows={hits} columnDefinitions={colDefs} />
+      <Table rows={rows} columnDefinitions={colDefs} />
     </div>
   )
 }

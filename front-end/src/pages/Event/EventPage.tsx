@@ -7,7 +7,6 @@ import columnDefinitions from './columnDefinitions'
 
 export default function EventPage(): ReactElement {
   const eventData: Event = useLoaderData({ from: '/events/$eventId' })
-
   return (
     <>
       <LocatorBar

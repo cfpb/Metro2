@@ -16,15 +16,13 @@ export default function EvaluatorSummary({
     { term: 'Duration of inconsistency', definition: '' },
     {
       term: 'Total inconsistencies',
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      definition: formatNumber(metadata.hits)
+      definition: formatNumber(metadata.hits) as string
     },
     {
       term: 'Total accounts affected',
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      definition: formatNumber(metadata.accounts)
-    },
-    { term: 'Category', definition: metadata.category }
+      definition: formatNumber(metadata.accounts) as string
+    }
+    // { term: 'Category', definition: metadata.category }
   ]
 
   return (
@@ -39,9 +37,11 @@ export default function EvaluatorSummary({
           <p>{metadata.description}</p>
           <ExpandableGroup accordion groupId='AccordionGroup'>
             <Expandable header='Criteria evaluated'>
-              <div
-                dangerouslySetInnerHTML={{ __html: metadata.long_description ?? '' }}
-              />
+              {/* <div
+                className='long-description'
+                dangerouslySetInnerHTML={{ __html: longDescription }}
+              /> */}
+              <div>{metadata.long_description}</div>
             </Expandable>
             <Expandable header='How to evaluate these results'>
               <p />

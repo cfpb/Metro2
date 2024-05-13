@@ -25,7 +25,7 @@ export default function EvaluatorPage(): ReactElement {
     <>
       <LocatorBar
         eyebrow='Inconsistency'
-        heading={evaluatorMetadata.name || evaluatorMetadata.id}
+        heading={evaluatorMetadata.id}
         icon='flag-round'
         breadcrumbs
       />

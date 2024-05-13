@@ -26,12 +26,12 @@ export interface AccountRecord {
   account_holder__cons_info_ind?: string | null
   j1__cons_info_ind?: string | null
   j2__cons_info_ind?: string | null
+  k2_purch_sold_ind?: string | null
   k4__balloon_pmt_amt?: number | null
 }
 
 // Canonical list of M2 fields for an account record.
-// Full list will appear as columns in the account view table.
-// Evaluator-specific subset will appear as columns in evaluator results table.
+// Ordered for display as columns in account record table
 export const M2_FIELDS = [
   'activity_date',
   'acct_stat',
@@ -96,13 +96,13 @@ export const FIELD_NAMES_LOOKUP = {
 // Maps the ids of Metro2 fields to their data types
 // For use in AgGrid column definitions
 export const FIELD_TYPES_LOOKUP = {
-  acct_stat: 'annotatedText',
-  acct_type: 'annotatedText',
-  account_holder__cons_info_ind: 'annotatedText',
+  acct_stat: 'plainText',
+  acct_type: 'plainText',
+  account_holder__cons_info_ind: 'plainText',
   activity_date: 'formattedDate',
   actual_pmt_amt: 'currency',
   amt_past_due: 'currency',
-  compl_cond_cd: 'annotatedText',
+  compl_cond_cd: 'plainText',
   cons_acct_num: 'plainText', // TODO: figure out what this should be, if anything
   credit_limit: 'currency',
   current_bal: 'currency',
@@ -112,18 +112,18 @@ export const FIELD_TYPES_LOOKUP = {
   dofd: 'formattedDate',
   dolp: 'formattedDate',
   hcola: 'currency',
-  j1__cons_info_ind: 'annotatedText',
-  j2__cons_info_ind: 'annotatedText',
-  k2_purch_sold_ind: 'annotatedText',
+  j1__cons_info_ind: 'plainText',
+  j2__cons_info_ind: 'plainText',
+  k2_purch_sold_ind: 'plainText',
   k4__balloon_pmt_amt: 'currency',
   orig_chg_off_amt: 'currency',
-  php: 'annotatedText',
-  pmt_rating: 'annotatedText',
-  port_type: 'annotatedText',
+  php: 'plainText',
+  pmt_rating: 'plainText',
+  port_type: 'plainText',
   smpa: 'currency',
-  spc_com_cd: 'annotatedText',
+  spc_com_cd: 'plainText',
   terms_dur: 'plainText', // TODO: figure out what this should be, if anything
-  terms_freq: 'annotatedText'
+  terms_freq: 'plainText'
 }
 
 // Many Metro2 fields contain coded data that needs to be translated
