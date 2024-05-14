@@ -50,7 +50,7 @@ export default function EvaluatorTable({
     <div className='content-row'>
       <div className='download-row'>
         <h4 className='u-mb0'>
-          {`Showing ${Math.min(hits.length, 50)} of ${String(
+          {`Showing ${Math.min(hits.length, 20)} of ${String(
             evaluatorMetadata.hits
           )} results`}
         </h4>
