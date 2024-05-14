@@ -2,7 +2,9 @@ export default interface EvaluatorMetadata {
   id: string
   description: string
   hits: number | null
-  accounts?: number | null
+  accounts_affected: number | null
+  inconsistency_start: string
+  inconsistency_end: string
   long_description: string
   fields_used: string[]
   fields_display: string[]

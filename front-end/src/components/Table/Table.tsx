@@ -46,7 +46,7 @@ export default function Table<T extends object>({
   // store row data in state
   const [rowData, setRowData] = useState(rows)
 
-  const tableHeight = rows.length < 20 ? 'full' : height
+  const tableHeight = rows.length <= 20 ? 'full' : height
 
   // Update table when new row data loads
   useEffect(() => {
