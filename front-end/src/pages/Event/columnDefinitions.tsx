@@ -42,7 +42,7 @@ const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
     flex: 1
   },
   {
-    field: 'accounts',
+    field: 'accounts_affected',
     headerName: 'Total accounts',
     type: 'formattedNumber',
     flex: 1

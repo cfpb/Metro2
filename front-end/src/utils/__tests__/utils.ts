@@ -1,5 +1,5 @@
 import { M2_FIELD_LOOKUPS } from '../constants'
-import { formatNumber, formatUSD, getM2Definition } from '../utils'
+import { formatDate, formatNumber, formatUSD, getM2Definition } from '../utils'
 
 const UNDEFINED = undefined
 
@@ -10,11 +10,9 @@ describe('formatNumber', () => {
     expect(formatNumber(123)).toEqual('123')
   })
 
-  it('returns original value when passed non-numeric value', () => {
-    expect(formatNumber(null)).toEqual(null)
-    expect(formatNumber(UNDEFINED)).toEqual(undefined)
-    expect(formatNumber('abcdefg')).toEqual('abcdefg')
-    expect(formatNumber('123456')).toEqual('123456')
+  it('returns empty string when passed non-numeric value', () => {
+    expect(formatNumber(null)).toEqual('')
+    expect(formatNumber(UNDEFINED)).toEqual('')
   })
 })
 
@@ -27,11 +25,23 @@ describe('formatUSD', () => {
     expect(formatUSD(123.2434)).toEqual('$123.24')
   })
 
-  it('returns original value when passed non-numeric value', () => {
-    expect(formatUSD(null)).toEqual(null)
-    expect(formatUSD(UNDEFINED)).toEqual(undefined)
-    expect(formatUSD('abcdefg')).toEqual('abcdefg')
-    expect(formatUSD('123456')).toEqual('123456')
+  it('returns empty string when passed non-numeric value', () => {
+    expect(formatUSD(null)).toEqual('')
+    expect(formatUSD(UNDEFINED)).toEqual('')
+  })
+})
+
+describe('formatDate', () => {
+  it('returns a formatted string when passed a date string', () => {
+    expect(formatDate('2024-01-23')).toEqual('1/23/2024')
+    expect(formatDate('2023-11-03')).toEqual('11/3/2023')
+  })
+
+  it('returns empty string when passed a non-date-string value', () => {
+    expect(formatDate(null)).toEqual('')
+    expect(formatDate(UNDEFINED)).toEqual('')
+    expect(formatDate('abcdefg')).toEqual('')
+    expect(formatDate('11-3-2023')).toEqual('')
   })
 })
 
