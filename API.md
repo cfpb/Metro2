@@ -242,6 +242,8 @@ If SSO is not enabled:
         {
             "id": 1,
             "name": "Hyundai2024",
+            "date_range_start": "2023-11-30",
+            "date_range_end": "2023-12-31"
         },
         # ... etc.
     ]

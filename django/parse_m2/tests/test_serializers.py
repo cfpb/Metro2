@@ -1,5 +1,6 @@
 from datetime import date
 from django.test import TestCase
+from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import Metro2Event, M2DataFile, AccountHolder, AccountActivity
 from rest_framework.renderers import JSONRenderer
 from parse_m2.serializers import (
@@ -149,12 +150,31 @@ class Metro2EventSerializerTestCase(TestCase):
         # Create a Metro2Event record
         self.event = Metro2Event(id=1, name='test_exam')
         self.event.save()
-
+        self.data_file = M2DataFile(event=self.event, file_name='file.txt')
+        self.data_file.save()
         self.json_representation = { "id": 1, "name": "test_exam"}
+        self.json_representation = {
+            'id': 1, 'name': 'test_exam', 'date_range_start': '2011-07-31',
+            'date_range_end': '2020-12-31'
+        }
+        self.activities = [
+            {
+                'id': 32, 'activity_date': date(2011, 7, 31), 'cons_acct_num': '0032',
+            }, {
+                'id': 33, 'activity_date': date(2012, 10, 31), 'cons_acct_num': '0033',
+            }, {
+                'id': 34, 'activity_date': date(2013, 11, 30), 'cons_acct_num': '0034',
+            }, {
+                'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035',
+            }]
+        for item in self.activities:
+            acct_record(self.data_file, item)
 
     def test_metro2_event_serializer(self):
         serializer = Metro2EventSerializer(self.event)
-        self.assertEqual(serializer.data, self.json_representation)
+        json_output = JSONRenderer().render(serializer.data)
+        expected = JSONRenderer().render(self.json_representation)
+        self.assertEqual(json_output, expected)
 
     def test_metro2_event_serializer_many_true(self):
         events = [self.event]
