@@ -147,26 +147,17 @@ class AccountHolderSerializerTestCase(TestCase):
 
 class Metro2EventSerializerTestCase(TestCase):
     def setUp(self) -> None:
-        # Create a Metro2Event record
-        self.event = Metro2Event(id=1, name='test_exam')
-        self.event.save()
-        self.data_file = M2DataFile(event=self.event, file_name='file.txt')
-        self.data_file.save()
-        self.json_representation = { "id": 1, "name": "test_exam"}
+        self.event = Metro2Event.objects.create(id=1, name='test_exam')
+        self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
         self.json_representation = {
             'id': 1, 'name': 'test_exam', 'date_range_start': '2011-07-31',
             'date_range_end': '2020-12-31'
         }
         self.activities = [
-            {
-                'id': 32, 'activity_date': date(2011, 7, 31), 'cons_acct_num': '0032',
-            }, {
-                'id': 33, 'activity_date': date(2012, 10, 31), 'cons_acct_num': '0033',
-            }, {
-                'id': 34, 'activity_date': date(2013, 11, 30), 'cons_acct_num': '0034',
-            }, {
-                'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035',
-            }]
+            { 'id': 32, 'activity_date': date(2011, 7, 31), 'cons_acct_num': '0032', },
+            { 'id': 33, 'activity_date': date(2012, 10, 31), 'cons_acct_num': '0033', },
+            { 'id': 34, 'activity_date': date(2013, 11, 30), 'cons_acct_num': '0034', },
+            { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', }]
         for item in self.activities:
             acct_record(self.data_file, item)
 

@@ -23,6 +23,8 @@ class TestUsersView(TestCase):
         group.user_set.add(self.user)
         event = Metro2Event.objects.create(id=1, name='test_exam', user_group=group)
         data_file = M2DataFile.objects.create(event=event, file_name='file.txt')
+
+        # Create account activity records for Event 1
         [acct_record(data_file, item) for item in [
             { 'id': 32, 'activity_date': date(2019, 7, 31), 'cons_acct_num': '0032', },
             { 'id': 33, 'activity_date': date(2019, 10, 31), 'cons_acct_num': '0033', },

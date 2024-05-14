@@ -18,24 +18,17 @@ class UserViewSerializerTestCase(TestCase):
         )
         self.group = Group.objects.create(name="event1")
         self.group.user_set.add(self.user)
-        event = Metro2Event(id=1, name='test_exam', user_group=self.group)
-        event.save()
-        event2 = Metro2Event(id=2, name='another_exam', user_group=self.group)
-        self.data_file = M2DataFile(event=event, file_name='file.txt')
-        self.data_file.save()
-        event2.save()
-        self.data_file2 = M2DataFile(event=event2, file_name='file.txt')
-        self.data_file2.save()
-        self.activities = [
-            {
-                'id': 32, 'activity_date': date(2011, 7, 31), 'cons_acct_num': '0032',
-            }, {
-                'id': 33, 'activity_date': date(2012, 10, 31), 'cons_acct_num': '0033',
-            }, {
-                'id': 34, 'activity_date': date(2013, 11, 30), 'cons_acct_num': '0034',
-            }, {
-                'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035',
-            }]
+        event = Metro2Event.objects.create(id=1, name='test_exam', user_group=self.group)
+        event2 = Metro2Event.objects.create(id=2, name='another_exam', user_group=self.group)
+        self.data_file = M2DataFile.objects.create(event=event, file_name='file.txt')
+
+        # Create account records for event 1
+        [acct_record(self.data_file, item) for item in [
+            { 'id': 32, 'activity_date': date(2011, 7, 31), 'cons_acct_num': '0032', },
+            { 'id': 33, 'activity_date': date(2012, 10, 31), 'cons_acct_num': '0033', },
+            { 'id': 34, 'activity_date': date(2013, 11, 30), 'cons_acct_num': '0034', },
+            { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', }]]
+
         self.json_representation = {
             'is_admin': False,
             'username': 'examiner',
@@ -49,9 +42,8 @@ class UserViewSerializerTestCase(TestCase):
                 }
             ]
         }
+
     def test_user_view_serializer(self):
-        for item in self.activities:
-            acct_record(self.data_file, item)
         serializer = UserViewSerializer(self.user)
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render(self.json_representation)
