@@ -150,8 +150,9 @@ class Metro2EventSerializerTestCase(TestCase):
         self.event = Metro2Event.objects.create(id=1, name='test_exam')
         self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
         self.json_representation = {
-            'id': 1, 'name': 'test_exam', 'date_range_start': '2011-07-31',
-            'date_range_end': '2020-12-31'
+            'id': 1, 'name': 'test_exam', 'portfolio': '',
+            'eid_or_matter_num': '', 'other_descriptor': '',
+            'date_range_start': '2011-07-31', 'date_range_end': '2020-12-31'
         }
         self.activities = [
             { 'id': 32, 'activity_date': date(2011, 7, 31), 'cons_acct_num': '0032', },

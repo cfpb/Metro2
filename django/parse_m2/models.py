@@ -14,6 +14,9 @@ class Metro2Event(models.Model):
     class Meta:
         verbose_name_plural = "Metro2 Events"
     name = models.CharField(max_length=300)
+    portfolio = models.CharField(max_length=300, blank=True)
+    eid_or_matter_num = models.CharField(max_length=300, blank=True)
+    other_descriptor = models.CharField(max_length=300, blank=True)
     user_group = models.ForeignKey(
         Group,
         blank=True,

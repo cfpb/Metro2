@@ -19,7 +19,9 @@ class UserViewSerializerTestCase(TestCase):
         self.group = Group.objects.create(name="event1")
         self.group.user_set.add(self.user)
         event = Metro2Event.objects.create(id=1, name='test_exam', user_group=self.group)
-        event2 = Metro2Event.objects.create(id=2, name='another_exam', user_group=self.group)
+        event2 = Metro2Event.objects.create(id=2, name='another_exam', user_group=self.group,
+                                            eid_or_matter_num='123-345667', portfolio="mortgage loans",
+                                            other_descriptor="exam")
         self.data_file = M2DataFile.objects.create(event=event, file_name='file.txt')
 
         # Create account records for event 1
@@ -34,11 +36,13 @@ class UserViewSerializerTestCase(TestCase):
             'username': 'examiner',
             'assigned_events': [
                 {
-                    'id': 1, 'name': 'test_exam', 'date_range_start': '2011-07-31',
-                    'date_range_end': '2020-12-31',
+                    'id': 1, 'name': 'test_exam', 'portfolio': '',
+                    'eid_or_matter_num': '', 'other_descriptor': '',
+                    'date_range_start': '2011-07-31', 'date_range_end': '2020-12-31',
                 }, {
-                     'id': 2, 'name': 'another_exam', 'date_range_start': None,
-                     'date_range_end': None,
+                     'id': 2, 'name': 'another_exam', 'portfolio': 'mortgage loans',
+                     'eid_or_matter_num': '123-345667', 'other_descriptor': 'exam',
+                     'date_range_start': None, 'date_range_end': None,
                 }
             ]
         }
