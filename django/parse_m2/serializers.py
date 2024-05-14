@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from evaluate_m2.evaluate_utils import get_activity_date_range
 from .models import AccountActivity, AccountHolder, Metro2Event
 
 
@@ -30,14 +29,8 @@ class Metro2EventSerializer(serializers.ModelSerializer):
         model = Metro2Event
         fields = ['id','name', 'date_range_start', 'date_range_end']
 
-    def get_date_range_start(self, obj):
-        record_set = obj.get_all_account_activity()
-        if record_set.exists():
-            date_range = get_activity_date_range(record_set)
-            return date_range["earliest"]
+    def get_date_range_start(self, obj: Metro2Event):
+        return obj.date_range_start()
 
     def get_date_range_end(self, obj):
-        record_set = obj.get_all_account_activity()
-        if record_set.exists():
-            date_range = get_activity_date_range(record_set)
-            return date_range["latest"]
+        return obj.date_range_end()

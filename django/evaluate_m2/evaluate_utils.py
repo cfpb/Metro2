@@ -9,9 +9,12 @@ def get_activity_date_range(record_set: QuerySet):
     following format:
     { "earliest": date(2022, 2, 2), "latest": date(2023, 3, 3)}
     """
-    earliest_date = record_set.order_by('activity_date').first().activity_date
-    latest_date = record_set.order_by('-activity_date').first().activity_date
-    return {"earliest": earliest_date, "latest": latest_date}
+    if record_set.exists():
+        earliest_date = record_set.order_by('activity_date').first().activity_date
+        latest_date = record_set.order_by('-activity_date').first().activity_date
+        return {"earliest": earliest_date, "latest": latest_date}
+    else:
+        return {"earliest": None, "latest": None}
 
 def get_activity_date_range_from_list(data: list[dict]):
     """
