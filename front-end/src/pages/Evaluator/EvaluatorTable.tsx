@@ -37,9 +37,7 @@ const getEvaluatorFieldsList = (evaluatorMetadata: EvaluatorMetadata): string[] 
 
   // If php present in fields, add php1 right after it so they'll be adjacent columns
   const phpIndex = fields.indexOf('php')
-  if (phpIndex > -1) {
-    fields.splice(phpIndex + 1, 0, 'php1')
-  }
+  if (phpIndex > -1) fields.splice(phpIndex + 1, 0, 'php1')
 
   // Filter out anything that's not an M2 field and enforce uniqueness
   // TODO: this is temporary due to extraneous data in the display_fields metadata
