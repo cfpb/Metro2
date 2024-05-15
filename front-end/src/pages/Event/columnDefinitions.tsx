@@ -31,7 +31,7 @@ const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
   },
   {
     field: 'category',
-    headerName: 'Category',
+    headerName: 'Categories',
     type: 'wrappableText',
     flex: 1,
     cellRenderer: ({ value }: { value: string[] }): ReactElement => (
