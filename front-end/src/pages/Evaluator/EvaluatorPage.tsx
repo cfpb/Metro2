@@ -13,7 +13,7 @@ import EvaluatorTable from './EvaluatorTable'
 interface EvaluatorData {
   evaluatorMetadata: EvaluatorMetadata
   eventData: Event
-  evaluatorHits: DeferredPromise<{ hits: AccountRecord[] }>
+  evaluatorHits: DeferredPromise<AccountRecord[]>
 }
 
 export default function EvaluatorPage(): ReactElement {
@@ -33,7 +33,7 @@ export default function EvaluatorPage(): ReactElement {
       <Suspense fallback={<Loader message='Your data is loading' />}>
         <Await promise={evaluatorHits}>
           {(data): ReactElement => (
-            <EvaluatorTable hits={data.hits} evaluatorMetadata={evaluatorMetadata} />
+            <EvaluatorTable hits={data} evaluatorMetadata={evaluatorMetadata} />
           )}
         </Await>
       </Suspense>

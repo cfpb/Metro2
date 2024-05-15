@@ -1,5 +1,33 @@
 import { M2_FIELD_LOOKUPS } from '../constants'
-import { formatNumber, formatUSD, getM2Definition } from '../utils'
+import {
+  formatNumber,
+  formatUSD,
+  getM2Definition,
+  prepareAccountRecordData
+} from '../utils'
+
+describe('prepareAccountRecordData', () => {
+  const records = [
+    {
+      id: 1601,
+      inconsistencies: ['Bankruptcy-DOFD-4'],
+      activity_date: '2018-10-31',
+      amt_past_due: 0,
+      current_bal: 0,
+      orig_chg_off_amt: 0,
+      php: 'DDD001110010010000000000',
+      terms_freq: 'M'
+    }
+  ]
+
+  it('adds and annotates a php1 character', () => {
+    const preparedData = prepareAccountRecordData(records)
+    const annotatedPHP = `D (No payment history reported/available this month)`
+    const preparedRecord = preparedData[0]
+    expect('php1' in preparedRecord).toBe(true)
+    expect(preparedRecord.php1).toEqual(annotatedPHP)
+  })
+})
 
 const UNDEFINED = undefined
 

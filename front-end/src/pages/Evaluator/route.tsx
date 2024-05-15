@@ -1,8 +1,8 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { queryOptions } from '@tanstack/react-query'
 import { createRoute, defer, notFound } from '@tanstack/react-router'
-import type Account from 'pages/Account/Account'
-import { fetchData } from 'utils/utils'
+import type { AccountRecord } from 'utils/constants'
+import { fetchData, prepareAccountRecordData } from 'utils/utils'
 import type Event from '../Event/Event'
 import { eventQueryOptions, eventRoute } from '../Event/route'
 import type EvaluatorMetadata from './Evaluator'
@@ -29,15 +29,16 @@ export function getEvaluator(
 export const fetchEvaluatorHits = async (
   eventId: string,
   evaluatorId: string
-): Promise<Account[]> => {
+): Promise<AccountRecord[]> => {
   const url = `/api/events/${eventId}/evaluator/${evaluatorId}/`
-  return fetchData(url, 'hits', 2000)
+  const data: { hits: AccountRecord[] } = await fetchData(url, 'hits')
+  return prepareAccountRecordData(data.hits)
 }
 
 export const hitsQueryOptions = (
   eventId: string,
   evaluatorId: string
-): UseQueryOptions<Account[], Error, unknown, string[]> =>
+): UseQueryOptions<AccountRecord[], Error, unknown, string[]> =>
   queryOptions({
     queryKey: ['event', eventId, 'evaluator', evaluatorId],
     queryFn: async () => fetchEvaluatorHits(eventId, evaluatorId),
