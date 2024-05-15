@@ -169,3 +169,21 @@ export const downloadData = async (
   await writable.write(csvString)
   return writable.close()
 }
+
+// Generates html for an evaluator long description that is only formatted with line breaks.
+// Splits string into segments at double line breaks. Breaks segments into lines.
+// If the first line of a segment is explanatory rather than pseudo-code
+// -- determined by checking for absence of symbols used in pseudo code lines --
+// it's formatted as an H4. All other lines are formatted as paragraphs.
+export const formatLongDescription = (longDescription: string): string => {
+  let html = ''
+  for (const segment of longDescription.split('\n\n')) {
+    for (const [lineIndex, line] of segment.split('\n').entries()) {
+      const isHeader =
+        lineIndex === 0 &&
+        ![':', '<', '>', '=', '≠'].some(char => line.includes(char))
+      html += `<${isHeader ? 'h4' : 'p'}>${line}</${isHeader ? 'h4' : 'p'}>`
+    }
+  }
+  return html
+}
