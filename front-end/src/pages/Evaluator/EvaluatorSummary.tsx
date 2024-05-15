@@ -1,7 +1,7 @@
 import DefinitionList from 'components/DefinitionList/DefinitionList'
 import { Expandable, ExpandableGroup } from 'design-system-react'
 import type { ReactElement } from 'react'
-import { formatNumber } from '../../utils/utils'
+import { formatDate, formatNumber } from '../../utils/utils'
 import type EvaluatorMetadata from './Evaluator'
 
 interface EvaluatorSummaryProperties {
@@ -17,7 +17,9 @@ export default function EvaluatorSummary({
       term: 'Duration of inconsistency',
       definition:
         metadata.inconsistency_start && metadata.inconsistency_end
-          ? `${metadata.inconsistency_start} - ${metadata.inconsistency_end}`
+          ? `${formatDate(metadata.inconsistency_start)} - ${formatDate(
+              metadata.inconsistency_end
+            )}`
           : ''
     },
     {
@@ -27,8 +29,11 @@ export default function EvaluatorSummary({
     {
       term: 'Total accounts affected',
       definition: formatNumber(metadata.accounts_affected)
+    },
+    {
+      term: 'Category',
+      definition: metadata.category ? metadata.category.join(', ') : null
     }
-    // { term: 'Category', definition: metadata.category }
   ]
 
   return (
