@@ -91,6 +91,7 @@ export const FIELD_NAMES_LOOKUP = {
   php1: 'Payment history profile (Most recent entry)',
   pmt_rating: 'Payment rating',
   port_type: 'Portfolio type',
+  spc_com_cd: 'Special comment code',
   smpa: 'Scheduled monthly payment amount',
   terms_dur: 'Terms duration',
   terms_freq: 'Terms frequency'
