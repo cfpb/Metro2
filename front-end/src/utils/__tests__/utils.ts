@@ -1,5 +1,11 @@
 import { M2_FIELD_LOOKUPS } from '../constants'
-import { formatDate, formatNumber, formatUSD, getM2Definition } from '../utils'
+import {
+  formatDate,
+  formatLongDescription,
+  formatNumber,
+  formatUSD,
+  getM2Definition
+} from '../utils'
 
 const UNDEFINED = undefined
 
@@ -42,6 +48,20 @@ describe('formatDate', () => {
     expect(formatDate(UNDEFINED)).toEqual('')
     expect(formatDate('abcdefg')).toEqual('')
     expect(formatDate('11-3-2023')).toEqual('')
+  })
+})
+
+describe('formatLongDescription', () => {
+  it('adds H4s to first lines without pseudo code symbols', () => {
+    const str =
+      'This is a header\nSentence\nSentence 2\n\nThis = pseudocode\n\nAnother header'
+    const html: string =
+      '<h4>This is a header</h4>' +
+      '<p>Sentence</p>' +
+      '<p>Sentence 2</p>' +
+      '<p>This = pseudocode</p>' +
+      '<h4>Another header</h4>'
+    expect(formatLongDescription(str)).toEqual(html)
   })
 })
 
