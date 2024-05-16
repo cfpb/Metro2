@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import Table from 'components/Table/Table'
+import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import { annotateData, generateColumnDefinitions, isM2Field } from 'utils/utils'
@@ -9,6 +10,7 @@ import EvaluatorDownloader from './EvaluatorDownloader'
 interface EvaluatorTableData {
   hits: AccountRecord[]
   evaluatorMetadata: EvaluatorMetadata
+  eventData: Event
 }
 
 const accountColDef = {
@@ -27,7 +29,8 @@ const accountColDef = {
 
 export default function EvaluatorTable({
   hits,
-  evaluatorMetadata
+  evaluatorMetadata,
+  eventData
 }: EvaluatorTableData): ReactElement {
   const rows = annotateData(hits)
 
@@ -56,11 +59,16 @@ export default function EvaluatorTable({
     <div className='content-row'>
       <div className='download-row'>
         <h4 className='u-mb0'>
-          {`Showing ${Math.min(hits.length, 50)} of ${String(
+          {`Showing ${Math.min(hits.length, 20)} of ${String(
             evaluatorMetadata.hits
           )} results`}
         </h4>
-        <EvaluatorDownloader rows={rows} fields={['cons_acct_num', ...fields]} />
+        <EvaluatorDownloader
+          rows={rows}
+          fields={['cons_acct_num', ...fields]}
+          eventData={eventData}
+          evaluatorId={evaluatorMetadata.id}
+        />
       </div>
       <Table rows={rows} columnDefinitions={colDefs} />
     </div>

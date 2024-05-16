@@ -153,7 +153,7 @@ export const downloadData = async (
   const handle = await showSaveFilePicker({
     suggestedName: fileName,
     // @ts-expect-error Typescript doesn't handle File System API well
-    startIn: 'documents',
+    startIn: 'downloads',
     types: [
       {
         description: 'CSVs',
@@ -167,3 +167,40 @@ export const downloadData = async (
   await writable.write(csvString)
   return writable.close()
 }
+
+export const downloadFileFromURL = (url: string): void => {
+  const link = document.createElement('a')
+  link.setAttribute('href', url)
+  link.click()
+}
+
+// export const writeURLToFile = async (
+//   fileName: string,
+//   url: string
+// ): Promise<void> => {
+//   const handle = await showSaveFilePicker({
+//     suggestedName: fileName,
+//     // @ts-expect-error Typescript doesn't handle File System API well
+//     startIn: 'documents',
+//     types: [
+//       {
+//         description: 'CSVs',
+//         accept: {
+//           'text/csv': ['.csv']
+//         }
+//       }
+//     ]
+//   })
+//   // Create a FileSystemWritableFileStream to write to.
+//   const writable = await handle.createWritable()
+
+//   try {
+//     const response = await fetch(url)
+//     // Stream the response into the file.
+//     // pipeTo() closes the destination pipe by default, no need to close it.
+//     if (response.ok) return await response.body?.pipeTo(writable)
+//     throw new Error(String(response.status))
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
