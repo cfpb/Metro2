@@ -41,6 +41,16 @@ export const annotateData = (records: AccountRecord[]): AccountRecord[] =>
 // Checks whether a string is in the list of Metro 2 fields
 export const isM2Field = (str: string): boolean => !!M2_FIELDS.includes(str)
 
+// Annotate and add php1 to account record data
+export const prepareAccountRecordData = (
+  records: AccountRecord[]
+): AccountRecord[] => {
+  if ('php' in records[0]) {
+    for (const record of records) record.php1 = record.php?.charAt(0)
+  }
+  return annotateData(records)
+}
+
 // Given a list of M2 fields and a list of M2 fields to pin,
 // generate an array of AgGrid column definition objects
 // with the following format:
