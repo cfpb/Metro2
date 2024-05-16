@@ -68,5 +68,6 @@ kubectl wait --for=condition=ready \
 
 VALUES="values-local.yaml"
 
-helm upgrade --install $RELEASE $HELM_DIR -f $HELM_DIR/$VALUES
+helm upgrade --install $RELEASE $HELM_DIR -f $HELM_DIR/$VALUES \
+        --set volumes[0].configMap=$RELEASE-nginx-conf \
 
