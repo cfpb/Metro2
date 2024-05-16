@@ -139,7 +139,14 @@ export const generateDownloadData = <T>(
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const csvHeader = fields.map(field => headerLookup[field] ?? field).join(',')
   const csvBody = records
-    .map(record => fields.map(field => record[field as keyof T]).join(','))
+    .map(record =>
+      fields
+        .map(field => {
+          const val = record[field as keyof T]
+          return Array.isArray(val) ? val.join('; ') : val
+        })
+        .join(',')
+    )
     .join('\n')
   return [csvHeader, csvBody].join('\n')
 }

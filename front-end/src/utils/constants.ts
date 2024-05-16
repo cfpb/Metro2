@@ -91,7 +91,8 @@ export const FIELD_NAMES_LOOKUP = {
   spc_com_cd: 'Special comment code',
   smpa: 'Scheduled monthly payment amount',
   terms_dur: 'Terms duration',
-  terms_freq: 'Terms frequency'
+  terms_freq: 'Terms frequency',
+  inconsistencies: 'Inconsistencies'
 }
 
 // Maps the ids of Metro2 fields to their data types
