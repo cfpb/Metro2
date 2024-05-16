@@ -21,6 +21,8 @@ export default function EvaluatorPage(): ReactElement {
     from: '/events/$eventId/evaluators/$evaluatorId'
   })
 
+  const eventData: Event = useLoaderData({ from: '/events/$eventId' })
+
   return (
     <>
       <LocatorBar
@@ -33,7 +35,11 @@ export default function EvaluatorPage(): ReactElement {
       <Suspense fallback={<Loader message='Your data is loading' />}>
         <Await promise={evaluatorHits}>
           {(data): ReactElement => (
-            <EvaluatorTable hits={data} evaluatorMetadata={evaluatorMetadata} />
+            <EvaluatorTable
+              hits={data}
+              evaluatorMetadata={evaluatorMetadata}
+              eventData={eventData}
+            />
           )}
         </Await>
       </Suspense>
