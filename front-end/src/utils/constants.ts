@@ -88,6 +88,7 @@ export const FIELD_NAMES_LOOKUP = {
   php: 'Payment history profile',
   pmt_rating: 'Payment rating',
   port_type: 'Portfolio type',
+  spc_com_cd: 'Special comment code',
   smpa: 'Scheduled monthly payment amount',
   terms_dur: 'Terms duration',
   terms_freq: 'Terms frequency'
@@ -125,6 +126,40 @@ export const FIELD_TYPES_LOOKUP = {
   terms_dur: 'plainText', // TODO: figure out what this should be, if anything
   terms_freq: 'plainText'
 }
+
+// Lookup to use evaluator id segments as initial categorization
+export const evaluatorSegmentMap = new Map([
+  ['status', 'Account status'],
+  ['type', 'Account type'],
+  ['paymentamount', 'Actual payment amount'],
+  ['apd', 'Amount past due'],
+  ['balloon', 'Balloon payment amount'],
+  ['bankruptcy', 'Bankruptcy'],
+  ['chargeoff', 'Original charge-off amount'],
+  ['creditlimit', 'Credit limit'],
+  ['balance', 'Current balance'],
+  ['ccc', 'Compliance condition code'],
+  ['dateclosed', 'Date closed'],
+  ['dateopen', 'Date open'],
+  ['deferred', 'Deferred'],
+  ['doai', 'Date of account information'],
+  ['dofd', 'Date of first delinquency'],
+  ['dolp', 'Date of last payment'],
+  ['ecoa', 'ECOA (equal credit opportunity act)'],
+  ['hcola', 'HCOLA (highest credit or original loan amount)'],
+  ['id', 'Account ID number'],
+  ['j1j2', 'J1 or J2 associated consumer'],
+  ['number', 'Account number'],
+  ['purchasedsold', 'K2 purchased-sold indicator'],
+  ['php', 'Payment history profile'],
+  ['rating', 'Payment rating'],
+  ['portfolio', 'Portfolio type'],
+  ['prog', 'Progression'],
+  ['smpa', 'Scheduled monthly payment amount'],
+  ['scc', 'Special comment code'],
+  ['termsduration', 'Terms duration'],
+  ['accountchange', 'L1 change indicator']
+])
 
 // Many Metro2 fields contain coded data that needs to be translated
 // into a more human-readable format for display in the Metro2 tool.

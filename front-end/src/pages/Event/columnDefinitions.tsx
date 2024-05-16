@@ -31,9 +31,16 @@ const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
   },
   {
     field: 'category',
-    headerName: 'Category',
+    headerName: 'Categories',
     type: 'wrappableText',
-    flex: 1
+    flex: 1,
+    cellRenderer: ({ value }: { value: string[] }): ReactElement => (
+      <>
+        {value.map(item => (
+          <div key={item}>{item}</div>
+        ))}
+      </>
+    )
   },
   {
     field: 'hits',
@@ -42,7 +49,7 @@ const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
     flex: 1
   },
   {
-    field: 'accounts',
+    field: 'accounts_affected',
     headerName: 'Total accounts',
     type: 'formattedNumber',
     flex: 1

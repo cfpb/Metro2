@@ -1,7 +1,7 @@
 import DefinitionList from 'components/DefinitionList/DefinitionList'
 import { Expandable, ExpandableGroup } from 'design-system-react'
 import type { ReactElement } from 'react'
-import { formatNumber } from 'utils/utils'
+import { formatDate, formatLongDescription, formatNumber } from '../../utils/utils'
 import type EvaluatorMetadata from './Evaluator'
 
 interface EvaluatorSummaryProperties {
@@ -12,17 +12,28 @@ export default function EvaluatorSummary({
   metadata
 }: EvaluatorSummaryProperties): ReactElement {
   const summaryItems = [
-    { term: 'Data from', definition: '' },
-    { term: 'Duration of inconsistency', definition: '' },
+    // { term: 'Data from', definition: '' },
+    {
+      term: 'Duration of inconsistency',
+      definition:
+        metadata.inconsistency_start && metadata.inconsistency_end
+          ? `${formatDate(metadata.inconsistency_start)} - ${formatDate(
+              metadata.inconsistency_end
+            )}`
+          : ''
+    },
     {
       term: 'Total inconsistencies',
-      definition: formatNumber(metadata.hits) as string
+      definition: formatNumber(metadata.hits)
     },
     {
       term: 'Total accounts affected',
-      definition: formatNumber(metadata.accounts) as string
+      definition: formatNumber(metadata.accounts_affected)
+    },
+    {
+      term: 'Categories',
+      definition: metadata.category ? metadata.category.join(', ') : null
     }
-    // { term: 'Category', definition: metadata.category }
   ]
 
   return (
@@ -37,11 +48,12 @@ export default function EvaluatorSummary({
           <p>{metadata.description}</p>
           <ExpandableGroup accordion groupId='AccordionGroup'>
             <Expandable header='Criteria evaluated'>
-              {/* <div
+              <div
                 className='long-description'
-                dangerouslySetInnerHTML={{ __html: longDescription }}
-              /> */}
-              <div>{metadata.long_description}</div>
+                dangerouslySetInnerHTML={{
+                  __html: formatLongDescription(metadata.long_description)
+                }}
+              />
             </Expandable>
             <Expandable header='How to evaluate these results'>
               <p />

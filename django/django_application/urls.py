@@ -29,18 +29,17 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/all-evaluator-metadata/', eval_views.download_evaluator_metadata_csv),
     path('api/events/', include(evaluate_m2_urls)),
+    path('api/users/', views.users_view),
+    path('api/users/<int:user_id>/', views.users_view)
 ]
 
 try:
     # If the SSO library is installed, include auth-related URLs
     urlpatterns += [
         path('oauth2/', include('django_auth_adfs.urls')),
-        path('api/users/', views.users_view),
     ]
 except ImproperlyConfigured:
-    urlpatterns += [
-        path('api/users/<int:user_id>/', views.users_view),
-    ]
+    pass
 # Handles fall through route for all erroneous api calls to return bad request
 urlpatterns.append(re_path(r'api(?:.*)?', error_view.bad_request_view ))
 
