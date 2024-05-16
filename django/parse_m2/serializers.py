@@ -23,6 +23,15 @@ class AccountHolderSerializer(serializers.ModelSerializer):
         exclude = ['data_file','activity_date']
 
 class Metro2EventSerializer(serializers.ModelSerializer):
+    date_range_start = serializers.SerializerMethodField(read_only=True)
+    date_range_end = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Metro2Event
-        fields = ['id','name']
+        fields = ['id','name', 'portfolio', 'eid_or_matter_num',
+                  'other_descriptor', 'date_range_start', 'date_range_end']
+
+    def get_date_range_start(self, obj: Metro2Event):
+        return obj.date_range_start()
+
+    def get_date_range_end(self, obj):
+        return obj.date_range_end()
