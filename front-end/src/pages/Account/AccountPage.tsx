@@ -4,7 +4,7 @@ import LocatorBar from 'components/LocatorBar/LocatorBar'
 import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
 import { M2_FIELDS } from 'utils/constants'
-import { annotateData, generateColumnDefinitions } from 'utils/utils'
+import { generateColumnDefinitions } from 'utils/utils'
 import type Account from './Account'
 import AccountDownloader from './AccountDownloader'
 import Summary from './AccountSummary'
@@ -28,7 +28,7 @@ const getInconsistenciesColDef = (accountInconsistencies: string[]): ColDef => (
 export default function AccountPage(): ReactElement {
   const { eventId }: { eventId: string } = routeApi.useParams()
   const accountData: Account = routeApi.useLoaderData()
-  const rows = annotateData(accountData.account_activity)
+  const rows = accountData.account_activity
   const colDefs = generateColumnDefinitions(M2_FIELDS, ['activity_date'])
 
   // Add inconsistencies column definition

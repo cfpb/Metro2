@@ -52,7 +52,7 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=event, evaluator=eval)
 
-        filename = f"{event.name}_{eval.id}_{date.today()}.csv"
+        filename = f"{event.name}_{eval.id}.csv"
         response = HttpResponse(
             content_type="text/csv",
             headers={"Content-Disposition": f"attachment; filename={filename}"}

@@ -8,6 +8,7 @@ export interface AccountRecord {
   dofd?: string | null
   pmt_rating?: string | null
   php?: string | null
+  php1?: string | null
   smpa?: number | null
   actual_pmt_amt?: number | null
   hcola?: number | null
@@ -40,6 +41,7 @@ export const M2_FIELDS = [
   'dofd',
   'pmt_rating',
   'php',
+  'php1',
   'smpa',
   'actual_pmt_amt',
   'hcola',
@@ -86,6 +88,7 @@ export const FIELD_NAMES_LOOKUP = {
   k4__balloon_pmt_amt: 'K4 balloon payment amount',
   orig_chg_off_amt: 'Original charge-off amount',
   php: 'Payment history profile',
+  php1: 'Payment history profile (Most recent entry)',
   pmt_rating: 'Payment rating',
   port_type: 'Portfolio type',
   spc_com_cd: 'Special comment code',
@@ -120,6 +123,7 @@ export const FIELD_TYPES_LOOKUP = {
   k4__balloon_pmt_amt: 'currency',
   orig_chg_off_amt: 'currency',
   php: 'plainText',
+  php1: 'plainText',
   pmt_rating: 'plainText',
   port_type: 'plainText',
   smpa: 'currency',
@@ -214,7 +218,7 @@ export const PAYMENT_HISTORY_PROFILE_LOOKUP = {
   '5': '150 - 179 days past due date',
   '6': '180 or more days past due date',
   B: 'No payment history available prior to this time',
-  D: 'No payment history reported/available this month.',
+  D: 'No payment history reported/available this month',
   E: 'Zero balance and Account Status 11',
   G: 'Collection',
   H: 'Foreclosure Completed',
@@ -405,6 +409,7 @@ export const M2_FIELD_LOOKUPS = {
   compl_cond_cd: COMPLIANCE_CONDTION_CODE_LOOKUP,
   k2_purch_sold_ind: K2_PURCHASED_SOLD_INDICATOR_LOOKUP,
   php: PAYMENT_HISTORY_PROFILE_LOOKUP,
+  php1: PAYMENT_HISTORY_PROFILE_LOOKUP,
   pmt_rating: PAYMENT_RATING_LOOKUP,
   spc_com_cd: SPECIAL_COMMENT_CODE_LOOKUP,
   port_type: PORTFOLIO_TYPE_LOOKUP,

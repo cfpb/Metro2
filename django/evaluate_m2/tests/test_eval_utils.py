@@ -23,6 +23,16 @@ class EvaluatorUtilsTestCase(TestCase):
         output = get_activity_date_range(record_set)
         self.assertEqual(output, expected)
 
+    def test_get_activity_date_range_when_no_data(self):
+        event = Metro2Event.objects.create(name = "test1")
+        record_set = event.get_all_account_activity() # should be empty
+        expected = {
+            "earliest": None,
+            "latest": None,
+        }
+        output = get_activity_date_range(record_set)
+        self.assertEqual(output, expected)
+
     def test_get_activity_date_range_from_list(self):
         # Create data
         data = [{

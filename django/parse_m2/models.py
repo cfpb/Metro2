@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.models import Group
 from django.db import models
 from django.core.management import call_command
@@ -5,12 +7,16 @@ from django.core.management import call_command
 from parse_m2.parse_utils import get_field_value
 from parse_m2 import fields
 from evaluate_m2.managers import AccountActivityQuerySet
+from evaluate_m2.evaluate_utils import get_activity_date_range
 
 
 class Metro2Event(models.Model):
     class Meta:
         verbose_name_plural = "Metro2 Events"
     name = models.CharField(max_length=300)
+    portfolio = models.CharField(max_length=300, blank=True)
+    eid_or_matter_num = models.CharField(max_length=300, blank=True)
+    other_descriptor = models.CharField(max_length=300, blank=True)
     user_group = models.ForeignKey(
         Group,
         blank=True,
@@ -24,6 +30,26 @@ class Metro2Event(models.Model):
     def get_all_account_activity(self):
         return AccountActivity.objects.filter(
             account_holder__data_file__event=self)
+
+    def account_activity_date_range(self) -> dict:
+        activity = self.get_all_account_activity()
+        return get_activity_date_range(activity)
+
+    def date_range_start(self) -> date:
+        """
+        Return the earliest date contained in the activity date field
+        in the data set for this event. If this event has no AccountActivity
+        records, return None.
+        """
+        return self.account_activity_date_range()['earliest']
+
+    def date_range_end(self) -> date:
+        """
+        Return the latest date contained in the activity date field
+        in the data set for this event. If this event has no AccountActivity
+        records, return None.
+        """
+        return self.account_activity_date_range()['latest']
 
     def evaluate(self):
         call_command('run_evaluators', event_id=self.id)
