@@ -4,7 +4,7 @@ import Table from 'components/Table/Table'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { M2_FIELDS } from 'utils/constants'
-import { annotateData, generateColumnDefinitions } from 'utils/utils'
+import { generateColumnDefinitions } from 'utils/utils'
 import type Account from './Account'
 import AccountDownloader from './AccountDownloader'
 import Summary from './AccountSummary'
@@ -16,7 +16,7 @@ export default function AccountPage(): ReactElement {
   const accountData: Account = useLoaderData({
     from: '/events/$eventId/accounts/$accountId'
   })
-  const rows = annotateData(accountData.account_activity)
+  const rows = accountData.account_activity
 
   return (
     <>

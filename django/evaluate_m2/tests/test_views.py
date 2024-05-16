@@ -137,7 +137,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         # the response should be a CSV
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'text/csv')
-        self.assertIn(f'filename=test_exam_Status-DOFD-1_{date.today()}.csv',
+        self.assertIn(f'filename=test_exam_Status-DOFD-1.csv',
             response.headers['Content-Disposition'])
 
         # the CSV should contain info about the evaluator_results
