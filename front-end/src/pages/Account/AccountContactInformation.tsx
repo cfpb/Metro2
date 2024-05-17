@@ -6,10 +6,10 @@ import type { AccountHolder } from './Account'
 
 interface AccountHolderProperties {
   accountId: string
-  eventId: string
+  eventId: number
 }
 export const fetchAccountPII = async (
-  eventId: string,
+  eventId: number,
   accountId: string
 ): Promise<AccountHolder> => {
   const url = `/api/events/${eventId}/account/${accountId}/account_holder/`

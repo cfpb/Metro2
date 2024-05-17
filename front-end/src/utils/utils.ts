@@ -129,12 +129,29 @@ export function formatUSD(val: number | null | undefined): string {
   return typeof val === 'number' ? currencyFormatter.format(val) : ''
 }
 
+// // Given a date string in format yyyy-mm-dd, returns a mm/dd/yyyy formatted string
+// // Returns empty string if any other data type is passed in
+// export const formatDate = (val: string | null | undefined): string =>
+//   typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)
+//     ? new Date(`${val}T00:00:00`).toLocaleDateString('en-us')
+//     : ''
+
 // Given a date string in format yyyy-mm-dd, returns a mm/dd/yyyy formatted string
 // Returns empty string if any other data type is passed in
-export const formatDate = (val: string | null | undefined): string =>
-  typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)
-    ? new Date(`${val}T00:00:00`).toLocaleDateString('en-us')
-    : ''
+export const formatDate = (
+  val: string | null | undefined,
+  shorthandDate = false
+): string => {
+  if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+    return new Date(`${val}T00:00:00`).toLocaleDateString(
+      'en-us',
+      shorthandDate
+        ? { month: 'short', year: 'numeric' }
+        : { month: '2-digit', day: '2-digit', year: '2-digit' }
+    )
+  }
+  return ''
+}
 
 // Takes an ordered list of fields, a header lookup, and an array of records
 // Generates header by getting values for each field from the header lookup

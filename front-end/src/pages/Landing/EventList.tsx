@@ -1,6 +1,8 @@
 import { Link } from '@tanstack/react-router'
 import type { EventMetadata } from 'pages/Event/Event'
 import type { ReactElement } from 'react'
+import { formatDate } from 'utils/utils'
+
 import './EventList.less'
 
 interface EventListProperties {
@@ -24,22 +26,22 @@ export default function EventList({
           key={event.id}
           className='m-list_item event-item'
           data-testid='event-item'>
-          {event.start_date && event.end_date ? (
-            <h3 data-testid='event-header'>
-              {event.name} - {event.start_date} - {event.end_date}
-            </h3>
-          ) : (
-            <h3 data-testid='event-header'>{event.name}</h3>
-          )}
-          <h4>Data from:</h4>
-          {event.description ? (
-            <h4 data-testid='event-description'>{event.description}</h4>
-          ) : null}
+          <h3 data-testid='event-header'>
+            {event.name}
+            {event.eid_or_matter_num
+              ? `: EID/Matter #${event.eid_or_matter_num}`
+              : null}
+          </h3>
+          <h4 data-testid='event-date-range'>
+            Data from: {formatDate(event.date_range_start, true)} -{' '}
+            {formatDate(event.date_range_end, true)}
+          </h4>
           <p>
             <Link
               to='/events/$eventId'
               params={{ eventId: String(event.id) }}
-              className='m-list-link'>
+              className='m-list-link'
+              data-testid='event-link'>
               Open evaluator results
             </Link>
           </p>

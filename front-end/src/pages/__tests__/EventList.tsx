@@ -6,13 +6,15 @@ const events = [
   {
     id: 1,
     name: 'Bank A Auto Exam',
-    start_date: 'January 1, 2018',
-    end_date: 'January 1, 2021',
-    description: '10 inconsistencies'
+    date_range_start: '2018-02-18',
+    date_range_end: '2021-02-18',
+    eid_or_matter_num: '123-456'
   },
   {
     id: 2,
-    name: 'Bank B Mortgage Exam'
+    name: 'Bank B Mortgage Exam',
+    date_range_start: '2020-01-01',
+    date_range_end: '2022-01-01'
   }
 ]
 
@@ -25,27 +27,27 @@ describe('<EventList />', () => {
     expect(eventItems).toHaveLength(2)
   })
 
-  it('renders an event with dates and description', async () => {
+  it('renders an event with dates and eid', async () => {
     renderWithProviders(<EventList heading='Test events' events={events} />)
     const eventItems = await screen.findAllByTestId('event-item')
     expect(eventItems).toHaveLength(2)
     const header = within(eventItems[0]).queryByTestId('event-header')
     expect(header).toBeVisible()
-    expect(header).toHaveTextContent(
-      'Bank A Auto Exam - January 1, 2018 - January 1, 2021'
-    )
-    const description = within(eventItems[0]).queryByTestId('event-description')
-    expect(description).toBeVisible()
-    expect(description).toHaveTextContent('10 inconsistencies')
+    expect(header).toHaveTextContent('Bank A Auto Exam: EID/Matter #123-456')
+    const dateRange = within(eventItems[0]).queryByTestId('event-date-range')
+    expect(dateRange).toBeVisible()
+    expect(dateRange).toHaveTextContent('Data from: Feb 2018 - Feb 2021')
+
+    const eventLink = within(eventItems[0]).queryByTestId('event-link')
+    expect(eventLink).toBeVisible()
+    expect(eventLink).toHaveAttribute('href', '/events/1')
   })
 
-  it('renders an event without dates or description', async () => {
+  it('renders an event without eid', async () => {
     renderWithProviders(<EventList heading='Test events' events={events} />)
     const eventItems = await screen.findAllByTestId('event-item')
     const header = within(eventItems[1]).queryByTestId('event-header')
     expect(header).toBeVisible()
     expect(header).toHaveTextContent('Bank B Mortgage Exam')
-    const description = within(eventItems[1]).queryByTestId('event-description')
-    expect(description).not.toBeInTheDocument()
   })
 })
