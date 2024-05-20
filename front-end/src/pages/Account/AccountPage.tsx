@@ -1,15 +1,14 @@
-import { getRouteApi } from '@tanstack/react-router'
+import { useLoaderData } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
 import LocatorBar from 'components/LocatorBar/LocatorBar'
 import Table from 'components/Table/Table'
+import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { M2_FIELDS } from 'utils/constants'
 import { generateColumnDefinitions } from 'utils/utils'
 import type Account from './Account'
 import AccountDownloader from './AccountDownloader'
 import Summary from './AccountSummary'
-
-const routeApi = getRouteApi('/events/$eventId/accounts/$accountId')
 
 // Generate a column definition for the inconsistencies column
 // Pass the inconsistencies legend for this account in cellRendererParams
@@ -26,8 +25,10 @@ const getInconsistenciesColDef = (accountInconsistencies: string[]): ColDef => (
 })
 
 export default function AccountPage(): ReactElement {
-  const { eventId }: { eventId: string } = routeApi.useParams()
-  const accountData: Account = routeApi.useLoaderData()
+  const eventData: Event = useLoaderData({ from: '/events/$eventId' })
+  const accountData: Account = useLoaderData({
+    from: '/events/$eventId/accounts/$accountId'
+  })
   const rows = accountData.account_activity
   const colDefs = generateColumnDefinitions(M2_FIELDS, ['activity_date'])
 
@@ -47,11 +48,16 @@ export default function AccountPage(): ReactElement {
         icon='user-round'
         breadcrumbs
       />
-      <Summary accountData={accountData} eventId={eventId} />
+      <Summary accountData={accountData} eventId={eventData.name} />
 
       <div className='content-row'>
         <div className='download-row'>
-          <AccountDownloader rows={rows} fields={fields} />
+          <AccountDownloader
+            rows={rows}
+            fields={M2_FIELDS}
+            accountId={accountData.cons_acct_num}
+            eventData={eventData}
+          />
         </div>
         <Table rows={rows} columnDefinitions={colDefs} />
       </div>
