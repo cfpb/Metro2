@@ -10,7 +10,7 @@ import AccountContactInformation from './AccountContactInformation'
 
 interface AccountSummaryProperties {
   accountData: Account
-  eventId: string
+  eventId: number
 }
 
 const summaryFields = [

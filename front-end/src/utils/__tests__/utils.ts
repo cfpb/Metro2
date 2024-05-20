@@ -63,8 +63,13 @@ describe('formatUSD', () => {
 
 describe('formatDate', () => {
   it('returns a formatted string when passed a date string', () => {
-    expect(formatDate('2024-01-23')).toEqual('1/23/2024')
-    expect(formatDate('2023-11-03')).toEqual('11/3/2023')
+    expect(formatDate('2024-01-23')).toEqual('01/23/24')
+    expect(formatDate('2023-11-03')).toEqual('11/03/23')
+  })
+
+  it('returns a shorthand date when passed a date string and flag', () => {
+    expect(formatDate('2024-01-23', true)).toEqual('Jan 2024')
+    expect(formatDate('2023-11-03', true)).toEqual('Nov 2023')
   })
 
   it('returns empty string when passed a non-date-string value', () => {

@@ -48,7 +48,7 @@ export default function AccountPage(): ReactElement {
         icon='user-round'
         breadcrumbs
       />
-      <Summary accountData={accountData} eventId={eventData.name} />
+      <Summary accountData={accountData} eventId={eventData.id} />
 
       <div className='content-row'>
         <div className='download-row'>
