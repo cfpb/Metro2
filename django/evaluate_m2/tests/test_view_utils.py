@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 
 from evaluate_m2.views_utils import has_permissions_for_request
@@ -14,12 +14,9 @@ class ViewUtilsTestCase(TestCase):
             password="",
             email="examiner@fake.gov"
         )
-        self.group = Group.objects.create(name="event1")
-        self.group.user_set.add(self.user)
-        self.event = Metro2Event(id=1, name='test_exam', user_group=self.group)
-        self.event.save()
-        self.event2 = Metro2Event(id=2, name='another_exam')
-        self.event2.save()
+        self.event = Metro2Event.objects.create(id=1, name='test_exam')
+        self.event.members.add(self.user)
+        self.event2 = Metro2Event.objects.create(id=2, name='another_exam')
 
     def test_has_permissions_for_request_sso_not_enabled(self):
         with self.settings(ENABLE_SSO='not_enabled'):
