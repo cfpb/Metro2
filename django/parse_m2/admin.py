@@ -17,7 +17,7 @@ from parse_m2.models import (
 class Metro2EventAdmin(admin.ModelAdmin):
     list_display = ['name', 'id']
     form=Metro2EventForm
-    fields = ['name', 'directory']
+    fields = ['name', 'directory', 'members']
 
     def get_form(self, request, obj=None, **kwargs):
         """
