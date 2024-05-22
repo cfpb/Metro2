@@ -8,7 +8,7 @@ from parse_m2.models import Metro2Event
 class Metro2EventForm(forms.ModelForm):
     class Meta:
         model = Metro2Event
-        fields = ['name','user_group']
+        fields = ['name']
         help_texts = {'name': "Provide an event name"}
     directory = forms.CharField(label="Data Directory", max_length=300, required=False)
     enabled = settings.S3_ENABLED
