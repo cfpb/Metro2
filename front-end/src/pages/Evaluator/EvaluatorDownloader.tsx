@@ -67,7 +67,9 @@ export default function EvaluatorDownloader({
           <RadioButton
             id='sample'
             name='evaluator-download'
-            label='Create a .csv with only the 20 results in the table'
+            label={`Create a .csv with only the ${rows.length} result${
+              rows.length > 1 ? 's' : ''
+            } in the table`}
             labelClassName=''
             labelInline
           />
