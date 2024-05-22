@@ -23,7 +23,7 @@
 !helm-install-local.sh
 !build-images.sh
 !.editorconfig
-!buildspec.yaml
+!buildspec.yml
 
 # ... but still ignore compiled files
 *.pyc
