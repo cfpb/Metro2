@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 
 
 class UserAdmin(BaseUserAdmin):
+    readonly_fields = ['is_staff', 'is_superuser']
     print(BaseUserAdmin.fieldsets)
     # 'fieldsets' list is based on BaseUserAdmin.fieldsets, but
     # with irrelevant fields removed for simplicity
