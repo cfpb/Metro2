@@ -40,7 +40,7 @@ declare module '@tanstack/react-router' {
 export default function App(): ReactElement {
   return (
     <>
-      <PageHeader />
+      <PageHeader href='/' />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
