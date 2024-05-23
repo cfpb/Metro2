@@ -3,7 +3,7 @@ import os
 from unittest import mock
 from datetime import date
 
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 
 from evaluate_m2.tests.evaluator_test_helper import acct_record
@@ -19,9 +19,8 @@ class TestUsersView(TestCase):
             username="examiner",
             email="examiner@fake.gov"
         )
-        group = Group.objects.create(name="event1")
-        group.user_set.add(self.user)
-        event = Metro2Event.objects.create(id=1, name='test_exam', user_group=group)
+        event = Metro2Event.objects.create(id=1, name='test_exam')
+        event.members.add(self.user)
         data_file = M2DataFile.objects.create(event=event, file_name='file.txt')
 
         # Create account activity records for Event 1
@@ -31,9 +30,9 @@ class TestUsersView(TestCase):
             { 'id': 34, 'activity_date': date(2019, 11, 30), 'cons_acct_num': '0034', },
             { 'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035', }]]
 
-        Metro2Event.objects.create(id=2, name='test_exam2', user_group=group,
-                                   eid_or_matter_num='887-656565',
+        e2 = Metro2Event.objects.create(id=2, name='test_exam2', eid_or_matter_num='887-656565',
                                    portfolio="credit cards", other_descriptor="2025")
+        e2.members.add(self.user)
 
     def test_users_view(self):
         expected = {
