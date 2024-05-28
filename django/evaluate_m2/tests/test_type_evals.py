@@ -298,3 +298,48 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             'credit_limit': 0, 'terms_dur': '00'
         }]
         self.assert_evaluator_correct(self.event, "Type-HCOLA-5", expected)
+
+    def test_eval_type_hcola_6(self):
+        # Hits when all conditions are met:
+        # 1. port_type == 'C'
+        # 2. acct_type == '7A', '9B', '15', '43', '47', '89'
+        # 3. terms_freq != 'D'
+        # 4. hcola == 0
+        # hcola cannot be an empty string or NULL by constraints
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'C', 'acct_type':'7A', 'hcola': 0, 'terms_freq': 'P'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type':'C', 'acct_type':'9B', 'hcola': 0, 'terms_freq': 'W'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'I', 'acct_type':'15', 'hcola': 0, 'terms_freq': 'P'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'C', 'acct_type':'77', 'hcola': 0, 'terms_freq': 'W'
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'C', 'acct_type':'43', 'hcola': 0, 'terms_freq': 'D'
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'C', 'acct_type':'47', 'hcola': 10, 'terms_freq': 'P'
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-port_type=I, 35: NO-acct_type=77,
+        # 36: terms_freq=D, 37: NO-hcola=10
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'acct_type': '7A', 'port_type': 'C', 'hcola': 0, 'terms_freq': 'P',
+            'credit_limit': 0, 'terms_dur': '00'
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+            'acct_type': '9B', 'port_type': 'C', 'hcola': 0, 'terms_freq': 'W',
+            'credit_limit': 0, 'terms_dur': '00'
+        }]
+        self.assert_evaluator_correct(self.event, "Type-HCOLA-6", expected)
