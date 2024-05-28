@@ -31,6 +31,7 @@ class EventParseEvalView(DetailView):
 class Metro2EventAdmin(admin.ModelAdmin):
     fields = ['name', 'portfolio', 'eid_or_matter_num', 'other_descriptor', 'directory', 'members']
     list_display = ['name', 'portfolio', 'eid_or_matter_num', 'import_data']
+    filter_horizontal = ['members']
     # form=Metro2EventForm
 
     def get_urls(self):
