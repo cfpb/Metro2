@@ -172,7 +172,7 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Hits when all conditions are met:
         # 1. port_type == 'I'
         # 2. acct_type != '13', '3A'
-        # 3. current_bal = 0
+        # 3. current_bal == 0
         # 4. spc_com_cd != 'AH', 'AT', 'O'
         # 5. l1_change_ind == '0'
         # 6. date_closed == None
@@ -232,7 +232,7 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
     def test_type_date_closed_2(self):
         # Hits when all conditions are met:
         # 1. port_type == 'M'
-        # 2. current_bal = 0
+        # 2. current_bal == 0
         # 3. l1_change_ind == '0'
         # 4. date_closed == None
         # Create the Account Activities data
@@ -276,7 +276,7 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
     def test_type_date_closed_3(self):
         # Hits when all conditions are met:
         # 1. port_type == 'C', 'O', 'R'
-        # 2. current_bal = 0
+        # 2. current_bal == 0
         # 3. spc_com_cd == 'AH', 'AT', 'O'
         # 4. l1_change_ind == '0'
         # 5. date_closed == None
