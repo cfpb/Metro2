@@ -1,9 +1,10 @@
 import logging
-import os
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
@@ -15,12 +16,11 @@ from users.serializers import UserViewSerializer
 def users_view(request, user_id=0):
     logger = logging.getLogger('views.user_view')
     try:
-        ENABLE_SSO = os.environ.get('ENABLE_SSO')
         user=None
         # username is retrieved from the request if SSO is enabled
         # user_id from the URL will be used if SSO is not enabled or
         # if the user_id is not provided, use 1
-        if ENABLE_SSO and ENABLE_SSO.lower() == "enabled":
+        if settings.SSO_ENABLED:
             user = User.objects.get(username=request.user.username)
         else:
             if user_id == 0:
