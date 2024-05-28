@@ -72,6 +72,7 @@ export default function EvaluatorDownloader({
             } in the table`}
             labelClassName=''
             labelInline
+            defaultChecked
           />
           <RadioButton
             id='all'
@@ -79,7 +80,6 @@ export default function EvaluatorDownloader({
             label="Create a .csv containing all of this evaluator's results"
             labelClassName=''
             labelInline
-            defaultChecked
             inputRef={allResults}
           />
         </fieldset>
