@@ -272,3 +272,61 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             'port_type': 'M', 'acct_stat': '', 'amt_past_due': 0, 'spc_com_cd': ''
         }]
         self.assert_evaluator_correct(self.event, "Type-DateClosed-2", expected)
+
+    def test_type_date_closed_3(self):
+        # Hits when all conditions are met:
+        # 1. port_type == 'C', 'O', 'R'
+        # 2. current_bal = 0
+        # 3. spc_com_cd == 'AH', 'AT', 'O'
+        # 4. l1_change_ind == '0'
+        # 5. date_closed == None
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'C', 'current_bal': 0, 'spc_com_cd': 'AH', 'date_closed': None
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type':'O', 'current_bal': 0, 'spc_com_cd': 'AT', 'date_closed': None
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'M', 'current_bal': 0, 'spc_com_cd': 'O', 'date_closed': None
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'R', 'current_bal': 1, 'spc_com_cd': 'AH', 'date_closed': None
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'O', 'current_bal': 0, 'spc_com_cd': 'BS', 'date_closed': None
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'O', 'current_bal': 0, 'spc_com_cd': 'AT', 'date_closed': None
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'C', 'current_bal': 0, 'spc_com_cd': 'O',
+                'date_closed': acct_date
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+
+        l1_activities = [
+            {'id': 32, 'change_ind': '0'}, {'id': 33, 'change_ind': '0'},
+            {'id': 34, 'change_ind': '0'}, {'id': 36, 'change_ind': '0'},
+            {'id': 38, 'change_ind': '0'}
+        ]
+        for item in l1_activities:
+            l1_record(item)
+        # 32: HIT, 33: HIT, 34: NO-port_type=I, 35: NO-current_bal=1,
+        # 36: NO-spc_com_cd=BS, 37: NO-l1_change_ind=None,
+        # 38: NO-date_closed=date(2019, 12, 31)
+
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'current_bal': 0, 'date_closed': None, 'l1__change_ind': '0',
+            'port_type': 'C', 'spc_com_cd': 'AH', 'acct_stat': '', 'amt_past_due': 0
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+            'current_bal': 0, 'date_closed': None, 'l1__change_ind': '0',
+            'port_type': 'O', 'spc_com_cd': 'AT', 'acct_stat': '', 'amt_past_due': 0
+        }]
+        self.assert_evaluator_correct(self.event, "Type-DateClosed-3", expected)
