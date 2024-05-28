@@ -219,3 +219,54 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             'hcola': 0, 'terms_dur': '00'
         }]
         self.assert_evaluator_correct(self.event, 'Type-CreditLimit-1', expected)
+
+    def test_eval_type_credit_limit_2(self):
+        # Hits when all conditions are met:
+        # 1. port_type == 'M'
+        # 2. acct_type == '08', '19', '25', '26', '2C', '5A', '5B', '6B'
+        # 3. terms_freq != 'D'
+        # 4. credit_limit > 0
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'M', 'acct_type':'08', 'terms_freq':'M',
+                'credit_limit': 25
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type':'M', 'acct_type':'19', 'terms_freq':'P',
+                'credit_limit': 20
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'C', 'acct_type':'25', 'terms_freq':'O',
+                'credit_limit': 15
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'I', 'acct_type':'27', 'terms_freq':'M',
+                'credit_limit': 10
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'I', 'acct_type':'2C', 'terms_freq':'D',
+                'credit_limit': 5
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'I', 'acct_type':'5A', 'terms_freq':'P',
+                'credit_limit': 0
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=27,
+        # 36: NO-terms_freq=D, 37: NO-credit_limit=0
+
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'acct_type': '08', 'credit_limit': 25, 'port_type': 'M', 'terms_freq': 'M',
+            'hcola': 0, 'terms_dur': '00'
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+            'acct_type': '19', 'credit_limit': 20, 'port_type': 'M', 'terms_freq': 'P',
+            'hcola': 0, 'terms_dur': '00'
+        }]
+        self.assert_evaluator_correct(self.event, 'Type-CreditLimit-2', expected)
