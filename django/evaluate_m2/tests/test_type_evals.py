@@ -244,15 +244,15 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'credit_limit': 15
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'I', 'acct_type':'27', 'terms_freq':'M',
+                'port_type':'M', 'acct_type':'27', 'terms_freq':'M',
                 'credit_limit': 10
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'I', 'acct_type':'2C', 'terms_freq':'D',
+                'port_type':'M', 'acct_type':'2C', 'terms_freq':'D',
                 'credit_limit': 5
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'I', 'acct_type':'5A', 'terms_freq':'P',
+                'port_type':'M', 'acct_type':'5A', 'terms_freq':'P',
                 'credit_limit': 0
             }]
         for item in activities:
