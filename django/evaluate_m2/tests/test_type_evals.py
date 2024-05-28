@@ -185,11 +185,11 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'spc_com_cd': 'BS', 'date_closed': None
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'I', 'acct_type':'01', 'current_bal': 0,
+                'port_type':'C', 'acct_type':'01', 'current_bal': 0,
                 'spc_com_cd': 'BS', 'date_closed': None
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'C', 'acct_type':'13', 'current_bal': 0,                'spc_com_cd': 'BS', 'date_closed': None
+                'port_type':'I', 'acct_type':'13', 'current_bal': 0,                'spc_com_cd': 'BS', 'date_closed': None
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'port_type':'I', 'acct_type':'02','current_bal': 1,
@@ -217,18 +217,13 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         ]
         for item in l1_activities:
             l1_record(item)
-        # 32: HIT, 33: HIT, 34: NO-acct_type=13, 35: NO-current_bal=1,
+        # 32: HIT, 33: NO-port_type=C, 34: NO-acct_type=13, 35: NO-current_bal=1,
         # 36: NO-spc_com_cd=AH, 37: NO-l1_change_ind=None,
         # 38: NO-date_closed=date(2019, 12, 31)
 
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'acct_type': '00', 'current_bal': 0, 'date_closed': None,
-            'l1__change_ind': '0', 'port_type': 'I', 'spc_com_cd': 'BS',
-            'acct_stat': '', 'amt_past_due': 0
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '01', 'current_bal': 0, 'date_closed': None,
             'l1__change_ind': '0', 'port_type': 'I', 'spc_com_cd': 'BS',
             'acct_stat': '', 'amt_past_due': 0
         }]
