@@ -1,5 +1,5 @@
 from datetime import date
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 from django.test import TestCase
 
 from evaluate_m2.tests.evaluator_test_helper import acct_record
@@ -16,12 +16,12 @@ class UserViewSerializerTestCase(TestCase):
             password="",
             email="examiner@fake.gov"
         )
-        self.group = Group.objects.create(name="event1")
-        self.group.user_set.add(self.user)
-        event = Metro2Event.objects.create(id=1, name='test_exam', user_group=self.group)
-        event2 = Metro2Event.objects.create(id=2, name='another_exam', user_group=self.group,
+        event = Metro2Event.objects.create(id=1, name='test_exam')
+        event.members.add(self.user)
+        event2 = Metro2Event.objects.create(id=2, name='another_exam',
                                             eid_or_matter_num='123-345667', portfolio="mortgage loans",
                                             other_descriptor="exam")
+        event2.members.add(self.user)
         self.data_file = M2DataFile.objects.create(event=event, file_name='file.txt')
 
         # Create account records for event 1

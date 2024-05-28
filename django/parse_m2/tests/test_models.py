@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 from django.test import TestCase
 import os
 from datetime import datetime
@@ -157,33 +157,25 @@ class ParserModelsTestCase(TestCase, EvaluatorTestHelper):
 
 class TestMetro2EventAccess(TestCase):
     def setUp(self) -> None:
-        group1 = Group.objects.create(name="Exam2023")
-        group2 = Group.objects.create(name="OtherGroup")
+        # create users
+        self.enf_user = User.objects.create(username="examiner", password="")
+        self.sup_user = User.objects.create(username="other_user", password="")
 
-        self.event1 = Metro2Event.objects.create(
-            name="OfficialExam2023", user_group=group1)
-        self.event2 = Metro2Event.objects.create(
-            name="OtherExam", user_group=group2)
+        # Create events with only one user added
+        self.enf_event = Metro2Event.objects.create(name="OfficialExam2023",)
+        self.enf_event.members.add(self.enf_user)
 
-        self.examiner = User.objects.create(username="examiner", password="")
-        self.examiner.groups.set([group1, group2])
-        self.user_without_group = User.objects.create(
-            username="other_user", password="")
+        self.sup_event = Metro2Event.objects.create(name="SupervisionCase2022",)
+        self.sup_event.members.add(self.sup_user)
 
-    def test_access_true_for_user_in_correct_group(self):
-        """
-        Metro2Event.check_access_for_user should return True.
-        """
-        self.assertTrue(self.event1.check_access_for_user(self.examiner))
-        self.assertTrue(self.event2.check_access_for_user(self.examiner))
+    def test_access_true_for_assigned_users(self):
+        # Enforcement user should only have access to the user that they are a member of
+        self.assertTrue(self.enf_event.check_access_for_user(self.enf_user))
+        self.assertFalse(self.sup_event.check_access_for_user(self.enf_user))
 
-    def test_access_false_for_user_without_correct_group(self):
-        """
-        When event1.user_group does not contain the user,
-        event1.check_access_for_user should return False.
-        """
-        self.assertFalse(self.event1.check_access_for_user(self.user_without_group))
-        self.assertFalse(self.event2.check_access_for_user(self.user_without_group))
+        # Supervision user should only have access to the user that they are a member of
+        self.assertFalse(self.enf_event.check_access_for_user(self.sup_user))
+        self.assertTrue(self.sup_event.check_access_for_user(self.sup_user))
 
 
 class TestMetro2Eventset(TestCase):

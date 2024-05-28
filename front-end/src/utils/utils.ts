@@ -129,12 +129,29 @@ export function formatUSD(val: number | null | undefined): string {
   return typeof val === 'number' ? currencyFormatter.format(val) : ''
 }
 
+// // Given a date string in format yyyy-mm-dd, returns a mm/dd/yyyy formatted string
+// // Returns empty string if any other data type is passed in
+// export const formatDate = (val: string | null | undefined): string =>
+//   typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)
+//     ? new Date(`${val}T00:00:00`).toLocaleDateString('en-us')
+//     : ''
+
 // Given a date string in format yyyy-mm-dd, returns a mm/dd/yyyy formatted string
 // Returns empty string if any other data type is passed in
-export const formatDate = (val: string | null | undefined): string =>
-  typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)
-    ? new Date(`${val}T00:00:00`).toLocaleDateString('en-us')
-    : ''
+export const formatDate = (
+  val: string | null | undefined,
+  shorthandDate = false
+): string => {
+  if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+    return new Date(`${val}T00:00:00`).toLocaleDateString(
+      'en-us',
+      shorthandDate
+        ? { month: 'short', year: 'numeric' }
+        : { month: '2-digit', day: '2-digit', year: '2-digit' }
+    )
+  }
+  return ''
+}
 
 // Takes an ordered list of fields, a header lookup, and an array of records
 // Generates header by getting values for each field from the header lookup
@@ -174,7 +191,7 @@ export const downloadData = async (
   const handle = await showSaveFilePicker({
     suggestedName: fileName,
     // @ts-expect-error Typescript doesn't handle File System API well
-    startIn: 'documents',
+    startIn: 'downloads',
     types: [
       {
         description: 'CSVs',
@@ -189,6 +206,42 @@ export const downloadData = async (
   return writable.close()
 }
 
+export const downloadFileFromURL = (url: string): void => {
+  const link = document.createElement('a')
+  link.setAttribute('href', url)
+  link.click()
+}
+
+// export const writeURLToFile = async (
+//   fileName: string,
+//   url: string
+// ): Promise<void> => {
+//   const handle = await showSaveFilePicker({
+//     suggestedName: fileName,
+//     // @ts-expect-error Typescript doesn't handle File System API well
+//     startIn: 'documents',
+//     types: [
+//       {
+//         description: 'CSVs',
+//         accept: {
+//           'text/csv': ['.csv']
+//         }
+//       }
+//     ]
+//   })
+//   // Create a FileSystemWritableFileStream to write to.
+//   const writable = await handle.createWritable()
+
+//   try {
+//     const response = await fetch(url)
+//     // Stream the response into the file.
+//     // pipeTo() closes the destination pipe by default, no need to close it.
+//     if (response.ok) return await response.body?.pipeTo(writable)
+//     throw new Error(String(response.status))
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 // Generates html for an evaluator long description that is only formatted with line breaks.
 // Splits string into segments at double line breaks. Breaks segments into lines.
 // If the first line of a segment is explanatory rather than pseudo-code

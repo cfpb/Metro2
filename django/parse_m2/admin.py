@@ -15,9 +15,9 @@ from parse_m2.models import (
 
 # Register your models here.
 class Metro2EventAdmin(admin.ModelAdmin):
-    list_display = ['name', 'id', 'user_group']
+    list_display = ['name', 'id']
     form=Metro2EventForm
-    fields = ['name','user_group','directory']
+    fields = ['name', 'directory', 'members']
 
     def get_form(self, request, obj=None, **kwargs):
         """
@@ -28,8 +28,6 @@ class Metro2EventAdmin(admin.ModelAdmin):
             self.readonly_fields = ['name']
             help_texts = {'name': ""}
             kwargs.update({'help_texts': help_texts})
-        else: # obj is None, so this is an add page
-            self.readonly_fields = ['user_group']
         return super(Metro2EventAdmin, self).get_form(request, obj, **kwargs)
 
     def render_change_form(self, request, context, add=False, change=False, form_url="", obj=None):

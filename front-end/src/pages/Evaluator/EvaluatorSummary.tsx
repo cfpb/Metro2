@@ -8,6 +8,33 @@ interface EvaluatorSummaryProperties {
   metadata: EvaluatorMetadata
 }
 
+const explanatoryFields = new Map([
+  ['rationale', 'Rationale'],
+  ['potential_harm', 'Potential harm'],
+  ['crrg_reference', 'CRRG reference'],
+  ['alternate_explanation', 'Alternate explanation']
+])
+
+// An evaluator's metadata contains four fields that are
+// displayed in the 'How to evaluate these results' expandable.
+// Most of the fields won't be populated at first, so we
+// sort the fields into two lists, populated and empty, and
+// display each set separately in the expandable.
+const sortExplanatoryFields = (
+  metadata: EvaluatorMetadata
+): [string[], string[]] => {
+  const populatedFields: string[] = []
+  const emptyFields: string[] = []
+  for (const [field] of explanatoryFields.entries()) {
+    if (metadata[field as keyof EvaluatorMetadata]) {
+      populatedFields.push(field)
+    } else {
+      emptyFields.push(field)
+    }
+  }
+  return [populatedFields, emptyFields]
+}
+
 export default function EvaluatorSummary({
   metadata
 }: EvaluatorSummaryProperties): ReactElement {
@@ -36,6 +63,8 @@ export default function EvaluatorSummary({
     }
   ]
 
+  const [populatedFields, emptyFields] = sortExplanatoryFields(metadata)
+
   return (
     <div className='content-row summary-row'>
       <div className='content-l'>
@@ -55,8 +84,32 @@ export default function EvaluatorSummary({
                 }}
               />
             </Expandable>
+
             <Expandable header='How to evaluate these results'>
-              <p />
+              {populatedFields.length > 0
+                ? populatedFields.map(field => (
+                    <div key={field} className='u-mb15'>
+                      <b>{explanatoryFields.get(field)}: </b>
+                      <span>{metadata[field as keyof typeof metadata]}</span>
+                    </div>
+                  ))
+                : ''}
+              {emptyFields.length > 0 ? (
+                <div className='u-mb15'>
+                  <p>
+                    <b>Help make this tool more useful:</b> Your experience and
+                    knowledge about specific evaluators can help others. Consider
+                    adding:
+                  </p>
+                  <ul>
+                    {emptyFields.map(field => (
+                      <li key={field}>{explanatoryFields.get(field)}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                ''
+              )}
             </Expandable>
           </ExpandableGroup>
         </div>

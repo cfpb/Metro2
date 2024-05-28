@@ -15,8 +15,8 @@ export default function EventPage(): ReactElement {
         heading={eventData.name}
         icon='bank-round'
         subhead={
-          eventData.start_date && eventData.end_date
-            ? `Data from ${eventData.start_date} - ${eventData.end_date}`
+          eventData.date_range_start && eventData.date_range_end
+            ? `Data from ${eventData.date_range_start} - ${eventData.date_range_end}`
             : undefined
         }
       />

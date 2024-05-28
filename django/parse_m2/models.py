@@ -1,6 +1,6 @@
 from datetime import date
 
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import User
 from django.db import models
 from django.core.management import call_command
 
@@ -17,12 +17,7 @@ class Metro2Event(models.Model):
     portfolio = models.CharField(max_length=300, blank=True)
     eid_or_matter_num = models.CharField(max_length=300, blank=True)
     other_descriptor = models.CharField(max_length=300, blank=True)
-    user_group = models.ForeignKey(
-        Group,
-        blank=True,
-        null=True,
-        on_delete=models.CASCADE
-    )
+    members = models.ManyToManyField(User, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -57,10 +52,9 @@ class Metro2Event(models.Model):
     def check_access_for_user(self, user) -> bool:
         """
         Utility method for checking authorization. Returns True if
-        the user is assigned to the correct user group to have
-        access to this event.
+        the user is assigned as a member to this event.
         """
-        return self.user_group in user.groups.all()
+        return user in self.members.all()
 
 class M2DataFile(models.Model):
     class Meta:
