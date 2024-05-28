@@ -474,3 +474,46 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             'hcola': 0, 'terms_dur': '00'
         }]
         self.assert_evaluator_correct(self.event, 'Type-CreditLimit-6', expected)
+
+    def test_eval_type_credit_limit_7(self):
+        # Hits when all conditions are met:
+        # 1. port_type == 'I'
+        # 2. acct_type == '18'
+        # 3. terms_freq != 'D'
+        # 4. credit_limit == 0
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'I', 'acct_type':'18', 'terms_freq':'M',
+                'credit_limit': 0
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type':'R', 'acct_type':'18', 'terms_freq':'P',
+                'credit_limit': 0
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'I', 'acct_type':'0A', 'terms_freq':'O',
+                'credit_limit': 0
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'I', 'acct_type':'18', 'terms_freq':'D',
+                'credit_limit': 0
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'I', 'acct_type':'18', 'terms_freq':'M',
+                'credit_limit': 10
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33:NO-port_type=C, 34: NO-acct_type=0A,
+        # 35: NO-terms_freq=D, 36: NO-credit_limit=10
+
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'acct_type': '18', 'credit_limit': 0, 'port_type': 'I', 'terms_freq': 'M',
+            'hcola': 0, 'terms_dur': '00'
+        }]
+        self.assert_evaluator_correct(self.event, 'Type-CreditLimit-7', expected)
