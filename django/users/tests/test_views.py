@@ -1,6 +1,4 @@
 import json
-import os
-from unittest import mock
 from datetime import date
 
 from django.contrib.auth.models import User
@@ -64,7 +62,7 @@ class TestUsersView(TestCase):
             username="sso_user",
             email="sso_user@fake.gov"
         )
-        with mock.patch.dict(os.environ, {"ENABLE_SSO": 'enabled'}):
+        with self.settings(SSO_ENABLED = True):
             request = self.factory.get('/api/users/')
             request.user = current_user
             response = users_view(request)
@@ -74,7 +72,7 @@ class TestUsersView(TestCase):
             self.assertEqual(response.status_code, 200)
 
     def test_users_view_without_sso_enabled_returns_response(self):
-         with mock.patch.dict(os.environ, {"ENABLE_SSO": 'not enabled'}):
+        with self.settings(SSO_ENABLED = False):
             request = self.factory.get('/api/users/')
             response = users_view(request)
             data = json.loads(response.content)
