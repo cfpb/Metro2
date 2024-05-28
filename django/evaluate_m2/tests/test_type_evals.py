@@ -240,23 +240,19 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'M', 'acct_type':'00', 'current_bal': 0,
-                'spc_com_cd': 'BS', 'date_closed': None
+                'port_type':'M', 'current_bal': 0, 'date_closed': None
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'I', 'acct_type':'13', 'current_bal': 0,                'spc_com_cd': 'BS', 'date_closed': None
+                'port_type':'I', 'current_bal': 0, 'date_closed': None
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'M', 'acct_type':'02','current_bal': 1,
-                'spc_com_cd': 'BS', 'date_closed': None
+                'port_type':'M', 'current_bal': 1, 'date_closed': None
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'M', 'acct_type':'03', 'current_bal': 0,
-                'spc_com_cd': 'AH', 'date_closed': None
+                'port_type':'M', 'current_bal': 0, 'date_closed': None
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'I', 'acct_type':'05', 'current_bal': 0,
-                'spc_com_cd': 'BS', 'date_closed': acct_date
+                'port_type':'I', 'current_bal': 0, 'date_closed': acct_date
             }]
         for item in activities:
             acct_record(self.data_file, item)
@@ -273,6 +269,6 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'current_bal': 0, 'date_closed': None, 'l1__change_ind': '0',
-            'port_type': 'M', 'acct_stat': '', 'amt_past_due': 0, 'spc_com_cd': 'BS'
+            'port_type': 'M', 'acct_stat': '', 'amt_past_due': 0, 'spc_com_cd': ''
         }]
         self.assert_evaluator_correct(self.event, "Type-DateClosed-2", expected)
