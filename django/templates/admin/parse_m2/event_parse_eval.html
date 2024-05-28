@@ -1,0 +1,77 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; <a href="/admin/parse_m2/">Parse M2</a>
+&rsaquo; <a href="/admin/parse_m2/metro2event/">Metro2 Events</a>
+&rsaquo; <a href="/admin/parse_m2/metro2event/{{ object.id }}">{{ object.name }}</a>
+&rsaquo; Import data
+</div>
+{% endblock %}
+
+{% block content %}
+    <h1>Data import info for event: {{ object.name }}</h1>
+    {% if object.m2datafile_set.first %}
+        <h2>Data files imported</h2>
+
+        <table style="width: 100%; margin-bottom: 10px;">
+            <thead>
+            <tr>
+                <td>File name</td>
+                <td>Parsing status</td>
+                <td>Parsed lines</td>
+                <td>Unparseable lines</td>
+                <td>Timestamp</td>
+                <td>Error message</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for file in object.m2datafile_set.all %}
+                <tr>
+                    <td>{{ file.file_name }}</td>
+                    <td>{{ file.parsing_status }}</td>
+                    <td>{{ file.accountholder_set.count }}</td>
+                    <td>{{ file.unparseabledata_set.count }}</td>
+                    <td>{{ file.timestamp }}</td>
+                    <td>{{ file.error_message }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <p style="font-size: 18px;text-align: end;padding-right: 60px;"> Total files imported: {{ object.m2datafile_set.count }} </p>
+        <p style="font-size: 18px;text-align: end;padding-right: 60px;"> Total tradelines imported: {{ object.total_tradelines }} </p>
+
+    {% else %}
+        <h3>No data files have been imported for this event</h3>
+    {% endif %}
+
+    <h2>Evaluators</h2>
+    {% if object.evaluatorresultset_set.first %}
+        <p>Evaluators executed on: </p>
+    {% else %}
+        <h3>No evaluators have been run for this event</h3>
+    {% endif %}
+
+    <h2>Actions</h2>
+    {% if object.directory %}
+        <a href="/api/events/{{ object.id }}/parse/">Parse this event's data</a>
+        <p></p>Press "Parse" to parse the files in the `{{ object.directory }}` directory of the data folder.
+        {% if object.m2datafile_set.first %}
+            The existing parsed data for this event will be overwritten.
+        {% endif %}
+        </p>
+
+        <a href="/api/events/{{ object.id }}/evaluate/">Run evaluators on this event's data</a>
+        <p>Press "Evaluate" to run the evaluators over all data for this event.
+        {% if object.evaluatorresultsummary_set.first %}
+            The existing evaluator results for this event will be overwritten.
+        {% endif %}
+        </p>
+    {% else %}
+        <p>In order to begin the parsing process, fill in the "Directory" field for this event to indicate where the raw data files are located.</p>
+    {% endif %}
+
+{% endblock %}
