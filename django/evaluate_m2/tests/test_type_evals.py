@@ -167,3 +167,54 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             'terms_freq':"00"
         }]
         self.assert_evaluator_correct(self.event, "Type-Balance-1", expected)
+
+    def test_eval_type_terms_dur_1(self):
+        # Hits when all conditions are met:
+        # 1. port_type == 'C'
+        # 2. acct_type == '7A', '9B', '15', '43', '47', '89'
+        # 3. terms_freq != 'D'
+        # 4. terms_dur != 'LOC'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'C', 'acct_type':'7A', 'terms_freq':'M',
+                'terms_dur': '001'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type':'C', 'acct_type':'9B', 'terms_freq':'P',
+                'terms_dur': 'REV'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'O', 'acct_type':'15', 'terms_freq':'O',
+                'terms_dur': '001'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'C', 'acct_type':'0A', 'terms_freq':'M',
+                'terms_dur': 'REV'
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'C', 'acct_type':'47', 'terms_freq':'D',
+                'terms_dur': '001'
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'C', 'acct_type':'43', 'terms_freq':'P',
+                'terms_dur': 'LOC'
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34:NO-port_type=0, 35: NO-acct_type=0A,
+        # 36: NO-terms_freq=D, 37: NO-terms_dur=LOC
+
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'acct_type': '7A', 'port_type': 'C', 'terms_freq': 'M', 'terms_dur': '001',
+            'credit_limit': 0, 'hcola': 0
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+            'acct_type': '9B', 'port_type': 'C', 'terms_freq': 'P', 'terms_dur': 'REV',
+            'credit_limit': 0, 'hcola': 0
+        }]
+        self.assert_evaluator_correct(self.event, 'Type-TermsDuration-1', expected)
