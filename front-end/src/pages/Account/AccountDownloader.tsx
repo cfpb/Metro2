@@ -1,4 +1,4 @@
-import Modal from 'components/DownloadModal'
+import DownloadModal from 'components/Modals/DownloadModal'
 import { Button } from 'design-system-react'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
@@ -58,13 +58,12 @@ export default function AccountDownloader({
         onClick={onClick}
         size='default'
       />
-      <Modal
+      <DownloadModal
         open={isOpen}
         onClose={onClose}
         onDownload={onDownload}
         header={header}
       />
-      <div id='portal' />
     </div>
   )
 }

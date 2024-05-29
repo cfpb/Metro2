@@ -1,0 +1,33 @@
+@import url('./src/index.less');
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 2rem;
+  z-index: 1000;
+  max-width: 625px;
+  min-width: 475px;
+
+  & .modal__section {
+    padding-bottom: 2rem;
+  }
+
+  // Mobile only.
+  .respond-to-max(@bp-xs-max, {
+        padding: 1rem;
+
+        .a-btn.a-btn__full-on-xs {
+            margin-bottom: 0.5rem
+        }
+    });
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgb(0 0 0 / 70%);
+  z-index: 1000;
+}
