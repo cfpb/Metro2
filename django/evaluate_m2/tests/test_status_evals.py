@@ -244,7 +244,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     #                 '93', '95', '96', '97', 'DA', 'DF'
     # 2. acct_type != '13', '3A'
     # 3. current_bal > 0
-    # 4. l1_change_ind == '0'
+    # 4. l1_change_ind == None
     # 5. port_type == 'I'
     # 6. spc_com_cd != 'AH', 'AT', 'O'
 
@@ -287,14 +287,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         for item in activities:
             acct_record(self.data_file, item)
 
-        l1_activities = [
-            {'id': 32, 'change_ind': '0'}, {'id': 33, 'change_ind': '0'},
-            {'id': 34, 'change_ind': '0'}, {'id': 35, 'change_ind': '0'},
-            {'id': 36, 'change_ind': '0'}, {'id': 38, 'change_ind': '0'},
-            {'id': 39, 'change_ind': '0'}
-        ]
-        for item in l1_activities:
-            l1_record(item)
+        l1_activitiy = {'id': 37, 'change_ind': '1'}
+        l1_record(l1_activitiy)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: NO-acct_type=3A,
         # 36: current_bal=0, 37: NO-l1_change_ind=None, 38: NO-port_type=M
         # 39: NO-spc_com_cd=AH
@@ -303,12 +297,12 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'acct_stat': '05', 'acct_type': '00', 'current_bal': 1,
-            'l1__change_ind': '0', 'port_type': 'I', 'spc_com_cd': 'AU',
+            'l1__change_ind': None, 'port_type': 'I', 'spc_com_cd': 'AU',
             'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'acct_stat': '62', 'acct_type': '10', 'current_bal': 5,
-            'l1__change_ind': '0', 'port_type': 'I', 'spc_com_cd': 'AX',
+            'l1__change_ind': None, 'port_type': 'I', 'spc_com_cd': 'AX',
             'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-4', expected)
@@ -317,7 +311,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # Hits when all conditions are met:
     # 1. acct_stat != '13', '62', '64', '65', '94', 'DA', 'DF'
     # 2. current_bal == 0
-    # 3. l1_change_ind == '0'
+    # 3. l1_change_ind == None
     # 4. port_type == 'M'
     # 5. spc_com_cd != 'AH', 'AT', 'O'
 
@@ -349,25 +343,20 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         for item in activities:
             acct_record(self.data_file, item)
 
-        l1_activities = [
-            {'id': 32, 'change_ind': '0'}, {'id': 33, 'change_ind': '0'},
-            {'id': 34, 'change_ind': '0'}, {'id': 35, 'change_ind': '0'},
-            {'id': 37, 'change_ind': '0'}, {'id': 38, 'change_ind': '0'},
-        ]
-        for item in l1_activities:
-            l1_record(item)
+        l1_activitiy = {'id': 36, 'change_ind': '1'}
+        l1_record(l1_activitiy)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: current_bal=1,
-        # 36: NO-l1_change_ind=None, 37: NO-port_type=I
+        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'current_bal': 0, 'l1__change_ind': '0', 'port_type': 'M',
+            'acct_stat': '05', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'M',
             'spc_com_cd': 'AU', 'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '11', 'current_bal': 0, 'l1__change_ind': '0', 'port_type': 'M',
+            'acct_stat': '11', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'M',
             'spc_com_cd': 'AX', 'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-5', expected)
@@ -376,7 +365,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # Hits when all conditions are met:
     # 1. acct_stat != '11', '13', '62', '64', '65', '88', '89', '94', 'DA', 'DF'
     # 2. current_bal == 0
-    # 3. l1_change_ind == '0'
+    # 3. l1_change_ind == None
     # 4. port_type == 'C'
     # 5. spc_com_cd != 'AH', 'AT', 'O'
 
@@ -408,25 +397,20 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         for item in activities:
             acct_record(self.data_file, item)
 
-        l1_activities = [
-            {'id': 32, 'change_ind': '0'}, {'id': 33, 'change_ind': '0'},
-            {'id': 34, 'change_ind': '0'}, {'id': 35, 'change_ind': '0'},
-            {'id': 37, 'change_ind': '0'}, {'id': 38, 'change_ind': '0'},
-        ]
-        for item in l1_activities:
-            l1_record(item)
+        l1_activitiy = {'id': 36, 'change_ind': '1'}
+        l1_record(l1_activitiy)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: current_bal=1,
-        # 36: NO-l1_change_ind=None, 37: NO-port_type=I
+        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'current_bal': 0, 'l1__change_ind': '0', 'port_type': 'C',
+            'acct_stat': '05', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'C',
             'spc_com_cd': 'AU', 'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '06', 'current_bal': 0, 'l1__change_ind': '0', 'port_type': 'C',
+            'acct_stat': '06', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'C',
             'spc_com_cd': 'AX', 'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-6', expected)
@@ -436,7 +420,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 1. acct_stat != '11', '71', '78', '80', '82', '83', '84',
     #                 '88', '89', '93', '94', '97', 'DA', 'DF'
     # 2. current_bal > 0
-    # 3. l1_change_ind == '0'
+    # 3. l1_change_ind == None
     # 4. port_type == 'C'
     # 5. spc_com_cd != 'AH', 'AT', 'O'
 
@@ -469,25 +453,20 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         for item in activities:
             acct_record(self.data_file, item)
 
-        l1_activities = [
-            {'id': 32, 'change_ind': '0'}, {'id': 33, 'change_ind': '0'},
-            {'id': 34, 'change_ind': '0'}, {'id': 35, 'change_ind': '0'},
-            {'id': 37, 'change_ind': '0'}, {'id': 38, 'change_ind': '0'},
-        ]
-        for item in l1_activities:
-            l1_record(item)
+        l1_activitiy = {'id': 36, 'change_ind': '1'}
+        l1_record(l1_activitiy)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=0,
-        # 36: NO-l1_change_ind=None, 37: NO-port_type=I
+        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '60', 'current_bal': 1, 'l1__change_ind': '0', 'port_type': 'C',
+            'acct_stat': '60', 'current_bal': 1, 'l1__change_ind': None, 'port_type': 'C',
             'spc_com_cd': 'AU', 'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '61', 'current_bal': 5, 'l1__change_ind': '0', 'port_type': 'C',
+            'acct_stat': '61', 'current_bal': 5, 'l1__change_ind': None, 'port_type': 'C',
             'spc_com_cd': 'AX', 'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-7', expected)
@@ -497,7 +476,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 1. acct_stat != '11', '71', '78', '80', '82', '83', '84',
     #                 '89', '93', '94', '97', 'DA', 'DF'
     # 2. current_bal == 0
-    # 3. l1_change_ind == '0'
+    # 3. l1_change_ind == None
     # 4. port_type == 'C'
     # 5. spc_com_cd == 'AH', 'AT', 'O'
 
@@ -530,25 +509,20 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         for item in activities:
             acct_record(self.data_file, item)
 
-        l1_activities = [
-            {'id': 32, 'change_ind': '0'}, {'id': 33, 'change_ind': '0'},
-            {'id': 34, 'change_ind': '0'}, {'id': 35, 'change_ind': '0'},
-            {'id': 37, 'change_ind': '0'}, {'id': 38, 'change_ind': '0'},
-        ]
-        for item in l1_activities:
-            l1_record(item)
+        l1_activitiy = {'id': 36, 'change_ind': '1'}
+        l1_record(l1_activitiy)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=0,
-        # 36: NO-l1_change_ind=None, 37: NO-port_type=I
+        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AX
 
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '60', 'current_bal': 0, 'l1__change_ind': '0', 'port_type': 'C',
+            'acct_stat': '60', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'C',
             'spc_com_cd': 'AH', 'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '61', 'current_bal': 0, 'l1__change_ind': '0', 'port_type': 'C',
+            'acct_stat': '61', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'C',
             'spc_com_cd': 'AT', 'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-8', expected)
@@ -557,7 +531,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # Hits when all conditions are met:
     # 1. acct_stat != '11', '13', '62', '64', '88', 'DA', 'DF'
     # 2. current_bal == 0
-    # 3. l1_change_ind == '0'
+    # 3. l1_change_ind == None
     # 4. port_type == 'O'
     # 5. spc_com_cd != 'AH', 'AT', 'O'
 
@@ -589,25 +563,20 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         for item in activities:
             acct_record(self.data_file, item)
 
-        l1_activities = [
-            {'id': 32, 'change_ind': '0'}, {'id': 33, 'change_ind': '0'},
-            {'id': 34, 'change_ind': '0'}, {'id': 35, 'change_ind': '0'},
-            {'id': 37, 'change_ind': '0'}, {'id': 38, 'change_ind': '0'},
-        ]
-        for item in l1_activities:
-            l1_record(item)
+        l1_activitiy = {'id': 36, 'change_ind': '1'}
+        l1_record(l1_activitiy)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=1,
-        # 36: NO-l1_change_ind=None, 37: NO-port_type=I
+        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '60', 'current_bal': 0, 'l1__change_ind': '0', 'port_type': 'O',
+            'acct_stat': '60', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'O',
             'spc_com_cd': 'AU', 'amt_past_due': 0
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '61', 'current_bal': 0, 'l1__change_ind': '0', 'port_type': 'O',
+            'acct_stat': '61', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'O',
             'spc_com_cd': 'AX', 'amt_past_due': 0
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-9', expected)
