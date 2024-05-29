@@ -326,32 +326,25 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'acct_type': '00', 'current_bal':0,
-                'port_type':'M', 'spc_com_cd': 'AU'
+                'acct_stat':'05', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'AU'
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'11', 'acct_type': '10', 'current_bal':0,
-                'port_type':'M', 'spc_com_cd': 'AX'
+                'acct_stat':'11', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'AX'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'13', 'acct_type': '0C', 'current_bal':0,
-                'port_type':'M', 'spc_com_cd': 'BP'
+                'acct_stat':'13', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'BP'
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'71', 'acct_type': '3A', 'current_bal':1,
-                'port_type':'M', 'spc_com_cd': 'BC'
+                'acct_stat':'71', 'current_bal':1, 'port_type':'M', 'spc_com_cd': 'BC'
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'78', 'acct_type': '7A', 'current_bal':0,
-                'port_type':'M', 'spc_com_cd': 'BD'
+                'acct_stat':'78', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'BD'
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'80', 'acct_type': '9B', 'current_bal':0,
-                'port_type':'I', 'spc_com_cd': 'BF'
+                'acct_stat':'80', 'current_bal':0, 'port_type':'I', 'spc_com_cd': 'BF'
             }, {
                 'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'82', 'acct_type': '15', 'current_bal':0,
-                'port_type':'M', 'spc_com_cd': 'AH'
+                'acct_stat':'82', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'AH'
             }]
         for item in activities:
             acct_record(self.data_file, item)
@@ -392,32 +385,25 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'acct_type': '00', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'AU'
+                'acct_stat':'05', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AU'
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'06', 'acct_type': '10', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'AX'
+                'acct_stat':'06', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AX'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'13', 'acct_type': '0C', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'BP'
+                'acct_stat':'13', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'BP'
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'71', 'acct_type': '3A', 'current_bal':1,
-                'port_type':'C', 'spc_com_cd': 'BC'
+                'acct_stat':'71', 'current_bal':1, 'port_type':'C', 'spc_com_cd': 'BC'
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'78', 'acct_type': '7A', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'BD'
+                'acct_stat':'78', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'BD'
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'80', 'acct_type': '9B', 'current_bal':0,
-                'port_type':'I', 'spc_com_cd': 'BF'
+                'acct_stat':'80', 'current_bal':0, 'port_type':'I', 'spc_com_cd': 'BF'
             }, {
                 'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'82', 'acct_type': '15', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'AH'
+                'acct_stat':'82', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AH'
             }]
         for item in activities:
             acct_record(self.data_file, item)
@@ -460,32 +446,25 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'60', 'acct_type': '00', 'current_bal':1,
-                'port_type':'C', 'spc_com_cd': 'AU'
+                'acct_stat':'60', 'current_bal':1, 'port_type':'C', 'spc_com_cd': 'AU'
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'61', 'acct_type': '10', 'current_bal':5,
-                'port_type':'C', 'spc_com_cd': 'AX'
+                'acct_stat':'61', 'current_bal':5, 'port_type':'C', 'spc_com_cd': 'AX'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'acct_type': '0C', 'current_bal':10,
-                'port_type':'C', 'spc_com_cd': 'BP'
+                'acct_stat':'11', 'current_bal':10, 'port_type':'C', 'spc_com_cd': 'BP'
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'62', 'acct_type': '3A', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'BC'
+                'acct_stat':'62', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'BC'
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'63', 'acct_type': '7A', 'current_bal':15,
-                'port_type':'C', 'spc_com_cd': 'BD'
+                'acct_stat':'63', 'current_bal':15, 'port_type':'C', 'spc_com_cd': 'BD'
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'64', 'acct_type': '9B', 'current_bal':20,
-                'port_type':'I', 'spc_com_cd': 'BF'
+                'acct_stat':'64', 'current_bal':20, 'port_type':'I', 'spc_com_cd': 'BF'
             }, {
                 'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'65', 'acct_type': '15', 'current_bal':25,
-                'port_type':'C', 'spc_com_cd': 'AH'
+                'acct_stat':'65', 'current_bal':25, 'port_type':'C', 'spc_com_cd': 'AH'
             }]
         for item in activities:
             acct_record(self.data_file, item)
@@ -528,32 +507,25 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'60', 'acct_type': '00', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'AH'
+                'acct_stat':'60', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AH'
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'61', 'acct_type': '10', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'AT'
+                'acct_stat':'61', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AT'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'acct_type': '0C', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'O'
+                'acct_stat':'11', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'O'
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'62', 'acct_type': '3A', 'current_bal':1,
-                'port_type':'C', 'spc_com_cd': 'AH'
+                'acct_stat':'62', 'current_bal':1, 'port_type':'C', 'spc_com_cd': 'AH'
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'63', 'acct_type': '7A', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'AT'
+                'acct_stat':'63', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AT'
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'64', 'acct_type': '9B', 'current_bal':0,
-                'port_type':'I', 'spc_com_cd': '0'
+                'acct_stat':'64', 'current_bal':0, 'port_type':'I', 'spc_com_cd': '0'
             }, {
                 'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'65', 'acct_type': '15', 'current_bal':0,
-                'port_type':'C', 'spc_com_cd': 'AX'
+                'acct_stat':'65', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AX'
             }]
         for item in activities:
             acct_record(self.data_file, item)
