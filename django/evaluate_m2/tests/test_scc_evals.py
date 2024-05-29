@@ -680,6 +680,35 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(
             self.event, 'SCC-Balance-8', expected)
 
+    def test_eval_scc_dateclosed_3(self):
+        # hits when both conditions met:
+        # 1. spc_com_cd == 'M'
+        # 2. date_closed == None
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'spc_com_cd': 'M', 'date_closed': None
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'spc_com_cd': 'M', 'date_closed': date(2019, 12, 31)
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'spc_com_cd': 'BC', 'date_closed': None
+            }]
+        self.create_data(activities)
+        # 32: HIT, 34: No-DateClosed != None, 35: NO-spc_com_cd=BC
+
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'date_closed': None, 'spc_com_cd': 'M', 'acct_stat': '',
+            'amt_past_due': 0, 'current_bal': 0, 'k2__purch_sold_ind': 'a'
+        }]
+        self.assert_evaluator_correct(self.event, 'SCC-DateClosed-3', expected)
+
     def test_eval_scc_status_1(self):
         # hits when both conditions met:
         # 1. spc_com_cd == 'AU', 'AX', 'BP', 'C'
