@@ -19,7 +19,7 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 1. port_type == 'I'
         # 2. acct_type == '3A', '13'
         # 3. current_bal == 0
-        # 4. l1__change_ind == 0
+        # 4. l1__change_ind == None
         # 5. amt_past_due > 0
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -55,27 +55,22 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: No-Missing L1, 34: NO-port_type=O,
+
+        l1_segment = {'id': 37, 'change_ind': '1'}
+        l1_record(l1_segment)
+        # 32: HIT, 33: HIT, 34: NO-port_type=O,
         # 35: NO-L1.acct_type=00, 36: NO-current_bal=1,
         # 37: NO-l1__change_ind=1, 38: NO-amt_past_due=0
 
-
-        # Create the segment data
-        l1_segments = [
-            {'id': 32, 'change_ind': '0'},
-            {'id': 34, 'change_ind': '0'},
-            {'id': 35, 'change_ind': '0'},
-            {'id': 36, 'change_ind': '0'},
-            {'id': 37, 'change_ind': '0'},
-            {'id': 38, 'change_ind': '1'}
-        ]
-        for item in l1_segments:
-            l1_record(item)
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'acct_type':'3A', 'amt_past_due': 1, 'current_bal': 0, 'port_type': 'I',
-            'l1__change_ind':'0','acct_stat': '', 'date_closed': None, 'spc_com_cd': ''
+            'l1__change_ind': None,'acct_stat': '', 'date_closed': None, 'spc_com_cd': ''
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+            'acct_type':'13', 'amt_past_due': 5, 'current_bal': 0, 'port_type': 'I',
+            'l1__change_ind': None,'acct_stat': '', 'date_closed': None, 'spc_com_cd': ''
         }]
         self.assert_evaluator_correct(self.event, 'Balance-APD-1', expected)
 
@@ -105,10 +100,10 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'current_bal':0, 'amt_past_due': 5
+             'amt_past_due': 5, 'current_bal':0
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'current_bal':5, 'amt_past_due': 10
+            'amt_past_due': 10, 'current_bal':5
         }]
         self.assert_evaluator_correct(
             self.event, "Balance-APD-2", expected)
