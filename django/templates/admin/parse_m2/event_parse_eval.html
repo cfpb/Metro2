@@ -1,0 +1,79 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n admin_urls static admin_modify humanize %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">Home</a>
+&rsaquo; <a href="/admin/parse_m2/">Parse M2</a>
+&rsaquo; <a href="/admin/parse_m2/metro2event/">Metro2 Events</a>
+&rsaquo; <a href="/admin/parse_m2/metro2event/{{ object.id }}">{{ object.name }}</a>
+&rsaquo; Import data
+</div>
+{% endblock %}
+
+{% block content %}
+    <h1>Data import summary for event: {{ object.name }}</h1>
+    {% if object.m2datafile_set.first %}
+        <h2>Data files imported</h2>
+
+        <table style="width: 100%; margin-bottom: 10px;">
+            <thead>
+            <tr>
+                <td>File name</td>
+                <td>Parsing status</td>
+                <td>Parsed lines</td>
+                <td>Unparseable lines</td>
+                <td>Imported date</td>
+                <td>Error message</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for file in object.m2datafile_set.all %}
+                <tr>
+                    <td>{{ file.file_name }}</td>
+                    <td>{{ file.parsing_status }}</td>
+                    <td>{{ file.accountholder_set.count|intcomma }}</td>
+                    <td>{{ file.unparseabledata_set.count|intcomma }}</td>
+                    <td>{{ file.timestamp }}</td>
+                    <td>{{ file.error_message }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <p><b>Total files imported:</b> {{ object.m2datafile_set.count|intcomma }} </p>
+        <p><b>Total tradelines imported:</b> {{ object.total_tradelines|intcomma }} </p>
+
+    {% else %}
+        <h3>No data files have been imported for this event</h3>
+    {% endif %}
+
+    <h2 style="padding-top: 20px;">Evaluators</h2>
+    {% if object.evaluatorresultsummary_set.first %}
+        <table style="width: 100%; margin-bottom: 10px;">
+            <thead>
+            <tr>
+                <td>Evaluator</td>
+                <td>Hits</td>
+                <td>Inconsistency start</td>
+                <td>Inconsistency end</td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for result in object.evaluatorresultsummary_set.all %}
+                <tr>
+                    <td>{{ result.evaluator.id }}</td>
+                    <td>{{ result.hits|intcomma }}</td>
+                    <td>{{ result.inconsistency_start }}</td>
+                    <td>{{ result.inconsistency_end }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <p><b>Evaluators executed on:</b> {{ object.evaluatorresultsummary_set.first.timestamp }}</p>
+    {% else %}
+        <h3>No evaluators have been run for this event</h3>
+    {% endif %}
+
+{% endblock %}

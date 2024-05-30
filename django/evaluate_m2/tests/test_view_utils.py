@@ -19,19 +19,19 @@ class ViewUtilsTestCase(TestCase):
         self.event2 = Metro2Event.objects.create(id=2, name='another_exam')
 
     def test_has_permissions_for_request_sso_not_enabled(self):
-        with self.settings(ENABLE_SSO='not_enabled'):
+        with self.settings(SSO_ENABLED = False):
             output = has_permissions_for_request(self.client.get('/'), self.event)
             self.assertEqual(output, True)
 
     def test_has_permissions_for_request_sso_enabled(self):
-        with self.settings(ENABLE_SSO='enabled'):
+        with self.settings(SSO_ENABLED = True):
             request = self.factory.get('/api_call')
             request.user = self.user
             output = has_permissions_for_request(request, self.event)
             self.assertEqual(output, True)
 
     def test_has_permissions_for_request_sso_enabled_no_permission(self):
-        with self.settings(ENABLE_SSO='enabled'):
+        with self.settings(SSO_ENABLED = True):
             request = self.factory.get('/api_call')
             request.user = self.user
             output = has_permissions_for_request(request, self.event2)
