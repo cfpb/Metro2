@@ -170,7 +170,9 @@ export const generateDownloadData = <T>(
       fields
         .map(field => {
           const val = record[field as keyof T]
-          return Array.isArray(val) ? val.join('; ') : val
+          if (typeof val === 'string' && val.includes(',')) return `"${val}"`
+          if (Array.isArray(val)) return `"${val.join(', ')}"`
+          return val
         })
         .join(',')
     )
