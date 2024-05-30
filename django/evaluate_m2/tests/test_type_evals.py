@@ -4,6 +4,7 @@ from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import (
     EvaluatorTestHelper,
     acct_record,
+    l1_record,
 )
 from parse_m2.models import Metro2Event, M2DataFile
 
