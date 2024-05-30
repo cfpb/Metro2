@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'users',
     'parse_m2.apps.ParseM2Config',
     'evaluate_m2.apps.EvaluateM2Config',
