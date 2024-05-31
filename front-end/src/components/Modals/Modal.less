@@ -5,6 +5,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  border-top: 5px solid @green;
+  border-radius: 5px;
   background-color: #fff;
   padding: 2rem;
   z-index: 1000;
@@ -15,6 +17,15 @@
     padding-bottom: 2rem;
   }
 
+  .modal-footer{
+    background-color: @gray-5;
+    border-top: 1px solid @gray;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin: 0 -2rem -2rem -2rem;
+    padding: 30px;
+  }
+
   // Mobile only.
   .respond-to-max(@bp-xs-max, {
         padding: 1rem;
@@ -22,6 +33,8 @@
         .a-btn.a-btn__full-on-xs {
             margin-bottom: 0.5rem
         }
+
+        .modal-footer{margin: 0 -1rem -1rem -1rem}
     });
 }
 
