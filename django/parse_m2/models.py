@@ -17,6 +17,7 @@ class Metro2Event(models.Model):
     portfolio = models.CharField(max_length=300, blank=True)
     eid_or_matter_num = models.CharField(max_length=300, blank=True)
     other_descriptor = models.CharField(max_length=300, blank=True)
+    directory = models.CharField(max_length=300, blank=True)
     members = models.ManyToManyField(User, blank=True)
 
     def __str__(self) -> str:
@@ -48,6 +49,12 @@ class Metro2Event(models.Model):
 
     def evaluate(self):
         call_command('run_evaluators', event_id=self.id)
+
+    def total_tradelines(self) -> int:
+        total = 0
+        for file in self.m2datafile_set.all():
+            total += file.accountholder_set.count()
+        return total
 
     def check_access_for_user(self, user) -> bool:
         """

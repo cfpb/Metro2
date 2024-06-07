@@ -2,7 +2,7 @@ from django.urls import path
 
 from evaluate_m2 import views as eval_views
 
-
+# All URLs begin with `/api/events/`
 urlpatterns = [
     path('<int:event_id>/evaluator/<str:evaluator_id>/csv/',
          eval_views.download_evaluator_results_csv),

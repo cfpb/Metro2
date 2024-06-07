@@ -35,6 +35,7 @@ class EvaluatorResultSummary(models.Model):
     accounts_affected = models.IntegerField(null=True)
     inconsistency_start = models.DateField(null=True)
     inconsistency_end = models.DateField(null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f"Event: {self.event} - {self.evaluator}"
