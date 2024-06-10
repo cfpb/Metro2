@@ -87,10 +87,9 @@ With that in place, you must do the following:
     2. Run `build-images.sh -e local`
     3. Run `helm-install-local.sh`
 
-This will deploy the Metro2 Application to the Docker Desktop Cluster and create three images:
-    1. metro2-frontend:local
-    2. metro2-evaluator:local
-    3. metro2-django:local
+This will deploy the Metro2 Application to the Docker Desktop Cluster and create two images:
+    1. A postgres database
+    2. The metro2 application, including the react front-end and django back-end
 
 ## Running in docker-compose
 
