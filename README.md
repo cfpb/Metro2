@@ -32,7 +32,7 @@ Metro2 is deployed to the internal accounts of ALTO's 3 Environments: Dev, Stagi
 
 **How to deploy**
 1. Prepare a branch that has the changes you wish to make.
-2. In that branch, make any updates to the `buildspec.yaml` file to customize your deployment. (See [Dev branch automation](#dev-branch-automation) below for details)
+2. In that branch, make any updates to the `buildspec.yaml` file to customize your deployment. (See [CodeBuild automation](#codebuild-automation) below for details)
 3. Push your branch to the `dev` branch of this repo.
 4. AWS CodeBuild will automatically run the buildspec code, which builds and deploys Metro2 to the Dev-Internal cluster.
 5. The app will be available at `https://INTERNAL/` (if using the `metro` release), or `https://[release-name]-eksINTERNAL/` (if you specified a release name)
@@ -41,28 +41,27 @@ Metro2 is deployed to the internal accounts of ALTO's 3 Environments: Dev, Stagi
 
 **Quick Links**
 - [Metro2 in Staging-Internal](https://INTERNAL/)
-- [Jenkins for Metro2 Staging-Internal](https://INTERNAL)
 
 **How to deploy**
-1. Log in to Jenkins via the link above.
-2. To build the images, use Images > Push build images to ECR. Parameters:
-    - GitHub Repo: `https://GHE/Metro2/metro2`
-    - Build Images Flags: `-e eks -t <tag>`, where `tag` is a unique identifier, such as `2024-04-17-hotfix`
-3. To deploy, use Metro2 > Helm Deploy Metro2. Parameters:
-    - METRO2 Django Tag: the same tag you used to build the images
+1. Prepare a branch that has the changes you wish to make.
+2. In that branch, make any updates to the `buildspec.yaml` file to customize your deployment. (See [CodeBuild automation](#codebuild-automation) below for details)
+3. Push your branch to the `staging` branch of this repo.
+4. AWS CodeBuild will automatically run the buildspec code, which builds and deploys Metro2 to the Staging-Internal cluster.
+5. The app will be available at `https://INTERNAL/`.
 
 ## ALTO Prod-Internal
 
 Not currently available
 
 ## Deployment automations
-### Dev branch automation
+### CodeBuild automation
 
-Inside the ALTO Dev-Internal account, a Codebuild Job, `cfpb-team-metro2-metro2-dev-deploy` has been set up from the [Service Catalog](https://GHE/aws/service-catalog-cdk/blob/master/products/shared/codebuild-project-eks/v1/product.yml).  `cfpb-team-metro2-metro2-dev-deploy` is pointed to Metro2's [dev branch](https://GHE/Metro2/metro2/tree/dev).  Whenever a change is pushed to [dev branch](https://GHE/Metro2/metro2/tree/dev), `cfpb-team-metro2-metro2-dev-deploy` is automatically triggered and begins running branch's [buildspec](./buildspec.yaml).
+Inside the Dev-Internal and Staging-Internal accounts in Alto, a Codebuild Job has been set up from the [Service Catalog](https://GHE/aws/service-catalog-cdk/blob/master/products/shared/codebuild-project-eks/v1/product.yml). The job is pointed to a target branch of the Metro2 repo.  Whenever a change is pushed to that branch, the job is automatically triggered and begins running that branch's [buildspec](./buildspec.yaml).
+- In Dev-Internal, the job is called `cfpb-team-metro2-metro2-dev-deploy` and is pointed at the [`dev` branch](https://GHE/Metro2/metro2/tree/dev).
+- In Staging-Internal, it's called `cfpb-metro2-StagingDeploy` and is pointed at the [`staging` branch](https://GHE/Metro2/metro2/tree/staging).
 
 What the buildspec does:
-First, the `env` section of the [buildspec](./buildspec.yaml) configures the environment with the necessary env vars. Three important env vars that will affect your deployment are:
-- `DOCKER_TAG`: the tag you want for the `metro2-django` image. (default: `YYYY-MM-DD-H-m`)
+First, the `env` section of the [buildspec](./buildspec.yaml) configures the environment with the necessary env vars. Two important env vars that will affect your deployment are:
 - `ENABLE_SSO`: if you want SSO enabled, set to `enabled` or blank. (default: blank)
 - `RELEASE_NAME`: the name of the metro2 release, which determines the URL of the deployed application. (default: `metro2`)
 
