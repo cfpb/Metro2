@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.views.generic.detail import DetailView
@@ -49,7 +50,10 @@ class Metro2EventAdmin(admin.ModelAdmin):
         other_field = form.base_fields['other_descriptor']
         other_field.label = "Other descriptor (optional)"
         directory_field = form.base_fields['directory']
-        help_msg = "The location of the raw data files in the data directory. Starts with Enforcement/ or Supervision/ ."
+        if settings.SSO_ENABLED:
+            help_msg = "The location of the raw data files in the data directory. Starts with Enforcement/ or Supervision/ ."
+        else:
+            help_msg = f"The location of the raw data files in the local filesystem (SSO not enabled). If in doubt, use: {settings.LOCAL_EVENT_DATA}."
         directory_field.help_text = help_msg
         return form
 
