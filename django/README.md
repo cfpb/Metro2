@@ -17,8 +17,9 @@ Running the project:
 1. From the Metro2 project root, run `docker-compose build` and `docker-compose up` to get the app running.
 When docker-compose starts the project, it automatically runs the database migrations, so you don't need to do so manually.
 It will also run a script that:
-  - Adds Evaluator Metadata to the database if it does not already exist
+  - Adds Evaluator Metadata to the database if it does not already exist.
   - Creates a Metro2Event called Sample-Dataset-007 if it doesn't already exist, parses all data files in the parse_m2/local_data/ directory, and evaluates them.
+  - Adds an administrator user that has access to the Sample-Dataset-007 event.
 Once it is running, you can see the app running by visiting http://localhost:8000/.
 
 **Other useful actions in the system while running in docker-compose:**

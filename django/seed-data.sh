@@ -13,7 +13,7 @@ python manage.py import_evaluator_metadata -f evaluate_m2/m2_evaluators/eval_met
 
 echo
 echo "Parse the data file and run the evaluators"
-python manage.py parse_evaluate_local -e Sample-Dataset-007
+python manage.py add_seed_data_local -e Sample-Dataset-007
 
 echo
 echo "Add the user as a member of the event"
