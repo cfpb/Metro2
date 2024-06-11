@@ -8,7 +8,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--event', help="The name of the event to modify")
-        parser.add_argument('--user', help="User to add to the event")
+        parser.add_argument('--user', help="Username of user to add to the event")
 
     def handle(self, *args, **options):
         username_input = options['user']
