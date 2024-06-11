@@ -56,12 +56,8 @@ class InitiateS3ParsingTestCase(TestCase):
     # Test for parsing files from the S3 bucket. Only run when testing manually.
     # Before running, make sure S3 env vars are in place.
     def xtest_fetch_s3(self):
-        parse_files_from_s3_bucket("exam B", "test-tiny")
-
-        # Should create one event
-        self.assertEqual(Metro2Event.objects.count(), 1)
-        event = Metro2Event.objects.first()
-        self.assertEqual(event.name, "exam B")
+        exam_s3 = Metro2Event.objects.create(name="s3 exam", directory="test-tiny/")
+        parse_files_from_s3_bucket(exam_s3)
 
         # The test directory in S3 should contain one file
         self.assertEqual(M2DataFile.objects.count(), 1)
@@ -72,12 +68,8 @@ class InitiateS3ParsingTestCase(TestCase):
         self.assertEqual(AccountHolder.objects.count(), 1998)
 
     def xtest_fetch_s3_zip(self):
-        parse_files_from_s3_bucket("exam B", "test-zipped/")
-
-        # Should create one event
-        self.assertEqual(Metro2Event.objects.count(), 1)
-        event = Metro2Event.objects.first()
-        self.assertEqual(event.name, "exam B")
+        exam_s3 = Metro2Event.objects.create(name="other s3 exam", directory="test-zipped/")
+        parse_files_from_s3_bucket(exam_s3)
 
         # The test directory in S3 should contain one file
         self.assertEqual(M2DataFile.objects.count(), 1)
