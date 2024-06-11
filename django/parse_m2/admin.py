@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import AdminSite
+from django.views.generic.detail import DetailView
+from django.urls import path, reverse
+from django.utils.html import format_html
 
 from parse_m2.models import (
     AccountHolder, AccountActivity,
@@ -8,10 +11,6 @@ from parse_m2.models import (
     UnparseableData
 )
 
-
-from django.views.generic.detail import DetailView
-from django.urls import path, reverse
-from django.utils.html import format_html
 
 class EventParseEvalView(DetailView):
     template_name = 'admin/parse_m2/event_parse_eval.html'
