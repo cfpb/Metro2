@@ -44,7 +44,7 @@ Use the Django administrator interface:
 1. If you already have a superuser login, skip to step 1. If one is needed, do steps 2 and 3:
 2. Enter the Django container: `docker-compose exec django sh`.
 3. Run `python manage.py generate_admin_user --username=admin --password=admin` (or you can substitute whatever admin username you want).
-4. Log in to the admin interface at http://localhost:8000/admin using the username and password you entered in the previous step.
+4. Log in to the admin interface at http://localhost:8000/admin/ using the username and password you entered in the previous step.
 
 Run the parser:
 1. Use the administrator view to create an event record.
