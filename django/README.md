@@ -40,30 +40,25 @@ Use the Django shell to interact with the codebase:
 
 [Here's a useful resource](https://studygyaan.com/django/django-shell-tutorial-explore-your-django-project) on how the Django shell can be useful for development.
 
-Parse files from the local filesystem:
-1. Enter the Django container: `docker-compose exec django sh`.
-2. Run `python manage.py parse_local -e [event_name] -d [local_data_directory]` to parse the files from the provided directory.
-    - You can also use `python manage.py parse_local -h` for the help text.
+Use the Django administrator interface:
+1. If you already have a superuser login, skip to step 1. If one is needed, do steps 2 and 3:
+2. Enter the Django container: `docker-compose exec django sh`.
+3. Run `python manage.py generate_admin_user --username=admin --password=admin` (or you can substitute whatever admin username you want).
+4. Log in to the admin interface at http://localhost:8000/admin using the username and password you entered in the previous step.
+
+Run the parser:
+1. Use the administrator view to create an event record.
+    - In the `directory` field, enter a file location with Metro2 files, such as `parse_m2/local_data/`.
+2. After saving the event record, take note of the event ID (can be found in the URL).
+3. Enter the Django container: `docker-compose exec django sh`.
+4. Run `python manage.py parse -e [event_id]` to parse the files from the provided directory.
 
 Run the evaluators for an event:
 1. Enter the Django container: `docker-compose exec django sh`.
-2. Run `python manage.py run_evaluators -e [event_ID]` to run the evaluators on a dataset associated to the provided event.
+2. Run `python manage.py evaluate -e [event_ID]` to run the evaluators on a dataset associated to the provided event.
     - If there are existing evaluator results for this event, the previous results will be deleted before running the evaluator.
-    - You can also use `python manage.py run_evaluators -h` for the help text.
+    - You can also use `python manage.py evaluate -h` for the help text.
 
-Parse local files and run the evaluators for an event:
-1. Enter the Django container: `docker-compose exec django sh`.
-2. Run `python manage.py parse_evaluate_local -e [event_name] -d [local_data_directory]` to run the evaluators on a dataset associated to the provided event.
-    - You can also use `python manage.py parse_evaluate_local -h` for the help text.
-
-Use the Django administrator interface:
-1. First you'll need to create an admin account. (TODO: maybe we could automate this).
-    - Note that if you've already done this, the account will still exist, unless you've deleted your local database.
-    - If you already have a superuser login, skip to step 4.
-2. Enter the Django container: `docker-compose exec django sh`.
-3. Run `python manage.py createsuperuser --username=admin --email=""` (or you can substitute whatever admin username you want).
-    - The `createsuperuser` command will ask you to enter a password twice.
-4. Then you can log in to the admin interface at http://localhost:8000/admin using the username and password you entered in the previous step.
 
 To run the lint checks:
 1. Enter the Django container: `docker-compose exec django sh`.
