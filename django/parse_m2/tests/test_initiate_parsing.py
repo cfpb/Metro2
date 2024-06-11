@@ -32,12 +32,12 @@ class InitiateLocalParsingTestCase(TestCase):
         self.assertIn("invalid file extension", bad_file.error_message)
         self.assertEqual("Not parsed", bad_file.parsing_status)
 
-    # TODO: What to do about this
-    def xtest_directory_does_not_exist(self):
-        # Since this would only happen in the event of programmer error, it's fine that
-        # this exception is uncaught.
+    def test_directory_does_not_exist(self):
+        # If the user enters a bad directory, they get an error.
+        # TODO: How can we message this issue to the user more clearly?
+        exam_with_typo = Metro2Event.objects.create(name="x", directory="/directory/that/does/not/exist")
         with self.assertRaises(FileNotFoundError):
-            parse_files_from_local_filesystem("exam A", "/directory/that/does/not/exist")
+            parse_files_from_local_filesystem(exam_with_typo)
 
     def test_open_zipfiles(self):
         test_zip_location = os.path.join(
