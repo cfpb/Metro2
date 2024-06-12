@@ -1,4 +1,4 @@
-import Modal from 'components/DownloadModal'
+import DownloadModal from 'components/Modals/DownloadModal'
 import { Button, RadioButton } from 'design-system-react'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
@@ -55,36 +55,29 @@ export default function EvaluatorDownloader({
   }
 
   const header = (
-    <>
-      <p>
-        <b>Note: </b>
-        {`Choosing "Save file" will create a file containing only the
-        results in the table by default.`}
-      </p>
-      <div className='u-mb15 u-mt15'>
-        <fieldset className='o-form_fieldset'>
-          <legend className='h2'>Choose .csv options:</legend>
-          <RadioButton
-            id='sample'
-            name='evaluator-download'
-            label={`Create a .csv with only the ${rows.length} result${
-              rows.length > 1 ? 's' : ''
-            } in the table`}
-            labelClassName=''
-            labelInline
-            defaultChecked
-          />
-          <RadioButton
-            id='all'
-            name='evaluator-download'
-            label="Create a .csv containing all of this evaluator's results"
-            labelClassName=''
-            labelInline
-            inputRef={allResults}
-          />
-        </fieldset>
-      </div>
-    </>
+    <fieldset className='o-form_fieldset block block__sub'>
+      <legend className='h4'>Choose .csv options:</legend>
+      <RadioButton
+        id='sample'
+        name='evaluator-download'
+        label={`Create a .csv with only the ${rows.length} result${
+          rows.length > 1 ? 's' : ''
+        } in the table`}
+        labelClassName=''
+        labelInline
+        defaultChecked
+        isLarge
+      />
+      <RadioButton
+        id='all'
+        name='evaluator-download'
+        label="Create a .csv containing all of this evaluator's results"
+        labelClassName=''
+        labelInline
+        inputRef={allResults}
+        isLarge
+      />
+    </fieldset>
   )
 
   return (
@@ -96,13 +89,12 @@ export default function EvaluatorDownloader({
         onClick={onClick}
         size='default'
       />
-      <Modal
+      <DownloadModal
         open={isOpen}
         onClose={onClose}
         onDownload={onDownload}
         header={header}
       />
-      <div id='portal' />
     </div>
   )
 }
