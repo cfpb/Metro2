@@ -140,6 +140,13 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
             "date_closed": "",
             "dolp": "",
             "int_type_ind": "",
+            "cons_info_ind": "",
+            "ecoa": "2",
+            "cons_info_ind_assoc": ["1A", "B"],
+            "ecoa_assoc": ["2", "2", "2", "2"],
+            "purch_sold_ind": null,
+            "balloon_pmt_amt": 11854,
+            "change_ind": "2"
         },
         # ...etc.
     ]
