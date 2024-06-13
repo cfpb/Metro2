@@ -1,7 +1,7 @@
 from datetime import date
 from django.test import TestCase
 from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import Metro2Event, M2DataFile, AccountHolder, AccountActivity
+from parse_m2.models import J1, K4, L1, Metro2Event, M2DataFile, AccountHolder, AccountActivity
 from rest_framework.renderers import JSONRenderer
 from parse_m2.serializers import (
     AccountActivitySerializer,
@@ -17,7 +17,8 @@ class AccountActivitySerializerTestCase(TestCase):
         file = M2DataFile(event=event, file_name="tst.txt")
         file.save()
         acct_holder = AccountHolder(
-            data_file=file,activity_date=date(2023, 11, 30), cons_acct_num="98765")
+            data_file=file,activity_date=date(2023, 11, 30), cons_acct_num="98765",
+            cons_info_ind_assoc=["1A", "B"], ecoa_assoc=["2", "1"])
         acct_holder.save()
         self.acct_activity = AccountActivity(
             account_holder=acct_holder,
@@ -47,7 +48,10 @@ class AccountActivitySerializerTestCase(TestCase):
             int_type_ind="int_type_ind",
         )
         self.acct_activity.save()
-
+        k4 = K4(account_activity=self.acct_activity, balloon_pmt_amt=11854)
+        k4.save()
+        l1 = L1(account_activity=self.acct_activity, change_ind="2")
+        l1.save()
         self.json_representation = {
             "id": self.acct_activity.id,
             "inconsistencies": [],
@@ -75,6 +79,13 @@ class AccountActivitySerializerTestCase(TestCase):
             "date_closed": None,
             "dolp": "2023-01-01",
             "int_type_ind": "int_type_ind",
+            "cons_info_ind": '',
+            "ecoa": '',
+            "cons_info_ind_assoc": ["1A", "B"],
+            "ecoa_assoc": ["2", "1"],
+            "purch_sold_ind": None,
+            "balloon_pmt_amt": 11854,
+            "change_ind": "2"
         }
 
     def test_account_activity_serializer(self):
@@ -134,11 +145,11 @@ class AccountHolderSerializerTestCase(TestCase):
             "cons_acct_num": "12345"
         }
 
-    def test_account_activity_serializer(self):
+    def test_account_holder_serializer(self):
         serializer = AccountHolderSerializer(self.acct_holder)
         self.assertEqual(serializer.data, self.json_representation)
 
-    def test_account_activity_serializer_many_true(self):
+    def test_account_holder_serializer_many_true(self):
         acct_holders = [self.acct_holder]
         serializer = AccountHolderSerializer(acct_holders, many=True)
         json_output = JSONRenderer().render(serializer.data)
