@@ -2,6 +2,7 @@ import type { DeferredPromise } from '@tanstack/react-router'
 import { Await, useLoaderData } from '@tanstack/react-router'
 import Loader from 'components/Loader/Loader'
 import LocatorBar from 'components/LocatorBar/LocatorBar'
+import type User from 'models/User'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { Suspense } from 'react'
@@ -10,19 +11,22 @@ import type EvaluatorMetadata from './Evaluator'
 import EvaluatorSummary from './EvaluatorSummary'
 import EvaluatorTable from './EvaluatorTable'
 
-interface EvaluatorData {
+interface EvaluatorPageData {
   evaluatorMetadata: EvaluatorMetadata
   eventData: Event
+  userData: User
   evaluatorHits: DeferredPromise<AccountRecord[]>
 }
 
 export default function EvaluatorPage(): ReactElement {
-  const { evaluatorHits, evaluatorMetadata }: EvaluatorData = useLoaderData({
+  const {
+    eventData,
+    evaluatorHits,
+    evaluatorMetadata,
+    userData
+  }: EvaluatorPageData = useLoaderData({
     from: '/events/$eventId/evaluators/$evaluatorId'
   })
-
-  const eventData: Event = useLoaderData({ from: '/events/$eventId' })
-
   return (
     <>
       <LocatorBar
@@ -31,7 +35,7 @@ export default function EvaluatorPage(): ReactElement {
         icon='flag-round'
         breadcrumbs
       />
-      <EvaluatorSummary metadata={evaluatorMetadata} />
+      <EvaluatorSummary metadata={evaluatorMetadata} user={userData} />
       <Suspense fallback={<Loader message='Your data is loading' />}>
         <Await promise={evaluatorHits}>
           {(data): ReactElement => (
