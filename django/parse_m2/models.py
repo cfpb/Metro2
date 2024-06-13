@@ -1,7 +1,9 @@
 from datetime import date
 
 from django.contrib.auth.models import User
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+from django.db.models import JSONField
 from django.core.management import call_command
 
 from parse_m2.parse_utils import get_field_value
@@ -121,6 +123,8 @@ class AccountHolder(Person, Address):
     data_file = models.ForeignKey(M2DataFile, on_delete=models.CASCADE)
     activity_date = models.DateField()
     cons_acct_num = models.CharField(max_length=200)
+    cons_info_ind_assoc = JSONField(encoder=DjangoJSONEncoder, null=True)
+    ecoa_assoc = JSONField(encoder=DjangoJSONEncoder, null=True)
     # Since this model inherits from the Person base class,
     # it automatically includes name, ssn, dob, ecoa, etc.
     # Since this model inherits from the Address base class,
