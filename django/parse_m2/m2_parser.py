@@ -70,7 +70,6 @@ class M2FileParser():
         else:
             raise parse_utils.UnreadableFileException("First line of file isn't a header")
 
-
     def parse_extra_segments(self, line: str, parsed: dict) -> dict:
         """
         Given a string with any number of extra segments, determine what the first
@@ -82,7 +81,6 @@ class M2FileParser():
             return parsed
 
         acct_activity = parsed["AccountActivity"]
-
         next_segment_indicator = line[:2]
         if next_segment_indicator == "J1":
             seg_length = fields.seg_length["j1"]
@@ -91,7 +89,16 @@ class M2FileParser():
                 parsed["j1"].append(j1)
             else:
                 parsed["j1"] = [j1]
-
+            if j1.cons_info_ind:
+                if "cons_info_ind_assoc" in parsed:
+                    parsed["cons_info_ind_assoc"].append(j1.cons_info_ind)
+                else:
+                    parsed["cons_info_ind_assoc"] = [j1.cons_info_ind]
+            if j1.ecoa is not None:
+                if "ecoa_assoc" in parsed:
+                    parsed["ecoa_assoc"].append(j1.ecoa)
+                else:
+                    parsed["ecoa_assoc"] = [j1.ecoa]
         elif next_segment_indicator == "J2":
             seg_length = fields.seg_length["j2"]
             j2 = J2.parse_from_segment(line[:seg_length], acct_activity)
@@ -99,7 +106,16 @@ class M2FileParser():
                 parsed["j2"].append(j2)
             else:
                 parsed["j2"] = [j2]
-
+            if j2.cons_info_ind:
+                if "cons_info_ind_assoc" in parsed:
+                    parsed["cons_info_ind_assoc"].append(j2.cons_info_ind)
+                else:
+                    parsed["cons_info_ind_assoc"] = [j2.cons_info_ind]
+            if j2.ecoa:
+                if "ecoa_assoc" in parsed:
+                    parsed["ecoa_assoc"].append(j2.ecoa)
+                else:
+                    parsed["ecoa_assoc"] = [j2.ecoa]
         elif next_segment_indicator == "K1":
             seg_length = fields.seg_length["k1"]
             k1 = K1.parse_from_segment(line[:seg_length], acct_activity)
@@ -167,7 +183,6 @@ class M2FileParser():
             # parse the base segment into AccountHolder and AccountActivity
             acct_holder = AccountHolder.parse_from_segment(
                 line, self.file_record, activity_date)
-            parsed["AccountHolder"] = acct_holder
 
             acct_activity = AccountActivity.parse_from_segment(
                 line, acct_holder, activity_date)
@@ -177,6 +192,13 @@ class M2FileParser():
             base_segment_length = fields.seg_length["header"]
             remaining_chars = line[base_segment_length:]
             parsed = self.parse_extra_segments(remaining_chars, parsed)
+
+            if "cons_info_ind_assoc" in parsed:
+                acct_holder.cons_info_ind_assoc = parsed["cons_info_ind_assoc"]
+            if "ecoa_assoc" in parsed:
+                acct_holder.ecoa_assoc = parsed["ecoa_assoc"]
+            parsed["AccountHolder"] = acct_holder
+
             return parsed
 
         except parse_utils.UnreadableLineException as e:
