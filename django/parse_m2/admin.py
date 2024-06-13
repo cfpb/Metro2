@@ -103,7 +103,8 @@ class AccountHolderAdmin(admin.ModelAdmin):
                     'first_name', 'middle_name', 'gen_code','ssn', 'dob',
                     'phone_num', 'ecoa', 'cons_info_ind', 'country_cd',
                     'addr_line_1', 'addr_line_2', 'city', 'state', 'zip',
-                    'addr_ind', 'res_cd']
+                    'addr_ind', 'res_cd', 'cons_info_ind_assoc',
+                    'ecoa_assoc']
     def has_add_permission(self, request, obj=None):
         return False
     def has_view_permission(self, request, obj=None):
