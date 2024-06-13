@@ -79,8 +79,6 @@ class M2FileParser():
         # If there's only whitespace left in this line, return
         if not re.match(self.any_non_whitespace, line):
             return parsed
-        parsed["cons_info_ind_assoc"] = []
-        parsed["ecoa_assoc"] = []
         acct_activity = parsed["AccountActivity"]
         next_segment_indicator = line[:2]
         if next_segment_indicator == "J1":
@@ -170,6 +168,8 @@ class M2FileParser():
 
         try:
             parsed = {}
+            parsed["cons_info_ind_assoc"] = []
+            parsed["ecoa_assoc"] = []
             # parse the base segment into AccountHolder and AccountActivity
             acct_holder = AccountHolder.parse_from_segment(
                 line, self.file_record, activity_date)
