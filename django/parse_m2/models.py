@@ -198,7 +198,7 @@ class AccountActivity(models.Model):
     current_bal = models.IntegerField()
     amt_past_due = models.IntegerField()
     orig_chg_off_amt = models.IntegerField()
-    doai = models.DateField()
+    doai = models.DateField(null=True)
     dofd = models.DateField(null=True)
     date_closed = models.DateField(null=True)
     dolp = models.DateField(null=True)
