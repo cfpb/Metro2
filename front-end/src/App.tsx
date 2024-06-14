@@ -3,6 +3,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import ErrorComponent from 'components/Errors/ErrorComponent'
 import NotFound from 'components/Errors/NotFound'
 import Loader from 'components/Loader/Loader'
+import WarningModal from 'components/Modals/WarningModal'
 import { PageHeader } from 'design-system-react'
 import type { ReactElement } from 'react'
 import './App.less'
@@ -41,6 +42,7 @@ export default function App(): ReactElement {
   return (
     <>
       <PageHeader href='/' />
+      <WarningModal />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>
