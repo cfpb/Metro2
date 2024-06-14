@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
+import { Icon } from 'design-system-react'
 import type { ReactElement } from 'react'
 import { fetchData } from 'utils/utils'
 import type { AccountHolder } from './Account'
 
 interface AccountHolderProperties {
   accountId: string
-  eventId: string
+  eventId: number
 }
 export const fetchAccountPII = async (
-  eventId: string,
+  eventId: number,
   accountId: string
 ): Promise<AccountHolder> => {
   const url = `/api/events/${eventId}/account/${accountId}/account_holder/`
@@ -26,7 +27,12 @@ export default function AccountContactInformation({
   })
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <div className='inline-loader'>
+        <Icon name='updating' />
+        Loading...
+      </div>
+    )
   }
 
   function onClickHandler(): void {

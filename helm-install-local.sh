@@ -1,5 +1,11 @@
 #!/bin/bash
 
+BLUE='\033[0;34m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+LOCAL_CLUSTER=docker-desktop
+
 ## Ensure helm is installed and available via PATH
 if ! command -v helm &> /dev/null; then
   echo "Helm not found in PATH. Please install helm (brew install helm) or add it to PATH."
@@ -10,12 +16,25 @@ fi
 CLUSTER=$(kubectl config current-context)
 
 if [[ "$CLUSTER" != "docker-desktop" ]]; then
-
-  echo "This script should only be used for your local environment, a.k.a. docker-desktop."
-  echo "Your current context: ${CLUSTER}."
   echo ""
-  echo "To set your context to local, use the following command: kubectl config use-context docker-desktop"
-  exit 1
+  echo -e "This script should only be used for your local environment: the ${BLUE}$LOCAL_CLUSTER${NC} cluster."
+  echo -e "Your current context: ${RED}${CLUSTER}${NC}."
+  echo ""
+  echo ""
+  echo -e "Switching to ${BLUE}$LOCAL_CLUSTER${NC}"
+  KUBECTL_OUTPUT=$(kubectl config use-context $LOCAL_CLUSTER 2>&1)
+  KUBECTL_EXIT_CODE=$?
+
+  # Check exit code
+  if [[ "$KUBECTL_EXIT_CODE" -ne 0 ]]; then
+    echo -e "${RED}Error:${NC} kubectl command failed with exit code $KUBECTL_EXIT_CODE"
+    echo -e "${RED}Output:${NC} $KUBECTL_OUTPUT"
+    echo "Exiting helm-install-local"
+    exit 1
+  else
+   echo -e "${GREEN}Success:${NC} Switched to ${BLUE}$LOCAL_CLUSTER${NC} cluster"
+   echo ""
+  fi 
 
 fi
 
@@ -49,5 +68,6 @@ kubectl wait --for=condition=ready \
 
 VALUES="values-local.yaml"
 
-helm upgrade --install $RELEASE $HELM_DIR -f $HELM_DIR/$VALUES
+helm upgrade --install $RELEASE $HELM_DIR -f $HELM_DIR/$VALUES \
+        --set volumes[0].configMap=$RELEASE-nginx-conf \
 

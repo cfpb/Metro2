@@ -1,22 +1,24 @@
-from django.contrib.auth.models import Group
+from datetime import date
+
+from django.contrib.auth.models import User
 from django.db import models
 from django.core.management import call_command
 
 from parse_m2.parse_utils import get_field_value
 from parse_m2 import fields
 from evaluate_m2.managers import AccountActivityQuerySet
+from evaluate_m2.evaluate_utils import get_activity_date_range
 
 
 class Metro2Event(models.Model):
     class Meta:
         verbose_name_plural = "Metro2 Events"
     name = models.CharField(max_length=300)
-    user_group = models.ForeignKey(
-        Group,
-        blank=True,
-        null=True,
-        on_delete=models.CASCADE
-    )
+    portfolio = models.CharField(max_length=300, blank=True)
+    eid_or_matter_num = models.CharField(max_length=300, blank=True)
+    other_descriptor = models.CharField(max_length=300, blank=True)
+    directory = models.CharField(max_length=300, blank=True)
+    members = models.ManyToManyField(User, blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -25,16 +27,41 @@ class Metro2Event(models.Model):
         return AccountActivity.objects.filter(
             account_holder__data_file__event=self)
 
+    def account_activity_date_range(self) -> dict:
+        activity = self.get_all_account_activity()
+        return get_activity_date_range(activity)
+
+    def date_range_start(self) -> date:
+        """
+        Return the earliest date contained in the activity date field
+        in the data set for this event. If this event has no AccountActivity
+        records, return None.
+        """
+        return self.account_activity_date_range()['earliest']
+
+    def date_range_end(self) -> date:
+        """
+        Return the latest date contained in the activity date field
+        in the data set for this event. If this event has no AccountActivity
+        records, return None.
+        """
+        return self.account_activity_date_range()['latest']
+
     def evaluate(self):
         call_command('run_evaluators', event_id=self.id)
+
+    def total_tradelines(self) -> int:
+        total = 0
+        for file in self.m2datafile_set.all():
+            total += file.accountholder_set.count()
+        return total
 
     def check_access_for_user(self, user) -> bool:
         """
         Utility method for checking authorization. Returns True if
-        the user is assigned to the correct user group to have
-        access to this event.
+        the user is assigned as a member to this event.
         """
-        return self.user_group in user.groups.all()
+        return user in self.members.all()
 
 class M2DataFile(models.Model):
     class Meta:
@@ -158,6 +185,7 @@ class AccountActivity(models.Model):
     date_open = models.DateField()
     credit_limit = models.IntegerField()
     hcola = models.IntegerField()
+    id_num = models.CharField(max_length=200, default='')
     terms_dur = models.CharField(max_length=200)
     terms_freq = models.CharField(max_length=200)
     smpa = models.IntegerField()
@@ -188,6 +216,7 @@ class AccountActivity(models.Model):
             date_open = get_field_value(fields.base_fields, "date_open", base_seg),
             credit_limit = get_field_value(fields.base_fields, "credit_limit", base_seg),
             hcola = get_field_value(fields.base_fields, "hcola", base_seg),
+            id_num = get_field_value(fields.base_fields, "id_num", base_seg),
             terms_dur = get_field_value(fields.base_fields, "terms_dur", base_seg),
             terms_freq = get_field_value(fields.base_fields, "terms_freq", base_seg),
             smpa = get_field_value(fields.base_fields, "smpa", base_seg),

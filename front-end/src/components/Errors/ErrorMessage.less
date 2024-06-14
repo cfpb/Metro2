@@ -1,0 +1,13 @@
+@import (reference) '../../index.less';
+
+.error-container {
+  .error-message {
+    max-width: 500px;
+    margin: auto;
+
+    .m-btn-group .a-btn + .a-btn {
+      margin-left: 1rem;
+      .respond-to-max(@bp-sm-min, {margin: 0.5rem 0;});
+    }
+  }
+}

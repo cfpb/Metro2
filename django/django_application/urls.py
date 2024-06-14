@@ -22,24 +22,26 @@ from django.views.generic import TemplateView
 from users import views
 from evaluate_m2 import views as eval_views
 from evaluate_m2 import urls as evaluate_m2_urls
+from django_application import views as error_view
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/all-evaluator-metadata/', eval_views.download_evaluator_metadata_csv),
     path('api/events/', include(evaluate_m2_urls)),
+    path('api/users/', views.users_view),
+    path('api/users/<int:user_id>/', views.users_view)
 ]
 
 try:
     # If the SSO library is installed, include auth-related URLs
     urlpatterns += [
         path('oauth2/', include('django_auth_adfs.urls')),
-        path('api/users/', views.users_view),
     ]
 except ImproperlyConfigured:
-    urlpatterns += [
-        path('api/users/<int:user_id>/', views.users_view),
-    ]
+    pass
+# Handles fall through route for all erroneous api calls to return bad request
+urlpatterns.append(re_path(r'api(?:.*)?', error_view.bad_request_view ))
 
 # Fall through route to handle all other urls through front end
 urlpatterns.append(re_path(r'^(?:.*)?', TemplateView.as_view(template_name='m2/index.html')))

@@ -10,8 +10,8 @@ export default function ErrorComponent({ error }: { error: Error }): ReactElemen
     <ErrorMessage
       title={errorObj.title}
       description={errorObj.description}
-      cta1={errorObj.cta1}
-      cta2={errorObj.cta2}
+      mailbox={errorObj.mailbox}
+      errorType={errorObj.errorType}
     />
   )
 }

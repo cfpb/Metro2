@@ -4,13 +4,13 @@ import DefinitionList from 'components/DefinitionList/DefinitionList'
 import type { ReactElement } from 'react'
 import type { AccountRecord } from '../../utils/constants'
 import { FIELD_NAMES_LOOKUP } from '../../utils/constants'
-import { getM2Definition } from '../../utils/utils'
+import { formatDate, getM2Definition } from '../../utils/utils'
 import type Account from './Account'
 import AccountContactInformation from './AccountContactInformation'
 
 interface AccountSummaryProperties {
   accountData: Account
-  eventId: string
+  eventId: number
 }
 
 const summaryFields = [
@@ -39,7 +39,8 @@ export const getSummaryItems = (
 ): Definition[] => {
   const summaryItems: Definition[] = summaryFields.map(field => {
     const value = record[field]
-    const definition = getM2Definition(field, value)
+    const definition =
+      field === 'date_open' ? formatDate(value) : getM2Definition(field, value)
     return {
       term: FIELD_NAMES_LOOKUP[field],
       definition: definition ?? value
@@ -67,28 +68,28 @@ export default function AccountSummary({
   )
 
   return (
-    <div className='content-row u-mt15'>
+    <div className='content-row summary-row'>
       <div className='content-l'>
         <div className='content-l_col content-l_col-1-3' data-testid='details'>
-          <h3>Account Details</h3>
+          <h2>Account Details</h2>
           <DefinitionList items={getSummaryItems(latestRecord, contactComponent)} />
         </div>
         {accountData.inconsistencies.length > 0 ? (
           <div
             className='content-l_col content-l_col-1-3'
             data-testid='inconsistencies'>
-            <h3>Inconsistencies found</h3>
-            <ul>
+            <h2>Inconsistencies found</h2>
+            <ol>
               {accountData.inconsistencies.map(inconsistency => (
-                <li key={inconsistency.id}>
+                <li key={inconsistency}>
                   <Link
                     to='/events/$eventId/evaluators/$evaluatorId'
-                    params={{ eventId, evaluatorId: inconsistency.id }}>
-                    {inconsistency.name || inconsistency.id}
+                    params={{ eventId, evaluatorId: inconsistency }}>
+                    {inconsistency}
                   </Link>
                 </li>
               ))}
-            </ul>
+            </ol>
           </div>
         ) : null}
       </div>

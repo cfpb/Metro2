@@ -1,20 +1,16 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
-    help = "Creates an admin user non-interactively if it doesn't exist. " + \
-           "Adds the user to a permissions group given by the --group argument"
+    help = "Creates an admin user non-interactively if it doesn't exist. "
 
     def add_arguments(self, parser):
         parser.add_argument('--username', help="Admin's username")
         parser.add_argument('--password', help="Admin's password")
-        parser.add_argument('--group', help="Auth group to add the user to")
 
     def handle(self, *args, **options):
         User = get_user_model()
         username = options['username']
-        group_name = options['group']
 
         try:
             usr = User.objects.get(username=username)
@@ -32,13 +28,4 @@ class Command(BaseCommand):
             self.stdout.write("Done.")
         self.stdout.write(f"Admin user ID: {usr.id}.")
 
-        try:
-            grp = Group.objects.get(name=group_name)
-            self.stdout.write(f"Auth group exists with name {group_name}.")
-        except Group.DoesNotExist:
-            grp = Group.objects.create(name=group_name)
-            self.stdout.write(f"Created auth group with name {group_name}.")
-
-        self.stdout.write(f"Adding user `{username}` to group `{group_name}`.")
-        usr.groups.add(grp)
-        self.stdout.write(self.style.SUCCESS(f"Success: Admin user `{username}` exists with correct group permissions."))
+        self.stdout.write(self.style.SUCCESS(f"Success: Admin user `{username}` exists."))

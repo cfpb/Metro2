@@ -9,8 +9,24 @@ def get_activity_date_range(record_set: QuerySet):
     following format:
     { "earliest": date(2022, 2, 2), "latest": date(2023, 3, 3)}
     """
-    earliest_date = record_set.order_by('activity_date').first().activity_date
-    latest_date = record_set.order_by('-activity_date').first().activity_date
+    if record_set.exists():
+        earliest_date = record_set.order_by('activity_date').first().activity_date
+        latest_date = record_set.order_by('-activity_date').first().activity_date
+        return {"earliest": earliest_date, "latest": latest_date}
+    else:
+        return {"earliest": None, "latest": None}
+
+def get_activity_date_range_from_list(data: list[dict]):
+    """
+    Given a list of dictionary, return the range of
+    dates covered by that set of records. This returns a dict in the
+    following format:
+    { "earliest": date(2022, 2, 2), "latest": date(2023, 3, 3)}
+    """
+    activity_date_list = list(d['activity_date'] for d in data)
+    activity_date_list.sort()
+    earliest_date = activity_date_list[0]
+    latest_date = activity_date_list[-1]
     return {"earliest": earliest_date, "latest": latest_date}
 
 def every_month_in_range(start: date, end: date):

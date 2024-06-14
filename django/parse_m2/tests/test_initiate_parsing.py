@@ -14,13 +14,12 @@ class InitiateLocalParsingTestCase(TestCase):
             'parse_m2', 'tests','sample_files', 'test_local_data'
             )
 
-    def test_open_local_files(self):
-        parse_files_from_local_filesystem("exam Z", self.test_local_data_directory)
+        self.event = Metro2Event.objects.create(
+            name="exam Z", directory=self.test_local_data_directory
+        )
 
-        # Should create one event
-        self.assertEqual(Metro2Event.objects.count(), 1)
-        event = Metro2Event.objects.first()
-        self.assertEqual(event.name, "exam Z")
+    def test_open_local_files(self):
+        parse_files_from_local_filesystem(self.event)
 
         # one M2DataFile object for each file
         self.assertEqual(M2DataFile.objects.count(), 3)
@@ -28,21 +27,25 @@ class InitiateLocalParsingTestCase(TestCase):
         self.assertEqual(AccountHolder.objects.count(), 5)
 
     def test_file_with_bad_extension(self):
-        parse_files_from_local_filesystem("exam Z", self.test_local_data_directory)
+        parse_files_from_local_filesystem(self.event)
         bad_file = M2DataFile.objects.get(file_name__endswith="without_extension")
         self.assertIn("invalid file extension", bad_file.error_message)
         self.assertEqual("Not parsed", bad_file.parsing_status)
 
     def test_directory_does_not_exist(self):
-        # Since this would only happen in the event of programmer error, it's fine that
-        # this exception is uncaught.
+        # If the user enters a bad directory, they get an error.
+        # TODO: How can we message this issue to the user more clearly?
+        exam_with_typo = Metro2Event.objects.create(name="x", directory="/directory/that/does/not/exist")
         with self.assertRaises(FileNotFoundError):
-            parse_files_from_local_filesystem("exam A", "/directory/that/does/not/exist")
+            parse_files_from_local_filesystem(exam_with_typo)
 
     def test_open_zipfiles(self):
         test_zip_location = os.path.join(
             'parse_m2', 'tests','sample_files', 'test_local_zipped')
-        parse_files_from_local_filesystem("exam ZIP", test_zip_location)
+        zip_event = Metro2Event.objects.create(
+            name="zipped exam", directory=test_zip_location
+        )
+        parse_files_from_local_filesystem(zip_event)
         # the zip contained 1 file
         self.assertEqual(M2DataFile.objects.count(), 1)
         # the file contained 1997 parseable records
@@ -53,12 +56,8 @@ class InitiateS3ParsingTestCase(TestCase):
     # Test for parsing files from the S3 bucket. Only run when testing manually.
     # Before running, make sure S3 env vars are in place.
     def xtest_fetch_s3(self):
-        parse_files_from_s3_bucket("exam B", "test-tiny")
-
-        # Should create one event
-        self.assertEqual(Metro2Event.objects.count(), 1)
-        event = Metro2Event.objects.first()
-        self.assertEqual(event.name, "exam B")
+        exam_s3 = Metro2Event.objects.create(name="s3 exam", directory="test-tiny/")
+        parse_files_from_s3_bucket(exam_s3)
 
         # The test directory in S3 should contain one file
         self.assertEqual(M2DataFile.objects.count(), 1)
@@ -69,12 +68,8 @@ class InitiateS3ParsingTestCase(TestCase):
         self.assertEqual(AccountHolder.objects.count(), 1998)
 
     def xtest_fetch_s3_zip(self):
-        parse_files_from_s3_bucket("exam B", "test-zipped/")
-
-        # Should create one event
-        self.assertEqual(Metro2Event.objects.count(), 1)
-        event = Metro2Event.objects.first()
-        self.assertEqual(event.name, "exam B")
+        exam_s3 = Metro2Event.objects.create(name="other s3 exam", directory="test-zipped/")
+        parse_files_from_s3_bucket(exam_s3)
 
         # The test directory in S3 should contain one file
         self.assertEqual(M2DataFile.objects.count(), 1)

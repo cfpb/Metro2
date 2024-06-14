@@ -1,9 +1,10 @@
 import { notFound } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
-import type { M2_FIELDS } from './constants'
+import type { AccountRecord } from './constants'
 import {
   FIELD_NAMES_LOOKUP,
   FIELD_TYPES_LOOKUP,
+  M2_FIELDS,
   M2_FIELD_LOOKUPS
 } from './constants'
 
@@ -22,6 +23,32 @@ export const getM2Definition = (
     return lookup[fieldValue as keyof typeof lookup]
   }
   return undefined
+}
+
+// Iterates through array of account records and adds parenthetical
+// annotations to record's values where they exist
+export const annotateData = (records: AccountRecord[]): AccountRecord[] =>
+  records.map(record => {
+    const obj: Record<string, number | string | null | undefined> = {}
+    for (const field of Object.keys(record)) {
+      const val = record[field as keyof AccountRecord]
+      const annotation = getM2Definition(field, val)
+      obj[field] = annotation ? `${val} (${annotation})` : val
+    }
+    return obj
+  })
+
+// Checks whether a string is in the list of Metro 2 fields
+export const isM2Field = (str: string): boolean => !!M2_FIELDS.includes(str)
+
+// Annotate and add php1 to account record data
+export const prepareAccountRecordData = (
+  records: AccountRecord[]
+): AccountRecord[] => {
+  if ('php' in records[0]) {
+    for (const record of records) record.php1 = record.php?.charAt(0)
+  }
+  return annotateData(records)
 }
 
 // Given a list of M2 fields and a list of M2 fields to pin,
@@ -53,6 +80,7 @@ export const generateColumnDefinitions = (
 export const fetchData = async <TData>(
   url: string,
   dataType: string
+  // delay?: number
 ): Promise<TData> => {
   try {
     // Fetch data from URL.
@@ -60,9 +88,11 @@ export const fetchData = async <TData>(
     // If unsuccessful, throw an error with the response
     // status (404, 500, etc) as its message.
 
-    // Temporary hack to show loading view
-    // eslint-disable-next-line no-promise-executor-return
-    // await new Promise(r => setTimeout(r, 2000))
+    // if (delay) {
+    //   // Temporary hack to show loading view
+    //   // eslint-disable-next-line no-promise-executor-return
+    //   await new Promise(r => setTimeout(r, delay))
+    // }
 
     const response = await fetch(url)
     if (response.ok) return (await response.json()) as TData
@@ -87,19 +117,175 @@ export const currencyFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 2
 })
 
-// TODO: formatters should only be called on numbers / null,
-// but consider how / if to handle non-numeric values
-
 // Given a number, returns a formatted numeric string
-// Returns the raw value if any other data type is passed in
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatNumber(val: any): any {
-  return typeof val === 'number' ? numberFormatter.format(val) : val
+// Returns empty string if any other data type is passed in
+export function formatNumber(val: number | null | undefined): string {
+  return typeof val === 'number' ? numberFormatter.format(val) : ''
 }
 
 // Given a number, returns a USD-formatted string
-// Returns the raw value if any other data type is passed in
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function formatUSD(val: any): any {
-  return typeof val === 'number' ? currencyFormatter.format(val) : val
+// Returns empty string if any other data type is passed in
+export function formatUSD(val: number | null | undefined): string {
+  return typeof val === 'number' ? currencyFormatter.format(val) : ''
 }
+
+// // Given a date string in format yyyy-mm-dd, returns a mm/dd/yyyy formatted string
+// // Returns empty string if any other data type is passed in
+// export const formatDate = (val: string | null | undefined): string =>
+//   typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)
+//     ? new Date(`${val}T00:00:00`).toLocaleDateString('en-us')
+//     : ''
+
+// Given a date string in format yyyy-mm-dd, returns a mm/dd/yyyy formatted string
+// Returns empty string if any other data type is passed in
+export const formatDate = (
+  val: string | null | undefined,
+  shorthandDate = false
+): string => {
+  if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+    return new Date(`${val}T00:00:00`).toLocaleDateString(
+      'en-us',
+      shorthandDate
+        ? { month: 'short', year: 'numeric' }
+        : { month: '2-digit', day: '2-digit', year: '2-digit' }
+    )
+  }
+  return ''
+}
+
+// Takes an ordered list of fields, a header lookup, and an array of records
+// Generates header by getting values for each field from the header lookup
+// (doing the lookup here seems safer: both header and body rows get their order
+// from the list of fields)
+// Outputs a CSV containing header and each record's data for the provided fields
+export const generateDownloadData = <T>(
+  fields: string[],
+  records: T[],
+  headerLookup: Record<string, string>
+): string => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const csvHeader = fields.map(field => headerLookup[field] ?? field).join(',')
+  const csvBody = records
+    .map(record =>
+      fields
+        .map(field => {
+          const val = record[field as keyof T]
+          if (typeof val === 'string' && val.includes(',')) return `"${val}"`
+          if (Array.isArray(val)) return `"${val.join(', ')}"`
+          return val
+        })
+        .join(',')
+    )
+    .join('\n')
+  return [csvHeader, csvBody].join('\n')
+}
+
+// Takes a comma-formatted CSV string and a suggested file name,
+// opens a file picker prompting the user to download the
+// CSV to the documents directory with the suggested name,
+// and writes the file to the user's system if they select save
+export const downloadData = async (
+  csvString: string,
+  fileName: string
+): Promise<void> => {
+  const handle = await showSaveFilePicker({
+    suggestedName: fileName,
+    // @ts-expect-error Typescript doesn't handle File System API well
+    startIn: 'downloads',
+    types: [
+      {
+        description: 'CSVs',
+        accept: {
+          'text/csv': ['.csv']
+        }
+      }
+    ]
+  })
+  const writable = await handle.createWritable()
+  await writable.write(csvString)
+  return writable.close()
+}
+
+export const downloadFileFromURL = (url: string): void => {
+  const link = document.createElement('a')
+  link.setAttribute('href', url)
+  link.click()
+}
+
+// export const writeURLToFile = async (
+//   fileName: string,
+//   url: string
+// ): Promise<void> => {
+//   const handle = await showSaveFilePicker({
+//     suggestedName: fileName,
+//     // @ts-expect-error Typescript doesn't handle File System API well
+//     startIn: 'documents',
+//     types: [
+//       {
+//         description: 'CSVs',
+//         accept: {
+//           'text/csv': ['.csv']
+//         }
+//       }
+//     ]
+//   })
+//   // Create a FileSystemWritableFileStream to write to.
+//   const writable = await handle.createWritable()
+
+//   try {
+//     const response = await fetch(url)
+//     // Stream the response into the file.
+//     // pipeTo() closes the destination pipe by default, no need to close it.
+//     if (response.ok) return await response.body?.pipeTo(writable)
+//     throw new Error(String(response.status))
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+// Generates html for an evaluator long description that is only formatted with line breaks.
+// Splits string into segments at double line breaks. Breaks segments into lines.
+// If the first line of a segment is explanatory rather than pseudo-code
+// -- determined by checking for absence of symbols used in pseudo code lines --
+// it's formatted as an H4. All other lines are formatted as paragraphs.
+export const formatLongDescription = (longDescription: string): string => {
+  let html = ''
+  for (const segment of longDescription.split('\n\n')) {
+    for (const [lineIndex, line] of segment.split('\n').entries()) {
+      const isHeader =
+        lineIndex === 0 &&
+        ![':', '<', '>', '=', '≠'].some(char => line.includes(char))
+      html += `<${isHeader ? 'h4' : 'p'}>${line}</${isHeader ? 'h4' : 'p'}>`
+    }
+  }
+  return html
+}
+
+// Given a cookie name, value, and expire time (in days), sets a cookie.
+// Expire time defaults to 1 day.
+// TODO: consider whether to use cookieStore API (not supported in Safari)
+export const setCookie = (
+  cookieName: string,
+  cookieValue: boolean | number | string,
+  expires = 1
+): void => {
+  // eslint-disable-next-line unicorn/no-document-cookie
+  document.cookie = `${cookieName}=${cookieValue}; max-age=${expires * 86_400}`
+}
+
+// Given a cookie name, retrieves cookie value
+// TODO: consider whether to use cookieStore API (not supported in Safari)
+export const getCookie = (cookieName: string): string | undefined =>
+  // eslint-disable-next-line unicorn/no-document-cookie
+  document.cookie
+    .split('; ')
+    .find(item => item.startsWith(`${cookieName}=`))
+    ?.split('=')[1]
+
+// Sets a cookie to reflect that the PII warning has been acknowledged
+// Cookie expires in 1 day
+export const acceptPIIWarning = (): void => {
+  setCookie('acceptedPIIWarning', true)
+}
+
+// Checks for a cookie indicating PII warning has been acknowledged
+export const hasAcceptedPIIWarning = (): boolean => !!getCookie('acceptedPIIWarning')

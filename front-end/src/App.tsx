@@ -1,8 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import ErrorComponent from 'components/ErrorComponent'
+import ErrorComponent from 'components/Errors/ErrorComponent'
+import NotFound from 'components/Errors/NotFound'
 import Loader from 'components/Loader/Loader'
-import NotFound from 'components/NotFound'
+import WarningModal from 'components/Modals/WarningModal'
 import { PageHeader } from 'design-system-react'
 import type { ReactElement } from 'react'
 import './App.less'
@@ -40,7 +41,8 @@ declare module '@tanstack/react-router' {
 export default function App(): ReactElement {
   return (
     <>
-      <PageHeader />
+      <PageHeader href='/' />
+      <WarningModal />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
       </QueryClientProvider>

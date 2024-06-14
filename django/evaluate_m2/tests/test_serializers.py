@@ -8,7 +8,8 @@ from evaluate_m2.serializers import (
     EvaluatorResultsViewSerializer,
     EventsViewSerializer
 )
-from parse_m2.models import AccountActivity, AccountHolder, M2DataFile, Metro2Event
+from evaluate_m2.tests.evaluator_test_helper import acct_record
+from parse_m2.models import M2DataFile, Metro2Event
 
 
 e1_expected_fields_used = """
@@ -124,44 +125,15 @@ class EvaluatorResultsViewSerializerTestCase(TestCase):
         event.save()
         file = M2DataFile(event=event, file_name="tst.txt")
         file.save()
-        acct_holder = AccountHolder(
-            data_file=file,activity_date=date(2023, 11, 30), cons_acct_num="98765")
-        acct_holder.save()
-
-        self.acct_activity = AccountActivity(
-            account_holder=acct_holder,
-            activity_date=date(2023,11,20),
-            cons_acct_num="98765",
-            port_type="port_type",
-            acct_type="acct_type",
-            date_open=date(2020,3,17),
-            credit_limit=9000,
-            hcola=90210,
-            terms_dur="terms_dur",
-            terms_freq="terms_freq",
-            smpa=5,
-            actual_pmt_amt=201,
-            acct_stat="acct_stat",
-            pmt_rating="pmt_rating",
-            php="php",
-            spc_com_cd="spc_com_cd",
-            compl_cond_cd="compl_cond_cd",
-            current_bal=12345,
-            amt_past_due=111,
-            orig_chg_off_amt=0,
-            doai=date(2023,11,3),
-            dofd=None,
-            date_closed=None,
-            dolp=date(2023,1,1),
-            int_type_ind="int_type_ind",
-        )
-        self.acct_activity.save()
+        activity = { 'id': 32, 'activity_date': date(2023,11,20),
+                    'cons_acct_num': '0032','current_bal':0, 'amt_past_due': 5 }
+        acct_activity = acct_record(file, activity)
         self.ers = EvaluatorResultSummary(event=event, evaluator=self.eval1, hits=1)
         self.ers.save()
         self.eval_result = EvaluatorResult(
             result_summary=self.ers, date=date(2021, 1, 1),
             field_values={'record': 1, 'acct_type':'y'},
-            source_record= self.acct_activity, acct_num='0032')
+            source_record= acct_activity, acct_num='0032')
         self.eval_result.save()
         self.json_representation = {'record': 1, 'acct_type':'y'}
 
@@ -188,20 +160,27 @@ class EventsViewSerializerTestCase(TestCase):
         # Create the parent records for the AccountActivity data
         self.event = Metro2Event(id=1, name='test_exam')
         self.event.save()
+        file = M2DataFile(event=self.event, file_name="tst.txt")
+        file.save()
+        activity = { 'id': 32, 'activity_date': date(2023,11,20),
+                    'cons_acct_num': '0032','current_bal':0, 'amt_past_due': 5 }
+        acct_activity = acct_record(file, activity)
 
         self.eval_rs = EvaluatorResultSummary(
-            event=self.event, evaluator=self.eval, hits=2)
+            event=self.event, evaluator=self.eval, hits=2, accounts_affected=1,
+            inconsistency_start=date(2021, 1, 1), inconsistency_end=date(2021, 2, 1))
         self.eval_rs.save()
 
         self.json_representation = {
-                'hits': 2, 'id': 'Status-DOFD-1',
-                'description': 'description of Status-DOFD-1', 'long_description': '',
-                'fields_used': ['account status', 'date of first delinquency'],
-                'fields_display': ['amount past due', 'compliance condition code',
-                    'current balance', 'date closed', 'original charge-off amount',
-                    'terms frequency'],
-                'crrg_reference': '400', 'potential_harm': '',
-                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'hits': 2, 'accounts_affected': 1, 'inconsistency_start':date(2021, 1, 1),
+            'inconsistency_end': date(2021, 2, 1), 'id': 'Status-DOFD-1',
+            'description': 'description of Status-DOFD-1', 'long_description': '',
+            'fields_used': ['account status', 'date of first delinquency'],
+            'fields_display': ['amount past due', 'compliance condition code',
+                'current balance', 'date closed', 'original charge-off amount',
+                'terms frequency'],
+            'crrg_reference': '400', 'potential_harm': '',
+            'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
             }
 
     def test_evaluator_metadata_serializer(self):

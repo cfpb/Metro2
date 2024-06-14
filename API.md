@@ -52,7 +52,7 @@ GET - returns a CSV of evaluator results for a single evaluator (whose ID matche
 Users can import this CSV into Excel in order to sort, filter, and analyze the results. The CSV contains one row for each `EvaluatorResult` for the given event + evaluator combo. It has a column for each field in the "fields used" column of the Evaluator Source of Truth spreadsheet.
 
 **Example response:**
-File name: `hyundai2024_Status-DOFD-2_12-31-2023.csv`
+File name: `hyundai2024_Status-DOFD.csv`
 
 File contents:
 ```csv
@@ -105,14 +105,18 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
 {
     "cons_acct_num": "1234567890",
     "inconsistencies": [
-        {
-            "id": "2",
-        },
-        # ...etc.
+        "SCC-Balance-8",
+        "PROG-Bankruptcy-1",
+        "Type-APD-2",
+        "Balloon-Balance-1",
     ],
     "account_activity": [
         {
             "id": 3,
+            "inconsistencies": [
+                "SCC-Balance-8",
+                "Type-APD-2",
+            ],
             "activity_date": "11/30/2023",
             "port_type": "I",
             "acct_type": "00",
@@ -187,6 +191,9 @@ GET - returns a JSON information about an event, including its name and all eval
     "evaluators": [
         {
             "hits": 4209,
+            "accounts_affected": 1194,
+            "inconsistency_start": "2024-02-29",
+            "inconsistency_end": "2024-08-29",
             "id":"DOAI-DOFD-1",
             "description": "Account reports date of first delinquency longer than 7 years.",
             "long_description": "",
@@ -235,6 +242,11 @@ If SSO is not enabled:
         {
             "id": 1,
             "name": "Hyundai2024",
+            "portfolio": "credit cards",
+            "eid_or_matter_num": "456-1123445",
+            "other_descriptor": "",
+            "date_range_start": "2023-11-30",
+            "date_range_end": "2023-12-31"
         },
         # ... etc.
     ]

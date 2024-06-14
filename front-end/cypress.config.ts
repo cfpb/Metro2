@@ -5,7 +5,7 @@ export default defineConfig({
   fixturesFolder: false,
   projectId: 'etow1b',
   e2e: {
-    baseUrl: 'http://localhost:8000/',
+    baseUrl: 'http://localhost:3000/',
     specPattern: 'cypress/e2e/**/*.ts'
   }
 })

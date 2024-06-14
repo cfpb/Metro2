@@ -1,10 +1,10 @@
-import logging
-
-from django.contrib import admin, messages
+from django.conf import settings
+from django.contrib import admin
 from django.contrib.admin import AdminSite
-from django.shortcuts import redirect
+from django.views.generic.detail import DetailView
+from django.urls import path, reverse
+from django.utils.html import format_html
 
-from parse_m2.forms import  Metro2EventForm
 from parse_m2.models import (
     AccountHolder, AccountActivity,
     J1, J2, K1, K2, K3, K4, L1, N1,
@@ -13,83 +13,49 @@ from parse_m2.models import (
 )
 
 
-# Register your models here.
+class EventParseEvalView(DetailView):
+    template_name = 'admin/parse_m2/event_parse_eval.html'
+    model = Metro2Event
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context | admin.site.each_context(self.request)
+        context["opts"] = self.model._meta
+        return context
+
+
 class Metro2EventAdmin(admin.ModelAdmin):
-    list_display = ['name', 'id', 'user_group']
-    form=Metro2EventForm
-    fields = ['name','user_group','directory']
+    fields = ['name', 'portfolio', 'eid_or_matter_num', 'other_descriptor', 'directory', 'members']
+    list_display = ['name', 'portfolio', 'eid_or_matter_num', 'import_data']
+    filter_horizontal = ['members']
 
-    def get_form(self, request, obj=None, **kwargs):
-        """
-        Overrides BaseModelAdmin get_form() to display fields based
-        on an add/change view for Metro2Events
-        """
-        if obj: # obj is not None, so this is a change page
-            self.readonly_fields = ['name']
-            help_texts = {'name': ""}
-            kwargs.update({'help_texts': help_texts})
-        else: # obj is None, so this is an add page
-            self.readonly_fields = ['user_group']
-        return super(Metro2EventAdmin, self).get_form(request, obj, **kwargs)
+    def get_urls(self):
+        return [
+            path("<pk>/parse_evaluate", self.admin_site.admin_view(EventParseEvalView.as_view()), name="parse_evaluate_event"),
+            *super().get_urls(),
+        ]
 
-    def render_change_form(self, request, context, add=False, change=False, form_url="", obj=None):
-        """
-        Overrides BaseModelAdmin render_change_form() to update the flags to
-        show/hide buttons on add or change view for Metro2Events
-        """
-        if obj:
-            context.update({"show_parse": False})
-            context.update({"show_parse_eval": False})
-            context.update({"show_eval": True})
-            context.update({"show_save": True})
+    # Create a column called "Import data" in the list view for the Event admin page
+    # The column contains a link to the data import detail page (EventParseEvalView)
+    def import_data(self, obj: Metro2Event) -> str:
+        url = reverse("admin:parse_evaluate_event", args=[obj.pk])
+        return format_html(f"<a href='{url}'>Data import info</a>")
+
+    def get_form(self, request, obj: Metro2Event = None, change: bool = False, **kwargs):
+        form =  super().get_form(request, obj, change, **kwargs)
+        name_field = form.base_fields['name']
+        name_field.label = "Institution name"
+        eid_field = form.base_fields['eid_or_matter_num']
+        eid_field.label = "EID or matter number"
+        other_field = form.base_fields['other_descriptor']
+        other_field.label = "Other descriptor (optional)"
+        directory_field = form.base_fields['directory']
+        if settings.SSO_ENABLED:
+            help_msg = "The location of the raw data files in the data directory. Starts with Enforcement/ or Supervision/ ."
         else:
-            context.update({"show_parse": True})
-            context.update({"show_parse_eval": True})
-            context.update({"show_eval": False})
-            context.update({"show_save": False})
-        context.update({"show_close": True})
-        context.update({"show_delete_link": False})
-        context.update({"show_save_as_new": False})
-        context.update({"show_save_and_add_another": False})
-        context.update({"show_save_and_continue": False})
-
-        return super(Metro2EventAdmin, self).render_change_form(request, context, add, change, form_url, obj)
-
-    def response_change(self, request, obj):
-        """
-        Overrides ModelAdmin response_change() to call the evaluate mgmt command and add a message to django-admin that the command has completed.
-        """
-        logger = logging.getLogger('admin.response_change')
-        if "_parse_eval" in request.POST or "_eval" in request.POST:
-            try:
-                obj.evaluate()
-                messages.success(request, f"Finished running evaluators for event ID: {obj.id} and saving results.")
-            except (ValueError, TypeError):
-                logger.info(f'The evaluators were not run for event ID: {obj.id}')
-                pass
-            return redirect(".")
-        return  super(Metro2EventAdmin, self).response_change(request, obj)
-
-    def message_user(self, request, message, level=messages.INFO, extra_tags='',
-                    fail_silently=False):
-        """
-        Overrides ModelAdmin message_user() to only include the messages created and not the default messages
-        """
-        pass
-
-    def save_model(self, request, obj, form, change):
-        """
-        Overrides ModelAdmin save_model() to update the message returned to the view
-        """
-        if obj.id:
-            if not change: # This is a new
-                messages.success(request, f'Created event ID: {obj.id}. Finished parsing data for event: {obj.name}')
-                self.response_change(request, obj)
-            else:
-                messages.success(request, f'The metro2 event \"{obj.name}\" was changed successfully.')
-        else:
-            messages.error(request, 'Event did not save successfully and did not parse data')
-        super().save_model(request, obj, form, change)
+            help_msg = f"The location of the raw data files in the local filesystem (SSO not enabled). If in doubt, use: {settings.LOCAL_EVENT_DATA}."
+        directory_field.help_text = help_msg
+        return form
 
     def has_add_permission(self, request, obj=None):
         return True

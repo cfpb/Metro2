@@ -1,20 +1,19 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { queryOptions } from '@tanstack/react-query'
 import { createRoute, defer, notFound } from '@tanstack/react-router'
-import type Account from 'pages/Account/Account'
-import { fetchData } from 'utils/utils'
+import type { AccountRecord } from 'utils/constants'
+import { fetchData, prepareAccountRecordData } from 'utils/utils'
 import type Event from '../Event/Event'
 import { eventQueryOptions, eventRoute } from '../Event/route'
 import type EvaluatorMetadata from './Evaluator'
 import EvaluatorPage from './EvaluatorPage'
 
-export async function getEvaluator(
-  eventData: Promise<Event>,
+export function getEvaluator(
+  eventData: Event,
   evaluatorId: string
-): Promise<EvaluatorMetadata> {
+): EvaluatorMetadata {
   try {
-    const event = await eventData
-    const evaluator = event.evaluators.find(result => result.id === evaluatorId)
+    const evaluator = eventData.evaluators.find(result => result.id === evaluatorId)
     if (evaluator) return evaluator
     // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw new Error('404')
@@ -30,15 +29,16 @@ export async function getEvaluator(
 export const fetchEvaluatorHits = async (
   eventId: string,
   evaluatorId: string
-): Promise<Account[]> => {
+): Promise<AccountRecord[]> => {
   const url = `/api/events/${eventId}/evaluator/${evaluatorId}/`
-  return fetchData(url, 'hits')
+  const data: { hits: AccountRecord[] } = await fetchData(url, 'hits')
+  return prepareAccountRecordData(data.hits)
 }
 
 export const hitsQueryOptions = (
   eventId: string,
   evaluatorId: string
-): UseQueryOptions<Account[], Error, unknown, string[]> =>
+): UseQueryOptions<AccountRecord[], Error, unknown, string[]> =>
   queryOptions({
     queryKey: ['event', eventId, 'evaluator', evaluatorId],
     queryFn: async () => fetchEvaluatorHits(eventId, evaluatorId),
@@ -54,13 +54,14 @@ const evaluatorRoute = createRoute({
     // have been included when we fetched the event data on the event parent route.
     // Instead, we ensure that the event data has been received and call getEvaluator
     // to find the evaluator's metadata on the event object.
-    const eventData = queryClient.ensureQueryData(eventQueryOptions(eventId))
-    const evaluatorMetadata = await getEvaluator(eventData, evaluatorId)
+    const eventData = await queryClient.ensureQueryData(eventQueryOptions(eventId))
+    const evaluatorMetadata = getEvaluator(eventData, evaluatorId)
     const evaluatorHits = queryClient.ensureQueryData(
       hitsQueryOptions(eventId, evaluatorId)
     )
     return {
       evaluatorMetadata,
+      eventData,
       evaluatorHits: defer(evaluatorHits)
     }
   }

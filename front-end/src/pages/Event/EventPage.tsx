@@ -4,6 +4,7 @@ import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
 import type Event from './Event'
 import columnDefinitions from './columnDefinitions'
+import EventDownloader from './EventDownloader'
 
 export default function EventPage(): ReactElement {
   const eventData: Event = useLoaderData({ from: '/events/$eventId' })
@@ -14,12 +15,15 @@ export default function EventPage(): ReactElement {
         heading={eventData.name}
         icon='bank-round'
         subhead={
-          eventData.start_date && eventData.end_date
-            ? `Data from ${eventData.start_date} - ${eventData.end_date}`
+          eventData.date_range_start && eventData.date_range_end
+            ? `Data from ${eventData.date_range_start} - ${eventData.date_range_end}`
             : undefined
         }
       />
-      <div className='block'>
+      <div className='block block__sub content-row'>
+      <div className='download-row'>
+        <EventDownloader rows={eventData.evaluators} eventName={eventData.name}/>
+      </div>
         <Table
           rows={eventData.evaluators}
           columnDefinitions={columnDefinitions}

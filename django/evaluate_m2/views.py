@@ -3,12 +3,12 @@ import logging
 
 from datetime import date
 from django.http import Http404, HttpResponse, JsonResponse
-
 from django.shortcuts import get_list_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+from evaluate_m2.views_utils import has_permissions_for_request
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
@@ -46,11 +46,13 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
     logger = logging.getLogger('views.download_evaluator_results_csv')
     try:
         event = Metro2Event.objects.get(id=event_id)
+        if not has_permissions_for_request(request, event):
+            return HttpResponse('Unauthorized', status=401)
         eval = EvaluatorMetadata.objects.get(id=evaluator_id)
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=event, evaluator=eval)
 
-        filename = f"{event.name}_{eval.id}_{date.today()}.csv"
+        filename = f"{event.name}_{eval.id}.csv"
         response = HttpResponse(
             content_type="text/csv",
             headers={"Content-Disposition": f"attachment; filename={filename}"}
@@ -80,12 +82,16 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
 @api_view()
 def evaluator_results_view(request, event_id, evaluator_id):
     logger = logging.getLogger('views.evaluator_results_view')
+    RESULTS_PAGE_SIZE = 20
     try:
+        event = Metro2Event.objects.get(id=event_id)
+        if not has_permissions_for_request(request, event):
+            return HttpResponse('Unauthorized', status=401)
         eval_result_summary = EvaluatorResultSummary.objects.get(
-            event=Metro2Event.objects.get(id=event_id),
+            event=event,
             evaluator=EvaluatorMetadata.objects.get(id=evaluator_id))
         eval_result_serializer = EvaluatorResultsViewSerializer(
-            eval_result_summary.evaluatorresult_set.all()[:50], many=True)
+            eval_result_summary.evaluatorresult_set.all()[:RESULTS_PAGE_SIZE], many=True)
 
         response = {'hits': eval_result_serializer.data}
         return JsonResponse(response)
@@ -104,6 +110,8 @@ def account_summary_view(request, event_id, account_number):
     logger = logging.getLogger('views.account_summary_view')
     try:
         event = Metro2Event.objects.get(id=event_id)
+        if not has_permissions_for_request(request, event):
+            return HttpResponse('Unauthorized', status=401)
         event_activities=get_list_or_404(event.get_all_account_activity().filter(
             cons_acct_num=account_number))
         if not event_activities:
@@ -114,7 +122,7 @@ def account_summary_view(request, event_id, account_number):
             result_summary__event=event)
         eval_metadata=[]
         for e in eval_results:
-            eval={'id': e.result_summary.evaluator.id }
+            eval=e.result_summary.evaluator.id
             if eval not in eval_metadata:
                 eval_metadata.append(eval)
         data = {'cons_acct_num': account_number,
@@ -137,8 +145,11 @@ def account_summary_view(request, event_id, account_number):
 def account_pii_view(request, event_id, account_number):
     logger = logging.getLogger('views.account_pii_view')
     try:
+        event = Metro2Event.objects.get(id=event_id)
+        if not has_permissions_for_request(request, event):
+            return HttpResponse('Unauthorized', status=401)
         result = AccountHolder.objects.filter(
-            data_file__event__id=event_id,
+            data_file__event=event,
             cons_acct_num=account_number).latest('activity_date')
         acct_holder_serializer = AccountHolderSerializer(result)
         return JsonResponse(acct_holder_serializer.data)
@@ -156,6 +167,8 @@ def events_view(request, event_id):
     logger = logging.getLogger('views.evaluator_results_view')
     try:
         event = Metro2Event.objects.get(id=event_id)
+        if not has_permissions_for_request(request, event):
+            return HttpResponse('Unauthorized', status=401)
         eval_result_summary = EvaluatorResultSummary.objects.filter(event=event)
         evaluators = [ers.evaluator for ers in eval_result_summary]
         evaluator_metadata_serializer = EventsViewSerializer(

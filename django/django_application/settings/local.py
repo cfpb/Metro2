@@ -20,6 +20,3 @@ LOGGING['root']= {
         'handlers': ['console'],
         'level': 'DEBUG',
     }
-
-# Use front end modules served by vite instead of built assets
-DJANGO_VITE_DEV_MODE = True

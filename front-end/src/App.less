@@ -29,29 +29,39 @@ body,
   flex-direction: column;
 }
 
-header h1 a {
+// Metro 2 header is a link but doesn't need link styling
+header h2 a {
   color: black !important;
 }
 
-.error-container {
-  .error-message {
-    max-width: 500px;
-    margin: auto;
+// Styles for summary content on evaluator and account pages
+.summary-row {
+  margin-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
 
-    .m-btn-group .a-btn + .a-btn {
-      margin-left: 2rem;
-      .respond-to-max(@bp-sm-min, {margin: 0.5rem 0;});
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+  }
 
-      svg {
-        padding-left: 0.5rem;
-        padding-top: 0.1rem;
-      }
-    }
+  ol,
+  ul {
+    margin-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
+  }
+}
+
+// styles for download button rows
+.download-row {
+  display: flex;
+  // justify-content: space-between;
+  align-items: end;
+  margin-bottom: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
+
+  .downloader {
+    margin-left: auto;
   }
 }
 
 // expandable overrides that should be handled by RDS
-
 // no background expandable variant
 .o-expandable {
   background-color: inherit !important;
@@ -61,4 +71,23 @@ header h1 a {
 // remove double border in accordion
 .o-expandable-group .o-expandable__padded + .o-expandable__padded {
   margin-top: -1px;
+}
+
+// Styles for evaluator long description
+.long-description {
+  h4 {
+    margin-bottom: 6px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 25px;
+  }
+}
+
+// Add spacing between link text and icons
+.a-link_text + .cf-icon-svg-wrapper,
+.a-btn__link .cf-icon-svg-wrapper {
+  padding-left: 0.2rem;
 }

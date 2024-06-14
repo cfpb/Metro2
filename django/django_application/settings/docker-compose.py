@@ -17,5 +17,4 @@ DATABASES = {
 S3_ENABLED=False
 LOCAL_EVENT_DATA = "parse_m2/local_data/"
 
-# Use front end modules served by vite instead of built assets
-DJANGO_VITE_DEV_MODE = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'django']

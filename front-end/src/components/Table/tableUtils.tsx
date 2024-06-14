@@ -1,7 +1,5 @@
-import type { ColDef as ColDefType, ValueFormatterParams } from 'ag-grid-community'
-import AnnotatedText from 'components/AnnotatedText'
-import type { ReactElement } from 'react'
-import { formatNumber, formatUSD } from 'utils/utils'
+import type { ValueFormatterParams } from 'ag-grid-community'
+import { formatDate, formatNumber, formatUSD } from 'utils/utils'
 
 export const columnTypes = {
   wrappableText: {
@@ -14,11 +12,13 @@ export const columnTypes = {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
     headerClass: 'ag-right-aligned-header',
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    valueFormatter: ({ value }: ValueFormatterParams): any => formatNumber(value)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    valueFormatter: ({ value }: ValueFormatterParams): string => formatNumber(value)
   },
   formattedDate: {
-    cellDataType: 'dateString'
+    cellDataType: 'dateString',
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    valueFormatter: ({ value }: ValueFormatterParams): string => formatDate(value)
   },
   plainText: {
     cellDataType: 'text'
@@ -27,18 +27,8 @@ export const columnTypes = {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
     headerClass: 'ag-right-aligned-header',
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    valueFormatter: ({ value }: ValueFormatterParams): any => formatUSD(value)
-  },
-  annotatedText: {
-    cellDataType: 'text',
-    cellRenderer: ({
-      colDef,
-      value
-    }: {
-      colDef: ColDefType
-      value: number | string | null | undefined
-    }): ReactElement | null => <AnnotatedText field={colDef.field} value={value} />
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    valueFormatter: ({ value }: ValueFormatterParams): string => formatUSD(value)
   }
 }
 
@@ -50,8 +40,8 @@ export const columnDefaults = {
   minWidth: 150
 }
 
-// export const gridOptionDefaults = {
-//   enableCellTextSelection: true,
-//   ensureDomOrder: true,
-//   skipHeaderOnAutoSize: true
-// }
+export const gridOptionDefaults = {
+  enableCellTextSelection: true,
+  ensureDomOrder: true,
+  skipHeaderOnAutoSize: true
+}

@@ -8,11 +8,11 @@ The front-end provides a React-based interface for authenticated and authorized 
 
 ## Sections
 - [Deployments](#deployments)
-    - [Alto Dev](#alto-dev)
-    - [Alto Staging](#alto-staging)
-    - [Alto Prod](#alto-prod)
-- [Deploying the project](#deploying)
-- [Running the project](#running-the-project)
+    - [Alto Dev](#alto-dev-internal)
+    - [Alto Staging](#alto-staging-internal)
+    - [Alto Prod](#alto-prod-internal)
+- [Deployment automations](#deployment-automations)
+- [Running the project locally](#running-the-project-locally)
     - [Running in Helm](#running-in-helm)
     - [Running in docker-compose](#running-in-docker-compose)
     - [Running jobs individually](#individual-jobs)
@@ -23,20 +23,49 @@ The front-end provides a React-based interface for authenticated and authorized 
 
 # Deployments
 
-Running the project in AWS Alto.
-TODO: add documentation about how to deploy, how to upload data in a deployed environment, how to configure a deployment, etc.
+Metro2 is deployed to the internal accounts of ALTO's 3 Environments: Dev, Staging, and Prod.
 
-## Alto Dev
+## ALTO Dev-Internal
 
-- [Metro2 ALTO Dev-Internal Jenkins](https://INTERNAL)
+**Quick Links**
+- [Metro2 in Dev-Internal](https://INTERNAL/)
 
-## Alto Staging
+**How to deploy**
+1. Prepare a branch that has the changes you wish to make.
+2. In that branch, make any updates to the `buildspec.yaml` file to customize your deployment. (See [CodeBuild automation](#codebuild-automation) below for details)
+3. Push your branch to the `dev` branch of this repo.
+4. AWS CodeBuild will automatically run the buildspec code, which builds and deploys Metro2 to the Dev-Internal cluster.
+5. The app will be available at `https://INTERNAL/` (if using the `metro` release), or `https://[release-name]-eksINTERNAL/` (if you specified a release name)
 
-- [Metro2 ALTO Staging-Internal Jenkins](https://INTERNAL)
+## ALTO Staging-Internal
 
-## Alto Prod
+**Quick Links**
+- [Metro2 in Staging-Internal](https://INTERNAL/)
+
+**How to deploy**
+1. Prepare a branch that has the changes you wish to make.
+2. In that branch, make any updates to the `buildspec.yaml` file to customize your deployment. (See [CodeBuild automation](#codebuild-automation) below for details)
+3. Push your branch to the `staging` branch of this repo.
+4. AWS CodeBuild will automatically run the buildspec code, which builds and deploys Metro2 to the Staging-Internal cluster.
+5. The app will be available at `https://INTERNAL/`.
+
+## ALTO Prod-Internal
 
 Not currently available
+
+## Deployment automations
+### CodeBuild automation
+
+Inside the Dev-Internal and Staging-Internal accounts in Alto, a Codebuild Job has been set up from the [Service Catalog](https://GHE/aws/service-catalog-cdk/blob/master/products/shared/codebuild-project-eks/v1/product.yml). The job is pointed to a target branch of the Metro2 repo.  Whenever a change is pushed to that branch, the job is automatically triggered and begins running that branch's [buildspec](./buildspec.yaml).
+- In Dev-Internal, the job is called `cfpb-team-metro2-metro2-dev-deploy` and is pointed at the [`dev` branch](https://GHE/Metro2/metro2/tree/dev).
+- In Staging-Internal, it's called `cfpb-metro2-StagingDeploy` and is pointed at the [`staging` branch](https://GHE/Metro2/metro2/tree/staging).
+
+What the buildspec does:
+First, the `env` section of the [buildspec](./buildspec.yaml) configures the environment with the necessary env vars. Two important env vars that will affect your deployment are:
+- `ENABLE_SSO`: if you want SSO enabled, set to `enabled` or blank. (default: blank)
+- `RELEASE_NAME`: the name of the metro2 release, which determines the URL of the deployed application. (default: `metro2`)
+
+Next, The `build` section of the [buildspec](./buildspec.yaml) is broken into three phases: [install](https://GHE/Metro2/metro2/blob/4bf5b4ce4f65f743746aa49f315e1514586815bf/buildspec.yaml#L26), [pre-build](https://GHE/Metro2/metro2/blob/4bf5b4ce4f65f743746aa49f315e1514586815bf/buildspec.yaml#L60), and [build](https://GHE/Metro2/metro2/blob/4bf5b4ce4f65f743746aa49f315e1514586815bf/buildspec.yaml#L84). Each phase's purpose and steps are explained in the buildspec file.
 
 # Running the project locally
 
@@ -57,10 +86,9 @@ With that in place, you must do the following:
     2. Run `build-images.sh -e local`
     3. Run `helm-install-local.sh`
 
-This will deploy the Metro2 Application to the Docker Desktop Cluster and create three images:
-    1. metro2-frontend:local
-    2. metro2-evaluator:local
-    3. metro2-django:local
+This will deploy the Metro2 Application to the Docker Desktop Cluster and create two images:
+    1. A postgres database
+    2. The metro2 application, including the react front-end and django back-end
 
 ## Running in docker-compose
 
@@ -69,6 +97,8 @@ If docker desktop is not already installed, please [download and install it](htt
 `docker-compose build` to build the images.
 
 `docker-compose up` or `docker-compose up -d` to run the application.
+
+The front end is served by Vite in development mode at http://localhost:3000. The Django app runs on port 8000 and the admin can be accessed at http://localhost:8000/admin/.
 
 To connect to a running container, (e.g. to run scripts or tests), `docker-compose exec [container-name] sh`, where `[container-name]` is one of the services named in [docker-compose.yml](/docker-compose.yml), i.e. `django` or `frontend`.
 

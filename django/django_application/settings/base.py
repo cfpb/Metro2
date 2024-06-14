@@ -33,7 +33,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django_vite',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'users',
     'parse_m2.apps.ParseM2Config',
     'evaluate_m2.apps.EvaluateM2Config',
@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'django_application.urls'
@@ -95,6 +96,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+SSO_ENABLED = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -107,10 +109,6 @@ STATIC_ROOT = BASE_DIR / STATIC_URL
 STATICFILES_DIRS = [
     FRONT_END_DIR / 'dist',
 ]
-
-# Tells django-vite the port where vite is serving live
-# front end assets (defaults to 5173)
-DJANGO_VITE_DEV_SERVER_PORT = 3000
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
