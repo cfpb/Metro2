@@ -964,7 +964,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_eval_scc_status_7(self):
         # hits when both conditions met:
-        # 1. spc_com_cd == 'BO'
+        # 1. spc_com_cd == 'AP'
         # 2. acct_stat == '13', '62', '64'
 
         # Create the Account Activities data
@@ -972,13 +972,13 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'13', 'spc_com_cd': 'BO'
+                'acct_stat':'13', 'spc_com_cd': 'AP'
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'62', 'spc_com_cd': 'BO'
+                'acct_stat':'62', 'spc_com_cd': 'AP'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'0G', 'spc_com_cd': 'BO'
+                'acct_stat':'0G', 'spc_com_cd': 'AP'
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'64', 'spc_com_cd': 'BC',
@@ -989,11 +989,11 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '13', 'spc_com_cd': 'BO', 'acct_type':'', 'amt_past_due': 0,
+            'acct_stat': '13', 'spc_com_cd': 'AP', 'acct_type':'', 'amt_past_due': 0,
             'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': 'a'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '62', 'spc_com_cd': 'BO', 'acct_type':'', 'amt_past_due': 0,
+            'acct_stat': '62', 'spc_com_cd': 'AP', 'acct_type':'', 'amt_past_due': 0,
             'current_bal': 0, 'date_closed': None, 'k2__purch_sold_ind': None
         }]
         self.assert_evaluator_correct(self.event, 'SCC-Status-7', expected)
