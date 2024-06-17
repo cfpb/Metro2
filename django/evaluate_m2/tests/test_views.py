@@ -63,7 +63,9 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                  'spc_com_cd': 'X', 'compl_cond_cd': '0', 'current_bal': 0,
                  'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2020-01-01',
                  'dofd': '2020-01-01', 'date_closed': '2020-01-01', 'dolp': None,
-                 'int_type_ind': '', 'cons_info_ind': cons_info_ind, 'ecoa': ecoa, 'cons_info_ind_assoc': ["1A", "B"], 'ecoa_assoc': ["2", "1"], 'purch_sold_ind': None, 'balloon_pmt_amt': None, 'change_ind': None}]
+                 'int_type_ind': '', 'cons_info_ind': cons_info_ind, 'ecoa': ecoa,
+                 'cons_info_ind_assoc': ["1A", "B"], 'ecoa_assoc': ["2", "1"],
+                 'purch_sold_ind': None, 'balloon_pmt_amt': None, 'change_ind': None}]
 
     def create_activity_data(self):
         # Create the parent records for the AccountActivity data
