@@ -948,6 +948,85 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(
             self.event, 'Status-DOFD-6', expected)
 
+    def test_eval_status_dofd_7(self):
+    # Hits when all conditions are met:
+    # 1. acct_type == '19','25','2C'
+    # 2. acct_stat == '88','89'
+    # 3. pmt_rating == '0'
+    # 4. port_type == 'M'
+    # 5. terms_freq == 'D'
+    # 6. compl_cond_cd != 'XA'
+    # 7. dofd != None
+        # Create previous Account Activities data
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_type':'19', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'0', 'terms_freq':'D',
+                'dofd':date(2019, 12, 31)
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_type':'25', 'acct_stat':'89', 'compl_cond_cd':'B',
+                'port_type':'M', 'pmt_rating':'0', 'terms_freq':'D',
+                'dofd':date(2019, 12, 31)
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_type':'00', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'0', 'terms_freq':'D',
+                'dofd':date(2019, 12, 31)
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_type':'19', 'acct_stat':'99', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'0', 'terms_freq':'D',
+                'dofd':date(2019, 12, 31)
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'1', 'terms_freq':'D',
+                'dofd':date(2019, 12, 31)
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'0', 'pmt_rating':'1', 'terms_freq':'D',
+                'dofd':date(2019, 12, 31)
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'XA',
+                'port_type':'M', 'pmt_rating':'1', 'terms_freq':'D',
+                'dofd':date(2019, 12, 31)
+            }, {
+                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
+                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'1', 'terms_freq':'D',
+                'dofd':None
+            }]
+        for i in range(0, len(activities)):
+            acct_record(self.data_file, activities[i])
+        # 32: HIT, 33: HIT, 34: NO-acct_type=00,
+        # 35: NO-acct_stat=99, 36: NO-pmt_rating=1
+        # 37: NO-port_type=0, 38: NO-compl_cond_cd=XA
+        # 39: NO-dofd=None
+
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0032', 'acct_stat': '88', 'acct_type': '19',
+            'port_type': 'M','dofd': date(2019, 12, 31), 'pmt_rating': '0',
+            'terms_freq': 'D', 'compl_cond_cd': 'A', 'amt_past_due': 0,
+            'current_bal': 0, 'date_closed': None, 'orig_chg_off_amt': 0, 'smpa': 0
+        },  {
+            'id': 33, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0033', 'acct_stat': '89', 'acct_type': '25',
+            'port_type': 'M', 'dofd': date(2019, 12, 31), 'pmt_rating': '0',
+            'terms_freq': 'D', 'compl_cond_cd': 'B', 'amt_past_due': 0,
+            'current_bal': 0, 'date_closed': None, 'orig_chg_off_amt': 0, 'smpa': 0
+        }]
+
+        self.assert_evaluator_correct(
+            self.event, 'Status-DOFD-7', expected)
+
     def test_eval_status_smpa_1(self):
     # Hits when all conditions are met:
     # 1. acct_stat == '05','13','62','64','65','97'
