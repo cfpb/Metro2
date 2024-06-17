@@ -21,6 +21,64 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     ############################
     # Tests for the category 12 evaluators
+    def test_eval_type_apd_1(self):
+        # Hits when all conditions are met:
+        # 1. port_type == 'I', 'M'
+        # 2. acct_type != '13', '3A'
+        # 3. current_bal == 0
+        # 4. spc_com_cd != 'AH', 'AT', 'O'
+        # 5. l1_change_ind == None
+        # 6. amt_past_due != 0
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'I', 'acct_type':'00', 'current_bal': 0,
+                'spc_com_cd': 'BS', 'amt_past_due': 1
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type':'C', 'acct_type':'01', 'current_bal': 0,
+                'spc_com_cd': 'BS', 'amt_past_due': 5
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'M', 'acct_type':'13', 'current_bal': 0,
+                'spc_com_cd': 'BS', 'amt_past_due': 10
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'I', 'acct_type':'02','current_bal': 1,
+                'spc_com_cd': 'BS', 'amt_past_due': 150
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'M', 'acct_type':'03', 'current_bal': 0,
+                'spc_com_cd': 'AH', 'amt_past_due': 20
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'I', 'acct_type':'04', 'current_bal': 0,
+                'spc_com_cd': 'AU', 'amt_past_due': 25
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'M', 'acct_type':'05', 'current_bal': 0,
+                'spc_com_cd': 'BS', 'amt_past_due': 0
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+
+        l1_activity = {'id': 37, 'change_ind': '1'}
+        l1_record(l1_activity)
+        # 32: HIT, 33: NO-port_type=C, 34: NO-acct_type=13, 35: NO-current_bal=1,
+        # 36: NO-spc_com_cd=AH, 37: NO-l1_change_ind=1,
+        # 38: NO-amt_past_due=0
+
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'acct_type': '00', 'amt_past_due': 1, 'current_bal': 0,
+            'l1__change_ind': None, 'port_type': 'I', 'spc_com_cd': 'BS',
+            'acct_stat': '', 'date_closed': None
+        }]
+        self.assert_evaluator_correct(self.event, "Type-APD-1", expected)
+
     def test_type_balance_1(self):
         # Hits when all conditions are met:
         # 1. port_type == 'I'
