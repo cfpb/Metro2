@@ -907,6 +907,57 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         }]
         self.assert_evaluator_correct(self.event, 'Status-DOFD-4', expected)
 
+    def test_eval_status_dofd_5(self):
+    # Hits when all conditions are met:
+    # 1. acct_stat == '05'
+    # 2. pmt_rating == '0'
+    # 3. dofd != None
+        # Create previous Account Activities data
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'pmt_rating':'0', 'acct_stat':'05', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'pmt_rating':'0', 'acct_stat':'05', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'pmt_rating':'0', 'acct_stat':'01', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'pmt_rating':'1', 'acct_stat':'05', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'pmt_rating':'0', 'acct_stat':'05', 'dofd':None
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-acct_stat=01,
+        # 35: NO-pmt_rating=1, 36: NO-dofd=None
+
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0032', 'acct_stat':'05', 'dofd': date(2019, 12, 31),
+            'pmt_rating':'0', 'amt_past_due': 0, 'compl_cond_cd':"",
+            'current_bal':0, 'date_closed': None, 'orig_chg_off_amt': 0,
+            'smpa':0, 'spc_com_cd':"", 'terms_freq':"00",
+            'account_holder__cons_info_ind': '',
+            'account_holder__cons_info_ind_assoc': None
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0033', 'acct_stat':'05', 'dofd': date(2019, 12, 31),
+            'pmt_rating':'0', 'amt_past_due': 0, 'compl_cond_cd':"",
+            'current_bal':0, 'date_closed': None, 'orig_chg_off_amt': 0,
+            'smpa':0, 'spc_com_cd':"", 'terms_freq':"00",
+             'account_holder__cons_info_ind': '',
+             'account_holder__cons_info_ind_assoc': None
+        }]
+        self.assert_evaluator_correct(
+            self.event, 'Status-DOFD-5', expected)
+
     def test_eval_status_dofd_6(self):
     # Hits when all conditions are met:
     # 1. acct_stat == '11'
