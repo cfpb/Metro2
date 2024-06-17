@@ -40,17 +40,44 @@ class ParserTestCase(TestCase):
             # The test file contains the following segments:
             self.assertEqual(AccountHolder.objects.count(), 3)
             self.assertEqual(AccountActivity.objects.count(), 3)
+            self.assertEqual(J1.objects.count(), 2)
+            self.assertEqual(J2.objects.count(), 1)
             self.assertEqual(K1.objects.count(), 1)
             self.assertEqual(K2.objects.count(), 1)
             self.assertEqual(L1.objects.count(), 1)
 
             # The test file does not contain these:
             self.assertEqual(UnparseableData.objects.count(), 0)
-            self.assertEqual(J1.objects.count(), 0)
-            self.assertEqual(J2.objects.count(), 0)
             self.assertEqual(K3.objects.count(), 0)
             self.assertEqual(K4.objects.count(), 0)
             self.assertEqual(N1.objects.count(), 0)
+
+    def test_aggregate_fields(self):
+        # Test the whole parsing process for a file
+        file_size = os.path.getsize(self.tiny_file)
+        with open(self.tiny_file, mode='r') as filestream:
+            self.parser.parse_file_contents(filestream, file_size)
+
+            # The test file contains the following segments:
+            self.assertEqual(AccountHolder.objects.count(), 3)
+            self.assertEqual(J1.objects.count(), 2)
+            self.assertEqual(J2.objects.count(), 1)
+
+            account_1 = AccountHolder.objects.get(cons_acct_num='ACCTNUMBER1')
+            account_2 = AccountHolder.objects.get(cons_acct_num='ACCTNUMBER2')
+            account_3 = AccountHolder.objects.get(cons_acct_num='ACCTNUMBER3')
+
+            # The test file first row contains multiple J1 segments
+            self.assertEqual(account_1.cons_info_ind_assoc, ['1A', 'A'])
+            self.assertEqual(account_1.ecoa_assoc, ['2','2'])
+
+            # The test file second row contains no J1/J2 segments
+            self.assertEqual(account_2.cons_info_ind_assoc, [])
+            self.assertEqual(account_2.ecoa_assoc, [])
+
+            # The test file third row contains J2 segment
+            self.assertEqual(account_3.cons_info_ind_assoc, [])
+            self.assertEqual(account_3.ecoa_assoc, ['2'])
 
     def test_report_file_outcome(self):
         file_size = os.path.getsize(self.tiny_file)

@@ -1,5 +1,9 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
+from django.views.generic.detail import DetailView
+from django.urls import path, reverse
+from django.utils.html import format_html
 
 from parse_m2.models import (
     AccountHolder, AccountActivity,
@@ -8,10 +12,6 @@ from parse_m2.models import (
     UnparseableData
 )
 
-
-from django.views.generic.detail import DetailView
-from django.urls import path, reverse
-from django.utils.html import format_html
 
 class EventParseEvalView(DetailView):
     template_name = 'admin/parse_m2/event_parse_eval.html'
@@ -50,7 +50,10 @@ class Metro2EventAdmin(admin.ModelAdmin):
         other_field = form.base_fields['other_descriptor']
         other_field.label = "Other descriptor (optional)"
         directory_field = form.base_fields['directory']
-        help_msg = "The location of the raw data files in the data directory. Starts with Enforcement/ or Supervision/ ."
+        if settings.SSO_ENABLED:
+            help_msg = "The location of the raw data files in the data directory. Starts with Enforcement/ or Supervision/ ."
+        else:
+            help_msg = f"The location of the raw data files in the local filesystem (SSO not enabled). If in doubt, use: {settings.LOCAL_EVENT_DATA}."
         directory_field.help_text = help_msg
         return form
 
@@ -100,7 +103,8 @@ class AccountHolderAdmin(admin.ModelAdmin):
                     'first_name', 'middle_name', 'gen_code','ssn', 'dob',
                     'phone_num', 'ecoa', 'cons_info_ind', 'country_cd',
                     'addr_line_1', 'addr_line_2', 'city', 'state', 'zip',
-                    'addr_ind', 'res_cd']
+                    'addr_ind', 'res_cd', 'cons_info_ind_assoc',
+                    'ecoa_assoc']
     def has_add_permission(self, request, obj=None):
         return False
     def has_view_permission(self, request, obj=None):

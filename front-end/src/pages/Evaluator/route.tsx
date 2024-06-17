@@ -1,6 +1,7 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { queryOptions } from '@tanstack/react-query'
 import { createRoute, defer, notFound } from '@tanstack/react-router'
+import { userQueryOptions } from 'models/User'
 import type { AccountRecord } from 'utils/constants'
 import { fetchData, prepareAccountRecordData } from 'utils/utils'
 import type Event from '../Event/Event'
@@ -8,12 +9,13 @@ import { eventQueryOptions, eventRoute } from '../Event/route'
 import type EvaluatorMetadata from './Evaluator'
 import EvaluatorPage from './EvaluatorPage'
 
-export function getEvaluator(
-  eventData: Event,
+export async function getEvaluator(
+  eventData: Promise<Event>,
   evaluatorId: string
-): EvaluatorMetadata {
+): Promise<EvaluatorMetadata> {
   try {
-    const evaluator = eventData.evaluators.find(result => result.id === evaluatorId)
+    const data = await eventData
+    const evaluator = data.evaluators.find(result => result.id === evaluatorId)
     if (evaluator) return evaluator
     // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw new Error('404')
@@ -50,18 +52,16 @@ const evaluatorRoute = createRoute({
   getParentRoute: () => eventRoute,
   component: EvaluatorPage,
   loader: async ({ context: { queryClient }, params: { eventId, evaluatorId } }) => {
-    // We don't have to get the evaluator metadata from the API because it will
-    // have been included when we fetched the event data on the event parent route.
-    // Instead, we ensure that the event data has been received and call getEvaluator
-    // to find the evaluator's metadata on the event object.
-    const eventData = await queryClient.ensureQueryData(eventQueryOptions(eventId))
+    const userData = queryClient.ensureQueryData(userQueryOptions())
+    const eventData = queryClient.ensureQueryData(eventQueryOptions(eventId))
     const evaluatorMetadata = getEvaluator(eventData, evaluatorId)
     const evaluatorHits = queryClient.ensureQueryData(
       hitsQueryOptions(eventId, evaluatorId)
     )
     return {
-      evaluatorMetadata,
-      eventData,
+      userData: await userData,
+      eventData: await eventData,
+      evaluatorMetadata: await evaluatorMetadata,
       evaluatorHits: defer(evaluatorHits)
     }
   }

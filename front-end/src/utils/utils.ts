@@ -248,6 +248,7 @@ export const downloadFileFromURL = (url: string): void => {
 // -- determined by checking for absence of symbols used in pseudo code lines --
 // it's formatted as an H4. All other lines are formatted as paragraphs.
 export const formatLongDescription = (longDescription: string): string => {
+  if (!longDescription) return ''
   let html = ''
   for (const segment of longDescription.split('\n\n')) {
     for (const [lineIndex, line] of segment.split('\n').entries()) {
@@ -259,3 +260,33 @@ export const formatLongDescription = (longDescription: string): string => {
   }
   return html
 }
+
+// Given a cookie name, value, and expire time (in days), sets a cookie.
+// Expire time defaults to 1 day.
+// TODO: consider whether to use cookieStore API (not supported in Safari)
+export const setCookie = (
+  cookieName: string,
+  cookieValue: boolean | number | string,
+  expires = 1
+): void => {
+  // eslint-disable-next-line unicorn/no-document-cookie
+  document.cookie = `${cookieName}=${cookieValue}; max-age=${expires * 86_400}`
+}
+
+// Given a cookie name, retrieves cookie value
+// TODO: consider whether to use cookieStore API (not supported in Safari)
+export const getCookie = (cookieName: string): string | undefined =>
+  // eslint-disable-next-line unicorn/no-document-cookie
+  document.cookie
+    .split('; ')
+    .find(item => item.startsWith(`${cookieName}=`))
+    ?.split('=')[1]
+
+// Sets a cookie to reflect that the PII warning has been acknowledged
+// Cookie expires in 1 day
+export const acceptPIIWarning = (): void => {
+  setCookie('acceptedPIIWarning', true)
+}
+
+// Checks for a cookie indicating PII warning has been acknowledged
+export const hasAcceptedPIIWarning = (): boolean => !!getCookie('acceptedPIIWarning')

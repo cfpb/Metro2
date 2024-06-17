@@ -31,7 +31,8 @@ def parse_s3_file(file, event: Metro2Event):
     parser.parse_file_contents(fstream, file.size)
     logger.info(f'File {key} written to database.')
 
-def s3_bucket_files(bucket_directory: str, bucket_name: str):
+def s3_bucket_files(bucket_directory: str):
+    bucket_name = settings.S3_BUCKET_NAME
     s3 = boto3.resource("s3")
     bucket = s3.Bucket(bucket_name)
     return bucket.objects.filter(Prefix=bucket_directory)
@@ -45,27 +46,17 @@ def parse_zip_file_contents_S3(zip_obj, event, zipfile_name):
                 full_name = f"s3:{zipfile_name}:{f.filename}"
                 parse_file_from_zip(f, zipf, full_name, event)
 
-def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, bucket_name: str = "") -> Metro2Event:
+def parse_files_from_s3_bucket(event: Metro2Event):
     """
-    Create a Metro2Event record. Parse all files in the <bucket_directory> folder
-    of the S3 bucket and save them to the event. For any files that look like zip
+    Parse all files in the folder of the S3 bucket location indicated by
+    event.directory, and save them to event. For any files that look like zip
     files, iterate through each file in the zip and parse each one.
-
-    Return the Metro2Event file associated with the parsed records.
     """
     logger = logging.getLogger('parse_m2.parse_files_from_s3_bucket')
 
-    if not bucket_name:
-        bucket_name = settings.S3_BUCKET_NAME
-        logger.debug(f"Using S3 bucket defined in settings file: {bucket_name}")
 
-    # Create a new Metro2Event. All records parsed will be associated with this Event.
-    event = Metro2Event(name=event_identifier)
-    event.save()
-    logger.debug(f"Created Metro2Event record with id {event.id}")
-
-    logger.info(f"Finding all files in S3 bucket with prefix: {bucket_directory}")
-    for file in s3_bucket_files(bucket_directory, bucket_name):
+    logger.info(f"Finding all files in S3 bucket with prefix: {event.directory}")
+    for file in s3_bucket_files(event.directory):
         logger.info(f"Encountered file: {file.key}")
         # TODO: Handle errors connecting to bucket and opening files
 
@@ -77,5 +68,3 @@ def parse_files_from_s3_bucket(event_identifier: str, bucket_directory: str, buc
             error_message = f"File skipped because of invalid file extension: .{get_extension(file.key)}"
             M2FileParser(event, file.key).record_unparseable_file(error_message)
             logger.info("Skipping. Does not match an allowed file type.")
-
-    return event
