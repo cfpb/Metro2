@@ -18,7 +18,9 @@ class AccountActivitySerializer(serializers.ModelSerializer):
                   'date_open', 'credit_limit', 'hcola', 'id_num', 'terms_dur',
                   'terms_freq', 'smpa', 'actual_pmt_amt', 'acct_stat', 'pmt_rating',
                   'php', 'spc_com_cd', 'compl_cond_cd', 'current_bal', 'amt_past_due',
-                  'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp','int_type_ind', 'cons_info_ind', 'ecoa', 'cons_info_ind_assoc', 'ecoa_assoc', 'purch_sold_ind', 'balloon_pmt_amt', 'change_ind']
+                  'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp','int_type_ind',
+                  'cons_info_ind', 'ecoa', 'cons_info_ind_assoc', 'ecoa_assoc',
+                  'purch_sold_ind', 'balloon_pmt_amt', 'change_ind']
 
     def get_inconsistencies(self, obj):
         eval_ids = obj.evaluatorresult_set.values_list('result_summary__evaluator__id')
