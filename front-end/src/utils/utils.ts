@@ -248,6 +248,7 @@ export const downloadFileFromURL = (url: string): void => {
 // -- determined by checking for absence of symbols used in pseudo code lines --
 // it's formatted as an H4. All other lines are formatted as paragraphs.
 export const formatLongDescription = (longDescription: string): string => {
+  if (!longDescription) return ''
   let html = ''
   for (const segment of longDescription.split('\n\n')) {
     for (const [lineIndex, line] of segment.split('\n').entries()) {

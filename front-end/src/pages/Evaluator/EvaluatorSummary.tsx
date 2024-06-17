@@ -1,12 +1,16 @@
 import DefinitionList from 'components/DefinitionList/DefinitionList'
 import { Expandable, ExpandableGroup } from 'design-system-react'
+import type User from 'models/User'
 import type { ReactElement } from 'react'
 import { formatDate, formatLongDescription, formatNumber } from '../../utils/utils'
 import type EvaluatorMetadata from './Evaluator'
 
 interface EvaluatorSummaryProperties {
   metadata: EvaluatorMetadata
+  user: User
 }
+
+const adminUrlPrefix = import.meta.env.DEV ? 'http://localhost:8000' : ''
 
 const explanatoryFields = new Map([
   ['rationale', 'Rationale'],
@@ -36,7 +40,8 @@ const sortExplanatoryFields = (
 }
 
 export default function EvaluatorSummary({
-  metadata
+  metadata,
+  user
 }: EvaluatorSummaryProperties): ReactElement {
   const summaryItems = [
     // { term: 'Data from', definition: '' },
@@ -98,8 +103,22 @@ export default function EvaluatorSummary({
                 <div className='u-mb15'>
                   <p>
                     <b>Help make this tool more useful:</b> Your experience and
-                    knowledge about specific evaluators can help others. Consider
-                    adding:
+                    knowledge about specific evaluators can help others.
+                    {user.is_admin ? (
+                      <span>
+                        {' '}
+                        As a Metro2 admin, you can{' '}
+                        <a
+                          href={`${adminUrlPrefix}/admin/evaluate_m2/evaluatormetadata/${metadata.id}/change/`}
+                          target='_blank'
+                          rel='noreferrer'>
+                          add information directly to this evaluator.
+                        </a>
+                      </span>
+                    ) : (
+                      <span />
+                    )}{' '}
+                    Consider adding:
                   </p>
                   <ul>
                     {emptyFields.map(field => (
