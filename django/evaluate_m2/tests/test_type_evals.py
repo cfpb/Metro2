@@ -42,7 +42,8 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'spc_com_cd': 'BS', 'amt_past_due': 5
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'M', 'acct_type':'13', 'current_bal': 0,                'spc_com_cd': 'BS', 'amt_past_due': 10
+                'port_type':'M', 'acct_type':'13', 'current_bal': 0,
+                'spc_com_cd': 'BS', 'amt_past_due': 10
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'port_type':'I', 'acct_type':'02','current_bal': 1,
