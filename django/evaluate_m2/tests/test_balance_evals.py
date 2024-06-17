@@ -111,7 +111,7 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(
             self.event, "Balance-APD-2", expected)
 
-    def test_type_date_closed_3(self):
+    def test_balance_date_closed_1(self):
         # Hits when all conditions are met:
         # 1. port_type == 'C', 'M'
         # 2. current_bal > 0
