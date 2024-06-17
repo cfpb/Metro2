@@ -80,6 +80,7 @@ class M2FileParser():
         if not re.match(self.any_non_whitespace, line):
             return parsed
         acct_activity = parsed["AccountActivity"]
+
         next_segment_indicator = line[:2]
         if next_segment_indicator == "J1":
             seg_length = fields.seg_length["j1"]
@@ -90,8 +91,9 @@ class M2FileParser():
                 parsed["j1"] = [j1]
             if j1.cons_info_ind:
                 parsed["cons_info_ind_assoc"].append(j1.cons_info_ind)
-            if j1.ecoa is not None:
+            if j1.ecoa:
                 parsed["ecoa_assoc"].append(j1.ecoa)
+
         elif next_segment_indicator == "J2":
             seg_length = fields.seg_length["j2"]
             j2 = J2.parse_from_segment(line[:seg_length], acct_activity)
