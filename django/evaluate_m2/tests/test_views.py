@@ -243,7 +243,6 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
         # the response should a hits field with a list of EvaluatorResult field_values
-        # print(response.json())
         self.assertEqual(response.json(), expected)
 
     def test_account_summary_view_no_accountactivity_for_event(self):
