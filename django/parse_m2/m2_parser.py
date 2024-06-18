@@ -63,16 +63,14 @@ class M2FileParser():
     def get_activity_date_from_header(self, line: str):
         try:
             return parse_utils.get_field_value(
-                fields.header_fields, "activity_date",
-                line,
+                fields.header_fields, "activity_date", line,
             )
         except parse_utils.UnreadableLineException as e:
-            # if the header couldn't be parsed, record the error
             message = "First line is a header, but activity_date couldn't be parsed"
             if len(line) > 2000:
                 line = line[:1500] + "..."
             error_message = f"{message}. {e}. Source line: `{line}`"
-            # ... and don't try to parse the rest of the file
+            # if the header couldn't be parsed, don't try to parse the rest of the file
             raise parse_utils.UnreadableFileException(error_message)
 
     def parse_extra_segments(self, line: str, parsed: dict) -> dict:
@@ -329,7 +327,8 @@ class M2FileParser():
             try:
                 activity_date = self.get_activity_date_from_header(first_line)
             except parse_utils.UnreadableFileException as e:
-                # If it fails to parse, don't try to parse the rest of the file
+                # If it fails to parse, record the failure, and
+                # don't try to parse the rest of the file
                 self.record_unparseable_file(error_message=str(e))
                 return
         else:
