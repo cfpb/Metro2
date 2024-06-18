@@ -314,6 +314,9 @@ class M2FileParser():
     def parse_file_contents(self, f: io.TextIOWrapper, file_size: int):
         """
         Parse a Metro2 file and save the records to the database.
+        Before exiting, update the file record to show the outcome of the parsing
+        process: "Not parsed" (if it errored out) or "Finished" (if it completed
+        successfully)
 
         Inputs:
         `f` - file stream of the data file to be parsed
