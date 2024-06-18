@@ -233,20 +233,9 @@ class M2FileParser():
         - a dict with the following keys: AccountHolder, AccountActivity,
         extra segment keys (if any were present), and UnparseableData (if any)
         """
-        parsed_records = {
-            "AccountHolder": [],
-            "AccountActivity": [],
-            "j1": [],
-            "j2": [],
-            "k1": [],
-            "k2": [],
-            "k3": [],
-            "k4": [],
-            "l1": [],
-            "n1": [],
-            "UnparseableData": [],
-        }
         lines_parsed = 0
+        parsed_records = None
+
         while lines_parsed < chunk_size:
             line = self.get_next_line(f)
             if not line:
@@ -255,30 +244,54 @@ class M2FileParser():
 
             line_results = self.parse_line(line, activity_date)
             if line_results:
-                if "UnparseableData" in line_results:
-                    parsed_records["UnparseableData"].append(line_results["UnparseableData"])
-                if "AccountHolder" in line_results:
-                    parsed_records["AccountHolder"].append(line_results["AccountHolder"])
-                if "AccountActivity" in line_results:
-                    parsed_records["AccountActivity"].append(line_results["AccountActivity"])
-                if "j1" in line_results:
-                    parsed_records["j1"] = parsed_records["j1"] + line_results["j1"]
-                if "j2" in line_results:
-                    parsed_records["j2"] = parsed_records["j2"] + line_results["j2"]
-                if "k1" in line_results:
-                    parsed_records["k1"].append(line_results["k1"])
-                if "k2" in line_results:
-                    parsed_records["k2"].append(line_results["k2"])
-                if "k3" in line_results:
-                    parsed_records["k3"].append(line_results["k3"])
-                if "k4" in line_results:
-                    parsed_records["k4"].append(line_results["k4"])
-                if "l1" in line_results:
-                    parsed_records["l1"].append(line_results["l1"])
-                if "n1" in line_results:
-                    parsed_records["n1"].append(line_results["n1"])
+                parsed_records = self.prepare_results_for_bulk_save(line_results, parsed_records)
 
             lines_parsed += 1
+
+        return parsed_records
+
+    def prepare_results_for_bulk_save(self, line_results: dict, parsed_records: dict = None) -> dict:
+        """
+        Take the results of parsing a single line (with the parse_line method) and
+        add them to a dict of parser results organized by model, so we can use the
+        save_values_bulk method on it.
+        """
+        if not parsed_records:
+            parsed_records = {
+                "AccountHolder": [],
+                "AccountActivity": [],
+                "j1": [],
+                "j2": [],
+                "k1": [],
+                "k2": [],
+                "k3": [],
+                "k4": [],
+                "l1": [],
+                "n1": [],
+                "UnparseableData": [],
+            }
+        if "UnparseableData" in line_results:
+            parsed_records["UnparseableData"].append(line_results["UnparseableData"])
+        if "AccountHolder" in line_results:
+            parsed_records["AccountHolder"].append(line_results["AccountHolder"])
+        if "AccountActivity" in line_results:
+            parsed_records["AccountActivity"].append(line_results["AccountActivity"])
+        if "j1" in line_results:
+            parsed_records["j1"] = parsed_records["j1"] + line_results["j1"]
+        if "j2" in line_results:
+            parsed_records["j2"] = parsed_records["j2"] + line_results["j2"]
+        if "k1" in line_results:
+            parsed_records["k1"].append(line_results["k1"])
+        if "k2" in line_results:
+            parsed_records["k2"].append(line_results["k2"])
+        if "k3" in line_results:
+            parsed_records["k3"].append(line_results["k3"])
+        if "k4" in line_results:
+            parsed_records["k4"].append(line_results["k4"])
+        if "l1" in line_results:
+            parsed_records["l1"].append(line_results["l1"])
+        if "n1" in line_results:
+            parsed_records["n1"].append(line_results["n1"])
 
         return parsed_records
 
@@ -332,6 +345,7 @@ class M2FileParser():
         # parse the rest of the file until it is done
         while f.tell() < file_size:
             values = self.parse_chunk(f, self.chunk_size, activity_date)
-            self.save_values_bulk(values)
+            if values:
+                self.save_values_bulk(values)
 
         self.record_parsing_success()
