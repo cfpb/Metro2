@@ -72,9 +72,8 @@ class M2FileParser():
             if len(line) > 2000:
                 line = line[:1500] + "..."
             error_message = f"{message}. {e}. Source line: `{line}`"
-            self.record_unparseable_file(error_message)
             # ... and don't try to parse the rest of the file
-            raise parse_utils.UnreadableFileException
+            raise parse_utils.UnreadableFileException(error_message)
 
     def parse_extra_segments(self, line: str, parsed: dict) -> dict:
         """
@@ -163,7 +162,8 @@ class M2FileParser():
         inputs:
         - line: the line of metro2 data, starting with a base segment
         - activity_date: date object, to be saved in the AccountHolder and
-                        AccountActivity records for this line
+                        AccountActivity records for this line. If not present,
+                        DOAI will be used instead.
 
         output:
         - If the line was a valid Metro2 line, a dict with the following keys:
@@ -328,8 +328,9 @@ class M2FileParser():
             # If it's a header, get the activity date
             try:
                 activity_date = self.get_activity_date_from_header(first_line)
-            except parse_utils.UnreadableFileException:
+            except parse_utils.UnreadableFileException as e:
                 # If it fails to parse, don't try to parse the rest of the file
+                self.record_unparseable_file(error_message=str(e))
                 return
         else:
             # If header is missing, first save a message to inform users
@@ -338,7 +339,7 @@ class M2FileParser():
             self.file_record.save()
 
             # Next, parse the first line as a tradeline and save the results
-            # activity_date=None signals the parser to use DOAI instead of activity_date
+            # (activity_date=None signals the parser to use DOAI instead of activity_date)
             activity_date = None
             line_results = self.parse_line(line=first_line, activity_date=None)
             if line_results:

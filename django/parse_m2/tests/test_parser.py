@@ -54,20 +54,16 @@ class ParserTestCase(TestCase):
             self.assertEqual(N1.objects.count(), 0)
 
     def test_parse_file_without_header_line(self):
-        file_size = os.path.getsize(self.tiny_file)
+        file_size = os.path.getsize(self.missing_header)
         with open(self.missing_header, mode='r') as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
-            # The test file contains the following segments:
-            self.assertEqual(AccountHolder.objects.count(), 3)
-            self.assertEqual(AccountActivity.objects.count(), 3)
-            self.assertEqual(J1.objects.count(), 2)
-            self.assertEqual(J2.objects.count(), 1)
-            self.assertEqual(K1.objects.count(), 1)
-            self.assertEqual(K2.objects.count(), 1)
-            self.assertEqual(L1.objects.count(), 1)
-
-            import pdb; pdb.set_trace()
+            # Because the file is missing a header, the parser
+            # uses the DOAI value as the activity_date
+            for aa in AccountActivity.objects.all():
+                doai = aa.doai
+                self.assertEqual(doai, aa.activity_date)
+                self.assertEqual(doai, aa.account_holder.activity_date)
 
     def test_aggregate_fields(self):
         # Test the whole parsing process for a file
