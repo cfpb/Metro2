@@ -15,6 +15,7 @@ class ParserTestCase(TestCase):
         self.header_seg = os.path.join('parse_m2', 'tests','sample_files', 'header_segment_1.txt')
         self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')
         self.tiny_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small.txt')
+        self.missing_header = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small_no_header.txt')
         self.error_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small_with_error.txt')
 
         self.extras_str = "K1ORIGNALCREDITORNAME           03K22SOLDTONAME                     L12NEWACCTNUMBER                                      "
@@ -51,6 +52,22 @@ class ParserTestCase(TestCase):
             self.assertEqual(K3.objects.count(), 0)
             self.assertEqual(K4.objects.count(), 0)
             self.assertEqual(N1.objects.count(), 0)
+
+    def test_parse_file_without_header_line(self):
+        file_size = os.path.getsize(self.tiny_file)
+        with open(self.missing_header, mode='r') as filestream:
+            self.parser.parse_file_contents(filestream, file_size)
+
+            # The test file contains the following segments:
+            self.assertEqual(AccountHolder.objects.count(), 3)
+            self.assertEqual(AccountActivity.objects.count(), 3)
+            self.assertEqual(J1.objects.count(), 2)
+            self.assertEqual(J2.objects.count(), 1)
+            self.assertEqual(K1.objects.count(), 1)
+            self.assertEqual(K2.objects.count(), 1)
+            self.assertEqual(L1.objects.count(), 1)
+
+            import pdb; pdb.set_trace()
 
     def test_aggregate_fields(self):
         # Test the whole parsing process for a file
