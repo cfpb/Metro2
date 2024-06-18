@@ -174,12 +174,12 @@ class ParserTestCase(TestCase):
     def test_header_with_malformed_activity_date(self):
         # 99-99-2023 is not a valid date
         bad_str = "xxxxHEADERxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx99992023xxxxxxxxxxxx"
-        with self.assertRaises(parse_utils.UnreadableLineException):
+        with self.assertRaises(parse_utils.UnreadableFileException):
             self.parser.get_activity_date_from_header(bad_str)
 
     def test_header_too_short(self):
         bad_str = "xxxxHEADER with insufficient characters"
-        with self.assertRaises(parse_utils.UnreadableLineException):
+        with self.assertRaises(parse_utils.UnreadableFileException):
             self.parser.get_activity_date_from_header(bad_str)
 
     def test_get_activity_date_from_header(self):
@@ -189,18 +189,19 @@ class ParserTestCase(TestCase):
             self.assertEqual(activity_date, datetime(2023, 12, 31, 0, 0))
 
     def test_parser_saves_header_as_unparseable(self):
+        # First line of bad_header_file matches the header format, but doesn't
+        # have a valid activity_date
         bad_header_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_bad_header.txt')
         file_size = os.path.getsize(bad_header_file)
 
-        # First line of bad_header_file doesn't match the header format
         with open(bad_header_file, mode='r') as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
             # The file record should show that the parsing failed
             file = self.parser.file_record
             self.assertEqual(file.parsing_status, "Not parsed")
-            self.assertIn("isn't a header", file.error_message)
-            self.assertIn("BADHEADER", file.error_message)
+            self.assertIn("activity_date couldn't be parsed", file.error_message)
+            self.assertIn("HEADERWRONG", file.error_message)
 
             # Everything else should be empty
             self.assertEqual(UnparseableData.objects.count(), 0)
