@@ -39,7 +39,7 @@ class M2FileParser():
         file.error_message = error_message
         file.save()
 
-    def record_parsing_success(self):
+    def record_parsing_success(self) -> None:
         """
         After successfully parsing a file, update the M2DataFile record with details.
         """
@@ -61,14 +61,20 @@ class M2FileParser():
         return line
 
     def get_activity_date_from_header(self, line: str):
-        if re.match(self.header_format, line[:10]):
-            # If the line is a header, get the activity_date
+        try:
             return parse_utils.get_field_value(
                 fields.header_fields, "activity_date",
                 line,
             )
-        else:
-            raise parse_utils.UnreadableFileException("First line of file isn't a header")
+        except parse_utils.UnreadableLineException as e:
+            # if the header couldn't be parsed, record the error
+            message = "First line is a header, but activity_date couldn't be parsed"
+            if len(line) > 2000:
+                line = line[:1500] + "..."
+            error_message = f"{message}. {e}. Source line: `{line}`"
+            self.record_unparseable_file(error_message)
+            # ... and don't try to parse the rest of the file
+            raise parse_utils.UnreadableFileException
 
     def parse_extra_segments(self, line: str, parsed: dict) -> dict:
         """
@@ -281,6 +287,9 @@ class M2FileParser():
         L1.objects.bulk_create(values["l1"])
         N1.objects.bulk_create(values["n1"])
 
+    def is_header_line(self, line) -> bool:
+        return re.match(self.header_format, line[:10])
+
     def parse_file_contents(self, f: io.TextIOWrapper, file_size: int):
         """
         Parse a Metro2 file and save the records to the database.
@@ -289,21 +298,28 @@ class M2FileParser():
         `f` - file stream of the data file to be parsed
         `file_size` - the size of the file stream in bytes
         """
-        # get first line
-        header_line = self.get_next_line(f)
-        try:
-            activity_date = self.get_activity_date_from_header(header_line)
-        except (
-            parse_utils.UnreadableFileException,
-            parse_utils.UnreadableLineException
-        ) as e:
-            # if the header couldn't be parsed, record the error,
-            # and don't try to parse the rest of the file
-            if len(header_line) > 2000:
-                header_line = header_line[:1500] + "..."
-            error_message = f"{e}. Source line: `{header_line}`"
-            self.record_unparseable_file(error_message)
-            return
+        # handle the first line of the file
+        first_line = self.get_next_line(f)
+        if self.is_header_line(first_line):
+            # If it's a header, get the activity date
+            try:
+                activity_date = self.get_activity_date_from_header(first_line)
+            except parse_utils.UnreadableFileException:
+                # If it fails to parse, don't try to parse the rest of the file
+                return
+        else:
+            # If header is missing, first save a message to inform users
+            message = "First line of file isn't a header. Using DOAI in place of activity date."
+            self.file_record.error_message = message
+            self.file_record.save()
+
+            # Next, parse the first line as a tradeline and save the results
+            # activity_date=None signals the parser to use DOAI instead of activity_date
+            activity_date = None
+            line_results = self.parse_line(line=first_line, activity_date=None)
+            if line_results:
+                parsed_records = self.prepare_results_for_bulk_save(line_results)
+                self.save_values_bulk(parsed_records)
 
         # parse the rest of the file until it is done
         while f.tell() < file_size:
