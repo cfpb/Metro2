@@ -152,6 +152,9 @@ class M2FileParser():
 
         return parsed
 
+    def get_doai_from_acct_activity(self, line: str):
+        return parse_utils.get_field_value(fields.base_fields, "doai", line)
+
     def parse_line(self, line: str, activity_date) -> dict:
         """
         Given a single line of a Metro2 file, parse all of the segments it contains
@@ -170,14 +173,15 @@ class M2FileParser():
         - If the line was not valid (i.e. if any part of the parsing process
         threw an UnreadableLine exception), a dict with an 'UnparseableData' key.
         """
-        if re.match(self.trailer_format, line[:11]):
-            # If the line is a trailer, ignore it
-            return
-
         try:
             parsed = {}
             parsed["cons_info_ind_assoc"] = []
             parsed["ecoa_assoc"] = []
+
+            # If activity_date isn't provided, use the DOAI instead
+            if not activity_date:
+                activity_date = self.get_doai_from_acct_activity(line)
+
             # parse the base segment into AccountHolder and AccountActivity
             acct_holder = AccountHolder.parse_from_segment(
                 line, self.file_record, activity_date)
@@ -200,15 +204,19 @@ class M2FileParser():
             return parsed
 
         except parse_utils.UnreadableLineException as e:
-            # if any part of the line couldn't be parsed, don't save
-            #  the segments; only save the line as UnparseableData
-            if len(line) > 2000:
-                line = line[:1997] + "..."
-            return {"UnparseableData": UnparseableData(
-                data_file=self.file_record,
-                unparseable_line=line,
-                error_description=str(e)
-            )}
+            if re.match(self.trailer_format, line[:11]):
+                # If the line is a trailer, ignore it
+                return
+            else:
+                # if any part of the line couldn't be parsed, don't save
+                #  the segments; only save the line as UnparseableData
+                if len(line) > 2000:
+                    line = line[:1997] + "..."
+                return {"UnparseableData": UnparseableData(
+                    data_file=self.file_record,
+                    unparseable_line=line,
+                    error_description=str(e)
+                )}
 
     def parse_chunk(self, f: io.TextIOWrapper, chunk_size: int, activity_date) -> dict:
         """
