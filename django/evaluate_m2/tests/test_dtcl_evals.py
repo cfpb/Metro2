@@ -4,7 +4,7 @@ from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper, acct_record
 from parse_m2.models import Metro2Event, M2DataFile
 
-class DOAIEvalsTestCase(TestCase, EvaluatorTestHelper):
+class DateClosedEvalsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self):
         # Create the parent records for the AccountActivity data
         self.event = Metro2Event(name='test_exam')
