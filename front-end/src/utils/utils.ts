@@ -43,9 +43,12 @@ export const prepareAccountRecordData = (
   return annotateData(records)
 }
 
+// Capitalizes first letter of a string
 export const capitalized = (str: string): string =>
   `${str[0].toUpperCase()}${str.slice(1)}`
 
+// Given a string and a lookup map, returns either the string's value in the lookup
+// or, if the string is not found in the lookup, a capitalized version of the string
 export const getHeaderName = (field: string, lookup: Map<string, string>): string =>
   lookup.get(field) ?? capitalized(field)
 
@@ -54,7 +57,7 @@ export const getHeaderName = (field: string, lookup: Map<string, string>): strin
 // with the following format:
 // {
 //    field: field,
-//    headerName: field's name from FIELD_NAMES_LOOKUP,
+//    headerName: field's name from M2_FIELD_NAMES,
 //    ...{field-specific col def props}
 // }
 export const generateColumnDefinitions = (
