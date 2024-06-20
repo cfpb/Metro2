@@ -36,10 +36,6 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     def create_other_segments(self):
         # Create the other segment data
-        self.j1 = self.create_jsegment(32, 'j1', 'a1')
-        self.j1.save()
-        self.j2 = self.create_jsegment(32, 'j2', 'a2')
-        self.j2.save()
         self.l1 = l1_record({'id':32})
         self.l1.save()
 
@@ -164,12 +160,12 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'account_holder__cons_info_ind': '', 'spc_com_cd': 'AT', 'acct_stat': '71', 'amt_past_due': 200, 'current_bal': 0, 'date_closed': None,
-            'j1__cons_info_ind': 'a1', 'j2__cons_info_ind': 'a2',
+            'account_holder__cons_info_ind_assoc': None,
             'k2__purch_sold_ind': 'a', 'l1__change_ind': ''
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'account_holder__cons_info_ind': '', 'spc_com_cd': 'O', 'acct_stat': '11', 'amt_past_due': -9, 'current_bal': 9, 'date_closed': None,
-            'j1__cons_info_ind': None, 'j2__cons_info_ind': None,
+            'account_holder__cons_info_ind_assoc': None,
             'k2__purch_sold_ind': None, 'l1__change_ind': None
         }]
 
