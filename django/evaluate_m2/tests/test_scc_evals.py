@@ -28,7 +28,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         k2_segments = [
             {'id': 32, 'purch_sold_ind': 'a', 'purch_sold_name': 'hit'},
-            {'id': 34, 'purch_sold_ind': '2', 'purch_sold_name': 'no1'},
+            {'id': 34, 'purch_sold_ind': '2', 'purch_sold_name': ''},
             {'id': 35, 'purch_sold_ind': 'c', 'purch_sold_name': 'no2'}
         ]
         for item in k2_segments:
@@ -811,6 +811,41 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': None, 'account_holder__cons_info_ind_assoc': None
         }]
         self.assert_evaluator_correct(self.event, 'SCC-PurchaseSold-1', expected)
+
+    def test_eval_scc_purchase_sold_2_func(self):
+        # Hits when both conditions met:
+        # 1. spc_com_cd == 'AH'
+        # 2. k2__purch_sold_ind == ''
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'spc_com_cd': 'AH'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'spc_com_cd': 'AH'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'spc_com_cd': 'AH'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'spc_com_cd': 'WT'
+            }]
+        self.create_data(activities)
+        # 32: NO-k2__purch_sold_name='hit', 33: NO-k2__purch_sold_name=None,
+        # 34: HIT,35: NO-spc_com_cd=WT,
+
+        # Create the segment data
+        expected = [{
+            'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034',
+            'k2__purch_sold_name': '', 'spc_com_cd': 'AH', 'acct_stat': '',
+            'amt_past_due': 0, 'account_holder__cons_info_ind': '', 'current_bal': 0,
+            'date_closed': None, 'account_holder__cons_info_ind_assoc': None,
+            'k2__purch_sold_ind': '2'
+        }]
+        self.assert_evaluator_correct(self.event, 'SCC-PurchaseSold-2', expected)
 
     def test_eval_scc_status_1(self):
         # hits when both conditions met:
