@@ -1,12 +1,7 @@
 import { notFound } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
 import type { AccountRecord } from './constants'
-import {
-  FIELD_NAMES_LOOKUP,
-  FIELD_TYPES_LOOKUP,
-  M2_FIELDS,
-  M2_FIELD_LOOKUPS
-} from './constants'
+import { M2_FIELD_LOOKUPS, M2_FIELD_NAMES } from './constants'
 
 /**
  * Takes an id and value for a Metro2 field,
@@ -38,9 +33,6 @@ export const annotateData = (records: AccountRecord[]): AccountRecord[] =>
     return obj
   })
 
-// Checks whether a string is in the list of Metro 2 fields
-export const isM2Field = (str: string): boolean => !!M2_FIELDS.includes(str)
-
 // Annotate and add php1 to account record data
 export const prepareAccountRecordData = (
   records: AccountRecord[]
@@ -51,25 +43,28 @@ export const prepareAccountRecordData = (
   return annotateData(records)
 }
 
-// Given a list of M2 fields and a list of M2 fields to pin,
+export const capitalized = (str: string): string =>
+  `${str[0].toUpperCase()}${str.slice(1)}`
+
+export const getHeaderName = (field: string, lookup: Map<string, string>): string =>
+  lookup.get(field) ?? capitalized(field)
+
+// Given a list of M2 fields and an object of field-specific col def props,
 // generate an array of AgGrid column definition objects
 // with the following format:
 // {
 //    field: field,
 //    headerName: field's name from FIELD_NAMES_LOOKUP,
-//    type: field's type from FIELD_TYPES_LOOKUP,
-//    pinned: 'left' if field is in pinnedLeft array
+//    ...{field-specific col def props}
 // }
 export const generateColumnDefinitions = (
-  // all the values in these arrays should appear in the M2_FIELDS list
-  fields: (typeof M2_FIELDS)[number][],
-  pinnedLeft: (typeof M2_FIELDS)[number][] = []
+  fields: string[],
+  colDefProps: Record<string, object>
 ): ColDef[] =>
   fields.map(field => ({
     field,
-    headerName: FIELD_NAMES_LOOKUP[field as keyof typeof FIELD_NAMES_LOOKUP],
-    type: FIELD_TYPES_LOOKUP[field as keyof typeof FIELD_TYPES_LOOKUP],
-    pinned: pinnedLeft.includes(field) ? 'left' : undefined
+    headerName: getHeaderName(field, M2_FIELD_NAMES),
+    ...colDefProps[field]
   }))
 
 /**
@@ -161,10 +156,10 @@ export const formatDate = (
 export const generateDownloadData = <T>(
   fields: string[],
   records: T[],
-  headerLookup: Record<string, string>
+  headerMap: Map<string, string>
 ): string => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  const csvHeader = fields.map(field => headerLookup[field] ?? field).join(',')
+  const csvHeader = fields.map(field => getHeaderName(field, headerMap)).join(',')
   const csvBody = records
     .map(record =>
       fields

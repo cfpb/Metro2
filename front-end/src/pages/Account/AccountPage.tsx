@@ -1,10 +1,9 @@
 import { useLoaderData } from '@tanstack/react-router'
-import type { ColDef } from 'ag-grid-community'
 import LocatorBar from 'components/LocatorBar/LocatorBar'
 import Table from 'components/Table/Table'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
-import { M2_FIELDS } from 'utils/constants'
+import { COL_DEF_CONSTANTS, M2_FIELD_NAMES } from 'utils/constants'
 import { generateColumnDefinitions } from 'utils/utils'
 import type Account from './Account'
 import AccountDownloader from './AccountDownloader'
@@ -14,13 +13,11 @@ import Summary from './AccountSummary'
 // Pass the inconsistencies legend for this account in cellRendererParams
 // In cellRenderer, replace evaluator ids in the record's inconsistencies list
 // with their index in the legend
-const getInconsistenciesColDef = (accountInconsistencies: string[]): ColDef => ({
-  field: 'inconsistencies',
-  headerName: 'Inconsistencies',
+const getInconsistenciesColDef = (accountInconsistencies: string[]): object => ({
   cellRendererParams: { accountInconsistencies },
   cellDataType: false,
   cellRenderer: ({ value }: { value: [] }): ReactElement => (
-    <> {value.map(item => accountInconsistencies.indexOf(item) + 1).join(', ')}</>
+    <>{value.map(item => accountInconsistencies.indexOf(item) + 1).join(', ')}</>
   )
 })
 
@@ -30,15 +27,15 @@ export default function AccountPage(): ReactElement {
     from: '/events/$eventId/accounts/$accountId'
   })
   const rows = accountData.account_activity
-  const colDefs = generateColumnDefinitions(M2_FIELDS, ['activity_date'])
-
-  // Add inconsistencies column definition
-  const inconsistenciesColDef = getInconsistenciesColDef(accountData.inconsistencies)
-  colDefs.splice(1, 0, inconsistenciesColDef)
-
-  // Add inconsistencies to fields
-  const fields = [...M2_FIELDS]
-  fields.splice(1, 0, 'inconsistencies')
+  const fields = ['inconsistencies', ...M2_FIELD_NAMES.keys()].filter(
+    field => field !== 'cons_acct_num'
+  )
+  const colDefProps = {
+    ...COL_DEF_CONSTANTS,
+    inconsistencies: getInconsistenciesColDef(accountData.inconsistencies),
+    activity_date: { pinned: 'left' }
+  }
+  const colDefs = generateColumnDefinitions(fields, colDefProps)
 
   return (
     <>
@@ -54,7 +51,7 @@ export default function AccountPage(): ReactElement {
         <div className='download-row'>
           <AccountDownloader
             rows={rows}
-            fields={M2_FIELDS}
+            fields={fields}
             accountId={accountData.cons_acct_num}
             eventData={eventData}
           />
