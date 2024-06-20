@@ -39,8 +39,10 @@ const getEvaluatorFields = (
   // return empty array if there are no records
   if (!record) return []
 
-  // get list of fields from record and remove id
-  const fields = Object.keys(record).filter(item => item !== 'id')
+  // get list of fields from record and remove id and cons_acct_num
+  const fields = Object.keys(record).filter(
+    item => !['id', 'cons_acct_num'].includes(item)
+  )
 
   // sort fields alphabetically and prioritize ones that are used by evaluator
   fields
@@ -50,6 +52,9 @@ const getEvaluatorFields = (
         (fields_used.indexOf(b as keyof AccountRecord) || 100) -
         (fields_used.indexOf(a as keyof AccountRecord) || 100)
     )
+
+  // Add cons_acct_num to start of array so it will be in correct location in exported csv
+  fields.unshift('cons_acct_num')
 
   // If php present, add php1 right after it so they'll be adjacent columns
   const phpIndex = fields.indexOf('php')

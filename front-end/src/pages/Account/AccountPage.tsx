@@ -21,15 +21,20 @@ const getInconsistenciesColDef = (accountInconsistencies: string[]): object => (
   )
 })
 
+// get fields from M2_FIELD_NAMES, remove cons_acct_num since it's a constant,
+// and add 'inconsistencies' at position 2
+const fields = [...M2_FIELD_NAMES.keys()].filter(
+  field => !['cons_acct_num'].includes(field)
+)
+fields.splice(1, 0, 'inconsistencies')
+
 export default function AccountPage(): ReactElement {
   const eventData: Event = useLoaderData({ from: '/events/$eventId' })
   const accountData: Account = useLoaderData({
     from: '/events/$eventId/accounts/$accountId'
   })
   const rows = accountData.account_activity
-  const fields = ['inconsistencies', ...M2_FIELD_NAMES.keys()].filter(
-    field => field !== 'cons_acct_num'
-  )
+
   const colDefProps = {
     ...COL_DEF_CONSTANTS,
     inconsistencies: getInconsistenciesColDef(accountData.inconsistencies),
