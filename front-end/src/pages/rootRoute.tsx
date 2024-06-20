@@ -1,6 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query'
 import type { ReactElement } from 'react'
-
 import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router'
 import { Suspense } from 'react'
 import LoadingOrError from '../components/LoadingOrError'
@@ -16,6 +15,7 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
       <header className='content-row'>
         <h2 className='h4 u-mb0'>
           <Link to='/'>Metro2 Evaluator Tool</Link>
+          <Link to='/guide'>User Guide</Link>
         </h2>
       </header>
       <Outlet />
