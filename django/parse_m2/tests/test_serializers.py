@@ -172,6 +172,7 @@ class Metro2EventSerializerTestCase(TestCase):
             { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', }]
         for item in self.activities:
             acct_record(self.data_file, item)
+        self.event.post_parse()  # Ensure the event record has the date range saved
 
     def test_metro2_event_serializer(self):
         serializer = Metro2EventSerializer(self.event)
