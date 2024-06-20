@@ -26,7 +26,7 @@ class DateClosedEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'13', 'port_type': 'I', 'date_closed': None,
+                'acct_stat':'13', 'port_type': 'I', 'date_closed': date(2020,2,2),
                 'dolp':date(2020, 1, 1)
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
@@ -54,7 +54,7 @@ class DateClosedEvalsTestCase(TestCase, EvaluatorTestHelper):
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0032', 'port_type':'I', 'acct_stat':'13',
-            'date_closed': None,'dolp': date(2020, 1, 1)
+            'date_closed': date(2020,2,2),'dolp': date(2020, 1, 1)
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31),
             'cons_acct_num': '0033', 'port_type':'M', 'acct_stat':'61',
