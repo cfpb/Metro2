@@ -11,8 +11,6 @@ class DateClosedEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.event.save()
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
-        # Create the Account Holders
-        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V'))
 
     ############################
     # Tests for the category addl dofd evaluators
