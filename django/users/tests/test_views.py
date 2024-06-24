@@ -27,6 +27,7 @@ class TestUsersView(TestCase):
             { 'id': 33, 'activity_date': date(2019, 10, 31), 'cons_acct_num': '0033', },
             { 'id': 34, 'activity_date': date(2019, 11, 30), 'cons_acct_num': '0034', },
             { 'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035', }]]
+        event.post_parse()  # Ensure the event record has the date range saved
 
         e2 = Metro2Event.objects.create(id=2, name='test_exam2', eid_or_matter_num='887-656565',
                                    portfolio="credit cards", other_descriptor="2025")

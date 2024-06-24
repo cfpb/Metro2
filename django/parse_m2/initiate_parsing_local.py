@@ -56,3 +56,5 @@ def parse_files_from_local_filesystem(event: Metro2Event):
                 error_message = f"File skipped because of invalid file extension: .{file_ext}"
                 M2FileParser(event, filepath).record_unparseable_file(error_message)
                 logger.info("Skipping. Does not match an allowed file type.")
+
+    event.post_parse()

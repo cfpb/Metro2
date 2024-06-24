@@ -30,6 +30,7 @@ class UserViewSerializerTestCase(TestCase):
             { 'id': 33, 'activity_date': date(2012, 10, 31), 'cons_acct_num': '0033', },
             { 'id': 34, 'activity_date': date(2013, 11, 30), 'cons_acct_num': '0034', },
             { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', }]]
+        event.post_parse()  # Ensure the event record has the date range saved
 
         self.json_representation = {
             'is_admin': False,
