@@ -195,6 +195,12 @@ GET - returns a JSON information about an event, including its name and all eval
 {
     "id": 1,
     "name": "Hyundai2025",
+    "portfolio": "credit cards",
+    "eid_or_matter_num": "123-456789",
+    "other_descriptor": "",
+    "directory": "Enforcement/Huyndai2025",
+    "date_range_start": "2023-11-30",
+    "date_range_end": "2023-12-31",
     "evaluators": [
         {
             "hits": 4209,
