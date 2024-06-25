@@ -1,6 +1,7 @@
 // M2 fields that can be displayed for an account record
 export interface AccountRecord {
   cons_acct_num?: string | null
+  id_num?: string | null
   activity_date?: string | null
   acct_stat?: string | null
   current_bal?: number | null
@@ -52,6 +53,7 @@ export const M2_FIELD_NAMES = new Map([
   ['dofd', 'DOFD'],
   ['dolp', 'Date of last payment'],
   ['hcola', 'HCOLA'],
+  ['id_num', 'ID number'],
   ['l1__change_ind', 'L1 change indicator'],
   ['l1__new_acc_num', 'L1 new account number'],
   ['l1__new_id_num', 'L1 new id number'],

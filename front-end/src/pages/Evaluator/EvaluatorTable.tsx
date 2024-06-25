@@ -40,6 +40,8 @@ const getEvaluatorFields = (
   if (!record) return []
 
   // get list of fields from record and remove id and cons_acct_num
+  // id is internal db id (id_num is Metro2 ID and will be included for relevant evals)
+  // cons_acct_num is added back later at beginning of array
   const fields = Object.keys(record).filter(
     item => !['id', 'cons_acct_num'].includes(item)
   )
