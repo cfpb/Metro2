@@ -39,7 +39,7 @@ def cast_to_type(input: str, type_str: str):
             raise UnreadableLineException(msg)
         try:
             return datetime.strptime(input, date_format)
-        except ValueError:
+        except (ValueError, TypeError):
             if type_str == "date":
                 msg = f"Date value `{input}` could not be parsed as date"
                 raise UnreadableLineException(msg)
