@@ -199,6 +199,8 @@ class M2FileParser():
             remaining_chars = line[base_segment_length:]
             parsed = self.parse_extra_segments(remaining_chars, parsed)
 
+            # Take the fields that are aggregated from the extra segments and
+            # save them to the AccountHolder record
             if "cons_info_ind_assoc" in parsed:
                 acct_holder.cons_info_ind_assoc = parsed["cons_info_ind_assoc"]
             if "ecoa_assoc" in parsed:
