@@ -64,12 +64,16 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                  'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2020-01-01',
                  'dofd': '2020-01-01', 'date_closed': '2020-01-01', 'dolp': None,
                  'int_type_ind': '', 'cons_info_ind': cons_info_ind, 'ecoa': ecoa,
-                 'cons_info_ind_assoc': ["1A", "B"], 'ecoa_assoc': ["2", "1"],
+                 'cons_info_ind_assoc': ['1A', 'B'], 'ecoa_assoc': ['2', '1'],
                  'purch_sold_ind': None, 'balloon_pmt_amt': None, 'change_ind': None}]
 
     def create_activity_data(self):
         # Create the parent records for the AccountActivity data
-        self.event = Metro2Event(id=1, name='test_exam')
+        self.event = Metro2Event(
+            id=1, name='test_exam', portfolio='credit cards',
+            directory='Enforcement/Huyndai2025', eid_or_matter_num='123-456789',
+            other_descriptor='',date_range_start='2023-11-30',
+            date_range_end='2023-12-31')
         self.event.save()
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
@@ -78,12 +82,12 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             activity_date=date(2023, 11, 30), surname='Doe', first_name='Jane',
             middle_name='A', gen_code='F', ssn='012345678', dob='01012000',
             phone_num='0123456789', ecoa='0', cons_info_ind='Z', cons_acct_num='012345',
-            cons_info_ind_assoc=["1A", "B"], ecoa_assoc=["2", "1"])
+            cons_info_ind_assoc=['1A', 'B'], ecoa_assoc=['2', '1'])
 
         acct_holder.save()
         acct_holder2 = AccountHolder(id=2, data_file=self.data_file,
             activity_date=date(2023, 11, 30), cons_info_ind='Y', cons_acct_num='012345',
-            cons_info_ind_assoc=["1A", "B"], ecoa_assoc=["2", "1"])
+            cons_info_ind_assoc=['1A', 'B'], ecoa_assoc=['2', '1'])
         acct_holder2.save()
         # Create the Account Activities data
         activities = {'id':(32,33), 'account_holder':('Z','Y'),
@@ -149,11 +153,11 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         # the CSV should contain info about the evaluator_results
         csv_content = response.content.decode('utf-8')
 
-        expected = "\r\n".join([
-            "event_name,record,acct_type",
-            "test_exam,1,y",
-            "test_exam,2,n",
-            "",
+        expected = '\r\n'.join([
+            'event_name,record,acct_type',
+            'test_exam,1,y',
+            'test_exam,2,n',
+            '',
         ])
         self.assertEqual(csv_content, expected)
 
@@ -279,6 +283,12 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         expected = {
             'id': 1,
             'name': 'test_exam',
+            'portfolio': 'credit cards',
+            'eid_or_matter_num': '123-456789',
+            'other_descriptor': '',
+            'directory': 'Enforcement/Huyndai2025',
+            'date_range_start': '2023-11-30',
+            'date_range_end': '2023-12-31',
             'evaluators': [{
                 'hits': 2,
                 'accounts_affected': 1,

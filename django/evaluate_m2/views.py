@@ -176,6 +176,12 @@ def events_view(request, event_id):
         result = {
             'id': event.id,
             'name': event.name,
+            'portfolio': event.portfolio,
+            'eid_or_matter_num': event.eid_or_matter_num,
+            'other_descriptor': event.other_descriptor,
+            'directory': event.directory,
+            'date_range_start': event.date_range_start,
+            'date_range_end': event.date_range_end,
             'evaluators': evaluator_metadata_serializer.data
         }
         return JsonResponse(result)
