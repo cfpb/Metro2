@@ -181,10 +181,10 @@ class BankruptcyEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(self.event, 'Bankruptcy-DOFD-3', expected)
 
     # Hits when all conditions met:
-    # dofd == None
-    # (cons_info_ind == 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Z', 'V', '1A' ||
-    #  account_holder__cons_info_ind_assoc == 'A', 'B', 'C', 'D', 'E', 'F',
-    #                                         'G', 'H', 'Z', 'V', '1A')
+    # 1. dofd == None
+    # 2. (cons_info_ind == 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Z', 'V', '1A' ||
+    #     account_holder__cons_info_ind_assoc == 'A', 'B', 'C', 'D', 'E', 'F',
+    #                                            'G', 'H', 'Z', 'V', '1A')
     def test_eval_bkrpcy_dofd_4(self):
                 # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -224,3 +224,46 @@ class BankruptcyEvalsTestCase(TestCase, EvaluatorTestHelper):
             'account_holder__cons_info_ind_assoc': ['C','J'], 'dofd': None
         }]
         self.assert_evaluator_correct(self.event, 'Bankruptcy-DOFD-4', expected)
+
+    # Hits when all conditions met:
+    # 1. (cons_info_ind == 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Z', 'V', '1A')
+    # 2. ecoa_assoc = '3'
+    def test_eval_bkrpcy_ecoa_1(self):
+                # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'dofd': None, 'cons_info_ind': 'A',
+                'ecoa_assoc': ['3','3']
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'dofd': None, 'cons_info_ind': 'B',
+                'ecoa_assoc': ['3']
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'dofd': date(2019, 12, 31), 'cons_info_ind': 'C',
+                'ecoa_assoc': ['5']
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'dofd': None, 'cons_info_ind': 'I',
+                'ecoa_assoc': ['3']
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+
+        # 32: HIT, 33: HIT, 34: NO-ecoa_assoc='5'
+        # 35: NO-cons_info_ind='I'
+
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0032', 'account_holder__cons_info_ind': 'A',
+            'account_holder__ecoa_assoc': ['3','3']
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31),
+            'cons_acct_num': '0033', 'account_holder__cons_info_ind': 'B',
+            'account_holder__ecoa_assoc': ['3']
+        }]
+        self.assert_evaluator_correct(self.event, 'Bankruptcy-ECOA-1', expected)
