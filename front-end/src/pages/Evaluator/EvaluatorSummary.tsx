@@ -50,7 +50,7 @@ export default function EvaluatorSummary({
     {
       term: 'Data from',
       definition:
-        metadata.inconsistency_start && metadata.inconsistency_end
+        event.date_range_start && event.date_range_end
           ? `${formatDate(event.date_range_start)} - ${formatDate(
               event.date_range_end
             )}`
