@@ -2,13 +2,13 @@ import { useLoaderData } from '@tanstack/react-router'
 import LocatorBar from 'components/LocatorBar/LocatorBar'
 import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
+import { formatDate } from 'utils/utils'
 import type Event from './Event'
-import columnDefinitions from './columnDefinitions'
 import EventDownloader from './EventDownloader'
+import columnDefinitions from './columnDefinitions'
 
 export default function EventPage(): ReactElement {
   const eventData: Event = useLoaderData({ from: '/events/$eventId' })
-
   return (
     <>
       <LocatorBar
@@ -16,14 +16,17 @@ export default function EventPage(): ReactElement {
         icon='bank-round'
         subhead={
           eventData.date_range_start && eventData.date_range_end
-            ? `Data from ${eventData.date_range_start} - ${eventData.date_range_end}`
+            ? `Data from ${formatDate(
+                eventData.date_range_start,
+                true
+              )} - ${formatDate(eventData.date_range_end, true)}`
             : undefined
         }
       />
       <div className='block block__sub content-row'>
-      <div className='download-row'>
-        <EventDownloader rows={eventData.evaluators} eventName={eventData.name}/>
-      </div>
+        <div className='download-row'>
+          <EventDownloader rows={eventData.evaluators} eventName={eventData.name} />
+        </div>
         <Table
           rows={eventData.evaluators}
           columnDefinitions={columnDefinitions}
