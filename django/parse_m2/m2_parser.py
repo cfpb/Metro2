@@ -30,21 +30,15 @@ class M2FileParser():
         )
         self.file_record.save()
 
-    def record_unparseable_file(self, error_message: str) -> None:
+    def update_file_record(self, status=None, msg=None) -> None:
         """
-        If the file can't be parsed, update the M2DataFile record with details.
-        """
-        file = self.file_record
-        file.parsing_status = "Not parsed"
-        file.error_message = error_message
-        file.save()
-
-    def record_parsing_success(self) -> None:
-        """
-        After successfully parsing a file, update the M2DataFile record with details.
+        Update the file record with the given status and error message.
         """
         file = self.file_record
-        file.parsing_status = "Finished"
+        if status:
+            file.parsing_status = status
+        if msg:
+            file.error_message = msg
         file.save()
 
     def get_next_line(self, f) -> str:
@@ -344,13 +338,12 @@ class M2FileParser():
             except parse_utils.UnreadableFileException as e:
                 # If it fails to parse, record the failure, and
                 # don't try to parse the rest of the file
-                self.record_unparseable_file(error_message=str(e))
+                self.update_file_record(status="Not parsed", msg=str(e))
                 return
         else:
             # If header is missing, first save a message to inform users
             message = "First line of file isn't a header. Using DOAI in place of activity date."
-            self.file_record.error_message = message
-            self.file_record.save()
+            self.update_file_record(msg=message)
 
             # Next, parse the first line as a tradeline and save the results
             # (activity_date=None signals the parser to use DOAI instead of activity_date)
@@ -366,4 +359,4 @@ class M2FileParser():
             if values:
                 self.save_values_bulk(values)
 
-        self.record_parsing_success()
+        self.update_file_record(status="Finished")

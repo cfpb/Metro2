@@ -66,5 +66,5 @@ def parse_files_from_s3_bucket(event: Metro2Event):
             parse_s3_file(file, event)
         else:
             error_message = f"File skipped because of invalid file extension: .{get_extension(file.key)}"
-            M2FileParser(event, file.key).record_unparseable_file(error_message)
+            M2FileParser(event, file.key).update_file_record(status="Not parsed", msg=error_message)
             logger.info("Skipping. Does not match an allowed file type.")
