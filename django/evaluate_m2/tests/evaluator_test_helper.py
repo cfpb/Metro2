@@ -84,6 +84,8 @@ def acct_record(file: M2DataFile, custom_values: dict):
         "date_closed": None,
         "dolp": None,
         "int_type_ind": "",
+        "cons_info_ind_assoc": None,
+        "ecoa_assoc": None
     }
     # Override defaults with provided values
     values = default_values | custom_values
@@ -93,6 +95,8 @@ def acct_record(file: M2DataFile, custom_values: dict):
         activity_date=values["activity_date"],
         cons_acct_num = values["cons_acct_num"],
         cons_info_ind = values["cons_info_ind"],
+        cons_info_ind_assoc = values["cons_info_ind_assoc"],
+        ecoa_assoc = values["ecoa_assoc"],
     )
     acct_holder.save()
     # Create the AccountActivity record with provided values
