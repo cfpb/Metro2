@@ -229,7 +229,7 @@ class BankruptcyEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 1. (cons_info_ind == 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'Z', 'V', '1A')
     # 2. ecoa_assoc = '3'
     def test_eval_bkrpcy_ecoa_1(self):
-                # Create the Account Activities data
+        # Create the Account Activities data
         acct_date=date(2019, 12, 31)
 
         activities = [
