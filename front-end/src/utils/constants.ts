@@ -1,6 +1,7 @@
 // M2 fields that can be displayed for an account record
 export interface AccountRecord {
   cons_acct_num?: string | null
+  id_num?: string | null
   activity_date?: string | null
   acct_stat?: string | null
   current_bal?: number | null
@@ -27,109 +28,65 @@ export interface AccountRecord {
   account_holder__cons_info_ind?: string | null
   j1__cons_info_ind?: string | null
   j2__cons_info_ind?: string | null
-  k2_purch_sold_ind?: string | null
+  k2__purch_sold_ind?: string | null
   k4__balloon_pmt_amt?: number | null
+  l1__change_ind?: string | null
+  l1__new_id_num?: string | null
+  l1__new_acc_num?: string | null
 }
 
-// Canonical list of M2 fields for an account record.
-// Ordered for display as columns in account record table
-export const M2_FIELDS = [
-  'activity_date',
-  'acct_stat',
-  'current_bal',
-  'amt_past_due',
-  'dofd',
-  'pmt_rating',
-  'php',
-  'php1',
-  'smpa',
-  'actual_pmt_amt',
-  'hcola',
-  'orig_chg_off_amt',
-  'date_open',
-  'date_closed',
-  'spc_com_cd',
-  'compl_cond_cd',
-  'doai',
-  'dolp',
-  'credit_limit',
-  'port_type',
-  'acct_type',
-  'terms_dur',
-  'terms_freq',
-  'account_holder__cons_info_ind',
-  'j1__cons_info_ind',
-  'j2__cons_info_ind',
-  'k4__balloon_pmt_amt'
-  // 'int_type_ind'
-]
+// M2 fields mapped to their human-readable names
+// Ordered according to their display in the Account table
+export const M2_FIELD_NAMES = new Map([
+  ['activity_date', 'Activity date'],
+  ['acct_stat', 'Account status'],
+  ['acct_type', 'Account type'],
+  ['actual_pmt_amt', 'Actual payment amount'],
+  ['amt_past_due', 'Amount past due'],
+  ['compl_cond_cd', 'Compliance condition code'],
+  ['cons_acct_num', 'Account number'],
+  ['credit_limit', 'Credit limit'],
+  ['current_bal', 'Current balance'],
+  ['date_closed', 'Date closed'],
+  ['date_open', 'Date open'],
+  ['doai', 'Date of account information'],
+  ['dofd', 'DOFD'],
+  ['dolp', 'Date of last payment'],
+  ['hcola', 'HCOLA'],
+  ['id_num', 'ID number'],
+  ['l1__change_ind', 'L1 change indicator'],
+  ['l1__new_acc_num', 'L1 new account number'],
+  ['l1__new_id_num', 'L1 new id number'],
+  ['php', 'Payment history profile'],
+  ['pmt_rating', 'Payment rating'],
+  ['smpa', 'Scheduled monthly payment amount'],
+  ['orig_chg_off_amt', 'Original charge-off amount'],
+  ['port_type', 'Portfolio type'],
+  ['spc_com_cd', 'Special comment code'],
+  ['terms_dur', 'Terms duration'],
+  ['terms_freq', 'Terms frequency'],
+  ['account_holder__cons_info_ind', 'Consumer information indicator'],
+  ['j1__cons_info_ind', 'J1 consumer information indicator'],
+  ['j2__cons_info_ind', 'J2 consumer information indicator'],
+  ['k2__purch_sold_ind', 'K2 purchased-sold indicator'],
+  ['k4__balloon_pmt_amt', 'K4 balloon payment amount']
+])
 
-// Maps the ids of Metro2 fields to their human-readable names.
-export const FIELD_NAMES_LOOKUP = {
-  acct_stat: 'Account status',
-  acct_type: 'Account type',
-  account_holder__cons_info_ind: 'Consumer information indicator',
-  activity_date: 'Activity date',
-  actual_pmt_amt: 'Actual payment amount',
-  amt_past_due: 'Amount past due',
-  compl_cond_cd: 'Compliance condition code',
-  cons_acct_num: 'Account number',
-  credit_limit: 'Credit limit',
-  current_bal: 'Current balance',
-  date_open: 'Date open',
-  date_closed: 'Date closed',
-  doai: 'Date of account information',
-  dofd: 'DOFD',
-  dolp: 'Date of last payment',
-  hcola: 'HCOLA',
-  j1__cons_info_ind: 'J1 consumer information indicator',
-  j2__cons_info_ind: 'J2 consumer information indicator',
-  k2_purch_sold_ind: 'K2 purchased-sold indicator',
-  k4__balloon_pmt_amt: 'K4 balloon payment amount',
-  orig_chg_off_amt: 'Original charge-off amount',
-  php: 'Payment history profile',
-  php1: 'Payment history profile (Most recent entry)',
-  pmt_rating: 'Payment rating',
-  port_type: 'Portfolio type',
-  spc_com_cd: 'Special comment code',
-  smpa: 'Scheduled monthly payment amount',
-  terms_dur: 'Terms duration',
-  terms_freq: 'Terms frequency',
-  inconsistencies: 'Inconsistencies'
-}
-
-// Maps the ids of Metro2 fields to their data types
-// For use in AgGrid column definitions
-export const FIELD_TYPES_LOOKUP = {
-  acct_stat: 'plainText',
-  acct_type: 'plainText',
-  account_holder__cons_info_ind: 'plainText',
-  activity_date: 'formattedDate',
-  actual_pmt_amt: 'currency',
-  amt_past_due: 'currency',
-  compl_cond_cd: 'plainText',
-  cons_acct_num: 'plainText', // TODO: figure out what this should be, if anything
-  credit_limit: 'currency',
-  current_bal: 'currency',
-  date_open: 'formattedDate',
-  date_closed: 'formattedDate',
-  doai: 'formattedDate',
-  dofd: 'formattedDate',
-  dolp: 'formattedDate',
-  hcola: 'currency',
-  j1__cons_info_ind: 'plainText',
-  j2__cons_info_ind: 'plainText',
-  k2_purch_sold_ind: 'plainText',
-  k4__balloon_pmt_amt: 'currency',
-  orig_chg_off_amt: 'currency',
-  php: 'plainText',
-  php1: 'plainText',
-  pmt_rating: 'plainText',
-  port_type: 'plainText',
-  smpa: 'currency',
-  spc_com_cd: 'plainText',
-  terms_dur: 'plainText', // TODO: figure out what this should be, if anything
-  terms_freq: 'plainText'
+export const COL_DEF_CONSTANTS = {
+  activity_date: { type: 'formattedDate' },
+  actual_pmt_amt: { type: 'currency' },
+  amt_past_due: { type: 'currency' },
+  credit_limit: { type: 'currency' },
+  current_bal: { type: 'currency' },
+  date_open: { type: 'formattedDate' },
+  date_closed: { type: 'formattedDate' },
+  doai: { type: 'formattedDate' },
+  dofd: { type: 'formattedDate' },
+  dolp: { type: 'formattedDate' },
+  hcola: { type: 'currency' },
+  k4__balloon_pmt_amt: { type: 'currency' },
+  orig_chg_off_amt: { type: 'currency' },
+  smpa: { type: 'currency' }
 }
 
 // Lookup to use evaluator id segments as initial categorization
@@ -195,6 +152,12 @@ export const ACCOUNT_STATUS_LOOKUP = {
   '97': 'Unpaid balance reported as a loss (charge-off)',
   DA: 'Delete entire account (for reasons other than fraud)',
   DF: 'Delete entire account due to confirmed fraud (fraud investigation completed)'
+}
+
+const L1_CHANGE_INDICATOR_LOOKUP = {
+  '1': 'Consumer Account Number Change ONLY',
+  '2': 'Identification Number Change ONLY',
+  '3': 'Consumer Account Number AND Identification Number Change'
 }
 
 export const PAYMENT_RATING_LOOKUP = {
@@ -407,7 +370,8 @@ export const M2_FIELD_LOOKUPS = {
   acct_stat: ACCOUNT_STATUS_LOOKUP,
   acct_type: ACCOUNT_TYPE_LOOKUP,
   compl_cond_cd: COMPLIANCE_CONDTION_CODE_LOOKUP,
-  k2_purch_sold_ind: K2_PURCHASED_SOLD_INDICATOR_LOOKUP,
+  k2__purch_sold_ind: K2_PURCHASED_SOLD_INDICATOR_LOOKUP,
+  l1__change_ind: L1_CHANGE_INDICATOR_LOOKUP,
   php: PAYMENT_HISTORY_PROFILE_LOOKUP,
   php1: PAYMENT_HISTORY_PROFILE_LOOKUP,
   pmt_rating: PAYMENT_RATING_LOOKUP,

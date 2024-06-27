@@ -3,13 +3,13 @@ import { Button, RadioButton } from 'design-system-react'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { useRef, useState } from 'react'
-import type { AccountRecord, M2_FIELDS } from 'utils/constants'
-import { FIELD_NAMES_LOOKUP } from 'utils/constants'
+import type { AccountRecord} from 'utils/constants';
+import { M2_FIELD_NAMES } from 'utils/constants'
 import { downloadData, downloadFileFromURL, generateDownloadData } from 'utils/utils'
 
 interface EvaluatorDownloadInterface {
   rows: AccountRecord[]
-  fields: (typeof M2_FIELDS)[number][]
+  fields: string[]
   evaluatorId: string
   eventData: Event
 }
@@ -39,11 +39,7 @@ export default function EvaluatorDownloader({
       downloadFileFromURL(url)
       setIsOpen(false)
     } else {
-      const csv = generateDownloadData<AccountRecord>(
-        fields,
-        rows,
-        FIELD_NAMES_LOOKUP
-      )
+      const csv = generateDownloadData<AccountRecord>(fields, rows, M2_FIELD_NAMES)
       try {
         await downloadData(csv, `${eventData.name}_${evaluatorId}_sample`)
         setIsOpen(false)

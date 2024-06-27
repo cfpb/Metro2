@@ -3,8 +3,8 @@ import type { Definition } from 'components/DefinitionList/DefinitionList'
 import DefinitionList from 'components/DefinitionList/DefinitionList'
 import type { ReactElement } from 'react'
 import type { AccountRecord } from '../../utils/constants'
-import { FIELD_NAMES_LOOKUP } from '../../utils/constants'
-import { formatDate, getM2Definition } from '../../utils/utils'
+import { M2_FIELD_NAMES } from '../../utils/constants'
+import { formatDate, getHeaderName, getM2Definition } from '../../utils/utils'
 import type Account from './Account'
 import AccountContactInformation from './AccountContactInformation'
 
@@ -42,7 +42,7 @@ export const getSummaryItems = (
     const definition =
       field === 'date_open' ? formatDate(value) : getM2Definition(field, value)
     return {
-      term: FIELD_NAMES_LOOKUP[field],
+      term: getHeaderName(field, M2_FIELD_NAMES),
       definition: definition ?? value
     }
   })

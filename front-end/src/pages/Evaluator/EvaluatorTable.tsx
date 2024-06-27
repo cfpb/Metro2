@@ -1,9 +1,11 @@
 import { Link } from '@tanstack/react-router'
+import type { ColDef } from 'ag-grid-community'
 import Table from 'components/Table/Table'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import type { AccountRecord } from 'utils/constants'
-import { generateColumnDefinitions, isM2Field } from 'utils/utils'
+import { COL_DEF_CONSTANTS } from 'utils/constants'
+import { generateColumnDefinitions } from 'utils/utils'
 import type EvaluatorMetadata from './Evaluator'
 import EvaluatorDownloader from './EvaluatorDownloader'
 
@@ -14,8 +16,6 @@ interface EvaluatorTableData {
 }
 
 const accountColDef = {
-  field: 'cons_acct_num',
-  headerName: 'Account number',
   pinned: 'left' as const,
   cellRenderer: ({ value }: { value: string }): ReactElement => (
     <Link
@@ -27,23 +27,41 @@ const accountColDef = {
   )
 }
 
-const getEvaluatorFieldsList = (evaluatorMetadata: EvaluatorMetadata): string[] => {
-  // Build array of evaluator table columns from fields_used and fields_display lists
-  let fields = [
-    ...evaluatorMetadata.fields_used,
-    ...evaluatorMetadata.fields_display
-  ]
+const getEvaluatorColDefs = (fields: string[]): ColDef[] => {
+  const colDefObj = { ...COL_DEF_CONSTANTS, cons_acct_num: accountColDef }
+  return generateColumnDefinitions(fields, colDefObj)
+}
 
-  // Add activity date to list of fields since it's a constant & not included in metadata
-  fields.unshift('activity_date')
+const getEvaluatorFields = (
+  fields_used: string[],
+  record: AccountRecord | null
+): string[] => {
+  // return empty array if there are no records
+  if (!record) return []
 
-  // If php present in fields, add php1 right after it so they'll be adjacent columns
+  // get list of fields from record and remove id and cons_acct_num
+  // id is internal db id (id_num is Metro2 ID and will be included for relevant evals)
+  // cons_acct_num is added back later at beginning of array
+  const fields = Object.keys(record).filter(
+    item => !['id', 'cons_acct_num'].includes(item)
+  )
+
+  // sort fields alphabetically and prioritize ones that are used by evaluator
+  fields
+    .sort()
+    .sort(
+      (a, b) =>
+        (fields_used.indexOf(b as keyof AccountRecord) || 100) -
+        (fields_used.indexOf(a as keyof AccountRecord) || 100)
+    )
+
+  // Add cons_acct_num to start of array so it will be in correct location in exported csv
+  fields.unshift('cons_acct_num')
+
+  // If php present, add php1 right after it so they'll be adjacent columns
   const phpIndex = fields.indexOf('php')
   if (phpIndex > -1) fields.splice(phpIndex + 1, 0, 'php1')
 
-  // Filter out anything that's not an M2 field and enforce uniqueness
-  // TODO: this is temporary due to extraneous data in the display_fields metadata
-  fields = [...new Set(fields)].filter(field => isM2Field(field))
   return fields
 }
 
@@ -52,17 +70,11 @@ export default function EvaluatorTable({
   evaluatorMetadata,
   eventData
 }: EvaluatorTableData): ReactElement {
-  // Assemble list of fields for table from metadata
-  const fields = getEvaluatorFieldsList(evaluatorMetadata)
+  // Get list of fields to display for this evaluator
+  const fields = getEvaluatorFields(evaluatorMetadata.fields_used, hits[0])
 
-  // Generate colDefs for this group of fields
-  const colDefs = generateColumnDefinitions(fields)
-
-  // add account number column to colDefs
-  colDefs.unshift(accountColDef)
-
-  // also add account number to the fields for download
-  fields.unshift('cons_acct_num')
+  // Generate colDefs for this evaluator's fields
+  const colDefs = getEvaluatorColDefs(fields)
 
   return (
     <div className='content-row'>
@@ -72,7 +84,7 @@ export default function EvaluatorTable({
         </h4>
         <EvaluatorDownloader
           rows={hits}
-          fields={['cons_acct_num', ...fields]}
+          fields={fields}
           eventData={eventData}
           evaluatorId={evaluatorMetadata.id}
         />

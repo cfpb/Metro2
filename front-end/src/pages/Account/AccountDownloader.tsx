@@ -3,13 +3,13 @@ import { Button } from 'design-system-react'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
-import type { AccountRecord, M2_FIELDS } from 'utils/constants'
-import { FIELD_NAMES_LOOKUP } from 'utils/constants'
+import type { AccountRecord } from 'utils/constants'
+import { M2_FIELD_NAMES } from 'utils/constants'
 import { downloadData, generateDownloadData } from 'utils/utils'
 
 interface AccountDownloadInterface {
   rows: AccountRecord[]
-  fields: (typeof M2_FIELDS)[number][]
+  fields: string[]
   accountId: string
   eventData: Event
 }
@@ -31,7 +31,7 @@ export default function AccountDownloader({
   }
 
   const onDownload = async (): Promise<void> => {
-    const csv = generateDownloadData<AccountRecord>(fields, rows, FIELD_NAMES_LOOKUP)
+    const csv = generateDownloadData<AccountRecord>(fields, rows, M2_FIELD_NAMES)
     try {
       await downloadData(csv, `${eventData.name}_${accountId}.csv`)
       setIsOpen(false)

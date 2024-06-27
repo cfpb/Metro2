@@ -1,19 +1,28 @@
 import { Button } from 'design-system-react'
+import type EvaluatorMetadata from 'pages/Evaluator/Evaluator'
 import type { ReactElement } from 'react'
 import { downloadData, generateDownloadData } from 'utils/utils'
-import type EvaluatorMetadata from 'pages/Evaluator/Evaluator'
 
 interface EventDownloaderProperties {
   rows: EvaluatorMetadata[]
   eventName: string
 }
 
-export default function EventDownloader({rows, eventName}: EventDownloaderProperties): ReactElement {
+export default function EventDownloader({
+  rows,
+  eventName
+}: EventDownloaderProperties): ReactElement {
   const fields = ['id', 'description', 'category', 'hits', 'accounts_affected']
-  const headerLookup = {id: 'ID', description: 'DESCRIPTION', category: 'CATEGORY', hits: 'HITS', accounts_affected: 'ACCOUNTS AFFECTED'}
+  const headerMap = new Map([
+    ['id', 'ID'],
+    ['description', 'DESCRIPTION'],
+    ['category', 'CATEGORY'],
+    ['hits', 'HITS'],
+    ['accounts_affected', 'ACCOUNTS AFFECTED']
+  ])
 
   const onClick = (): void => {
-    const csv = generateDownloadData(fields, rows, headerLookup)
+    const csv = generateDownloadData(fields, rows, headerMap)
     const fileName = `${eventName}.csv`
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     downloadData(csv, fileName)
