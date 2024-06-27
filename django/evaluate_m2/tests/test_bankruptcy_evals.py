@@ -186,7 +186,7 @@ class BankruptcyEvalsTestCase(TestCase, EvaluatorTestHelper):
     #  account_holder__cons_info_ind_assoc == 'A', 'B', 'C', 'D', 'E', 'F',
     #                                         'G', 'H', 'Z', 'V', '1A')
     def test_eval_bkrpcy_dofd_4(self):
-                # Create the Account Activities data
+        # Create the Account Activities data
         acct_date=date(2019, 12, 31)
 
         activities = [
