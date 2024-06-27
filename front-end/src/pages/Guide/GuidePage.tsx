@@ -7,7 +7,7 @@ export default function GuidePage(): ReactElement {
   return (
     <>
       <LocatorBar
-        eyebrow={`Metro2 User Guide`}
+        eyebrow="Metro2 User Guide"
         heading='Metro 2 Need to Know(s)'
         icon='book'
       />

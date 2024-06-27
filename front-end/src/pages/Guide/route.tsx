@@ -8,3 +8,4 @@ export const guideRoute = createRoute({
   component:GuidePage
 })
 
+export default guideRoute
