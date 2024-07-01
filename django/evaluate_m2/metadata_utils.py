@@ -6,10 +6,13 @@ code_to_plain_field_map = {
     # code : plain language
 
     # Account Holder fields
+    "cons_acct_num": "consumer account number",
     "ecoa": "ecoa",
     "cons_info_ind": "consumer information indicator",
     "cons_info_ind_assoc": "consumer information indicators for associated consumers",
     "ecoa_assoc": "ECOA for associated consumers",
+    "first_name": "first name",
+    "surname": "surname",
 
     # Account Activity fields
     "activity_date": "activity date",
@@ -34,6 +37,7 @@ code_to_plain_field_map = {
     "dofd": "date of first delinquency",
     "date_closed": "date closed",
     "dolp": "date of last payment",
+    "id_num": "ID number",
     # "int_type_ind": "",  # looks like this ins't used in any evals?
 
     # # K segments
@@ -65,14 +69,14 @@ code_to_plain_field_map = {
 }
 
 # Invert the dict above to map the other direction
-plain_to_code_field_map = {v: k for k, v in code_to_plain_field_map.items()}
+plain_to_code_field_map = {v.lower(): k for k, v in code_to_plain_field_map.items()}
 
 
 fields_used_format = """
 Identifying information
 DB record id
 activity date
-customer account number
+consumer account number
 
 Fields used for evaluator
 used_fields
