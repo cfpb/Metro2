@@ -8,6 +8,8 @@ code_to_plain_field_map = {
     # Account Holder fields
     "ecoa": "ecoa",
     "cons_info_ind": "consumer information indicator",
+    "cons_info_ind_assoc": "consumer information indicators for associated consumers",
+    "ecoa_assoc": "ECOA for associated consumers",
 
     # Account Activity fields
     "activity_date": "activity date",
@@ -33,12 +35,6 @@ code_to_plain_field_map = {
     "date_closed": "date closed",
     "dolp": "date of last payment",
     # "int_type_ind": "",  # looks like this ins't used in any evals?
-
-    # # J segments
-    "j1__ecoa": "J1 ECOA",
-    "j1__cons_info_ind": "J1 consumer information indicator",
-    "j2__ecoa": "J2 ECOA",
-    "j2__cons_info_ind": "J2 consumer information indicator",
 
     # # K segments
     # "k1__orig_creditor_name": "",
