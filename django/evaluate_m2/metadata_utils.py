@@ -122,8 +122,8 @@ def parse_fields_display_from_csv(input: str):
         # Return all items after the header
         items = input_list[start+1:]
     except ValueError:
-        # If the header isn't present, return all items
-        items = input_list
+        # If the header isn't present, do not return any item
+        items = []
 
     # Filter out blank lines
     return list(filter(len, items))
