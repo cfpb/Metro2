@@ -93,6 +93,8 @@ def parse_fields_used_from_csv(input: str):
     appropriate items and return them as a list.
     """
     input_list = input.splitlines()
+    # Remove trailing whitespace in each item in list
+    input_list = [x.rstrip() for x in input_list]
     header = 'Fields used for evaluator'
     try:
         start = input_list.index(header)
@@ -112,6 +114,8 @@ def parse_fields_used_from_csv(input: str):
 
 def parse_fields_display_from_csv(input: str):
     input_list = input.splitlines()
+    # Remove trailing whitespace in each item in list
+    input_list = [x.rstrip() for x in input_list]
     header = 'Helpful fields that are also displayed currently'
     try:
         start = input_list.index(header)
