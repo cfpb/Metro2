@@ -806,7 +806,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
             'amt_past_due': 0, 'account_holder__cons_info_ind': '', 'current_bal': 0,
             'date_closed': None, 'account_holder__cons_info_ind_assoc': None
         }]
-        self.assert_evaluator_correct(self.event, 'SCC-PurchaseSold-1', expected)
+        self.assert_evaluator_correct(self.event, 'SCC-PurchasedSold-1', expected)
 
     def test_eval_scc_purchase_sold_2_func(self):
         # Hits when both conditions met:
@@ -841,7 +841,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
             'date_closed': None, 'account_holder__cons_info_ind_assoc': None,
             'k2__purch_sold_ind': '2'
         }]
-        self.assert_evaluator_correct(self.event, 'SCC-PurchaseSold-2', expected)
+        self.assert_evaluator_correct(self.event, 'SCC-PurchasedSold-2', expected)
 
     def test_eval_scc_status_1(self):
         # hits when both conditions met:
