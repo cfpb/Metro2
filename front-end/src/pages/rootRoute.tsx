@@ -12,7 +12,7 @@ interface RouterContext {
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: (): ReactElement => (
     <Suspense fallback={<LoadingOrError />}>
-      <header className='content-row'>
+      <header className='content-row m2-nav'>
         <div className='navbar'>
           <h2 className='h4 u-mb0'>
             <Link to='/'>Metro2 Evaluator Tool</Link>            

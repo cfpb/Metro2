@@ -1,6 +1,5 @@
 import LocatorBar from 'components/LocatorBar/LocatorBar'
 import type { ReactElement } from 'react'
-import './GuidePage.less'
 
 export default function GuidePage(): ReactElement {
 
