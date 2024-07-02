@@ -118,6 +118,8 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
                 "Type-APD-2",
             ],
             "activity_date": "11/30/2023",
+            "surname": "",
+            "first_name": "",
             "port_type": "I",
             "acct_type": "00",
             "date_open": "1/30/2018",
@@ -144,9 +146,12 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
             "ecoa": "2",
             "cons_info_ind_assoc": ["1A", "B"],
             "ecoa_assoc": ["2", "2", "2", "2"],
-            "purch_sold_ind": null,
-            "balloon_pmt_amt": 11854,
-            "change_ind": "2"
+            "k2__purch_sold_ind": null,
+            "k2__purch_sold_name": "",
+            "k4__balloon_pmt_amt": 11854,
+            "l1__change_ind": "2",
+            "l1__new_id_num": "0032",
+            "l1__new_acc_num": "32",
         },
         # ...etc.
     ]
