@@ -29,10 +29,21 @@ body,
   flex-direction: column;
 }
 
-// remove extra padding from nav header
+// remove extra padding from nav header and align nav-items
 .m2-nav .navbar {
   padding: 0;
-  font-size: inherit;
+  flex-direction: row;
+  align-items: center;
+
+  .links {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .u-mb0 {
+    min-width: fit-content;
+  }
+  
 }
 
 // Metro 2 header is a link but doesn't need link styling
