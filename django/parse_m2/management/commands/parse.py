@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.models import Metro2Event, M2DataFile
+from parse_m2.initiate_updating_records import update_event_records
 from evaluate_m2.models import EvaluatorResultSummary
 
 
@@ -50,7 +51,7 @@ class Command(BaseCommand):
             parse_files_from_s3_bucket(event)
         else:
             parse_files_from_local_filesystem(event)
-
+        update_event_records(event)
         self.stdout.write(
             self.style.SUCCESS(f"Finished parsing data for event: {event.name}.")
         )
