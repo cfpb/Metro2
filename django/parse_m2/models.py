@@ -176,6 +176,7 @@ class AccountActivity(models.Model):
         return f"AccountActivity {self.id} (File ID: {self.account_holder.data_file.id})"
 
     account_holder = models.OneToOneField(AccountHolder, on_delete=models.CASCADE)
+    previous_values = models.OneToOneField("AccountActivity", on_delete=models.DO_NOTHING, null=True, blank=True)
     activity_date = models.DateField()
     cons_acct_num = models.CharField(max_length=200)
     port_type = models.CharField(max_length=200)
