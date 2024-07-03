@@ -19,7 +19,7 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
           </h2>
           <div className='nav-items'>
             <div className='links'>
-              <Link to='/guide' className='nav-item'>User guide</Link>
+            {/*  <Link to='/guide' className='nav-item'>User guide</Link> */}
             </div>
           </div>
         </div>
