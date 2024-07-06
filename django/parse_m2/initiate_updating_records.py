@@ -14,6 +14,7 @@ def update_event_records(event: Metro2Event):
 
     # Updating the records
     logger.info(f"Beginning to update all records for event: {event.name}...")
+    logger.info(f"There are a total of {len(record_set)}")
     for record in record_set:
         records = record_set.filter(cons_acct_num=record.cons_acct_num).order_by("activity_date")
         # Retrieve current record index in sorted list

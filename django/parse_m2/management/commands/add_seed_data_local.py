@@ -4,7 +4,7 @@ from django.conf import settings
 from evaluate_m2.evaluate import evaluator
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.models import Metro2Event
-
+from parse_m2.initiate_updating_records import update_event_records
 
 class Command(BaseCommand):
     """
@@ -45,7 +45,7 @@ class Command(BaseCommand):
 
             self.stdout.write(f"Parsing files from local filesystem in `{data_directory}` directory.")
             parse_files_from_local_filesystem(event)
-
+            update_event_records(event)
             self.stdout.write(f"Beginning evaluators for event: {event.name}.")
             evaluator.run_evaluators(event)
             self.stdout.write(
