@@ -26,4 +26,4 @@ class Command(BaseCommand):
             raise CommandError(f"No event found with id {event_id}. Exiting.")
 
         event.post_parse()
-        self.stdout.write(f"All records updated for event: {event.name}...")
+        self.stdout.write(f"All records updated for event: {event.name}")
