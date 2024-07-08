@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import JSONField
 from django.core.management import call_command
 
+from parse_m2.initiate_post_parsing import associate_previous_records
 from parse_m2.parse_utils import get_field_value
 from parse_m2 import fields
 from evaluate_m2.managers import AccountActivityQuerySet
@@ -42,6 +43,7 @@ class Metro2Event(models.Model):
         self.date_range_start = date_range['earliest']
         self.date_range_end = date_range['latest']
         self.save()
+        associate_previous_records(self)
 
     def evaluate(self):
         call_command('run_evaluators', event_id=self.id)

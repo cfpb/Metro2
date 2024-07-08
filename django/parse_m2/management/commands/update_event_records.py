@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from parse_m2.models import Metro2Event
-from parse_m2.initiate_updating_records import update_event_records
 
 
 class Command(BaseCommand):
@@ -26,5 +25,5 @@ class Command(BaseCommand):
             # If the event doesn't exist, exit
             raise CommandError(f"No event found with id {event_id}. Exiting.")
 
-        update_event_records(event)
+        event.post_parse()
         self.stdout.write(f"All records updated for event: {event.name}...")

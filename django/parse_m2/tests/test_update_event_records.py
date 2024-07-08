@@ -1,7 +1,6 @@
 import os
 from django.test import TestCase
 
-from parse_m2.initiate_updating_records import update_event_records
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 
 from parse_m2.models import AccountActivity, Metro2Event
@@ -20,7 +19,7 @@ class InitiateUpdateEventRecordsTestCase(TestCase):
         parse_files_from_local_filesystem(self.event)
 
     def test_update_event_records_no_previous_records(self):
-        update_event_records(self.event)
+        self.event.post_parse()
         # Retrieve any record with activity_date 2018-01-31
         record = AccountActivity.objects.filter(activity_date='2018-01-31').first()
 
@@ -28,7 +27,7 @@ class InitiateUpdateEventRecordsTestCase(TestCase):
         self.assertEqual(None, record.previous_values)
 
     def test_update_event_records_with_previous_records(self):
-        update_event_records(self.event)
+        self.event.post_parse()
 
         # Retrieve any record with activity_date 2018-02-28
         feb_record = AccountActivity.objects.filter(activity_date='2018-02-28').first()

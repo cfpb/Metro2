@@ -14,8 +14,8 @@ class AccountActivitySerializer(serializers.ModelSerializer):
     change_ind = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = AccountActivity
-        fields = ['id', 'previous_values', 'inconsistencies', 'activity_date', 'port_type',
-                  'acct_type', 'date_open', 'credit_limit', 'hcola', 'id_num', 'terms_dur',
+        fields = ['id', 'inconsistencies', 'activity_date', 'port_type', 'acct_type',
+                  'date_open', 'credit_limit', 'hcola', 'id_num', 'terms_dur',
                   'terms_freq', 'smpa', 'actual_pmt_amt', 'acct_stat', 'pmt_rating',
                   'php', 'spc_com_cd', 'compl_cond_cd', 'current_bal', 'amt_past_due',
                   'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp','int_type_ind',

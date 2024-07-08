@@ -1,10 +1,9 @@
 import logging
 
-from parse_m2.models import Metro2Event
 
 ############################################
 # Method to update existing M2Event activity records
-def update_event_records(event: Metro2Event):
+def associate_previous_records(event):
     logger = logging.getLogger('parse_m2.update_event_records')
     total_updated = 0
     total_not_updated = 0
