@@ -786,7 +786,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'spc_com_cd': 'AH'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'spc_com_cd': '2'
+                'spc_com_cd': 'AH'
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'spc_com_cd': 'WT'
