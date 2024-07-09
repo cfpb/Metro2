@@ -5,12 +5,12 @@ from .models import AccountActivity, AccountHolder, Metro2Event
 
 class AccountActivitySerializer(serializers.ModelSerializer):
     inconsistencies = serializers.SerializerMethodField(read_only=True)
-    cons_info_ind = serializers.SerializerMethodField(read_only=True)
-    ecoa = serializers.SerializerMethodField(read_only=True)
-    cons_info_ind_assoc = serializers.SerializerMethodField(read_only=True)
-    ecoa_assoc = serializers.SerializerMethodField(read_only=True)
-    surname = serializers.SerializerMethodField(read_only=True)
-    first_name = serializers.SerializerMethodField(read_only=True)
+    account_holder__cons_info_ind = serializers.SerializerMethodField(read_only=True)
+    account_holder__ecoa = serializers.SerializerMethodField(read_only=True)
+    account_holder__cons_info_ind_assoc = serializers.SerializerMethodField(read_only=True)
+    account_holder__ecoa_assoc = serializers.SerializerMethodField(read_only=True)
+    account_holder__surname = serializers.SerializerMethodField(read_only=True)
+    account_holder__first_name = serializers.SerializerMethodField(read_only=True)
     k2__purch_sold_ind = serializers.SerializerMethodField(read_only=True)
     k2__purch_sold_name = serializers.SerializerMethodField(read_only=True)
     k4__balloon_pmt_amt = serializers.SerializerMethodField(read_only=True)
@@ -19,36 +19,36 @@ class AccountActivitySerializer(serializers.ModelSerializer):
     l1__new_acc_num = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = AccountActivity
-        fields = ['id', 'inconsistencies', 'activity_date', 'surname', 'first_name',
-                  'port_type', 'acct_type', 'date_open', 'credit_limit', 'hcola',
-                  'id_num', 'terms_dur', 'terms_freq', 'smpa', 'actual_pmt_amt',
-                  'acct_stat', 'pmt_rating', 'php', 'spc_com_cd', 'compl_cond_cd',
-                  'current_bal', 'amt_past_due', 'orig_chg_off_amt', 'doai', 'dofd',
-                  'date_closed', 'dolp','int_type_ind', 'cons_info_ind', 'ecoa',
-                  'cons_info_ind_assoc', 'ecoa_assoc', 'k2__purch_sold_ind',
-                  'k2__purch_sold_name', 'k4__balloon_pmt_amt', 'l1__change_ind',
-                  'l1__new_id_num', 'l1__new_acc_num']
+        fields = ['id', 'inconsistencies', 'activity_date', 'account_holder__surname',
+                  'account_holder__first_name', 'port_type', 'acct_type', 'date_open',
+                  'credit_limit', 'hcola', 'id_num', 'terms_dur', 'terms_freq', 'smpa',
+                  'actual_pmt_amt', 'acct_stat', 'pmt_rating', 'php', 'spc_com_cd',
+                  'compl_cond_cd', 'current_bal', 'amt_past_due', 'orig_chg_off_amt',
+                  'doai', 'dofd', 'date_closed', 'dolp','int_type_ind',
+                  'account_holder__cons_info_ind', 'account_holder__ecoa',
+                  'account_holder__cons_info_ind_assoc', 'account_holder__ecoa_assoc','k2__purch_sold_ind', 'k2__purch_sold_name', 'k4__balloon_pmt_amt',
+                  'l1__change_ind', 'l1__new_id_num', 'l1__new_acc_num']
 
     def get_inconsistencies(self, obj):
         eval_ids = obj.evaluatorresult_set.values_list('result_summary__evaluator__id')
         return [x[0] for x in eval_ids]
 
-    def get_cons_info_ind(self, obj):
+    def get_account_holder__cons_info_ind(self, obj):
         return obj.account_holder.cons_info_ind
 
-    def get_ecoa(self, obj):
+    def get_account_holder__ecoa(self, obj):
         return obj.account_holder.ecoa
 
-    def get_cons_info_ind_assoc(self, obj):
+    def get_account_holder__cons_info_ind_assoc(self, obj):
         return obj.account_holder.cons_info_ind_assoc
 
-    def get_ecoa_assoc(self, obj):
+    def get_account_holder__ecoa_assoc(self, obj):
         return obj.account_holder.ecoa_assoc
 
-    def get_surname(self, obj):
+    def get_account_holder__surname(self, obj):
         return obj.account_holder.surname
 
-    def get_first_name(self, obj):
+    def get_account_holder__first_name(self, obj):
         return obj.account_holder.first_name
 
     def get_k2__purch_sold_ind(self, obj):
