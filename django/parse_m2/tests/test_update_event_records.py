@@ -1,12 +1,14 @@
+from datetime import date
 import os
 from django.test import TestCase
 
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
+from parse_m2.initiate_post_parsing import post_parse, associate_previous_records
 
 from parse_m2.models import AccountActivity, Metro2Event
 
 
-class InitiateUpdateEventRecordsTestCase(TestCase):
+class InitiatePostParsingTestCase(TestCase):
     def setUp(self):
         # this directory has three Metro2 files: jan-2018, feb-2018 and mar-2018
         self.test_local_data_directory = os.path.join(
@@ -18,16 +20,23 @@ class InitiateUpdateEventRecordsTestCase(TestCase):
         )
         parse_files_from_local_filesystem(self.event)
 
-    def test_update_event_records_no_previous_records(self):
-        self.event.post_parse()
+    def test_post_parse_date_range(self):
+        post_parse(self.event)
+
+        # Event date range should be set
+        self.assertEqual(date(2018, 3, 31), self.event.date_range_end)
+        self.assertEqual(date(2018, 1, 31), self.event.date_range_start)
+
+    def test_associate_previous_records_no_previous_records(self):
+        associate_previous_records(self.event)
         # Retrieve any record with activity_date 2018-01-31
         record = AccountActivity.objects.filter(activity_date='2018-01-31').first()
 
         # There are no record prior to Jan-2018
         self.assertEqual(None, record.previous_values)
 
-    def test_update_event_records_with_previous_records(self):
-        self.event.post_parse()
+    def test_associate_previous_records(self):
+        associate_previous_records(self.event)
 
         # Retrieve any record with activity_date 2018-02-28
         feb_record = AccountActivity.objects.filter(activity_date='2018-02-28').first()

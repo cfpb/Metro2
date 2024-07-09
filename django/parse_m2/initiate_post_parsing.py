@@ -4,11 +4,19 @@ from django.db.models.functions import Lag
 
 ############################################
 # Method to update existing M2Event activity records
-def associate_previous_records(event):
+def post_parse(event) -> None:
+    # Updating the event
+    date_range = event.account_activity_date_range()
+    event.date_range_start = date_range['earliest']
+    event.date_range_end = date_range['latest']
+    event.save()
+    associate_previous_records(event)
+
+def associate_previous_records(event) -> None:
     logger = logging.getLogger('parse_m2.update_event_records')
 
     # Updating the records
-    logger.info(f"Beginning to update all records for event: {event.name}...")
+    logger.info(f"Beginning to update all records for event: {event.name}")
 
     # Retrieve Metro2Event records
     record_set = event.get_all_account_activity()
