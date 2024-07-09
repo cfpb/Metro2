@@ -955,8 +955,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 1. acct_type == '19','25','2C'
     # 2. acct_stat == '88','89'
     # 3. pmt_rating == '0'
-    # 6. compl_cond_cd != 'XA'
-    # 7. dofd != None
+    # 4. port_type == 'M'
+    # 5. compl_cond_cd != 'XA'
+    # 6. dofd != None
         # Create previous Account Activities data
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
