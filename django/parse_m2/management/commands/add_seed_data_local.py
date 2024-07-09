@@ -44,7 +44,6 @@ class Command(BaseCommand):
 
             self.stdout.write(f"Parsing files from local filesystem in `{data_directory}` directory.")
             parse_files_from_local_filesystem(event)
-            event.post_parse()
             self.stdout.write(f"Beginning evaluators for event: {event.name}.")
             evaluator.run_evaluators(event)
             self.stdout.write(
