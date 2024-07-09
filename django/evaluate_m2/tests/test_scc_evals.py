@@ -28,7 +28,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         k2_segments = [
             {'id': 32, 'purch_sold_ind': 'a', 'purch_sold_name': 'hit'},
-            {'id': 34, 'purch_sold_ind': 'b', 'purch_sold_name': 'no1'},
+            {'id': 34, 'purch_sold_ind': '2', 'purch_sold_name': ''},
             {'id': 35, 'purch_sold_ind': 'c', 'purch_sold_name': 'no2'}
         ]
         for item in k2_segments:
@@ -36,10 +36,6 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     def create_other_segments(self):
         # Create the other segment data
-        self.j1 = self.create_jsegment(32, 'j1', 'a1')
-        self.j1.save()
-        self.j2 = self.create_jsegment(32, 'j2', 'a2')
-        self.j2.save()
         self.l1 = l1_record({'id':32})
         self.l1.save()
 
@@ -164,12 +160,12 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
             'account_holder__cons_info_ind': '', 'spc_com_cd': 'AT', 'acct_stat': '71', 'amt_past_due': 200, 'current_bal': 0, 'date_closed': None,
-            'j1__cons_info_ind': 'a1', 'j2__cons_info_ind': 'a2',
+            'account_holder__cons_info_ind_assoc': None,
             'k2__purch_sold_ind': 'a', 'l1__change_ind': ''
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
             'account_holder__cons_info_ind': '', 'spc_com_cd': 'O', 'acct_stat': '11', 'amt_past_due': -9, 'current_bal': 9, 'date_closed': None,
-            'j1__cons_info_ind': None, 'j2__cons_info_ind': None,
+            'account_holder__cons_info_ind_assoc': None,
             'k2__purch_sold_ind': None, 'l1__change_ind': None
         }]
 
@@ -773,6 +769,79 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
             'amt_past_due': 0, 'current_bal': 0, 'k2__purch_sold_ind': 'a'
         }]
         self.assert_evaluator_correct(self.event, 'SCC-DateClosed-3', expected)
+
+    def test_eval_scc_purchase_sold_1_func(self):
+        # Hits when both conditions met:
+        # 1. spc_com_cd == 'AH'
+        # 2. k2__purch_sold_ind != '2'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'spc_com_cd': 'AH'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'spc_com_cd': 'AH'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'spc_com_cd': 'AH'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'spc_com_cd': 'WT'
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-k2__purch_sold_ind=2, 35: NO-spc_com_cd=WT,
+
+        # Create the segment data
+        expected = [{
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+            'k2__purch_sold_ind': 'a', 'spc_com_cd': 'AH', 'acct_stat': '',
+            'amt_past_due': 0, 'account_holder__cons_info_ind': '', 'current_bal': 0,
+            'date_closed': None, 'account_holder__cons_info_ind_assoc': None
+        }, {
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+            'k2__purch_sold_ind': None, 'spc_com_cd': 'AH', 'acct_stat': '',
+            'amt_past_due': 0, 'account_holder__cons_info_ind': '', 'current_bal': 0,
+            'date_closed': None, 'account_holder__cons_info_ind_assoc': None
+        }]
+        self.assert_evaluator_correct(self.event, 'SCC-PurchasedSold-1', expected)
+
+    def test_eval_scc_purchase_sold_2_func(self):
+        # Hits when both conditions met:
+        # 1. spc_com_cd == 'AH'
+        # 2. k2__purch_sold_name == ''
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'spc_com_cd': 'AH'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'spc_com_cd': 'AH'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'spc_com_cd': 'AH'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'spc_com_cd': 'WT'
+            }]
+        self.create_data(activities)
+        # 32: NO-k2__purch_sold_name='hit', 33: NO-k2__purch_sold_name=None,
+        # 34: HIT,35: NO-spc_com_cd=WT,
+
+        # Create the segment data
+        expected = [{
+            'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034',
+            'k2__purch_sold_name': '', 'spc_com_cd': 'AH', 'acct_stat': '',
+            'amt_past_due': 0, 'account_holder__cons_info_ind': '', 'current_bal': 0,
+            'date_closed': None, 'account_holder__cons_info_ind_assoc': None,
+            'k2__purch_sold_ind': '2'
+        }]
+        self.assert_evaluator_correct(self.event, 'SCC-PurchasedSold-2', expected)
 
     def test_eval_scc_status_1(self):
         # hits when both conditions met:
