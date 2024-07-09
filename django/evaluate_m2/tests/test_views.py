@@ -54,18 +54,23 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         )
 
     def get_account_activity(
-        self, id: int, inconsistencies: list[str], cons_info_ind: str, ecoa: str):
+        self, id: int, inconsistencies: list[str], cons_info_ind: str, ecoa: str, first_name: str):
         return [{ 'id': id, 'inconsistencies': inconsistencies,
-                 'activity_date': '2019-12-31', 'port_type': 'X',
+                 'activity_date': '2019-12-31', 'account_holder__surname': 'Doe',
+                 'account_holder__first_name': first_name, 'port_type': 'X',
                  'acct_type': '00', 'date_open': '2020-01-01', 'credit_limit': 0,
-                 'hcola': 0, 'id_num': '', 'terms_dur': '0', 'terms_freq': '0', 'smpa': 0,
-                 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0', 'php': 'X',
-                 'spc_com_cd': 'X', 'compl_cond_cd': '0', 'current_bal': 0,
+                 'hcola': 0, 'id_num': '', 'terms_dur': '0', 'terms_freq': '0',
+                 'smpa': 0, 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0',
+                 'php': 'X', 'spc_com_cd': 'X', 'compl_cond_cd': '0', 'current_bal': 0,
                  'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2020-01-01',
                  'dofd': '2020-01-01', 'date_closed': '2020-01-01', 'dolp': None,
-                 'int_type_ind': '', 'cons_info_ind': cons_info_ind, 'ecoa': ecoa,
-                 'cons_info_ind_assoc': ['1A', 'B'], 'ecoa_assoc': ['2', '1'],
-                 'purch_sold_ind': None, 'balloon_pmt_amt': None, 'change_ind': None}]
+                 'int_type_ind': '', 'account_holder__cons_info_ind': cons_info_ind,
+                 'account_holder__ecoa': ecoa,
+                 'account_holder__cons_info_ind_assoc': ['1A', 'B'],
+                 'account_holder__ecoa_assoc': ['2', '1'],
+                 'k2__purch_sold_ind': None, 'k2__purch_sold_name': None,
+                 'k4__balloon_pmt_amt': None, 'l1__change_ind': None,
+                 'l1__new_id_num': None, 'l1__new_acc_num': None}]
 
     def create_activity_data(self):
         # Create the parent records for the AccountActivity data
@@ -86,8 +91,9 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
         acct_holder.save()
         acct_holder2 = AccountHolder(id=2, data_file=self.data_file,
-            activity_date=date(2023, 11, 30), cons_info_ind='Y', cons_acct_num='012345',
-            cons_info_ind_assoc=['1A', 'B'], ecoa_assoc=['2', '1'])
+            activity_date=date(2023, 11, 30), surname='Doe', first_name='John',
+            cons_info_ind='Y', cons_acct_num='012345', cons_info_ind_assoc=['1A', 'B'],
+            ecoa_assoc=['2', '1'])
         acct_holder2.save()
         # Create the Account Activities data
         activities = {'id':(32,33), 'account_holder':('Z','Y'),
@@ -221,7 +227,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         expected = {
             'cons_acct_num': '0033',
             'inconsistencies': inconsistencies,
-            'account_activity': self.get_account_activity(33, inconsistencies, 'Y', '')
+            'account_activity': self.get_account_activity(33, inconsistencies, 'Y', '', 'John')
         }
         response = self.client.get('/api/events/1/account/0033/')
 
@@ -238,7 +244,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         expected = {
             'cons_acct_num': '0032',
             'inconsistencies': ['Status-DOFD-1', 'Status-DOFD-4'],
-            'account_activity': self.get_account_activity(32, inconsistencies, 'Z', '0')
+            'account_activity': self.get_account_activity(32, inconsistencies, 'Z', '0', 'Jane')
         }
         response = self.client.get('/api/events/1/account/0032/')
 
