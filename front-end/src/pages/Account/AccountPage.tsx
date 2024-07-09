@@ -18,7 +18,8 @@ const getInconsistenciesColDef = (accountInconsistencies: string[]): object => (
   cellDataType: false,
   cellRenderer: ({ value }: { value: [] }): ReactElement => (
     <>{value.map(item => accountInconsistencies.indexOf(item) + 1).join(', ')}</>
-  )
+  ),
+  minWidth: 175
 })
 
 // TODO: should we be getting / showing cons_acct_num for L1 evals?

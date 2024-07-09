@@ -58,6 +58,7 @@ export const M2_FIELD_NAMES = new Map([
   ['l1__new_acc_num', 'L1 new account number'],
   ['l1__new_id_num', 'L1 new id number'],
   ['php', 'Payment history profile'],
+  ['php1', 'Payment history profile (most recent entry)'],
   ['pmt_rating', 'Payment rating'],
   ['smpa', 'Scheduled monthly payment amount'],
   ['orig_chg_off_amt', 'Original charge-off amount'],
@@ -73,20 +74,22 @@ export const M2_FIELD_NAMES = new Map([
 ])
 
 export const COL_DEF_CONSTANTS = {
-  activity_date: { type: 'formattedDate' },
+  activity_date: { type: 'formattedDate', minWidth: 160 },
   actual_pmt_amt: { type: 'currency' },
   amt_past_due: { type: 'currency' },
   credit_limit: { type: 'currency' },
   current_bal: { type: 'currency' },
-  date_open: { type: 'formattedDate' },
-  date_closed: { type: 'formattedDate' },
-  doai: { type: 'formattedDate' },
-  dofd: { type: 'formattedDate' },
-  dolp: { type: 'formattedDate' },
+  date_open: { type: 'formattedDate', minWidth: 100 },
+  date_closed: { type: 'formattedDate', minWidth: 110 },
+  doai: { type: 'formattedDate', minWidth: 155 },
+  dofd: { type: 'formattedDate', minWidth: 100 },
+  dolp: { type: 'formattedDate', minWidth: 120 },
   hcola: { type: 'currency' },
+  php: { minWidth: 265 },
+  php1: { minWidth: 220 },
   k4__balloon_pmt_amt: { type: 'currency' },
   orig_chg_off_amt: { type: 'currency' },
-  smpa: { type: 'currency' }
+  smpa: { type: 'currency', minWidth: 140 }
 }
 
 // Lookup to use evaluator id segments as initial categorization

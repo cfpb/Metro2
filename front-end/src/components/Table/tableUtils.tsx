@@ -28,7 +28,8 @@ export const columnTypes = {
     cellDataType: 'number',
     headerClass: 'ag-right-aligned-header',
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    valueFormatter: ({ value }: ValueFormatterParams): string => formatUSD(value)
+    valueFormatter: ({ value }: ValueFormatterParams): string => formatUSD(value),
+    minWidth: 130
   }
 }
 
