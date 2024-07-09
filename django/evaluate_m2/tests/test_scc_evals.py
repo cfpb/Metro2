@@ -811,7 +811,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
     def test_eval_scc_purchase_sold_2_func(self):
         # Hits when both conditions met:
         # 1. spc_com_cd == 'AH'
-        # 2. k2__purch_sold_ind == ''
+        # 2. k2__purch_sold_name == ''
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
