@@ -4,6 +4,7 @@ from django.test import TestCase
 
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from rest_framework.renderers import JSONRenderer
+from parse_m2.initiate_post_parsing import post_parse
 from parse_m2.models import M2DataFile, Metro2Event
 from users.serializers import UserViewSerializer
 
@@ -30,7 +31,7 @@ class UserViewSerializerTestCase(TestCase):
             { 'id': 33, 'activity_date': date(2012, 10, 31), 'cons_acct_num': '0033', },
             { 'id': 34, 'activity_date': date(2013, 11, 30), 'cons_acct_num': '0034', },
             { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', }]]
-        event.post_parse()  # Ensure the event record has the date range saved
+        post_parse(event)  # Ensure the event record has the date range saved
 
         self.json_representation = {
             'is_admin': False,

@@ -1,5 +1,6 @@
 from datetime import date
 from django.test import TestCase
+from parse_m2.initiate_post_parsing import post_parse
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import K2, K4, L1, Metro2Event, M2DataFile, AccountHolder, AccountActivity
 from rest_framework.renderers import JSONRenderer
@@ -181,7 +182,7 @@ class Metro2EventSerializerTestCase(TestCase):
             { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', }]
         for item in self.activities:
             acct_record(self.data_file, item)
-        self.event.post_parse()  # Ensure the event record has the date range saved
+        post_parse(self.event)  # Ensure the event record has the date range saved
 
     def test_metro2_event_serializer(self):
         serializer = Metro2EventSerializer(self.event)
