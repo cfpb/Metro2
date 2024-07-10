@@ -8,3 +8,9 @@ def has_permissions_for_request(request, event) -> bool:
         return event.check_access_for_user(user)
     else:
         return True
+
+def get_randomizer(result_total, total_per_page) -> int:
+    randomizer = 1
+    if result_total > total_per_page:
+        randomizer = result_total // total_per_page
+    return randomizer

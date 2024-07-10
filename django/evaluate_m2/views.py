@@ -8,7 +8,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
-from evaluate_m2.views_utils import has_permissions_for_request
+from evaluate_m2.views_utils import (
+    get_randomizer,
+    has_permissions_for_request
+)
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
@@ -90,8 +93,13 @@ def evaluator_results_view(request, event_id, evaluator_id):
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=event,
             evaluator=EvaluatorMetadata.objects.get(id=evaluator_id))
+        randomizer = get_randomizer(
+            len(eval_result_summary.evaluatorresult_set.all()),
+            RESULTS_PAGE_SIZE)
+        eval_result_sample = eval_result_summary.evaluatorresult_set.all() \
+            .order_by('id')[0::randomizer]
         eval_result_serializer = EvaluatorResultsViewSerializer(
-            eval_result_summary.evaluatorresult_set.all()[:RESULTS_PAGE_SIZE], many=True)
+            eval_result_sample[:RESULTS_PAGE_SIZE], many=True)
 
         response = {'hits': eval_result_serializer.data}
         return JsonResponse(response)
