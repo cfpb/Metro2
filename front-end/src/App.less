@@ -32,15 +32,12 @@ body,
 // remove extra padding from nav header and align nav-items
 .m2-nav .navbar {
   padding: 0;
-  flex-direction: row;
-  align-items: center;
 
-  .links {
-    flex-direction: row;
-    justify-content: flex-end;
-  }
+  .h4 {
+    .respond-to-min(@bp-med-min, {
+      margin-bottom: 0;
+    });
 
-  .u-mb0 {
     min-width: fit-content;
   }
   
