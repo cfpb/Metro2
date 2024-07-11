@@ -94,7 +94,7 @@ def evaluator_results_view(request, event_id, evaluator_id):
             event=event,
             evaluator=EvaluatorMetadata.objects.get(id=evaluator_id))
         randomizer = get_randomizer(
-            len(eval_result_summary.evaluatorresult_set.all()),
+            eval_result_summary.evaluatorresult_set.count(),
             RESULTS_PAGE_SIZE)
         eval_result_sample = eval_result_summary.evaluatorresult_set.all() \
             .order_by('id')[0::randomizer]
