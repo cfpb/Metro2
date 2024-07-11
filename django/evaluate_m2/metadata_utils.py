@@ -96,10 +96,10 @@ def parse_fields_used_from_csv(input: str):
     which fields are 'fields_used' vs 'fields_display'. Get the
     appropriate items and return them as a list.
     """
-    input_list = input.splitlines()
-    # Remove trailing whitespace in each item in list
-    input_list = [x.rstrip() for x in input_list]
-    header = 'Fields used for evaluator'
+    input_list = input.lower().splitlines()
+    # Remove leading and trailing whitespaces in each item in list
+    input_list = [x.strip() for x in input_list]
+    header = 'fields used for evaluator'
     try:
         start = input_list.index(header)
         try:
@@ -117,10 +117,10 @@ def parse_fields_used_from_csv(input: str):
     return list(filter(len, items))
 
 def parse_fields_display_from_csv(input: str):
-    input_list = input.splitlines()
-    # Remove trailing whitespace in each item in list
-    input_list = [x.rstrip() for x in input_list]
-    header = 'Helpful fields that are also displayed currently'
+    input_list = input.lower().splitlines()
+    # Remove leading and trailing whitespaces in each item in list
+    input_list = [x.strip() for x in input_list]
+    header = 'helpful fields that are also displayed currently'
     try:
         start = input_list.index(header)
         # Return all items after the header

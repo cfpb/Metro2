@@ -120,10 +120,10 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         vals['fields_display'] = parse_fields_display_from_csv(source_fields_used)
 
         # Then translate the fields from plain language to code
-        vals['fields_used'] = [plain_to_code_field_map.get(k, k) for k in \
-            [k.lower() for k in vals['fields_used']]]
-        vals['fields_display'] = [plain_to_code_field_map.get(k, k) for k in \
-            [k.lower() for k in vals['fields_display']]]
+        vals['fields_used'] = [plain_to_code_field_map.get(k, k) \
+            for k in vals['fields_used']]
+        vals['fields_display'] = [plain_to_code_field_map.get(k, k) \
+            for k in vals['fields_display']]
 
         return vals
 
