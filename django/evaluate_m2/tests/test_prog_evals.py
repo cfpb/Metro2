@@ -51,8 +51,8 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 36, 'activity_date': prev_acct_date, 'cons_acct_num': '0036',
                 'acct_stat':'78', 'dofd': None
             }]
-        for i in range(0, len(prev_activities)):
-            acct_record(self.prev_data_file, prev_activities[i])
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
 
 
         # Create the Account Activities data
