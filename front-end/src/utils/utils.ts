@@ -10,37 +10,60 @@ import { M2_FIELD_LOOKUPS, M2_FIELD_NAMES } from './constants'
  * the value provided for the field or undefined.
  */
 export const getM2Definition = (
-  fieldId: string,
-  fieldValue?: number | string | null
+  field: string,
+  value?: number | string | null
 ): string | undefined => {
-  if (fieldValue != null && fieldId in M2_FIELD_LOOKUPS) {
-    const lookup = M2_FIELD_LOOKUPS[fieldId as keyof typeof M2_FIELD_LOOKUPS]
-    return lookup[fieldValue as keyof typeof lookup]
+  if (value != null && field in M2_FIELD_LOOKUPS) {
+    const lookup = M2_FIELD_LOOKUPS[field as keyof typeof M2_FIELD_LOOKUPS]
+    return lookup[value as keyof typeof lookup]
   }
   return undefined
 }
 
-// Iterates through array of account records and adds parenthetical
-// annotations to record's values where they exist
-export const annotateData = (records: AccountRecord[]): AccountRecord[] =>
-  records.map(record => {
-    const obj: Record<string, number | string | null | undefined> = {}
+// Given a Metro2 field and value, checks if there is a human-readable definition for the value.
+// If there is a definition, returns a string with format 'value (definition)'
+// If no definition is available, returns the original value
+export const annotateValue = (
+  field: string,
+  val: number | string | null | undefined
+): number | string | null | undefined => {
+  const annotation = getM2Definition(field, val)
+  return annotation ? `${val} (${annotation})` : val
+}
+
+// Iterates through array of account records and annotates values as needed
+export const annotateAccountRecords = (records: AccountRecord[]): AccountRecord[] =>
+  records.map((record: AccountRecord): AccountRecord => {
+    // Create new object to hold the annotated values
+    const obj: Record<string, unknown[] | number | string | null | undefined> = {}
     for (const field of Object.keys(record)) {
+      // Add a value for each field to the new object, with annotation if available.
+      // If the original value is an array, annotate each item in the new array.
       const val = record[field as keyof AccountRecord]
-      const annotation = getM2Definition(field, val)
-      obj[field] = annotation ? `${val} (${annotation})` : val
+      obj[field] = Array.isArray(val)
+        ? val.map((item: number | string): number | string | null | undefined =>
+            annotateValue(field, item)
+          )
+        : annotateValue(field, val)
     }
     return obj
   })
 
-// Annotate and add php1 to account record data
+/**
+ * Given an array of M2 account records, makes some updates for display in tables:
+ *   1. if records include 'php' value, add 'php1' field containing first character of php
+ *   2. add descriptive annotations to records for fields with coded values
+ * Returns updated records
+ */
 export const prepareAccountRecordData = (
   records: AccountRecord[]
 ): AccountRecord[] => {
+  // If the first record has a php value, add php1 to the records
   if ('php' in records[0]) {
     for (const record of records) record.php1 = record.php?.charAt(0)
   }
-  return annotateData(records)
+  // annotate coded record values
+  return annotateAccountRecords(records)
 }
 
 // Capitalizes first letter of a string
