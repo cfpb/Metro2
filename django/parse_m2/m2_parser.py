@@ -214,13 +214,16 @@ class M2FileParser():
             else:
                 # if any part of the line couldn't be parsed, don't save
                 #  the segments; only save the line as UnparseableData
-                if len(line) > 2000:
-                    line = line[:1997] + "..."
-                return {"UnparseableData": UnparseableData(
-                    data_file=self.file_record,
-                    unparseable_line=line,
-                    error_description=str(e)
-                )}
+                return self.unparseable_data(line, e)
+
+    def unparseable_data(self, line, error):
+        if len(line) > 2000:
+            line = line[:1997] + "..."
+        return {"UnparseableData": UnparseableData(
+            data_file=self.file_record,
+            unparseable_line=line,
+            error_description=str(error)
+        )}
 
     def parse_chunk(self, f: io.TextIOWrapper, chunk_size: int, activity_date) -> dict:
         """
@@ -241,12 +244,16 @@ class M2FileParser():
         parsed_records = None
 
         while lines_parsed < chunk_size:
-            line = self.get_next_line(f)
-            if not line:
-                # If the file has ended, exit the parser
-                break
+            try:
+                line = self.get_next_line(f)
+                if not line:
+                    # If the file has ended, exit the parser
+                    break
+                line_results = self.parse_line(line, activity_date)
+            except parse_utils.UnreadableLineException as e:
+                # if get_next_line fails, save as unparseable
+                line_results = self.unparseable_data("", e)
 
-            line_results = self.parse_line(line, activity_date)
             if line_results:
                 parsed_records = self.prepare_results_for_bulk_save(line_results, parsed_records)
 
