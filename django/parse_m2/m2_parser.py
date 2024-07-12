@@ -54,10 +54,16 @@ class M2FileParser():
         expects strings, use this method to ensure a string is returned.
         """
         line = f.readline()
-        try:
-            line = line.decode('utf-8')
-        except (UnicodeDecodeError, AttributeError):
+        if isinstance(line, str):
             pass
+        elif isinstance(line, bytes):
+            try:
+                line = line.decode('utf-8')
+            except (UnicodeDecodeError, AttributeError) as e:
+                raise parse_utils.UnreadableLineException(f"Decode failed: {e}")
+        else:
+            # We don't know what this is
+            raise parse_utils.UnreadableLineException(f"Input type: {type(line)} is neither string nor bytes")
         return line
 
     def get_activity_date_from_header(self, line: str):
