@@ -73,6 +73,23 @@ class M2FileParser():
             # if the header couldn't be parsed, don't try to parse the rest of the file
             raise parse_utils.UnreadableFileException(error_message)
 
+    def handle_first_line_and_return_activity_date(self, first_line:str):
+        if self.is_header_line(first_line):
+            # If it's a header, get the activity date
+            return self.get_activity_date_from_header(first_line)
+        else:
+            # If header is missing, first save a message to inform users
+            message = "First line of file isn't a header. Using DOAI in place of activity date."
+            self.update_file_record(msg=message)
+
+            # Next, parse the first line as a tradeline and save the results
+            # (activity_date=None signals the parser to use DOAI instead of activity_date)
+            line_results = self.parse_line(line=first_line, activity_date=None)
+            if line_results:
+                parsed_records = self.prepare_results_for_bulk_save(line_results)
+                self.save_values_bulk(parsed_records)
+            return None
+
     def parse_extra_segments(self, line: str, parsed: dict) -> dict:
         """
         Given a string with any number of extra segments, determine what the first
@@ -330,28 +347,14 @@ class M2FileParser():
         `file_size` - the size of the file stream in bytes
         """
         # handle the first line of the file
-        first_line = self.get_next_line(f)
-        if self.is_header_line(first_line):
-            # If it's a header, get the activity date
-            try:
-                activity_date = self.get_activity_date_from_header(first_line)
-            except parse_utils.UnreadableFileException as e:
-                # If it fails to parse, record the failure, and
-                # don't try to parse the rest of the file
-                self.update_file_record(status="Not parsed", msg=str(e))
-                return
-        else:
-            # If header is missing, first save a message to inform users
-            message = "First line of file isn't a header. Using DOAI in place of activity date."
-            self.update_file_record(msg=message)
-
-            # Next, parse the first line as a tradeline and save the results
-            # (activity_date=None signals the parser to use DOAI instead of activity_date)
-            activity_date = None
-            line_results = self.parse_line(line=first_line, activity_date=None)
-            if line_results:
-                parsed_records = self.prepare_results_for_bulk_save(line_results)
-                self.save_values_bulk(parsed_records)
+        try:
+            first_line = self.get_next_line(f)
+            activity_date = self.handle_first_line_and_return_activity_date(first_line)
+        except parse_utils.UnreadableFileException as e:
+            # If it fails to parse, record the failure, and
+            # don't try to parse the rest of the file
+            self.update_file_record(status="Not parsed", msg=str(e))
+            return
 
         # parse the rest of the file until it is done
         while f.tell() < file_size:
