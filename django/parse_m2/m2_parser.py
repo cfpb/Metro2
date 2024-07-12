@@ -12,6 +12,10 @@ from parse_m2 import parse_utils
 
 
 class M2FileParser():
+    # Parser version is saved on each file record.
+    # Increment this version for all updates to parser functionality.
+    parser_version = "1.0"
+
     chunk_size = 2000  # TODO: determine a good number for this
     header_format = r'.{4}HEADER$'
     trailer_format = r'.{4}TRAILER$'
@@ -26,7 +30,8 @@ class M2FileParser():
         self.file_record: M2DataFile = M2DataFile(
             event=event,
             file_name=filepath,
-            parsing_status="In progress"
+            parsing_status="In progress",
+            parser_version=self.parser_version,
         )
         self.file_record.save()
 

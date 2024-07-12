@@ -60,6 +60,7 @@ class M2DataFile(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     parsing_status = models.CharField(max_length=200, default="Not started")
     error_message = models.CharField(max_length=2000, blank=True)
+    parser_version = models.CharField(max_length=200, blank=True)
 
     def __str__(self) -> str:
         return self.file_name
