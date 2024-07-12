@@ -58,7 +58,7 @@ class InitiateS3ParsingTestCase(TestCase):
     # Test for parsing files from the S3 bucket. Only run when testing manually.
     # Before running, make sure S3 env vars are in place.
 
-    def test_fetch_s3(self):
+    def xtest_fetch_s3(self):
         with patch.dict('os.environ', {'AWS_PROFILE': 'prof'}):
             exam_s3 = Metro2Event.objects.create(name="s3 exam", directory="test-tiny/")
             parse_files_from_s3_bucket(exam_s3)
@@ -71,7 +71,7 @@ class InitiateS3ParsingTestCase(TestCase):
             # The test file should contain 1998 base segments
             self.assertEqual(AccountHolder.objects.count(), 1998)
 
-    def test_fetch_s3_zip(self):
+    def xtest_fetch_s3_zip(self):
         with patch.dict('os.environ', {'AWS_PROFILE': 'prof'}):
             exam_s3 = Metro2Event.objects.create(name="other s3 exam", directory="test-zipped/")
             parse_files_from_s3_bucket(exam_s3)
