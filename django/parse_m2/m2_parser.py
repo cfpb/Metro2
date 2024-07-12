@@ -54,6 +54,9 @@ class M2FileParser():
             # if the header couldn't be parsed, don't try to parse the rest of the file
             raise parse_utils.UnreadableFileException(error_message)
 
+    def is_header_line(self, line) -> bool:
+        return re.match(self.header_format, line[:10])
+
     def handle_first_line_and_return_activity_date(self, first_line:str):
         if self.is_header_line(first_line):
             # If it's a header, get the activity date
@@ -312,9 +315,6 @@ class M2FileParser():
         K4.objects.bulk_create(values["k4"])
         L1.objects.bulk_create(values["l1"])
         N1.objects.bulk_create(values["n1"])
-
-    def is_header_line(self, line) -> bool:
-        return re.match(self.header_format, line[:10])
 
     def parse_file_contents(self, f: io.TextIOWrapper, file_size: int):
         """
