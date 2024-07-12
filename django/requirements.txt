@@ -1,6 +1,6 @@
 asgiref==3.7.2
 coverage==7.4.0
-Django==4.2.11
+Django==4.2.14
 psycopg2-binary==2.9.9
 ruff==0.1.11
 boto3==1.33.10
