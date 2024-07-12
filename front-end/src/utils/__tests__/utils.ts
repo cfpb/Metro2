@@ -1,73 +1,88 @@
 import { M2_FIELD_LOOKUPS } from '../constants'
 import {
-  annotateValue,
+  addPHP1,
+  annotateAccountRecords,
   formatDate,
   formatLongDescription,
   formatNumber,
   formatUSD,
-  getM2Definition,
-  prepareAccountRecordData
+  getM2Definition
 } from '../utils'
 
 const UNDEFINED = undefined
 
-const records = [
-  {
-    id_num: '1601',
-    cons_acct_num: '123456789',
-    inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
-    activity_date: '2018-10-31',
-    acct_stat: '1',
-    amt_past_due: 100,
-    current_bal: 100,
-    orig_chg_off_amt: 0,
-    dofd: '2018-01-31',
-    php: '111110010010000000000DDD',
-    account_holder__cons_info_ind_assoc: ['A', 'B'],
-    terms_freq: 'M'
-  },
-  {
-    id_num: '3983',
-    cons_acct_num: '987654321',
-    inconsistencies: ['Status-DOFD-1'],
-    activity_date: '2018-10-31',
-    acct_stat: '2',
-    amt_past_due: 690,
-    current_bal: 690,
-    orig_chg_off_amt: 0,
-    dofd: '2018-05-31',
-    php: '111100000000000000000DDD',
-    account_holder__cons_info_ind_assoc: [],
-    terms_freq: 'M'
-  }
-]
-
-describe('prepareAccountRecordData', () => {
-  it('adds and annotates a php1 character', () => {
-    const record = records[0]
+describe('addPHP1', () => {
+  it('adds a php1 character if php present', () => {
+    const records = [
+      {
+        cons_acct_num: '123456789',
+        php: '111110010010000000000DDD'
+      },
+      {
+        cons_acct_num: '987654321',
+        php: '011100000000000000000DDD'
+      }
+    ]
 
     // when the first record includes php, php1 should be generated
-    expect('php1' in record).toBe(false)
-    const preparedData = prepareAccountRecordData(records)
-    const preparedRecord = preparedData[0]
-    expect('php1' in preparedRecord).toBe(true)
+    // for each record
+    const preparedData = addPHP1(records)
+    expect('php1' in preparedData[0]).toBe(true)
+    expect('php1' in preparedData[1]).toBe(true)
 
-    // the php1 value should start with the first character of the php
-    expect(preparedRecord.php1?.startsWith(record.php[0])).toBe(true)
-
-    // the php1 value should be annotated
-    expect(preparedRecord.php1).toEqual(annotateValue('php1', record.php[0]))
+    // the php1 value should match the first character of php
+    expect(preparedData[0].php1).toEqual('1')
+    expect(preparedData[1].php1).toEqual('0')
   })
 
-  it('only adds php1 if php present', () => {
-    const preparedData = prepareAccountRecordData([
+  it('only adds php1 if php present in first record', () => {
+    const records = [
       {
         cons_acct_num: '12345'
       }
-    ])
+    ]
+    const preparedData = addPHP1(records)
 
     // records without php values should not get a php1
     expect('php1' in preparedData[0]).toBe(false)
+  })
+})
+
+describe('annotateAccountRecords', () => {
+  it('annotates fields with coded values, including arrays', () => {
+    const record = {
+      id_num: '1601',
+      cons_acct_num: '123456789',
+      inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
+      activity_date: '2018-10-31',
+      acct_stat: '11',
+      amt_past_due: 100,
+      current_bal: 100,
+      orig_chg_off_amt: 0,
+      dofd: '2018-01-31',
+      php: '111110010010000000000DDD',
+      account_holder__cons_info_ind_assoc: ['A', 'B'],
+      terms_freq: 'M'
+    }
+    const annotatedRecord = {
+      id_num: '1601',
+      cons_acct_num: '123456789',
+      inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
+      activity_date: '2018-10-31',
+      acct_stat: '11 (Current account (0-29 days past the due date))',
+      amt_past_due: 100,
+      current_bal: 100,
+      orig_chg_off_amt: 0,
+      dofd: '2018-01-31',
+      php: '111110010010000000000DDD',
+      account_holder__cons_info_ind_assoc: [
+        'A (Petition for Chapter 7 Bankruptcy)',
+        'B (Petition for Chapter 11 Bankruptcy)'
+      ],
+      terms_freq: 'M (Monthly)'
+    }
+    const annotatedData = annotateAccountRecords([record])
+    expect(annotatedData).toEqual([annotatedRecord])
   })
 })
 
