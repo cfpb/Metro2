@@ -41,25 +41,6 @@ class M2FileParser():
             file.error_message = msg
         file.save()
 
-    def get_next_line(self, f) -> str:
-        """
-        Depending on whether the file is being read from the filesytem or from S3,
-        readline may return a string or a bytes-like object. Since the parser
-        expects strings, use this method to ensure a string is returned.
-        """
-        line = f.readline()
-        if isinstance(line, str):
-            pass
-        elif isinstance(line, bytes):
-            try:
-                line = line.decode('utf-8')
-            except (UnicodeDecodeError, AttributeError) as e:
-                raise parse_utils.UnreadableLineException(f"Decode failed: {e}")
-        else:
-            # We don't know what this is
-            raise parse_utils.UnreadableLineException(f"Input type: {type(line)} is neither string nor bytes")
-        return line
-
     def get_activity_date_from_header(self, line: str):
         try:
             return parse_utils.get_field_value(
@@ -258,7 +239,7 @@ class M2FileParser():
 
         while lines_parsed < chunk_size:
             try:
-                line = self.get_next_line(f)
+                line = parse_utils.get_next_line(f)
                 if not line:
                     # If the file has ended, exit the parser
                     break
@@ -348,9 +329,10 @@ class M2FileParser():
         """
         # handle the first line of the file
         try:
-            first_line = self.get_next_line(f)
+            first_line = parse_utils.get_next_line(f)
             activity_date = self.handle_first_line_and_return_activity_date(first_line)
-        except parse_utils.UnreadableFileException as e:
+        except (parse_utils.UnreadableFileException,
+                parse_utils.UnreadableLineException) as e:
             # If it fails to parse, record the failure, and
             # don't try to parse the rest of the file
             self.update_file_record(status="Not parsed", msg=str(e))

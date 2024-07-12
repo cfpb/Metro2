@@ -120,3 +120,20 @@ class ParserUtilsTestCase(TestCase):
         str = "test03111901"
         result = parse_utils.get_field_value({"x": (5,12, "date")}, "x", str)
         self.assertEqual(result, datetime(1901, 3, 11))
+
+    # Tests for decode_if_needed
+    # ========================
+    def test_decode_str(self):
+        s = "hello"
+        result = parse_utils.decode_if_needed(s)
+        self.assertEqual(s, result)
+
+    def test_decode_bytes(self):
+        b = b'howdy'
+        result = parse_utils.decode_if_needed(b)
+        self.assertEqual("howdy", result)
+
+    def test_decode_other(self):
+        with self.assertRaises(parse_utils.UnreadableLineException):
+            x = 123
+            parse_utils.decode_if_needed(x)

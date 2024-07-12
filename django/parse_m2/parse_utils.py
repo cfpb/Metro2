@@ -96,3 +96,24 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
         raise UnreadableLineException(msg)
 
     return result
+
+def get_next_line(f) -> str:
+    """
+    Depending on whether the file is being read from the filesytem or from S3,
+    readline may return a string or a bytes-like object. Since the parser
+    expects strings, use this method to ensure a string is returned.
+    """
+    line = f.readline()
+    return decode_if_needed(line)
+
+def decode_if_needed(input: any) -> str:
+    if isinstance(input, str):
+        return input
+    elif isinstance(input, bytes):
+        try:
+            return input.decode('utf-8')
+        except (UnicodeDecodeError, AttributeError) as e:
+            raise UnreadableLineException(f"Decode failed: {e}")
+    else:
+        # We don't know what this is
+        raise UnreadableLineException(f"Input type: {type(input)} is neither string nor bytes")
