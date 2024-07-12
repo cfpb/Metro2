@@ -50,39 +50,42 @@ describe('addPHP1', () => {
 
 describe('annotateAccountRecords', () => {
   it('annotates fields with coded values, including arrays', () => {
-    const record = {
-      id_num: '1601',
-      cons_acct_num: '123456789',
-      inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
-      activity_date: '2018-10-31',
-      acct_stat: '11',
-      amt_past_due: 100,
-      current_bal: 100,
-      orig_chg_off_amt: 0,
-      dofd: '2018-01-31',
-      php: '111110010010000000000DDD',
-      account_holder__cons_info_ind_assoc: ['A', 'B'],
-      terms_freq: 'M'
-    }
-    const annotatedRecord = {
-      id_num: '1601',
-      cons_acct_num: '123456789',
-      inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
-      activity_date: '2018-10-31',
-      acct_stat: '11 (Current account (0-29 days past the due date))',
-      amt_past_due: 100,
-      current_bal: 100,
-      orig_chg_off_amt: 0,
-      dofd: '2018-01-31',
-      php: '111110010010000000000DDD',
-      account_holder__cons_info_ind_assoc: [
-        'A (Petition for Chapter 7 Bankruptcy)',
-        'B (Petition for Chapter 11 Bankruptcy)'
-      ],
-      terms_freq: 'M (Monthly)'
-    }
-    const annotatedData = annotateAccountRecords([record])
-    expect(annotatedData).toEqual([annotatedRecord])
+    const records = [
+      {
+        id_num: '1601',
+        cons_acct_num: '123456789',
+        inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
+        activity_date: '2018-10-31',
+        acct_stat: '11',
+        amt_past_due: 100,
+        current_bal: 100,
+        orig_chg_off_amt: 0,
+        dofd: '2018-01-31',
+        php: '111110010010000000000DDD',
+        account_holder__cons_info_ind_assoc: ['A', 'B'],
+        terms_freq: 'M'
+      }
+    ]
+    const annotatedRecords = [
+      {
+        id_num: '1601',
+        cons_acct_num: '123456789',
+        inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
+        activity_date: '2018-10-31',
+        acct_stat: '11 (Current account (0-29 days past the due date))',
+        amt_past_due: 100,
+        current_bal: 100,
+        orig_chg_off_amt: 0,
+        dofd: '2018-01-31',
+        php: '111110010010000000000DDD',
+        account_holder__cons_info_ind_assoc: [
+          'A (Petition for Chapter 7 Bankruptcy)',
+          'B (Petition for Chapter 11 Bankruptcy)'
+        ],
+        terms_freq: 'M (Monthly)'
+      }
+    ]
+    expect(annotateAccountRecords(records)).toEqual(annotatedRecords)
   })
 })
 
