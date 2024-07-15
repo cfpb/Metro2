@@ -1,37 +1,93 @@
 import { M2_FIELD_LOOKUPS } from '../constants'
 import {
+  addPHP1,
+  annotateAccountRecords,
   formatDate,
   formatLongDescription,
   formatNumber,
   formatUSD,
-  getM2Definition,
-  prepareAccountRecordData
+  getM2Definition
 } from '../utils'
 
-describe('prepareAccountRecordData', () => {
-  const records = [
-    {
-      id: 1601,
-      inconsistencies: ['Bankruptcy-DOFD-4'],
-      activity_date: '2018-10-31',
-      amt_past_due: 0,
-      current_bal: 0,
-      orig_chg_off_amt: 0,
-      php: 'DDD001110010010000000000',
-      terms_freq: 'M'
-    }
-  ]
+const UNDEFINED = undefined
 
-  it('adds and annotates a php1 character', () => {
-    const preparedData = prepareAccountRecordData(records)
-    const annotatedPHP = `D (No payment history reported/available this month)`
-    const preparedRecord = preparedData[0]
-    expect('php1' in preparedRecord).toBe(true)
-    expect(preparedRecord.php1).toEqual(annotatedPHP)
+describe('addPHP1', () => {
+  it('adds a php1 character if php present', () => {
+    const records = [
+      {
+        cons_acct_num: '123456789',
+        php: '111110010010000000000DDD'
+      },
+      {
+        cons_acct_num: '987654321',
+        php: '011100000000000000000DDD'
+      }
+    ]
+
+    // when the first record includes php, php1 should be generated
+    // for each record
+    const preparedData = addPHP1(records)
+    expect('php1' in preparedData[0]).toBe(true)
+    expect('php1' in preparedData[1]).toBe(true)
+
+    // the php1 value should match the first character of php
+    expect(preparedData[0].php1).toEqual('1')
+    expect(preparedData[1].php1).toEqual('0')
+  })
+
+  it('only adds php1 if php present in first record', () => {
+    const records = [
+      {
+        cons_acct_num: '12345'
+      }
+    ]
+    const preparedData = addPHP1(records)
+
+    // records without php values should not get a php1
+    expect('php1' in preparedData[0]).toBe(false)
   })
 })
 
-const UNDEFINED = undefined
+describe('annotateAccountRecords', () => {
+  it('annotates fields with coded values, including arrays', () => {
+    const records = [
+      {
+        id_num: '1601',
+        cons_acct_num: '123456789',
+        inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
+        activity_date: '2018-10-31',
+        acct_stat: '11',
+        amt_past_due: 100,
+        current_bal: 100,
+        orig_chg_off_amt: 0,
+        dofd: '2018-01-31',
+        php: '111110010010000000000DDD',
+        account_holder__cons_info_ind_assoc: ['A', 'B'],
+        terms_freq: 'M'
+      }
+    ]
+    const annotatedRecords = [
+      {
+        id_num: '1601',
+        cons_acct_num: '123456789',
+        inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
+        activity_date: '2018-10-31',
+        acct_stat: '11 (Current account (0-29 days past the due date))',
+        amt_past_due: 100,
+        current_bal: 100,
+        orig_chg_off_amt: 0,
+        dofd: '2018-01-31',
+        php: '111110010010000000000DDD',
+        account_holder__cons_info_ind_assoc: [
+          'A (Petition for Chapter 7 Bankruptcy)',
+          'B (Petition for Chapter 11 Bankruptcy)'
+        ],
+        terms_freq: 'M (Monthly)'
+      }
+    ]
+    expect(annotateAccountRecords(records)).toEqual(annotatedRecords)
+  })
+})
 
 describe('formatNumber', () => {
   it('returns a formatted string when passed a number', () => {

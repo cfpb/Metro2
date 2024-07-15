@@ -36,41 +36,53 @@ export interface AccountRecord {
 }
 
 // M2 fields mapped to their human-readable names
-// Ordered according to their display in the Account table
+// Ordered according to their position in M2 reporting,
+// with base segment values first.
+// This order is used in the account view tables.
 export const M2_FIELD_NAMES = new Map([
   ['activity_date', 'Activity date'],
-  ['acct_stat', 'Account status'],
-  ['acct_type', 'Account type'],
-  ['actual_pmt_amt', 'Actual payment amount'],
-  ['amt_past_due', 'Amount past due'],
-  ['compl_cond_cd', 'Compliance condition code'],
-  ['cons_acct_num', 'Account number'],
-  ['credit_limit', 'Credit limit'],
-  ['current_bal', 'Current balance'],
-  ['date_closed', 'Date closed'],
-  ['date_open', 'Date open'],
-  ['doai', 'Date of account information'],
-  ['dofd', 'DOFD'],
-  ['dolp', 'Date of last payment'],
-  ['hcola', 'HCOLA'],
   ['id_num', 'ID number'],
-  ['l1__change_ind', 'L1 change indicator'],
-  ['l1__new_acc_num', 'L1 new account number'],
-  ['l1__new_id_num', 'L1 new id number'],
-  ['php', 'Payment history profile'],
-  ['php1', 'Payment history profile (most recent entry)'],
-  ['pmt_rating', 'Payment rating'],
-  ['smpa', 'Scheduled monthly payment amount'],
-  ['orig_chg_off_amt', 'Original charge-off amount'],
+  ['cons_acct_num', 'Account number'],
   ['port_type', 'Portfolio type'],
-  ['spc_com_cd', 'Special comment code'],
+  ['acct_type', 'Account type'],
+  ['date_open', 'Date opened'],
+  ['credit_limit', 'Credit limit'],
+  ['hcola', 'HCOLA'],
   ['terms_dur', 'Terms duration'],
   ['terms_freq', 'Terms frequency'],
-  ['account_holder__cons_info_ind', 'Consumer information indicator'],
-  ['j1__cons_info_ind', 'J1 consumer information indicator'],
-  ['j2__cons_info_ind', 'J2 consumer information indicator'],
-  ['k2__purch_sold_ind', 'K2 purchased-sold indicator'],
-  ['k4__balloon_pmt_amt', 'K4 balloon payment amount']
+  ['smpa', 'Scheduled monthly payment amount'],
+  ['actual_pmt_amt', 'Actual payment amount'],
+  ['acct_stat', 'Account status'],
+  ['pmt_rating', 'Payment rating'],
+  ['php', 'Payment history profile'],
+  ['php1', 'Payment history profile (most recent entry)'],
+  ['spc_com_cd', 'Special comment code'],
+  ['compl_cond_cd', 'Compliance condition code'],
+  ['current_bal', 'Current balance'],
+  ['amt_past_due', 'Amount past due'],
+  ['orig_chg_off_amt', 'Original charge-off amount'],
+  ['doai', 'Date of account information'],
+  ['dofd', 'DOFD'],
+  ['date_closed', 'Date closed'],
+  ['dolp', 'Date of last payment'],
+  // ['account_holder__surname', ''],
+  // ['account_holder__first_name', ''],
+  [
+    'account_holder__cons_info_ind',
+    'Bankruptcy - Consumer information indicator for account holder'
+  ],
+  ['account_holder__ecoa', 'ECOA code for account holder'],
+  [
+    'account_holder__cons_info_ind_assoc',
+    'Bankruptcy - Consumer information indicator for associated consumers'
+  ],
+  ['account_holder__ecoa_assoc', 'ECOA codes for associated consumers'],
+  ['k2__purch_sold_ind', 'Purchased-sold indicator (K2)'],
+  ['k2__purch_sold_name', 'Purchased-sold name (K2)'],
+  ['k4__balloon_pmt_amt', 'Balloon payment amount (K4)'],
+  ['l1__change_ind', 'Account change indicator (L1)'],
+  ['l1__new_acc_num', 'New consumer account number (L1)'],
+  ['l1__new_id_num', 'New identification number (L1)']
 ])
 
 export const COL_DEF_CONSTANTS = {
@@ -87,9 +99,18 @@ export const COL_DEF_CONSTANTS = {
   hcola: { type: 'currency' },
   php: { minWidth: 265 },
   php1: { minWidth: 220 },
-  k4__balloon_pmt_amt: { type: 'currency' },
   orig_chg_off_amt: { type: 'currency' },
-  smpa: { type: 'currency', minWidth: 140 }
+  smpa: { type: 'currency', minWidth: 140 },
+  account_holder__cons_info_ind: { minWidth: 265 },
+  account_holder__cons_info_ind_assoc: { minWidth: 265 },
+  account_holder__ecoa: { minWidth: 230 },
+  account_holder__ecoa_assoc: { minWidth: 230 },
+  k2__purch_sold_ind: { minWidth: 250 },
+  k2__purch_sold_name: { minWidth: 210 },
+  k4__balloon_pmt_amt: { type: 'currency' },
+  l1__change_ind: { minWidth: 200 },
+  l1__new_acc_num: { minWidth: 200 },
+  l1__new_id_num: { minWidth: 200 }
 }
 
 // Lookup to use evaluator id segments as initial categorization
@@ -130,7 +151,6 @@ export const evaluatorSegmentMap = new Map([
 // into a more human-readable format for display in the Metro2 tool.
 // The following lookups map a field's possible codes to the definitions
 // of the codes provided in the Credit Reporting Resource Guide.
-
 export const ACCOUNT_STATUS_LOOKUP = {
   '05': 'Account transferred',
   '11': 'Current account (0-29 days past the due date)',
@@ -275,6 +295,18 @@ export const PORTFOLIO_TYPE_LOOKUP = {
   R: 'Revolving'
 }
 
+export const ECOA_CODE_LOOKUP = {
+  '1': 'Individual',
+  '2': 'Joint contractual liability',
+  '3': 'Authorized user',
+  '5': 'Co-maker or guarantor',
+  '7': 'Maker',
+  T: 'Terminated',
+  X: 'Deceased',
+  W: 'Business / Commercial',
+  Z: 'Delete consumer'
+}
+
 export const ACCOUNT_TYPE_LOOKUP = {
   '00': 'Auto',
   '01': 'Unsecured',
@@ -373,15 +405,16 @@ export const M2_FIELD_LOOKUPS = {
   acct_stat: ACCOUNT_STATUS_LOOKUP,
   acct_type: ACCOUNT_TYPE_LOOKUP,
   compl_cond_cd: COMPLIANCE_CONDTION_CODE_LOOKUP,
-  k2__purch_sold_ind: K2_PURCHASED_SOLD_INDICATOR_LOOKUP,
-  l1__change_ind: L1_CHANGE_INDICATOR_LOOKUP,
   php: PAYMENT_HISTORY_PROFILE_LOOKUP,
   php1: PAYMENT_HISTORY_PROFILE_LOOKUP,
   pmt_rating: PAYMENT_RATING_LOOKUP,
-  spc_com_cd: SPECIAL_COMMENT_CODE_LOOKUP,
   port_type: PORTFOLIO_TYPE_LOOKUP,
+  spc_com_cd: SPECIAL_COMMENT_CODE_LOOKUP,
   terms_freq: TERMS_FREQUENCY_LOOKUP,
-  j1__cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
-  j2__cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
-  account_holder__cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP
+  account_holder__cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
+  account_holder__cons_info_ind_assoc: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
+  account_holder__ecoa: ECOA_CODE_LOOKUP,
+  account_holder__ecoa_assoc: ECOA_CODE_LOOKUP,
+  k2__purch_sold_ind: K2_PURCHASED_SOLD_INDICATOR_LOOKUP,
+  l1__change_ind: L1_CHANGE_INDICATOR_LOOKUP
 }
