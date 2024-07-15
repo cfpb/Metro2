@@ -36,6 +36,7 @@
                     <td>{{ file.accountholder_set.count|intcomma }}</td>
                     <td>{{ file.unparseabledata_set.count|intcomma }}</td>
                     <td>{{ file.timestamp }}</td>
+                    <td>{{ file.error_message }}</td>
                     <td>{{ file.parser_version }}</td>
                 </tr>
             {% endfor %}
