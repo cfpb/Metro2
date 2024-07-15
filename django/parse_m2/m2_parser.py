@@ -12,6 +12,10 @@ from parse_m2 import parse_utils
 
 
 class M2FileParser():
+    # Parser version is saved on each file record.
+    # Increment this version for all updates to parser functionality.
+    parser_version = "1.0"
+
     chunk_size = 2000  # TODO: determine a good number for this
     header_format = r'.{4}HEADER$'
     trailer_format = r'.{4}TRAILER$'
@@ -26,39 +30,21 @@ class M2FileParser():
         self.file_record: M2DataFile = M2DataFile(
             event=event,
             file_name=filepath,
-            parsing_status="In progress"
+            parsing_status="In progress",
+            parser_version=self.parser_version,
         )
         self.file_record.save()
 
-    def record_unparseable_file(self, error_message: str) -> None:
+    def update_file_record(self, status=None, msg=None) -> None:
         """
-        If the file can't be parsed, update the M2DataFile record with details.
-        """
-        file = self.file_record
-        file.parsing_status = "Not parsed"
-        file.error_message = error_message
-        file.save()
-
-    def record_parsing_success(self) -> None:
-        """
-        After successfully parsing a file, update the M2DataFile record with details.
+        Update the file record with the given status and error message.
         """
         file = self.file_record
-        file.parsing_status = "Finished"
+        if status:
+            file.parsing_status = status
+        if msg:
+            file.error_message = msg
         file.save()
-
-    def get_next_line(self, f) -> str:
-        """
-        Depending on whether the file is being read from the filesytem or from S3,
-        readline may return a string or a bytes-like object. Since the parser
-        expects strings, use this method to ensure a string is returned.
-        """
-        line = f.readline()
-        try:
-            line = line.decode('utf-8')
-        except (UnicodeDecodeError, AttributeError):
-            pass
-        return line
 
     def get_activity_date_from_header(self, line: str):
         try:
@@ -72,6 +58,26 @@ class M2FileParser():
             error_message = f"{message}. {e}. Source line: `{line}`"
             # if the header couldn't be parsed, don't try to parse the rest of the file
             raise parse_utils.UnreadableFileException(error_message)
+
+    def is_header_line(self, line) -> bool:
+        return re.match(self.header_format, line[:10])
+
+    def handle_first_line_and_return_activity_date(self, first_line:str):
+        if self.is_header_line(first_line):
+            # If it's a header, get the activity date
+            return self.get_activity_date_from_header(first_line)
+        else:
+            # If header is missing, first save a message to inform users
+            message = "First line of file isn't a header. Using DOAI in place of activity date."
+            self.update_file_record(msg=message)
+
+            # Next, parse the first line as a tradeline and save the results
+            # (activity_date=None signals the parser to use DOAI instead of activity_date)
+            line_results = self.parse_line(line=first_line, activity_date=None)
+            if line_results:
+                parsed_records = self.prepare_results_for_bulk_save(line_results)
+                self.save_values_bulk(parsed_records)
+            return None
 
     def parse_extra_segments(self, line: str, parsed: dict) -> dict:
         """
@@ -193,6 +199,8 @@ class M2FileParser():
             remaining_chars = line[base_segment_length:]
             parsed = self.parse_extra_segments(remaining_chars, parsed)
 
+            # Take the fields that are aggregated from the extra segments and
+            # save them to the AccountHolder record
             if "cons_info_ind_assoc" in parsed:
                 acct_holder.cons_info_ind_assoc = parsed["cons_info_ind_assoc"]
             if "ecoa_assoc" in parsed:
@@ -208,13 +216,16 @@ class M2FileParser():
             else:
                 # if any part of the line couldn't be parsed, don't save
                 #  the segments; only save the line as UnparseableData
-                if len(line) > 2000:
-                    line = line[:1997] + "..."
-                return {"UnparseableData": UnparseableData(
-                    data_file=self.file_record,
-                    unparseable_line=line,
-                    error_description=str(e)
-                )}
+                return self.unparseable_data(line, e)
+
+    def unparseable_data(self, line, error):
+        if len(line) > 2000:
+            line = line[:1997] + "..."
+        return {"UnparseableData": UnparseableData(
+            data_file=self.file_record,
+            unparseable_line=line,
+            error_description=str(error)
+        )}
 
     def parse_chunk(self, f: io.TextIOWrapper, chunk_size: int, activity_date) -> dict:
         """
@@ -235,12 +246,16 @@ class M2FileParser():
         parsed_records = None
 
         while lines_parsed < chunk_size:
-            line = self.get_next_line(f)
-            if not line:
-                # If the file has ended, exit the parser
-                break
+            try:
+                line = parse_utils.get_next_line(f)
+                if not line:
+                    # If the file has ended, exit the parser
+                    break
+                line_results = self.parse_line(line, activity_date)
+            except parse_utils.UnreadableLineException as e:
+                # if get_next_line fails, save as unparseable
+                line_results = self.unparseable_data("", e)
 
-            line_results = self.parse_line(line, activity_date)
             if line_results:
                 parsed_records = self.prepare_results_for_bulk_save(line_results, parsed_records)
 
@@ -306,9 +321,6 @@ class M2FileParser():
         L1.objects.bulk_create(values["l1"])
         N1.objects.bulk_create(values["n1"])
 
-    def is_header_line(self, line) -> bool:
-        return re.match(self.header_format, line[:10])
-
     def parse_file_contents(self, f: io.TextIOWrapper, file_size: int):
         """
         Parse a Metro2 file and save the records to the database.
@@ -321,29 +333,15 @@ class M2FileParser():
         `file_size` - the size of the file stream in bytes
         """
         # handle the first line of the file
-        first_line = self.get_next_line(f)
-        if self.is_header_line(first_line):
-            # If it's a header, get the activity date
-            try:
-                activity_date = self.get_activity_date_from_header(first_line)
-            except parse_utils.UnreadableFileException as e:
-                # If it fails to parse, record the failure, and
-                # don't try to parse the rest of the file
-                self.record_unparseable_file(error_message=str(e))
-                return
-        else:
-            # If header is missing, first save a message to inform users
-            message = "First line of file isn't a header. Using DOAI in place of activity date."
-            self.file_record.error_message = message
-            self.file_record.save()
-
-            # Next, parse the first line as a tradeline and save the results
-            # (activity_date=None signals the parser to use DOAI instead of activity_date)
-            activity_date = None
-            line_results = self.parse_line(line=first_line, activity_date=None)
-            if line_results:
-                parsed_records = self.prepare_results_for_bulk_save(line_results)
-                self.save_values_bulk(parsed_records)
+        try:
+            first_line = parse_utils.get_next_line(f)
+            activity_date = self.handle_first_line_and_return_activity_date(first_line)
+        except (parse_utils.UnreadableFileException,
+                parse_utils.UnreadableLineException) as e:
+            # If it fails to parse, record the failure, and
+            # don't try to parse the rest of the file
+            self.update_file_record(status="Not parsed", msg=str(e))
+            return
 
         # parse the rest of the file until it is done
         while f.tell() < file_size:
@@ -351,4 +349,4 @@ class M2FileParser():
             if values:
                 self.save_values_bulk(values)
 
-        self.record_parsing_success()
+        self.update_file_record(status="Finished")

@@ -52,31 +52,36 @@ class InitiateLocalParsingTestCase(TestCase):
         self.assertEqual(AccountHolder.objects.count(), 1997)
 
 
+from unittest.mock import patch
+
 class InitiateS3ParsingTestCase(TestCase):
     # Test for parsing files from the S3 bucket. Only run when testing manually.
     # Before running, make sure S3 env vars are in place.
+
     def xtest_fetch_s3(self):
-        exam_s3 = Metro2Event.objects.create(name="s3 exam", directory="test-tiny/")
-        parse_files_from_s3_bucket(exam_s3)
+        with patch.dict('os.environ', {'AWS_PROFILE': 'prof'}):
+            exam_s3 = Metro2Event.objects.create(name="s3 exam", directory="test-tiny/")
+            parse_files_from_s3_bucket(exam_s3)
 
-        # The test directory in S3 should contain one file
-        self.assertEqual(M2DataFile.objects.count(), 1)
-        file = M2DataFile.objects.first()
-        self.assertEqual(file.file_name, "s3:test-tiny/m2_2k_lines_deidentified.TXT")
+            # The test directory in S3 should contain one file
+            self.assertEqual(M2DataFile.objects.count(), 1)
+            file = M2DataFile.objects.first()
+            self.assertEqual(file.file_name, "s3:test-tiny/m2_2k_lines_deidentified.TXT")
 
-        # The test file should contain 1998 base segments
-        self.assertEqual(AccountHolder.objects.count(), 1998)
+            # The test file should contain 1998 base segments
+            self.assertEqual(AccountHolder.objects.count(), 1998)
 
     def xtest_fetch_s3_zip(self):
-        exam_s3 = Metro2Event.objects.create(name="other s3 exam", directory="test-zipped/")
-        parse_files_from_s3_bucket(exam_s3)
+        with patch.dict('os.environ', {'AWS_PROFILE': 'prof'}):
+            exam_s3 = Metro2Event.objects.create(name="other s3 exam", directory="test-zipped/")
+            parse_files_from_s3_bucket(exam_s3)
 
-        # The test directory in S3 should contain one file
-        self.assertEqual(M2DataFile.objects.count(), 1)
-        file = M2DataFile.objects.first()
-        expected_name = "s3:test-zipped/one_small_file.zip:m2_2k_lines_deidentified.TXT"
-        self.assertEqual(file.file_name, expected_name)
+            # The test directory in S3 should contain one file
+            self.assertEqual(M2DataFile.objects.count(), 1)
+            file = M2DataFile.objects.first()
+            expected_name = "s3:test-zipped/one_small_file.zip:m2_2k_lines_deidentified.TXT"
+            self.assertEqual(file.file_name, expected_name)
 
-        # The test file should contain 1997 valid base segments and one unparseable
-        self.assertEqual(AccountHolder.objects.count(), 1997)
-        self.assertEqual(UnparseableData.objects.count(), 1)
+            # The test file should contain 1997 valid base segments and one unparseable
+            self.assertEqual(AccountHolder.objects.count(), 1997)
+            self.assertEqual(UnparseableData.objects.count(), 1)
