@@ -56,6 +56,7 @@ def acct_record(file: M2DataFile, custom_values: dict):
     default_values = {
         # AccountHolder values
         "cons_info_ind": "",
+        "previous_values": None,
         "first_name": "",
         "surname": "",
         # Shared values (used in both AccountHolder and AccountActivity)
@@ -106,6 +107,7 @@ def acct_record(file: M2DataFile, custom_values: dict):
     # Create the AccountActivity record with provided values
     acct_activity = AccountActivity(
         id=values["id"],
+        previous_values=values["previous_values"],
         account_holder=acct_holder,
         activity_date=values["activity_date"],
         cons_acct_num = values["cons_acct_num"],
