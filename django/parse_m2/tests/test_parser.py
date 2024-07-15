@@ -20,6 +20,8 @@ class ParserTestCase(TestCase):
 
         self.extras_str = "K1ORIGNALCREDITORNAME           03K22SOLDTONAME                     L12NEWACCTNUMBER                                      "
 
+        self.j1_seg = "J1 SURNAMEJ1                FIRSTNAMEJ1         MIDDLENAMEJ1        S3332244440411200120255598765   "
+
         event = Metro2Event(name='test_exam')
         event.save()
         self.parser = M2FileParser(event=event, filepath="file.txt")
@@ -144,6 +146,21 @@ class ParserTestCase(TestCase):
         self.assertEqual(result["k1"].orig_creditor_name, "ORIGNALCREDITORNAME")
         self.assertEqual(result["k2"].purch_sold_name, "SOLDTONAME")
         self.assertEqual(result["l1"].new_acc_num, "NEWACCTNUMBER")
+        self.assertNotIn("k4", result)
+        self.assertNotIn("n1", result)
+
+    def test_j1_aggregated_segments_cons_info_ind_empty_string(self):
+        records = {
+            "AccountActivity": self.account_activity,
+            "cons_info_ind_assoc": [],
+            "ecoa_assoc": []}
+        result = self.parser.parse_extra_segments(self.j1_seg, records)
+        self.assertNotIn("k1", result)
+        self.assertNotIn("k2", result)
+        self.assertEqual(result["j1"][0].cons_info_ind, "")
+        self.assertEqual(result["j1"][0].ecoa, "5")
+        self.assertEqual(result["cons_info_ind_assoc"], [])
+        self.assertEqual(result["ecoa_assoc"], ['5'])
         self.assertNotIn("k4", result)
         self.assertNotIn("n1", result)
 
