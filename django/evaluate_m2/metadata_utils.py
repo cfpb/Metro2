@@ -6,8 +6,13 @@ code_to_plain_field_map = {
     # code : plain language
 
     # Account Holder fields
+    "cons_acct_num": "consumer account number",
     "ecoa": "ecoa",
     "cons_info_ind": "consumer information indicator",
+    "cons_info_ind_assoc": "consumer information indicators for associated consumers",
+    "ecoa_assoc": "ECOA for associated consumers",
+    "first_name": "first name",
+    "surname": "surname",
 
     # Account Activity fields
     "activity_date": "activity date",
@@ -32,13 +37,8 @@ code_to_plain_field_map = {
     "dofd": "date of first delinquency",
     "date_closed": "date closed",
     "dolp": "date of last payment",
+    "id_num": "ID number",
     # "int_type_ind": "",  # looks like this ins't used in any evals?
-
-    # # J segments
-    "j1__ecoa": "J1 ECOA",
-    "j1__cons_info_ind": "J1 consumer information indicator",
-    "j2__ecoa": "J2 ECOA",
-    "j2__cons_info_ind": "J2 consumer information indicator",
 
     # # K segments
     # "k1__orig_creditor_name": "",
@@ -69,14 +69,14 @@ code_to_plain_field_map = {
 }
 
 # Invert the dict above to map the other direction
-plain_to_code_field_map = {v: k for k, v in code_to_plain_field_map.items()}
+plain_to_code_field_map = {v.lower(): k for k, v in code_to_plain_field_map.items()}
 
 
 fields_used_format = """
 Identifying information
 DB record id
 activity date
-customer account number
+consumer account number
 
 Fields used for evaluator
 used_fields
@@ -96,8 +96,10 @@ def parse_fields_used_from_csv(input: str):
     which fields are 'fields_used' vs 'fields_display'. Get the
     appropriate items and return them as a list.
     """
-    input_list = input.splitlines()
-    header = 'Fields used for evaluator'
+    input_list = input.lower().splitlines()
+    # Remove leading and trailing whitespaces in each item in list
+    input_list = [x.strip() for x in input_list]
+    header = 'fields used for evaluator'
     try:
         start = input_list.index(header)
         try:
@@ -115,15 +117,17 @@ def parse_fields_used_from_csv(input: str):
     return list(filter(len, items))
 
 def parse_fields_display_from_csv(input: str):
-    input_list = input.splitlines()
-    header = 'Helpful fields that are also displayed currently'
+    input_list = input.lower().splitlines()
+    # Remove leading and trailing whitespaces in each item in list
+    input_list = [x.strip() for x in input_list]
+    header = 'helpful fields that are also displayed currently'
     try:
         start = input_list.index(header)
         # Return all items after the header
         items = input_list[start+1:]
     except ValueError:
-        # If the header isn't present, return all items
-        items = input_list
+        # If the header isn't present, do not return any item
+        items = []
 
     # Filter out blank lines
     return list(filter(len, items))
