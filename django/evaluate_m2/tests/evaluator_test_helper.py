@@ -63,6 +63,7 @@ def acct_record(file: M2DataFile, custom_values: dict):
         "cons_acct_num": "",
         # AccountActivity values
         "id":"1",
+        "previous_values": None,
         "port_type": "A",
         "acct_type": "",
         "date_open": date(2018, 2, 28),
@@ -106,6 +107,7 @@ def acct_record(file: M2DataFile, custom_values: dict):
     # Create the AccountActivity record with provided values
     acct_activity = AccountActivity(
         id=values["id"],
+        previous_values=values["previous_values"],
         account_holder=acct_holder,
         activity_date=values["activity_date"],
         cons_acct_num = values["cons_acct_num"],
