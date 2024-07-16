@@ -29,9 +29,9 @@ def parse_file_from_zip(f: ZipInfo, zip_file: ZipFile, full_name: str, event: Me
                     parser.parse_file_contents(fstream, f.file_size)
                     logger.info("file written to db")
             except NotImplementedError as e:
-                parser.record_unparseable_file(f"File skipped: {e}")
+                parser.update_file_record(status="Not parsed", msg=f"File skipped: {e}")
         else:
             file_ext = get_extension(filename)
             error_message = f"File skipped because of invalid file extension: .{file_ext}"
-            parser.record_unparseable_file(error_message)
+            parser.update_file_record(status="Not parsed", msg=error_message)
             logger.info("Skipping file within zip. Does not match an allowed file type.")
