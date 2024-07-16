@@ -1,5 +1,5 @@
 {% extends 'admin/base_site.html' %}
-{% load i18n admin_urls static admin_modify humanize %}
+{% load i18n admin_urls static admin_modify humanize tz %}
 
 {% block breadcrumbs %}
 <div class="breadcrumbs">
@@ -35,7 +35,7 @@
                     <td>{{ file.parsing_status }}</td>
                     <td>{{ file.accountholder_set.count|intcomma }}</td>
                     <td>{{ file.unparseabledata_set.count|intcomma }}</td>
-                    <td>{{ file.timestamp }}</td>
+                    <td>{{ file.timestamp|localtime }}</td>
                     <td>{{ file.error_message }}</td>
                     <td>{{ file.parser_version }}</td>
                 </tr>
