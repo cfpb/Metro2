@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
+from parse_m2.initiate_parsing_utils import parsed_file_exists
 from parse_m2.models import Metro2Event, M2DataFile, AccountHolder, UnparseableData
 
 
@@ -85,3 +86,15 @@ class InitiateS3ParsingTestCase(TestCase):
             # The test file should contain 1997 valid base segments and one unparseable
             self.assertEqual(AccountHolder.objects.count(), 1997)
             self.assertEqual(UnparseableData.objects.count(), 1)
+
+class InitiateParsingUtilsTestCase(TestCase):
+    def setUp(self) -> None:
+        self.event = Metro2Event.objects.create(name="util-test")
+        self.filename1 = "s3://files/event-files/my-data.txt"
+        M2DataFile.objects.create(event=self.event, file_name=self.filename1)
+
+    def test_file_exists(self):
+        self.assertTrue(parsed_file_exists(self.event, self.filename1))
+        self.assertFalse(parsed_file_exists(self.event, "s3://files/event-files/my-data.txt2"))
+        other_event = Metro2Event.objects.create(name="red herring")
+        self.assertFalse(parsed_file_exists(other_event, self.filename1))

@@ -35,3 +35,15 @@ def parse_file_from_zip(f: ZipInfo, zip_file: ZipFile, full_name: str, event: Me
             error_message = f"File skipped because of invalid file extension: .{file_ext}"
             parser.update_file_record(status="Not parsed", msg=error_message)
             logger.info("Skipping file within zip. Does not match an allowed file type.")
+
+def parsed_file_exists(event: Metro2Event, filename: str) -> bool:
+    """
+    If the given Metro2Event already has an associated M2DataFile record
+    with the given filename, return True. Otherwise return False.
+
+    We use this method to ensure we don't parse duplicate file records
+    when adding more files to an existing event, or (future state) when
+    the parser is running in parallel in multiple processes.
+    """
+    file = event.m2datafile_set.filter(file_name=filename)
+    return file.exists()
