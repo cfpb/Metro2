@@ -27,6 +27,8 @@ def parse_s3_file(file, event: Metro2Event, skip_existing: bool):
         # If the skip_existing flag is set to True, and this file
         # already exists on this event, don't parse it again.
         if parsed_file_exists(event, full_name):
+            logger = logging.getLogger('parse_m2.parse_s3_file')
+            logger.debug(f"Skipping existing file {full_name}, because skip_existing = True")
             return
 
     # Instantiate a parser
@@ -56,6 +58,8 @@ def parse_zip_file_contents_S3(zip_obj, event: Metro2Event, zipfile_name: str, s
                     # If the skip_existing flag is set to True, and this file
                     # already exists on this event, don't parse it again.
                     if parsed_file_exists(event, full_name):
+                        logger = logging.getLogger('parse_m2.s3.parse_zip_file_contents')
+                        logger.debug(f"Skipping existing file {full_name}, because skip_existing = True")
                         return
 
                 parse_file_from_zip(f, zipf, full_name, event)
