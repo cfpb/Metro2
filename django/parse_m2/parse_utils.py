@@ -111,7 +111,7 @@ def decode_if_needed(input: any) -> str:
         return input
     elif isinstance(input, bytes):
         try:
-            return input.decode('utf-8', errors='replace')
+            return input.decode('utf-8', errors='replace').replace('\x00', '\uFFFD')
         except (UnicodeDecodeError, AttributeError) as e:
             raise UnreadableLineException(f"Decode failed: {e}")
     else:
