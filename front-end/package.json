@@ -28,6 +28,7 @@
     "@tanstack/router-devtools": "^1.17.4",
     "ag-grid-react": "^31.1.1",
     "design-system-react": "https://github.com/cfpb/design-system-react.git",
+    "exceljs": "^4.4.0",
     "postcss": "^8.4.38",
     "react": "18.2.0",
     "react-dom": "18.2.0"

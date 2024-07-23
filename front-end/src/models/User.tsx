@@ -1,4 +1,4 @@
-import type { UseQueryOptions} from '@tanstack/react-query';
+import type { UseQueryOptions } from '@tanstack/react-query'
 import { queryOptions } from '@tanstack/react-query'
 import type { EventMetadata } from 'pages/Event/Event'
 import { fetchData } from 'utils/utils'
