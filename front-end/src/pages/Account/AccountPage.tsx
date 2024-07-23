@@ -40,7 +40,7 @@ export default function AccountPage(): ReactElement {
   const colDefProps = {
     ...COL_DEF_CONSTANTS,
     inconsistencies: getInconsistenciesColDef(accountData.inconsistencies),
-    activity_date: { pinned: 'left' }
+    activity_date: { pinned: 'left', type: 'formattedDate', minWidth: 160 }
   }
   const colDefs = generateColumnDefinitions(fields, colDefProps)
 
