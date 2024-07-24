@@ -78,7 +78,7 @@ export default function EvaluatorTable({
 
    // Present correct messaging per results in table
    const totalResults = Number(evaluatorMetadata.hits)
-   const msg = totalResults <= 20 ? `Showing ${hits.length} results` : `Showing representative sample of ${hits.length} out of ${String(evaluatorMetadata.hits)} results`;
+   const msg = totalResults <= 20 ? `Showing ${hits.length} out of ${String(evaluatorMetadata.hits)} results` : `Showing representative sample of ${hits.length} out of ${String(evaluatorMetadata.hits)} results`;
 
   return (
     <div className='content-row'>
