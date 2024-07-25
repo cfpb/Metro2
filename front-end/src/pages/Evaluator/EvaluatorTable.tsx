@@ -76,11 +76,15 @@ export default function EvaluatorTable({
   // Generate colDefs for this evaluator's fields
   const colDefs = getEvaluatorColDefs(fields)
 
+   // Present correct messaging per results in table
+   const totalResults = Number(evaluatorMetadata.hits)
+   const msg = totalResults <= 20 ? `Showing ${hits.length} out of ${String(evaluatorMetadata.hits)} results` : `Showing representative sample of ${hits.length} out of ${String(evaluatorMetadata.hits)} results`;
+
   return (
     <div className='content-row'>
       <div className='download-row'>
         <h4 className='u-mb0'>
-          {`Showing ${hits.length} of ${String(evaluatorMetadata.hits)} results`}
+          {msg}
         </h4>
         <EvaluatorDownloader
           rows={hits}
