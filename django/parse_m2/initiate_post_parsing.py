@@ -3,14 +3,16 @@ from parse_m2.models import Metro2Event
 from django.db import connection
 
 ############################################
-# Method to update existing M2Event activity records
+# Methods to update existing M2Event activity records
 def post_parse(event) -> None:
-    # Updating the event
+    calculate_date_range(event)
+    associate_previous_records(event)
+
+def calculate_date_range(event: Metro2Event):
     date_range = event.account_activity_date_range()
     event.date_range_start = date_range['earliest']
     event.date_range_end = date_range['latest']
     event.save()
-    associate_previous_records(event)
 
 def associate_previous_records(event: Metro2Event):
     logger = logging.getLogger('parse_m2.associate_previous_records')
