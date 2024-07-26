@@ -13,7 +13,7 @@ def post_parse(event) -> None:
     associate_previous_records(event)
 
 def associate_previous_records(event: Metro2Event):
-    logger = logging.getLogger('parse_m2.update_event_records')
+    logger = logging.getLogger('parse_m2.associate_previous_records')
 
     logger.info(f"First, make sure all previous_values pointers are empty")
     event.get_all_account_activity().update(previous_values_id=None)
