@@ -1,6 +1,6 @@
 import logging
-from django.db.models import Window
-from django.db.models.functions import Lag
+from parse_m2.models import Metro2Event
+from django.db import connection
 
 ############################################
 # Method to update existing M2Event activity records
@@ -12,33 +12,37 @@ def post_parse(event) -> None:
     event.save()
     associate_previous_records(event)
 
-def associate_previous_records(event) -> None:
+def associate_previous_records(event: Metro2Event):
     logger = logging.getLogger('parse_m2.update_event_records')
 
-    # Updating the records
-    logger.info(f"Beginning to update all records for event: {event.name}")
+    logger.info(f"First, make sure all previous_values pointers are empty")
+    event.get_all_account_activity().update(previous_values_id=None)
 
-    # Retrieve Metro2Event records
+    logger.info(f"Beginning to update all records for event: {event.name}")
+    query_sql = """
+        UPDATE "parse_m2_accountactivity" SET "previous_values_id" = prevals
+        FROM (
+            SELECT "parse_m2_accountactivity"."id",
+            LAG ("parse_m2_accountactivity"."id", 1) OVER (
+                PARTITION BY "parse_m2_accountactivity"."cons_acct_num"
+                ORDER BY "parse_m2_accountactivity"."activity_date"
+            ) as prevals
+            FROM "parse_m2_accountactivity"
+            INNER JOIN "parse_m2_accountholder" ON ("parse_m2_accountactivity"."account_holder_id" = "parse_m2_accountholder"."id")
+            INNER JOIN "parse_m2_m2datafile" ON ("parse_m2_accountholder"."data_file_id" = "parse_m2_m2datafile"."id")
+            WHERE "parse_m2_m2datafile"."event_id" = %s
+        ) prv_lag
+        WHERE prv_lag.id = parse_m2_accountactivity.id ;
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(query_sql, [event.id])
+
+    logger.info(f"Done. Generating report...")
+
     record_set = event.get_all_account_activity()
 
-    # For each record in the set, find the id of the previous record for that account
-    # num, ordered by activity date. Assign the previous record ID to a field called 'prevals'.
-    result = record_set.annotate(prevals=Window(
-        expression=Lag("id"),
-        partition_by="cons_acct_num",
-        order_by="activity_date"
-    ),)
-
-    # For each record, assign the 'prevals' id as the previous_values_id
-    for r in result:
-        r.previous_values_id=r.prevals
-
-    # Save the new value for all records
-    record_set.bulk_update(result, ["previous_values_id"])
-
-    # Calculate how many were updated
-    total_not_updated = record_set.filter(previous_values_id__isnull=True).count()
     total_updated = record_set.filter(previous_values_id__isnull=False).count()
+    logger.info(f"Records with a previous record associated: {total_updated}")
 
-    logger.info(f"Previous records found and {total_updated} record{'s were' if total_updated > 1 else ' was'} updated.")
-    logger.info(f"Previous records not found and {total_not_updated} record{'s were' if total_updated > 1 else ' was'} not updated.")
+    total_not_updated = record_set.filter(previous_values_id__isnull=True).count()
+    logger.info(f"Records with NO previous record associated: {total_not_updated}")
