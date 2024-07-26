@@ -36,13 +36,3 @@ def associate_previous_records(event: Metro2Event):
     """
     with connection.cursor() as cursor:
         cursor.execute(query_sql, [event.id])
-
-    logger.info(f"Done. Generating report...")
-
-    record_set = event.get_all_account_activity()
-
-    total_updated = record_set.filter(previous_values_id__isnull=False).count()
-    logger.info(f"Records with a previous record associated: {total_updated}")
-
-    total_not_updated = record_set.filter(previous_values_id__isnull=True).count()
-    logger.info(f"Records with NO previous record associated: {total_not_updated}")
