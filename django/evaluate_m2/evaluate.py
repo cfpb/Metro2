@@ -47,10 +47,12 @@ class Evaluate():
             logger.info(f"No AccountActivity found for the event '{event.name}'")
 
     def save_evaluator_results(self, result_summary, eval_query):
-        full_query = create_eval_insert_query(str(eval_query.query), result_summary)
+        select_query, query_params = eval_query.query.sql_with_params()
+
+        full_query = create_eval_insert_query(select_query, result_summary)
 
         with connection.cursor() as cursor:
-            cursor.execute(full_query)
+            cursor.execute(full_query, query_params)
 
     def prepare_result_summary(self, event: Metro2Event, eval_id: str) -> EvaluatorResultSummary:
         """
