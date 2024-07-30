@@ -4,13 +4,15 @@ import logging
 from datetime import date
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_list_or_404
+from django.core.exceptions import FieldError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
 from evaluate_m2.views_utils import (
     get_randomizer,
-    has_permissions_for_request
+    has_permissions_for_request,
+    random_sample_id_list
 )
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
@@ -90,18 +92,21 @@ def evaluator_results_view(request, event_id, evaluator_id):
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        eval_result_summary = EvaluatorResultSummary.objects.get(
-            event=event,
-            evaluator=EvaluatorMetadata.objects.get(id=evaluator_id))
-        randomizer = get_randomizer(
-            eval_result_summary.evaluatorresult_set.count(),
-            RESULTS_PAGE_SIZE)
-        eval_result_sample = eval_result_summary.evaluatorresult_set \
-            .order_by('id')[0::randomizer]
-        eval_result_serializer = EvaluatorResultsViewSerializer(
-            eval_result_sample[:RESULTS_PAGE_SIZE], many=True)
 
-        response = {'hits': eval_result_serializer.data}
+        evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
+        eval_result_summary = EvaluatorResultSummary.objects.get(
+            event=event, evaluator=evaluator)
+
+        id_list = random_sample_id_list(eval_result_summary, RESULTS_PAGE_SIZE)
+
+        try:
+            result = AccountActivity.objects.filter(id__in=id_list) \
+                .values(*evaluator.result_summary_fields())
+        except FieldError as e:
+            err = f"Metadata for {evaluator.id} has incorrect field name: {e}"
+            return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+        response = {'hits': [obj for obj in result]}
         return JsonResponse(response)
     except (
         Metro2Event.DoesNotExist,
