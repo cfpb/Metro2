@@ -75,20 +75,22 @@ class Evaluate():
             event = event,
             evaluator = eval_metadata,
             hits = 0,
+            accounts_affected = 0,
         )
 
     def update_result_summary_with_actual_results(self, result_summary):
         data = result_summary.evaluatorresult_set
-        accounts_affected = data.values('acct_num').distinct().count()
-        hits = data.count()
-        earliest_date = data.order_by('date').first().date
-        latest_date = data.order_by('-date').first().date
+        if data.exists():
+            hits = data.count()
+            accounts_affected = data.values('acct_num').distinct().count()
+            earliest_date = data.order_by('date').first().date
+            latest_date = data.order_by('-date').first().date
 
-        result_summary.accounts_affected = accounts_affected
-        result_summary.inconsistency_start = earliest_date
-        result_summary.inconsistency_end = latest_date
-        result_summary.hits = hits
-        result_summary.save()
+            result_summary.hits = hits
+            result_summary.accounts_affected = accounts_affected
+            result_summary.inconsistency_start = earliest_date
+            result_summary.inconsistency_end = latest_date
+            result_summary.save()
 
 # create instance of evaluator
 evaluator = Evaluate()
