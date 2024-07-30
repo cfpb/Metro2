@@ -73,7 +73,6 @@ class Evaluate():
             event = event,
             evaluator = eval_metadata,
             hits = 0,
-            evaluator_version = self.evaluator_version,
         )
 
     def update_result_summary_with_actual_results(self, result_summary):
