@@ -1,6 +1,7 @@
 import logging
+from django.db import connection
 
-from evaluate_m2.evaluate_utils import get_activity_date_range_from_list
+from evaluate_m2.evaluate_utils import create_eval_insert_query
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.m2_evaluators.account_change_evals import evaluators as acct_change_evals
 from evaluate_m2.m2_evaluators.balance_evals import evaluators as balance_evals
@@ -39,33 +40,19 @@ class Evaluate():
         if record_set:
             for eval_name, func in self.evaluators.items():
                 logger.info(f"Running evaluator: {eval_name}")
-                results = func(record_set)
-                if results:
-                    # generate evaluator results summary and save before accessed to generate
-                    # the evaluator results
-                    result_summary = self.prepare_result_summary(event, eval_name, results)
-                    evaluator_results = list()
-                    for row_data in results:
-                        result=self.prepare_result(result_summary, row_data)
-                        evaluator_results.append(result)
-                    if (len(evaluator_results) > 0):
-                        EvaluatorResult.objects.bulk_create(evaluator_results)
-                        logger.info(f"Evaluator results written to the database: {len(evaluator_results)}")
+                result_summary = self.prepare_result_summary(event, eval_name)
+                self.save_evaluator_results(result_summary, func(record_set))
+                self.update_result_summary_with_actual_results(result_summary)
         else:
             logger.info(f"No AccountActivity found for the event '{event.name}'")
 
-    def prepare_result(self, result_summary: EvaluatorResultSummary,
-                       data: dict) -> EvaluatorResult:
-        return EvaluatorResult(
-            result_summary=result_summary,
-            date=data['activity_date'],
-            source_record_id=data['id'],
-            acct_num=data['cons_acct_num'],
-            field_values=data
-        )
+    def save_evaluator_results(self, result_summary, eval_query):
+        full_query = create_eval_insert_query(str(eval_query.query), result_summary)
 
-    def prepare_result_summary(self, event: Metro2Event, eval_id: str,
-                               data: list[dict]) -> EvaluatorResultSummary:
+        with connection.cursor() as cursor:
+            cursor.execute(full_query)
+
+    def prepare_result_summary(self, event: Metro2Event, eval_id: str) -> EvaluatorResultSummary:
         """
         If an EvaluatorMetadata record already exists in the database with this name,
         associate the results with that record. If one does not exist, create it.
@@ -74,21 +61,33 @@ class Evaluate():
         record, so the "except" clause here is just a failsafe in case we messed up
         the Metadata import.
         """
-        accounts_affected = list(set(d['cons_acct_num'] for d in data))
-        date_range = get_activity_date_range_from_list(data)
+
         try:
             eval_metadata = EvaluatorMetadata.objects.get(id=eval_id)
         except EvaluatorMetadata.DoesNotExist:
             eval_metadata = EvaluatorMetadata.objects.create(id=eval_id)
 
+        # Create an EvaluatorResultSummary object so we can associate results with it.
+        # Later, we will update the values related to eval hits
         return EvaluatorResultSummary.objects.create(
-            event=event,
-            evaluator=eval_metadata,
-            hits=len(data),
-            accounts_affected = len(accounts_affected),
-            inconsistency_start = date_range["earliest"],
-            inconsistency_end = date_range["latest"]
+            event = event,
+            evaluator = eval_metadata,
+            hits = 0,
+            evaluator_version = self.evaluator_version,
         )
+
+    def update_result_summary_with_actual_results(self, result_summary):
+        data = result_summary.evaluatorresult_set
+        accounts_affected = data.values('acct_num').distinct().count()
+        hits = data.count()
+        earliest_date = data.order_by('date').first().date
+        latest_date = data.order_by('-date').first().date
+
+        result_summary.accounts_affected = accounts_affected
+        result_summary.inconsistency_start = earliest_date
+        result_summary.inconsistency_end = latest_date
+        result_summary.hits = hits
+        result_summary.save()
 
 # create instance of evaluator
 evaluator = Evaluate()

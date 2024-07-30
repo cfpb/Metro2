@@ -1,5 +1,7 @@
-from django.db.models.query import QuerySet
 from datetime import  date
+import re
+
+from django.db.models.query import QuerySet
 
 
 def get_activity_date_range(record_set: QuerySet):
@@ -15,6 +17,24 @@ def get_activity_date_range(record_set: QuerySet):
         return {"earliest": earliest_date, "latest": latest_date}
     else:
         return {"earliest": None, "latest": None}
+
+def create_eval_insert_query(eval_query: str, result_summary) -> str:
+    rx = re.compile('SELECT .* FROM \"parse_m2_accountactivity\"')
+
+    desired_fields = ",".join(["parse_m2_accountactivity.id",
+                      "parse_m2_accountactivity.activity_date",
+                      "parse_m2_accountactivity.cons_acct_num",
+                      str(result_summary.id)])
+
+    select_query, success = rx.subn(f"SELECT {desired_fields} FROM parse_m2_accountactivity", eval_query)
+    if success != 1:
+        raise TypeError
+
+    insert_query = """
+        INSERT into evaluate_m2_evaluatorresult
+            (source_record_id, date, acct_num, result_summary_id)
+    """
+    return insert_query + select_query
 
 def get_activity_date_range_from_list(data: list[dict]):
     """
