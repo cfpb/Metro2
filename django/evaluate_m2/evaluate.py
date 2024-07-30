@@ -37,7 +37,7 @@ class Evaluate():
 
         record_set = event.get_all_account_activity()
         # run evaluators only if there are records in the record_set
-        if record_set:
+        if record_set.exists():
             for eval_name, func in self.evaluators.items():
                 logger.info(f"Running evaluator: {eval_name}")
                 result_summary = self.prepare_result_summary(event, eval_name)
