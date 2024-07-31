@@ -19,6 +19,21 @@ def get_activity_date_range(record_set: QuerySet):
         return {"earliest": None, "latest": None}
 
 def create_eval_insert_query(eval_query: str, result_summary) -> str:
+    """
+    Formulate a raw SQL query to get evaluator results and save them to the
+    EvaluatorResults table. The query will generally follow this pattern:
+
+        INSERT into evaluate_m2_evaluatorresult [specific fields]
+        SELECT [specific fields] FROM parse_m2_accountactivity
+        WHERE [evaluator-specific logic]
+
+    inputs:
+      - eval_query: a raw SQL string, generated from a Metro2Evaluator function.
+                    If the string doesn't match the correct pattern, this method
+                    will raise a TypeError.
+      - result_summary: the EvaluatorResultSummary record that all evaluator
+                        results should be associated to.
+    """
     rx = re.compile('SELECT .* FROM \"parse_m2_accountactivity\"')
 
     desired_fields = ",".join(["parse_m2_accountactivity.id",

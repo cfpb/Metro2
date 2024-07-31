@@ -56,21 +56,16 @@ class Evaluate():
 
     def prepare_result_summary(self, event: Metro2Event, eval_id: str) -> EvaluatorResultSummary:
         """
-        If an EvaluatorMetadata record already exists in the database with this name,
-        associate the results with that record. If one does not exist, create it.
-
-        Ideally, every evaluator function should already have an associated EvalMetadata
-        record, so the "except" clause here is just a failsafe in case we messed up
-        the Metadata import.
+        Create an EvaluatorResultSummary object so we can associate results with it.
+        Later, we will update the values related to eval hits.
         """
-
+        # If an EvaluatorMetadata record already exists in the database with this name,
+        # associate the results with that record. If one does not exist, create it.
         try:
             eval_metadata = EvaluatorMetadata.objects.get(id=eval_id)
         except EvaluatorMetadata.DoesNotExist:
             eval_metadata = EvaluatorMetadata.objects.create(id=eval_id)
 
-        # Create an EvaluatorResultSummary object so we can associate results with it.
-        # Later, we will update the values related to eval hits
         return EvaluatorResultSummary.objects.create(
             event = event,
             evaluator = eval_metadata,
@@ -79,6 +74,10 @@ class Evaluate():
         )
 
     def update_result_summary_with_actual_results(self, result_summary):
+        """
+        If the evaluator had any hits, update the information about the hits
+        in the EvaluatorResultSummary record.
+        """
         data = result_summary.evaluatorresult_set
         if data.exists():
             hits = data.count()
