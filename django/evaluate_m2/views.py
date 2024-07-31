@@ -99,6 +99,8 @@ def evaluator_results_view(request, event_id, evaluator_id):
         id_list = random_sample_id_list(eval_result_summary, RESULTS_PAGE_SIZE)
 
         try:
+            # TODO: update the metadata importer to ensure that
+            # result_summary_fields are always valid AccountActivity field names
             result = AccountActivity.objects.filter(id__in=id_list) \
                 .values(*evaluator.result_summary_fields())
         except FieldError as e:
