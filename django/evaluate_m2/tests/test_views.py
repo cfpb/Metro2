@@ -190,16 +190,15 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_evaluator_results_view_max_20_results(self):
         self.create_activity_data()
-        activity = {'id': 32, 'activity_date': date(2023, 12, 31),
-                    'cons_acct_num': '0032'}
 
-        record = acct_record(self.data_file, activity)
         for index in range(25):
-            er = EvaluatorResult(
+            activity = {'id': index, 'activity_date': date(2023, 12, 31),
+                    'cons_acct_num': '0032'}
+            record = acct_record(self.data_file, activity)
+            EvaluatorResult.objects.create(
                 result_summary=self.eval_rs3, date=date(2021, 1, 1),
                 field_values={'record': index, 'acct_type':'y'},
-                source_record= record, acct_num='0032')
-            er.save()
+                source_record=record, acct_num='0032')
 
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-6/')
         # the response should be a JSON
