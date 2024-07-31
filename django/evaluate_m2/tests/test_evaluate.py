@@ -43,7 +43,7 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(0, EvaluatorResultSummary.objects.count())
         self.assertEqual(0, EvaluatorMetadata.objects.count())
 
-    def test_run_evaluators_produces_results(self):
+    def test_run_evaluators_produces_correct_results(self):
         evaluator.evaluators = {"Sample-1": sample_eval_always_hits}
         evaluator.run_evaluators(self.event)
 
@@ -55,12 +55,15 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
             .evaluatorresult_set.order_by('acct_num')
 
         # Test that results match AccountActivity records for the event
+        self.assertEqual(results[0].source_record_id, 44)
+        self.assertEqual(results[1].source_record_id, 45)
+        self.assertEqual(results[2].source_record_id, 46)
+        self.assertEqual(results[3].source_record_id, 47)
+
         self.assertEqual(results[0].acct_num, '1044')
         self.assertEqual(results[1].acct_num, '1045')
         self.assertEqual(results[2].acct_num, '1046')
         self.assertEqual(results[3].acct_num, '1047')
-        for r in results:
-            self.assertEqual(r.date, date(2022, 5, 30))
 
     def test_run_evaluators_with_two_evaluators_produces_results(self):
         evaluator.evaluators = {"Sample-1": sample_eval_always_hits,
