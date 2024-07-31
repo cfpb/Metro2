@@ -50,39 +50,3 @@ def create_eval_insert_query(eval_query: str, result_summary) -> str:
             (source_record_id, date, acct_num, result_summary_id)
     """
     return insert_query + select_query
-
-def every_month_in_range(start: date, end: date):
-    """
-    Given a start and end date, return a list of months in that range,
-    including the start and end. This returns a list of dicts like so:
-    [ {"year": 2021, "month": 11}, {"year": 2021, "month": 12},
-      {"year": 2022, "month": 1}, {"year": 2022, "month": 2}, ]
-
-    This can be used in longitudinal evaluators that need to iterate
-    over all months in the data set.
-
-    inputs:
-    - start: datetime.date
-    - end: datetime.date
-    """
-    months = []
-    # Start with the first month in the range
-    y = start.year
-    m = start.month
-
-    while y <= end.year:
-        # If we've reached the end of the range, exit the loop
-        if y >= end.year and m > end.month:
-            break
-
-        # First, add this month to the dictionary
-        months.append({"year": y, "month": m})
-
-        # Next, progress to the next month
-        if m == 12:
-            m = 1
-            y += 1
-        else:
-            m += 1
-
-    return months
