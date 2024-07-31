@@ -36,17 +36,17 @@ def create_eval_insert_query(eval_query: str, result_summary) -> str:
     """
     rx = re.compile('SELECT .* FROM \"parse_m2_accountactivity\"')
 
-    desired_fields = ",".join(["parse_m2_accountactivity.id",
+    desired_fields = ", ".join(["parse_m2_accountactivity.id",
                       "parse_m2_accountactivity.activity_date",
                       "parse_m2_accountactivity.cons_acct_num",
                       str(result_summary.id)])
 
     select_query, success = rx.subn(f"SELECT {desired_fields} FROM parse_m2_accountactivity", eval_query)
     if success != 1:
-        raise TypeError
+        raise TypeError("Query does not match expected evaluator query pattern")
 
     insert_query = """
-        INSERT into evaluate_m2_evaluatorresult
+        INSERT INTO evaluate_m2_evaluatorresult
             (source_record_id, date, acct_num, result_summary_id)
     """
     return insert_query + select_query
