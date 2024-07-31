@@ -68,7 +68,7 @@ class EvalSerializerTestCase(TestCase):
             id="Betsy-1",
             description="desc 1",
             long_description=self.multi_line_text,
-            fields_used=["cons_info_ind", "dolp", "id_num"],
+            fields_used=["account_holder__cons_info_ind", "dolp", "id_num"],
             fields_display=["spc_com_cd", "dofd", "l1__change_ind"],
             crrg_reference="PDF page 3",
         )
@@ -126,7 +126,7 @@ class EvalSerializerTestCase(TestCase):
         record = from_json.save()
         self.assertEqual(record.id, "BETSY-NEW")
         self.assertEqual(record.description, self.e1_json['description'])
-        self.assertEqual(record.fields_used, ['cons_info_ind', 'dolp', 'id_num'])
+        self.assertEqual(record.fields_used, ['account_holder__cons_info_ind', 'dolp', 'id_num'])
         self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind'])
 
     def test_from_json_case_insensitive(self):
@@ -137,9 +137,9 @@ class EvalSerializerTestCase(TestCase):
         record = from_json.save()
         self.assertEqual(record.id, "CASE_INSENSITIVE")
         self.assertEqual(record.description, self.e1_json['description'])
-        self.assertEqual(record.fields_used, ['cons_info_ind', 'dolp', 'id_num'])
+        self.assertEqual(record.fields_used, ['account_holder__cons_info_ind', 'dolp', 'id_num'])
         self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind',
-                                                 'ecoa'])
+                                                 'account_holder__ecoa'])
 
     def test_many_to_json(self):
         eval_metadata = [self.e1]
