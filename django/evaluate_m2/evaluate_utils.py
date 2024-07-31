@@ -51,19 +51,6 @@ def create_eval_insert_query(eval_query: str, result_summary) -> str:
     """
     return insert_query + select_query
 
-def get_activity_date_range_from_list(data: list[dict]):
-    """
-    Given a list of dictionary, return the range of
-    dates covered by that set of records. This returns a dict in the
-    following format:
-    { "earliest": date(2022, 2, 2), "latest": date(2023, 3, 3)}
-    """
-    activity_date_list = list(d['activity_date'] for d in data)
-    activity_date_list.sort()
-    earliest_date = activity_date_list[0]
-    latest_date = activity_date_list[-1]
-    return {"earliest": earliest_date, "latest": latest_date}
-
 def every_month_in_range(start: date, end: date):
     """
     Given a start and end date, return a list of months in that range,

@@ -2,7 +2,7 @@ import logging
 from django.db import connection
 
 from evaluate_m2.evaluate_utils import create_eval_insert_query
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
+from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
 from evaluate_m2.m2_evaluators.account_change_evals import evaluators as acct_change_evals
 from evaluate_m2.m2_evaluators.balance_evals import evaluators as balance_evals
 from evaluate_m2.m2_evaluators.balloon_evals import evaluators as balloon_evals
