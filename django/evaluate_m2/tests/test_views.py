@@ -12,6 +12,8 @@ from parse_m2.models import AccountHolder, M2DataFile, Metro2Event
 
 
 class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
+    ########################################
+    # Methods for creating test data
     def setUp(self) -> None:
         self.event = None
         self.data_file = None
@@ -127,6 +129,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             source_record= acct_actvities[0], acct_num='0032')
         eval_r3.save()
 
+    ########################################
+    # Tests for Eval Metadata download
     def test_download_eval_metadata(self):
         response = self.client.get('/api/all-evaluator-metadata/')
 
@@ -145,6 +149,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         for item in EvaluatorMetadataSerializer(self.eval3).data:
             self.assertIn(item, csv_content)
 
+    ########################################
+    # Tests for Eval Results CSV download
     def test_download_evaluator_results_csv(self):
         self.create_activity_data()
 
@@ -167,6 +173,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         ])
         self.assertEqual(csv_content, expected)
 
+    ########################################
+    # Tests for Eval Results view API endpoint
     def test_evaluator_results_view(self):
         expected = {'hits': [{'record': 1, 'acct_type':'y'},
                              {'record': 2, 'acct_type': 'n'}]}
@@ -221,6 +229,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             'EvaluatorResultSummary record(s) not found for event ID 1.',
             status_code=404)
 
+    ########################################
+    # Tests for Account Summary view API endpoint
     def test_account_summary_view_single_results(self):
         self.create_activity_data()
         inconsistencies = ['Status-DOFD-1']
@@ -266,6 +276,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assertEqual(response.json()['message'], error)
 
+    ########################################
+    # Tests for Account PII view API endpoint
     def test_account_pii_view(self):
         self.create_activity_data()
         expected = {'id': 1, 'surname': 'Doe', 'first_name': 'Jane', 'middle_name': 'A',
@@ -284,6 +296,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(response.json(), expected)
 
+    ########################################
+    # Tests for Events view API endpoint (landing page)
     def test_events_view(self):
         self.create_activity_data()
         expected = {
