@@ -1,8 +1,9 @@
 import { notFound } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
+import type EvaluatorMetadata from 'pages/Evaluator/Evaluator'
+import type Event from 'pages/Event/Event'
 import type { AccountRecord } from './constants'
 import { M2_FIELD_LOOKUPS, M2_FIELD_NAMES } from './constants'
-
 /**
  * Takes an id and value for a Metro2 field,
  * accesses the lookup for the field's code definitions,
@@ -323,3 +324,9 @@ export const acceptPIIWarning = (): void => {
 
 // Checks for a cookie indicating PII warning has been acknowledged
 export const hasAcceptedPIIWarning = (): boolean => !!getCookie('acceptedPIIWarning')
+
+export const getEvaluatorDataFromEvent = (
+  data: Event,
+  evaluatorId: string
+): EvaluatorMetadata | undefined =>
+  data.evaluators.find((item: EvaluatorMetadata) => item.id === evaluatorId)

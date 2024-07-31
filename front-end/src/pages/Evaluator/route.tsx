@@ -3,7 +3,11 @@ import { queryOptions } from '@tanstack/react-query'
 import { createRoute, defer, notFound } from '@tanstack/react-router'
 import { userQueryOptions } from 'models/User'
 import type { AccountRecord } from 'utils/constants'
-import { fetchData, prepareAccountRecordData } from 'utils/utils'
+import {
+  fetchData,
+  getEvaluatorDataFromEvent,
+  prepareAccountRecordData
+} from 'utils/utils'
 import type Event from '../Event/Event'
 import { eventQueryOptions, eventRoute } from '../Event/route'
 import type EvaluatorMetadata from './Evaluator'
@@ -15,7 +19,8 @@ export async function getEvaluator(
 ): Promise<EvaluatorMetadata> {
   try {
     const data = await eventData
-    const evaluator = data.evaluators.find(result => result.id === evaluatorId)
+    // const evaluator = data.evaluators.find(result => result.id === evaluatorId)
+    const evaluator = getEvaluatorDataFromEvent(data, evaluatorId)
     if (evaluator) return evaluator
     // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw new Error('404')
