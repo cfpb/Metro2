@@ -17,15 +17,12 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self) -> None:
         self.event = None
         self.data_file = None
-        self.eval1 = EvaluatorMetadata.objects.create(
+        self.stat_dofd_1 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-1',
             description='description of Status-DOFD-1',
             long_description='',
             fields_used=['placeholder', 'dofd'],
-            fields_display=['amt_past_due', 'compl_cond_cd',
-                'smpa', 'spc_com_cd', 'terms_freq'],
-            crrg_reference='400',
-            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            fields_display=['amt_past_due', 'compl_cond_cd', 'smpa',],
         )
         self.eval2 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-2',
@@ -36,7 +33,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             crrg_reference='41',
             alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         )
-        self.eval3 = EvaluatorMetadata.objects.create(
+        self.stat_dofd_4 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-4',
             description= 'description for a third status-dofd eval',
             long_description='',
@@ -45,7 +42,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             crrg_reference='410',
             alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
         )
-        self.eval4 = EvaluatorMetadata.objects.create(
+        self.stat_dofd_6 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-6',
             description= 'description for a fourth status-dofd eval',
             long_description='',
@@ -142,11 +139,11 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
         # the CSV should contain info about the evals
         csv_content = response.content.decode('utf-8')
-        for item in EvaluatorMetadataSerializer(self.eval1).data:
+        for item in EvaluatorMetadataSerializer(self.stat_dofd_1).data:
             self.assertIn(item, csv_content)
-        for item in EvaluatorMetadataSerializer(self.eval2).data:
+        for item in EvaluatorMetadataSerializer(self.stat_dofd_4).data:
             self.assertIn(item, csv_content)
-        for item in EvaluatorMetadataSerializer(self.eval3).data:
+        for item in EvaluatorMetadataSerializer(self.stat_dofd_6).data:
             self.assertIn(item, csv_content)
 
     ########################################
@@ -176,17 +173,31 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     ########################################
     # Tests for Eval Results view API endpoint
     def test_evaluator_results_view(self):
-        expected = {'hits': [{'record': 1, 'acct_type':'y'},
-                             {'record': 2, 'acct_type': 'n'}]}
-        self.create_activity_data()
+        # Status-dofd-1 uses the following fields:
+        #     acct_stat, dofd, amt_past_due, compl_cond_cd, smpa
+        # along with the fields that are always returned:
+        #     id, activity_date, cons_acct_num
+        expected = [{
+            'id': 32, 'activity_date': '2019-12-31', 'cons_acct_num': '0032',
+            'acct_stat': '00', 'dofd': '2020-01-01', 'amt_past_due': 0,
+            'compl_cond_cd': '0', 'smpa': 0
+        }, {
+            'id': 33, 'activity_date': '2019-12-31', 'cons_acct_num': '0033',
+            'acct_stat': '00', 'dofd': '2020-01-01', 'amt_past_due': 0,
+            'compl_cond_cd': '0', 'smpa': 0
+        },]
 
+        self.create_activity_data()
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
         # the response should a hits field with a list of EvaluatorResult field_values
-        self.assertEqual(response.json(), expected)
+        # There should be two hits. Each one should have a set of keys that matches
+        # the fields in evaluator.result_summary_fields
+        hits = response.json()['hits']
+        self.assertEqual(hits, expected)
 
     def test_evaluator_results_view_max_20_results(self):
         self.create_activity_data()
@@ -316,9 +327,9 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 'Status-DOFD-1',
                 'description': 'description of Status-DOFD-1', 'long_description': '',
                 'fields_used': ['acct_stat', 'dofd'],
-                'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa', 'spc_com_cd', 'terms_freq'],
-                'crrg_reference': '400', 'potential_harm': '',
-                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+                'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa',],
+                'crrg_reference': '', 'potential_harm': '',
+                'rationale': '', 'alternate_explanation': '',
             }, {
                 'hits': 1,
                 'accounts_affected': 1,
@@ -352,6 +363,5 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(len(response.json()['evaluators']), 3)
         self.assertEqual(response.json(), expected)
