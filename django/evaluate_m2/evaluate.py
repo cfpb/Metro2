@@ -21,10 +21,13 @@ from parse_m2.models import Metro2Event
 
 class Evaluate():
     def __init__(self):
-        self.evaluators = acct_change_evals | balance_evals | balloon_evals | \
-                          bankruptcy_evals | ccc_evals | deferred_evals | \
-                          doai_evals | dtcl_evals | rating_evals | prog_evals | \
-                          scc_evals | status_evals | type_evals
+        # Temporarily disable all evals except the ones we have updated
+        # to the new strategy
+        # self.evaluators = acct_change_evals | balance_evals | balloon_evals | \
+        #                   bankruptcy_evals | ccc_evals | deferred_evals | \
+        #                   doai_evals | dtcl_evals | rating_evals | prog_evals | \
+        #                   scc_evals | status_evals | type_evals
+        self.evaluators = balloon_evals | bankruptcy_evals
 
 
     # runs evaluators to produce results
