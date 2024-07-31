@@ -1,4 +1,3 @@
-import LocatorBar from 'components/LocatorBar/LocatorBar'
 import { Layout } from 'design-system-react'
 import type { ReactElement } from 'react'
 import './GuidePage.less'
@@ -6,8 +5,7 @@ import './GuidePage.less'
 export default function GuidePage(): ReactElement {
 
   return (
-    <>
-      <Layout.Main layout="1-3">
+    <Layout.Main layout="1-3">
       <Layout.Wrapper>
       < Layout.Sidebar id='sidebar'>
         <div>
@@ -43,6 +41,5 @@ export default function GuidePage(): ReactElement {
       </Layout.Content>      
       </Layout.Wrapper>
       </Layout.Main>
-    </>
   )
 }
