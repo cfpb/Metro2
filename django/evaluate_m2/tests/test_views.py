@@ -73,58 +73,50 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
 
     def create_activity_data(self):
         # Create the parent records for the AccountActivity data
-        self.event = Metro2Event(
+        self.event = Metro2Event.objects.create(
             id=1, name='test_exam', portfolio='credit cards',
             directory='Enforcement/Huyndai2025', eid_or_matter_num='123-456789',
             other_descriptor='',date_range_start='2023-11-30',
             date_range_end='2023-12-31')
-        self.event.save()
-        self.data_file = M2DataFile(event=self.event, file_name='file.txt')
-        self.data_file.save()
+        self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
+
         # Create the Account Holders
-        acct_holder = AccountHolder(id=1, data_file=self.data_file,
+        AccountHolder.objects.create(id=1, data_file=self.data_file,
             activity_date=date(2023, 11, 30), surname='Doe', first_name='Jane',
             middle_name='A', gen_code='F', ssn='012345678', dob='01012000',
             phone_num='0123456789', ecoa='0', cons_info_ind='Z', cons_acct_num='012345',
             cons_info_ind_assoc=['1A', 'B'], ecoa_assoc=['2', '1'])
-
-        acct_holder.save()
-        acct_holder2 = AccountHolder(id=2, data_file=self.data_file,
+        AccountHolder.objects.create(id=2, data_file=self.data_file,
             activity_date=date(2023, 11, 30), surname='Doe', first_name='John',
             cons_info_ind='Y', cons_acct_num='012345', cons_info_ind_assoc=['1A', 'B'],
             ecoa_assoc=['2', '1'])
-        acct_holder2.save()
+
         # Create the Account Activities data
-        activities = {'id':(32,33), 'account_holder':('Z','Y'),
+        values = {'id':(32,33), 'account_holder':('Z','Y'),
                       'cons_acct_num':('0032', '0033')}
-        acct_actvities = self.create_bulk_activities(self.data_file, activities, 2)
-        eval_rs = EvaluatorResultSummary(
-            event=self.event, evaluator=self.eval1, hits=2, accounts_affected=1,
+        acct_actvities = self.create_bulk_activities(self.data_file, values, 2)
+
+        # Result records for Status-DOFD-1
+        eval_rs = EvaluatorResultSummary.objects.create(
+            event=self.event, evaluator=self.stat_dofd_1, hits=2, accounts_affected=1,
             inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
-        eval_rs.save()
-        eval_rs2 = EvaluatorResultSummary(
-            event=self.event, evaluator=self.eval3, hits=1, accounts_affected=1,
+        EvaluatorResult.objects.create(result_summary=eval_rs, date=date(2021, 1, 1),
+            source_record= acct_actvities[0], acct_num='0032', field_values={})
+        EvaluatorResult.objects.create(result_summary=eval_rs, date=date(2021, 1, 1),
+            source_record= acct_actvities[1], acct_num='0033', field_values={})
+
+        # Result records for Status-DOFD-4
+        eval_rs2 = EvaluatorResultSummary.objects.create(
+            event=self.event, evaluator=self.stat_dofd_4, hits=1, accounts_affected=1,
             inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
-        eval_rs2.save()
-        self.eval_rs3 = EvaluatorResultSummary(
-            event=self.event, evaluator=self.eval4, hits=25, accounts_affected=1,
+        EvaluatorResult.objects.create(result_summary=eval_rs2, date=date(2021, 1, 1),
+            source_record= acct_actvities[0], acct_num='0032', field_values={})
+
+        # EvaluatorResultSummary for Status-DOFD-6
+        self.eval_rs3 = EvaluatorResultSummary.objects.create(
+            event=self.event, evaluator=self.stat_dofd_6, hits=25, accounts_affected=1,
             inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
-        self.eval_rs3.save()
-        eval_r1 = EvaluatorResult(
-            result_summary=eval_rs, date=date(2021, 1, 1),
-            field_values={'record': 1, 'acct_type':'y'},
-            source_record= acct_actvities[0], acct_num='0032')
-        eval_r1.save()
-        eval_r2 = EvaluatorResult(
-            result_summary=eval_rs, date=date(2021, 1, 1),
-            field_values={'record': 2, 'acct_type': 'n'},
-            source_record= acct_actvities[1], acct_num='0033')
-        eval_r2.save()
-        eval_r3 = EvaluatorResult(
-            result_summary=eval_rs2, date=date(2021, 1, 1),
-            field_values={'record': 3, 'acct_type': 'n'},
-            source_record= acct_actvities[0], acct_num='0032')
-        eval_r3.save()
+
 
     ########################################
     # Tests for Eval Metadata download
