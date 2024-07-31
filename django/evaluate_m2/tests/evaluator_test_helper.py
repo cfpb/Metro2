@@ -1,42 +1,11 @@
-from datetime import date, timedelta
+from datetime import date
 from evaluate_m2.evaluate import evaluator
 
 from parse_m2.models import (
     AccountActivity, AccountHolder, J1,
     J2, K2, K4, L1, M2DataFile, Metro2Event
 )
-import calendar
 
-
-def get_prior_months_by_number(activity_date: date, month_cnt=1):
-    """
-    Given a date activity_date, calculate the total days of the month and return the previous month.
-
-    Inputs:
-    `activity_date` - the date to be compared
-    `month_cnt` - the number of months
-    """
-    prev_date:date
-    total_days = 0
-
-    if month_cnt > 1:
-        m = activity_date.month
-        y = activity_date.year
-        for i in range(0, month_cnt):
-            # Get the days in the provided month
-            days_in_month = calendar.monthrange(y, m)[1]
-            total_days += days_in_month
-            if m == 1:
-                m = 12
-                y -= 1
-            else:
-                m -= i
-        prev_date=activity_date - timedelta(days=total_days)
-    else:
-        days_in_month = calendar.monthrange(activity_date.year, activity_date.month)[1]
-        prev_date=activity_date - timedelta(days=days_in_month)
-
-    return prev_date
 
 def acct_record(file: M2DataFile, custom_values: dict):
     """
@@ -349,29 +318,6 @@ class EvaluatorTestHelper():
                     if "terms_freq" in value_list else '0'
                 ))
         return AccountActivity.objects.bulk_create(account_activities)
-
-    def create_bulk_JSegments(self, j_type: str, value_list: dict, size: int):
-        # Create bulk account holder data
-        j_segments=[]
-        if size > 1:
-            for i in range(0, size):
-                j_segments.append(
-                    self.create_jsegment(
-                        id=value_list['account_activity'][i],
-                        j_type=j_type,
-                        cons_info_ind=value_list['cons_info_ind'][i])
-                )
-        else:
-            j_segments.append(
-                self.create_jsegment(
-                    id=value_list['account_activity'],
-                    j_type=j_type,
-                    cons_info_ind=value_list['cons_info_ind'])
-            )
-        if j_type == 'j1':
-            return J1.objects.bulk_create(j_segments)
-        else:
-            return J2.objects.bulk_create(j_segments)
 
     def create_acct_holder(self, file: M2DataFile, cons_info_ind='X'):
         return AccountHolder(data_file=file, activity_date=self.activity_date,
