@@ -18,7 +18,6 @@ from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
-    EvaluatorResultsViewSerializer,
     EventsViewSerializer)
 from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
