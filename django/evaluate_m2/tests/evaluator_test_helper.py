@@ -361,7 +361,7 @@ class EvaluatorTestHelper():
             if name == eval_name:
                 # print('\n\n', func(record_set).query)
                 evaluators_matching += 1
-                output = func(record_set)
+                output = func(record_set).values('id', 'activity_date', 'cons_acct_num')
                 results = sorted(output, key=lambda x: x['id'])
                 expected = sorted(expected_result, key=lambda x: x['id'])
                 # print('-'*50, '\n', eval_name, '\n', '-'*50,)

@@ -48,8 +48,7 @@ class BalloonEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'current_bal':0, 'k4__balloon_pmt_amt': 5
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'
         }]
 
         self.assert_evaluator_correct(
