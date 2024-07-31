@@ -5,7 +5,6 @@ from rest_framework.renderers import JSONRenderer
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
-    EvaluatorResultsViewSerializer,
     EventsViewSerializer
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
@@ -148,39 +147,6 @@ class EvalSerializerTestCase(TestCase):
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render([self.e1_json])
         self.assertEqual(json_output, expected)
-
-
-class EvaluatorResultsViewSerializerTestCase(TestCase):
-    def setUp(self) -> None:
-        self.eval1 = EvaluatorMetadata.objects.create(
-            id='Status-DOFD-1',
-            description='description of Status-DOFD-1',
-            long_description='',
-            fields_used=['placeholder', 'dofd'],
-            fields_display=['amount past due', 'compliance condition code', 'current balance'],
-            crrg_reference='400',
-            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        )
-        # Create an EvaluatorResults record
-        event = Metro2Event(name="tst")
-        event.save()
-        file = M2DataFile(event=event, file_name="tst.txt")
-        file.save()
-        activity = { 'id': 32, 'activity_date': date(2023,11,20),
-                    'cons_acct_num': '0032','current_bal':0, 'amt_past_due': 5 }
-        acct_activity = acct_record(file, activity)
-        self.ers = EvaluatorResultSummary(event=event, evaluator=self.eval1, hits=1)
-        self.ers.save()
-        self.eval_result = EvaluatorResult(
-            result_summary=self.ers, date=date(2021, 1, 1),
-            field_values={'record': 1, 'acct_type':'y'},
-            source_record= acct_activity, acct_num='0032')
-        self.eval_result.save()
-        self.json_representation = {'record': 1, 'acct_type':'y'}
-
-    def test_evaluator_results_serializer(self):
-        serializer = EvaluatorResultsViewSerializer(self.eval_result)
-        self.assertEqual(serializer.data, self.json_representation)
 
 
 class EventsViewSerializerTestCase(TestCase):
