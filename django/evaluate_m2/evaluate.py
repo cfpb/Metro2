@@ -41,12 +41,23 @@ class Evaluate():
             for eval_name, func in self.evaluators.items():
                 logger.info(f"Running evaluator: {eval_name}")
                 result_summary = self.prepare_result_summary(event, eval_name)
-                self.save_evaluator_results(result_summary, func(record_set))
+                try:
+                    self.save_evaluator_results(result_summary, func(record_set))
+                except TypeError as e:
+                    # If the evaluator errors, take note in the eval summary,
+                    # then continue with the next evaluator
+                    logger.error(f"Error in evaluator {eval_name}: {e}")
+                    self.save_error_result(result_summary)
+                    continue
                 self.update_result_summary_with_actual_results(result_summary)
         else:
             logger.info(f"No AccountActivity found for the event '{event.name}'")
 
     def save_evaluator_results(self, result_summary, eval_query):
+        """
+        Use a raw SQL query to run the evaluator and save the results
+        to the EvaluatorResult table.
+        """
         select_query, query_params = eval_query.query.sql_with_params()
 
         full_query = create_eval_insert_query(select_query, result_summary)
@@ -90,6 +101,10 @@ class Evaluate():
             result_summary.inconsistency_start = earliest_date
             result_summary.inconsistency_end = latest_date
             result_summary.save()
+
+    def save_error_result(self, result_summary):
+        result_summary.hits = -1
+        result_summary.save()
 
 # create instance of evaluator
 evaluator = Evaluate()
