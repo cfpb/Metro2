@@ -38,13 +38,13 @@ class UserViewSerializerTestCase(TestCase):
             'username': 'examiner',
             'assigned_events': [
                 {
+                    'id': 2, 'name': 'another_exam', 'portfolio': 'mortgage loans',
+                    'eid_or_matter_num': '123-345667', 'other_descriptor': 'exam',
+                    'date_range_start': None, 'date_range_end': None,
+                }, {
                     'id': 1, 'name': 'test_exam', 'portfolio': '',
                     'eid_or_matter_num': '', 'other_descriptor': '',
                     'date_range_start': '2011-07-31', 'date_range_end': '2020-12-31',
-                }, {
-                     'id': 2, 'name': 'another_exam', 'portfolio': 'mortgage loans',
-                     'eid_or_matter_num': '123-345667', 'other_descriptor': 'exam',
-                     'date_range_start': None, 'date_range_end': None,
                 }
             ]
         }

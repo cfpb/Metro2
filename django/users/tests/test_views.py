@@ -41,13 +41,13 @@ class TestUsersView(TestCase):
             'username': 'examiner',
             'assigned_events': [
                 {
+                    'id': 2, 'name': 'test_exam2', 'portfolio': 'credit cards',
+                    'eid_or_matter_num': '887-656565', 'other_descriptor': '2025',
+                    'date_range_start': None, 'date_range_end': None
+                }, {
                     'id': 1, 'name': 'test_exam', 'portfolio': '',
                     'eid_or_matter_num': '', 'other_descriptor': '',
                     'date_range_start': '2019-07-31', 'date_range_end': '2019-12-31',
-                }, {
-                     'id': 2, 'name': 'test_exam2', 'portfolio': 'credit cards',
-                     'eid_or_matter_num': '887-656565', 'other_descriptor': '2025',
-                     'date_range_start': None, 'date_range_end': None
                 }]}
 
         response = self.client.get('/api/users/1/')
