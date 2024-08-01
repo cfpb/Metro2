@@ -29,9 +29,9 @@ export default function LocatorBar({
         <Icon name={icon} size='47px' />
         <div>
           {eyebrow ? (
-            <h4 className='h5 eyebrow' data-testid='eyebrow'>
+            <div className='h5 eyebrow' data-testid='eyebrow'>
               {eyebrow}
-            </h4>
+            </div>
           ) : null}
           <h2 data-testid='heading'>{heading}</h2>
           {subhead ? <h3 data-testid='subhead'>{subhead}</h3> : null}

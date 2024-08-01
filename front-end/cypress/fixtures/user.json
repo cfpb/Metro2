@@ -1,0 +1,15 @@
+{
+  "is_admin": false,
+  "username": "Test user",
+  "assigned_events": [
+    {
+      "id": 1,
+      "name": "Test event",
+      "portfolio": "Auto",
+      "eid_or_matter_num": "123456789",
+      "other_descriptor": "Test event description",
+      "date_range_start": "2018-01-01",
+      "date_range_end": "2020-01-01"
+    }
+  ]
+}
