@@ -51,8 +51,25 @@ class Command(BaseCommand):
             parse_files_from_s3_bucket(event)
         else:
             parse_files_from_local_filesystem(event)
-        self.stdout.write(f"Beginning post parsing process for event: {event.name}.")
-        post_parse(event)
+
         self.stdout.write(
             self.style.SUCCESS(f"Finished parsing data for event: {event.name}.")
+        )
+
+        # Post-parse
+        self.stdout.write(f"Beginning post parsing process for event: {event.name}...")
+        post_parse(event)
+
+        self.stdout.write(f"Done. Generating report...")
+
+        record_set = event.get_all_account_activity()
+
+        total_updated = record_set.filter(previous_values_id__isnull=False).count()
+        self.stdout.write(f"Records with a previous record associated: {total_updated}")
+
+        total_not_updated = record_set.filter(previous_values_id__isnull=True).count()
+        self.stdout.write(f"Records with NO previous record associated: {total_not_updated}")
+
+        self.stdout.write(
+            self.style.SUCCESS(f"Finished parsing and post-parse for event: {event.name}.")
         )
