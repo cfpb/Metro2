@@ -39,3 +39,14 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
         expected = [ 'test', 'value1', 'value2', 'value3' ]
 
         self.assertEqual(eval_res.create_csv_row_data(), expected)
+
+    def test_result_summary_fields(self):
+        my_evaluator = EvaluatorMetadata(
+            id="Sample-Eval-1",
+            fields_used=["one", "two", "three"],
+            fields_display=["four", "five"]
+        )
+
+        field_list = my_evaluator.result_summary_fields()
+        expected = ['id', 'activity_date', 'cons_acct_num', 'one', 'two', 'three', 'four', 'five']
+        self.assertEqual(field_list, expected)

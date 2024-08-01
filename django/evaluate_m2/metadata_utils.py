@@ -6,13 +6,13 @@ code_to_plain_field_map = {
     # code : plain language
 
     # Account Holder fields
-    "cons_acct_num": "consumer account number",
-    "ecoa": "ecoa",
-    "cons_info_ind": "consumer information indicator",
-    "cons_info_ind_assoc": "consumer information indicators for associated consumers",
-    "ecoa_assoc": "ECOA for associated consumers",
-    "first_name": "first name",
-    "surname": "surname",
+    "account_holder__cons_acct_num": "consumer account number",
+    "account_holder__ecoa": "ecoa",
+    "account_holder__cons_info_ind": "consumer information indicator",
+    "account_holder__cons_info_ind_assoc": "consumer information indicators for associated consumers",
+    "account_holder__ecoa_assoc": "ECOA for associated consumers",
+    "account_holder__first_name": "first name",
+    "account_holder__surname": "surname",
 
     # Account Activity fields
     "activity_date": "activity date",

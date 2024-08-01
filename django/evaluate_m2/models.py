@@ -26,6 +26,16 @@ class EvaluatorMetadata(models.Model):
     def __str__(self) -> str:
         return self.id
 
+    def result_summary_fields(self) -> list[str]:
+        """
+        Return the list of AccountActivity fields (and fields on
+        related records) that should be shown in the evaluator result
+        view API endpoint.
+        """
+        defaults = ['id', 'activity_date', 'cons_acct_num']
+        return defaults + self.fields_used + self.fields_display
+
+
 class EvaluatorResultSummary(models.Model):
     class Meta:
         verbose_name_plural = "Evaluator Result Summaries"

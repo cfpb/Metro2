@@ -14,3 +14,14 @@ def get_randomizer(result_total, total_per_page) -> int:
     if result_total > total_per_page:
         randomizer = result_total // total_per_page
     return randomizer
+
+def random_sample_id_list(eval_result_summary, number_of_results):
+    randomizer = get_randomizer(eval_result_summary.hits, number_of_results)
+
+    final_index = randomizer * number_of_results
+
+    eval_result_sample = eval_result_summary.evaluatorresult_set \
+        .only('source_record_id') \
+        .order_by('id')[0:final_index:randomizer]
+
+    return [result.source_record_id for result in eval_result_sample]

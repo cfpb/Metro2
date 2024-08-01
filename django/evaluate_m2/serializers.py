@@ -126,11 +126,3 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
             for k in vals['fields_display']]
 
         return vals
-
-class EvaluatorResultsViewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EvaluatorResult
-        fields = ['field_values']
-
-    def to_representation(self, obj):
-        return obj.field_values
