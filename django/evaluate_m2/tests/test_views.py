@@ -101,9 +101,13 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             event=self.event, evaluator=self.stat_dofd_1, hits=2, accounts_affected=1,
             inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
         EvaluatorResult.objects.create(result_summary=eval_rs, date=date(2021, 1, 1),
-            source_record= acct_actvities[0], acct_num='0032', field_values={})
+            source_record= acct_actvities[0], acct_num='0032', field_values={
+                'record': 1, 'acct_type': 'y'
+            })
         EvaluatorResult.objects.create(result_summary=eval_rs, date=date(2021, 1, 1),
-            source_record= acct_actvities[1], acct_num='0033', field_values={})
+            source_record= acct_actvities[1], acct_num='0033', field_values={
+                'record': 2, 'acct_type': 'n'
+            })
 
         # Result records for Status-DOFD-4
         eval_rs2 = EvaluatorResultSummary.objects.create(
