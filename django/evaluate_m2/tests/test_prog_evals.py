@@ -80,16 +80,9 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 42: HIT, 43: HIT, 44: NO-previous_values__acct_stat=66,
         # 45: NO-acct_stat=77, 46: No-previous_values__dofd == dofd
 
-        # Create the segment data
         expected = [{
-            'id': 42, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'61',
-            'dofd':date(2019, 12, 1), 'previous_values__acct_stat':'61',
-            'previous_values__dofd': None
+            'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 43, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'62',
-            'dofd': date(2019, 12, 10), 'previous_values__acct_stat':'62',
-            'previous_values__dofd': date(2019, 11, 1)
+            'id': 43, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'PROG-DOFD-1', expected)
