@@ -6,7 +6,10 @@ from django.conf import settings
 
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
-from parse_m2.initiate_parsing_utils import data_file, zip_file, get_extension, parse_file_from_zip, parsed_file_exists
+from parse_m2.initiate_parsing_utils import (
+    data_file, zip_file, get_extension, log_invalid_file_extension,
+    parse_file_from_zip, parsed_file_exists
+)
 
 ############################################
 # Methods for parsing files from the S3 bucket
@@ -86,6 +89,4 @@ def parse_files_from_s3_bucket(event: Metro2Event, skip_existing: bool = True):
         elif data_file(file.key):
             parse_s3_file(file, event, skip_existing)
         else:
-            error_message = f"File skipped because of invalid file extension: .{get_extension(file.key)}"
-            M2FileParser(event, file.key).update_file_record(status="Not parsed", msg=error_message)
-            logger.info("Skipping. Does not match an allowed file type.")
+            log_invalid_file_extension(event, file.key, skip_existing, logger)

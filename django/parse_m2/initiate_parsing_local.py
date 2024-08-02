@@ -4,7 +4,10 @@ import logging
 
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
-from parse_m2.initiate_parsing_utils import data_file, zip_file, get_extension, parse_file_from_zip, parsed_file_exists
+from parse_m2.initiate_parsing_utils import (
+    data_file, zip_file, log_invalid_file_extension,
+    parse_file_from_zip, parsed_file_exists
+)
 
 
 ############################################
@@ -73,7 +76,4 @@ def parse_files_from_local_filesystem(event: Metro2Event, skip_existing: bool = 
             elif data_file(filename):
                 parse_local_file(event, filepath, skip_existing)
             else:
-                file_ext = get_extension(filename)
-                error_message = f"File skipped because of invalid file extension: .{file_ext}"
-                M2FileParser(event, filepath).update_file_record(status="Not parsed", msg=error_message)
-                logger.info("Skipping. Does not match an allowed file type.")
+                log_invalid_file_extension(event, filename, skip_existing, logger)
