@@ -25,17 +25,10 @@ class Evaluate():
     evaluator_version = "1.0"
 
     def __init__(self):
-        # Temporarily disable all evals except the ones we have updated
-        # to the new strategy
-        # self.evaluators = acct_change_evals | balance_evals | balloon_evals | \
-        #                   bankruptcy_evals | ccc_evals | deferred_evals | \
-        #                   doai_evals | dtcl_evals | rating_evals | prog_evals | \
-        #                   scc_evals | status_evals | type_evals
         self.evaluators = acct_change_evals |  balance_evals | balloon_evals | \
                           bankruptcy_evals | ccc_evals | deferred_evals | \
                           doai_evals | dtcl_evals | rating_evals | prog_evals | \
                           scc_evals | status_evals | type_evals
-
 
 
     # runs evaluators to produce results
