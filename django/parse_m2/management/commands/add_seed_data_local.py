@@ -49,9 +49,9 @@ class Command(BaseCommand):
             self.stdout.write(f"Beginning post parsing process for event: {event.name}.")
             post_parse(event)
             self.stdout.write(f"Beginning evaluators for event: {event.name}.")
-            # evaluator.run_evaluators(event)
-            # self.stdout.write(
-                # self.style.SUCCESS(f"Finished running evaluators and saving results."))
+            evaluator.run_evaluators(event)
+            self.stdout.write(
+                self.style.SUCCESS(f"Finished running evaluators and saving results."))
 
         else:
             self.stdout.write(f"An event record already exists for event name: {event_name}. No changes will be made.")
