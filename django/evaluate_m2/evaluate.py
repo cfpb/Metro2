@@ -31,7 +31,10 @@ class Evaluate():
         #                   bankruptcy_evals | ccc_evals | deferred_evals | \
         #                   doai_evals | dtcl_evals | rating_evals | prog_evals | \
         #                   scc_evals | status_evals | type_evals
-        self.evaluators = balloon_evals | bankruptcy_evals
+        self.evaluators = balloon_evals | bankruptcy_evals | deferred_evals | \
+                          doai_evals | dtcl_evals | rating_evals | scc_evals | \
+                          type_evals
+
 
 
     # runs evaluators to produce results
