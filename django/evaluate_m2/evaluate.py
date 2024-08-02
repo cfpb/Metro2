@@ -33,8 +33,8 @@ class Evaluate():
         #                   scc_evals | status_evals | type_evals
         self.evaluators = acct_change_evals |  balance_evals | balloon_evals | \
                           bankruptcy_evals | ccc_evals | deferred_evals | \
-                          doai_evals | dtcl_evals | rating_evals | scc_evals | \
-                          type_evals
+                          doai_evals | dtcl_evals | rating_evals | prog_evals | \
+                          scc_evals | type_evals
 
 
 
