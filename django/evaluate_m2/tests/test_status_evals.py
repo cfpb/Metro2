@@ -49,14 +49,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '71', 'compl_cond_cd': 'XB', 'amt_past_due': 0,
-            'pmt_rating': '', 'current_bal': 0, 'date_closed': None, 'dofd': None,
-            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '', 'terms_freq': '00'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '78', 'compl_cond_cd': 'XC', 'amt_past_due': 0,
-            'pmt_rating': '', 'current_bal': 0, 'date_closed': None, 'dofd': None,
-            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '', 'terms_freq': '00'
         }]
 
         self.assert_evaluator_correct(
@@ -90,14 +84,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'amt_past_due': 1, 'pmt_rating': '', 'compl_cond_cd': '',
-            'current_bal': 0, 'date_closed': None, 'dofd': None, 'orig_chg_off_amt': 0,
-            'smpa': 0, 'spc_com_cd': '', 'terms_freq': '00'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '11', 'amt_past_due': 5, 'pmt_rating': '', 'compl_cond_cd': '',
-            'current_bal': 0, 'date_closed': None, 'dofd': None, 'orig_chg_off_amt': 0,
-            'smpa': 0, 'spc_com_cd': '', 'terms_freq': '00'
         }]
 
         self.assert_evaluator_correct(
@@ -141,15 +129,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '95', 'amt_past_due': 0, 'pmt_rating': '', 'compl_cond_cd': '',
-            'current_bal': 0, 'date_closed': None, 'dofd': None, 'orig_chg_off_amt': 0,
-            'smpa': 0, 'spc_com_cd': '', 'terms_freq': '00', 'acct_type': '00',
-            'port_type': 'I'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '96', 'amt_past_due': 0, 'pmt_rating': '', 'compl_cond_cd': '',
-            'current_bal': 0, 'date_closed': None, 'dofd': None, 'orig_chg_off_amt': 0,
-            'smpa': 0, 'spc_com_cd': '', 'terms_freq': '00', 'acct_type': '13','port_type': 'I'
         }]
 
         self.assert_evaluator_correct(
@@ -182,17 +163,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'05', 'current_bal': 5,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'dofd': None,
-            'date_closed': None, 'orig_chg_off_amt': 0,
-            'smpa':0, 'terms_freq':"00"
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'13', 'current_bal': 10,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'dofd': None,
-            'date_closed': None, 'orig_chg_off_amt': 0,
-            'smpa':0, 'terms_freq':"00"
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-1', expected)
 
@@ -221,19 +194,10 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=79, 35: NO-current_bal=10,
 
-        # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'71', 'current_bal': 0,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'dofd': None,
-            'date_closed': None, 'orig_chg_off_amt': 0,
-            'smpa':0, 'terms_freq':"00"
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'78', 'current_bal': 0,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'dofd': None,
-            'date_closed': None, 'orig_chg_off_amt': 0,
-            'smpa':0, 'terms_freq':"00"
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-2', expected)
 
@@ -295,14 +259,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'acct_type': '00', 'current_bal': 1,
-            'l1__change_ind': None, 'port_type': 'I', 'spc_com_cd': 'AU',
-            'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '62', 'acct_type': '10', 'current_bal': 5,
-            'l1__change_ind': None, 'port_type': 'I', 'spc_com_cd': 'AX',
-            'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-4', expected)
 
@@ -351,12 +309,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'M',
-            'spc_com_cd': 'AU', 'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '11', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'M',
-            'spc_com_cd': 'AX', 'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-5', expected)
 
@@ -405,12 +359,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'C',
-            'spc_com_cd': 'AU', 'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '06', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'C',
-            'spc_com_cd': 'AX', 'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-6', expected)
 
@@ -461,12 +411,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '60', 'current_bal': 1, 'l1__change_ind': None, 'port_type': 'C',
-            'spc_com_cd': 'AU', 'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '61', 'current_bal': 5, 'l1__change_ind': None, 'port_type': 'C',
-            'spc_com_cd': 'AX', 'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-7', expected)
 
@@ -517,12 +463,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '60', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'C',
-            'spc_com_cd': 'AH', 'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '61', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'C',
-            'spc_com_cd': 'AT', 'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-8', expected)
 
@@ -571,12 +513,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '60', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'O',
-            'spc_com_cd': 'AU', 'amt_past_due': 0
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '61', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'O',
-            'spc_com_cd': 'AX', 'amt_past_due': 0
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-9', expected)
 
@@ -626,12 +564,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'current_bal': 1, 'l1__change_ind': None, 'port_type': 'O',
-            'spc_com_cd': 'AU', 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '13', 'current_bal': 5, 'l1__change_ind': None, 'port_type': 'O',
-            'spc_com_cd': 'AX', 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-10', expected)
 
@@ -680,12 +614,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'R',
-            'spc_com_cd': 'AU', 'amt_past_due': 0
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '71', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'R',
-            'spc_com_cd': 'AX', 'amt_past_due': 0
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-11', expected)
 
@@ -735,12 +665,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'current_bal': 1, 'l1__change_ind': None, 'port_type': 'R',
-            'spc_com_cd': 'AU'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '13', 'current_bal': 5, 'l1__change_ind': None, 'port_type': 'R',
-            'spc_com_cd': 'AX'
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-12', expected)
 
@@ -790,12 +716,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '05', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'O',
-            'spc_com_cd': 'AH', 'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '13', 'current_bal': 0, 'l1__change_ind': None, 'port_type': 'R',
-            'spc_com_cd': 'AT', 'amt_past_due': 0, 'date_closed': None
         }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-13', expected)
 
@@ -856,14 +778,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '01', 'acct_type': '3A', 'current_bal': 0,
-            'l1__change_ind': None, 'port_type': 'I', 'spc_com_cd': 'AU',
-            'amt_past_due': 0, 'date_closed': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '02', 'acct_type': '13', 'current_bal': 0,
-            'l1__change_ind': None, 'port_type': 'I', 'spc_com_cd': 'AX',
-            'amt_past_due': 0, 'date_closed': None
             }]
         self.assert_evaluator_correct(self.event, 'Status-Balance-14', expected)
 
@@ -896,17 +812,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'05', 'dofd': None,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'current_bal':0,
-            'date_closed': None, 'orig_chg_off_amt': 5, 'smpa':0,
-            'spc_com_cd':"", 'terms_freq':"00"
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'11', 'dofd': None,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'current_bal':0,
-            'date_closed': None, 'orig_chg_off_amt': 1, 'smpa':0,
-            'spc_com_cd':"", 'terms_freq':"00"
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(
             self.event, 'Status-ChargeOff-1', expected)
@@ -939,17 +847,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'64', 'dofd': None,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'current_bal':0,
-            'date_closed': None, 'orig_chg_off_amt': 0, 'smpa':0,
-            'spc_com_cd':"", 'terms_freq':"00"
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'97', 'dofd': None,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'current_bal':0,
-            'date_closed': None, 'orig_chg_off_amt': 0, 'smpa':0,
-            'spc_com_cd':"", 'terms_freq':"00"
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Status-ChargeOff-2', expected)
 
@@ -980,17 +880,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'05', 'date_closed': None,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'current_bal':0,
-             'dofd': None, 'orig_chg_off_amt': 0, 'smpa':0,
-            'terms_freq':"00"
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'13', 'date_closed': None,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'current_bal':0,
-             'dofd': None, 'orig_chg_off_amt': 0, 'smpa':0,
-            'terms_freq':"00"
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Status-DateClosed-1', expected)
 
@@ -1026,15 +918,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'11', 'compl_cond_cd':"XB",
-            'date_closed': date(2020, 1, 1),'amt_past_due': 0, 'current_bal':0,
-            'dofd': None, 'orig_chg_off_amt': 0, 'smpa':0, 'terms_freq':"00"
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'71', 'compl_cond_cd':"XC",
-            'date_closed': date(2020, 1, 1),'amt_past_due': 0, 'current_bal':0,
-            'dofd': None, 'orig_chg_off_amt': 0, 'smpa':0, 'terms_freq':"00"
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Status-DateClosed-2', expected)
 
@@ -1066,13 +952,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032', 'acct_stat': '71',
-            'dofd': None,'amt_past_due': 0, 'compl_cond_cd': '', 'current_bal': 0, 'date_closed': None,
-            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '', 'terms_freq': '00'
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033', 'acct_stat': '97',
-            'dofd': None, 'amt_past_due': 0, 'compl_cond_cd': '', 'current_bal': 0, 'date_closed': None,
-            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '', 'terms_freq': '00'
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Status-DOFD-1', expected)
 
@@ -1107,19 +989,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat': '13', 'dofd': None,
-            'pmt_rating':'1', 'amt_past_due': 0, 'compl_cond_cd':'',
-            'current_bal': 0, 'date_closed': None,
-            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '',
-            'terms_freq': '00'
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat': '13', 'dofd': None,
-            'pmt_rating':'2', 'amt_past_due': 0, 'compl_cond_cd':'',
-            'current_bal': 0, 'date_closed': None,
-            'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '',
-            'terms_freq': '00'
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Status-DOFD-2', expected)
 
@@ -1155,17 +1027,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'05', 'dofd': None,
-            'pmt_rating':'1', 'amt_past_due': 0, 'compl_cond_cd':"",
-            'current_bal':0, 'date_closed': None, 'orig_chg_off_amt': 0,
-            'smpa':0, 'spc_com_cd':"", 'terms_freq':"00"
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'05', 'dofd': None,
-            'pmt_rating':'G', 'amt_past_due': 0, 'compl_cond_cd':"",
-            'current_bal':0, 'date_closed': None, 'orig_chg_off_amt': 0,
-            'smpa':0, 'spc_com_cd':"", 'terms_freq':"00"
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Status-DOFD-3', expected)
 
@@ -1201,16 +1065,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '13', 'dofd': date(2019, 12, 31), 'pmt_rating': '0',
-            'amt_past_due': 0, 'compl_cond_cd': '', 'current_bal': 0,
-            'date_closed': None, 'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '',
-            'terms_freq': '00'
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '13', 'dofd': date(2019, 12, 31), 'pmt_rating': '0',
-            'amt_past_due': 0, 'compl_cond_cd': '', 'current_bal': 0,
-            'date_closed': None, 'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '',
-            'terms_freq': '00'
         }]
         self.assert_evaluator_correct(self.event, 'Status-DOFD-4', expected)
 
@@ -1246,21 +1102,9 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'05', 'dofd': date(2019, 12, 31),
-            'pmt_rating':'0', 'amt_past_due': 0, 'compl_cond_cd':"",
-            'current_bal':0, 'date_closed': None, 'orig_chg_off_amt': 0,
-            'smpa':0, 'spc_com_cd':"", 'terms_freq':"00",
-            'account_holder__cons_info_ind': '',
-            'account_holder__cons_info_ind_assoc': None
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'05', 'dofd': date(2019, 12, 31),
-            'pmt_rating':'0', 'amt_past_due': 0, 'compl_cond_cd':"",
-            'current_bal':0, 'date_closed': None, 'orig_chg_off_amt': 0,
-            'smpa':0, 'spc_com_cd':"", 'terms_freq':"00",
-            'account_holder__cons_info_ind': '',
-            'account_holder__cons_info_ind_assoc': None
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(
             self.event, 'Status-DOFD-5', expected)
@@ -1294,16 +1138,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat':'11', 'dofd': date(2019, 12, 31), 'amt_past_due': 0, 'compl_cond_cd':"",
-            'current_bal':0, 'date_closed': None, 'orig_chg_off_amt': 0, 'smpa':0, 'spc_com_cd':"",
-            'terms_freq':"00", 'account_holder__cons_info_ind': '',
-            'account_holder__cons_info_ind_assoc': None
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat':'11', 'dofd': date(2019, 12, 31), 'amt_past_due': 0, 'compl_cond_cd':"",
-            'current_bal':0, 'date_closed': None, 'orig_chg_off_amt': 0, 'smpa':0, 'spc_com_cd':"",
-            'terms_freq':"00", 'account_holder__cons_info_ind': '',
-            'account_holder__cons_info_ind_assoc': None
         }]
         self.assert_evaluator_correct(
             self.event, 'Status-DOFD-6', expected)
@@ -1335,16 +1171,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the segment data
         expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat':'05', 'smpa':5,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'current_bal':0,
-            'date_closed': None, 'dofd': None, 'orig_chg_off_amt': 0,
-            'terms_freq':"00"
+            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat':'13', 'smpa': 10,
-            'amt_past_due': 0, 'compl_cond_cd':"", 'current_bal':0,
-            'date_closed': None, 'dofd': None, 'orig_chg_off_amt': 0,
-            'terms_freq':"00"
+            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Status-SMPA-1', expected)
