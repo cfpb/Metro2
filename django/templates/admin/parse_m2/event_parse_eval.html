@@ -59,6 +59,7 @@
                 <td>Hits</td>
                 <td>Inconsistency start</td>
                 <td>Inconsistency end</td>
+                <td>Evaluator version</td>
             </tr>
             </thead>
             <tbody>
@@ -68,6 +69,7 @@
                     <td>{{ result.hits|intcomma }}</td>
                     <td>{{ result.inconsistency_start }}</td>
                     <td>{{ result.inconsistency_end }}</td>
+                    <td>{{ result.evaluator_version }}</td>
                 </tr>
             {% endfor %}
             </tbody>
