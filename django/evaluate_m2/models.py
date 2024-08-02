@@ -45,6 +45,7 @@ class EvaluatorResultSummary(models.Model):
     accounts_affected = models.IntegerField(null=True)
     inconsistency_start = models.DateField(null=True)
     inconsistency_end = models.DateField(null=True)
+    evaluator_version = models.CharField(max_length=200, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:

@@ -20,6 +20,10 @@ from parse_m2.models import Metro2Event
 
 
 class Evaluate():
+    # Evaluator version is saved on each evaluator result summary.
+    # Increment this version for all updates to evaluator functionality.
+    evaluator_version = "1.0"
+
     def __init__(self):
         # Temporarily disable all evals except the ones we have updated
         # to the new strategy
@@ -85,6 +89,7 @@ class Evaluate():
             evaluator = eval_metadata,
             hits = 0,
             accounts_affected = 0,
+            evaluator_version = self.evaluator_version,
         )
 
     def update_result_summary_with_actual_results(self, result_summary):
