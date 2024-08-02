@@ -57,7 +57,7 @@ class EvaluatorResult(models.Model):
         indexes = [ models.Index(fields=['acct_num',])]
     result_summary = models.ForeignKey(EvaluatorResultSummary, on_delete=models.CASCADE)
     date = models.DateField()
-    field_values = JSONField(encoder=DjangoJSONEncoder)
+    field_values = JSONField(encoder=DjangoJSONEncoder, null=True)
     source_record = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     acct_num = models.CharField(max_length=30)
 
