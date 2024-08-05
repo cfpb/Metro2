@@ -1,7 +1,8 @@
 from datetime import date
 from django.test import TestCase
+from parse_m2.initiate_post_parsing import post_parse
 from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import J1, K4, L1, Metro2Event, M2DataFile, AccountHolder, AccountActivity
+from parse_m2.models import K2, K4, L1, Metro2Event, M2DataFile, AccountHolder, AccountActivity
 from rest_framework.renderers import JSONRenderer
 from parse_m2.serializers import (
     AccountActivitySerializer,
@@ -17,7 +18,8 @@ class AccountActivitySerializerTestCase(TestCase):
         file = M2DataFile(event=event, file_name="tst.txt")
         file.save()
         acct_holder = AccountHolder(
-            data_file=file,activity_date=date(2023, 11, 30), cons_acct_num="98765",
+            data_file=file, activity_date=date(2023, 11, 30),
+            surname="Doe", first_name="Jane", cons_acct_num="98765",
             cons_info_ind_assoc=["1A", "B"], ecoa_assoc=["2", "1"])
         acct_holder.save()
         self.acct_activity = AccountActivity(
@@ -48,14 +50,19 @@ class AccountActivitySerializerTestCase(TestCase):
             int_type_ind="int_type_ind",
         )
         self.acct_activity.save()
+        k2 = K2(account_activity=self.acct_activity, purch_sold_name="Fake")
+        k2.save()
         k4 = K4(account_activity=self.acct_activity, balloon_pmt_amt=11854)
         k4.save()
-        l1 = L1(account_activity=self.acct_activity, change_ind="2")
+        l1 = L1(account_activity=self.acct_activity, change_ind="2",
+                new_id_num="0032", new_acc_num="32")
         l1.save()
         self.json_representation = {
             "id": self.acct_activity.id,
             "inconsistencies": [],
             "activity_date": "2023-11-20",
+            "account_holder__surname": "Doe",
+            "account_holder__first_name": "Jane",
             "port_type": "port_type",
             "acct_type": "acct_type",
             "date_open": "2020-03-17",
@@ -79,13 +86,16 @@ class AccountActivitySerializerTestCase(TestCase):
             "date_closed": None,
             "dolp": "2023-01-01",
             "int_type_ind": "int_type_ind",
-            "cons_info_ind": '',
-            "ecoa": '',
-            "cons_info_ind_assoc": ["1A", "B"],
-            "ecoa_assoc": ["2", "1"],
-            "purch_sold_ind": None,
-            "balloon_pmt_amt": 11854,
-            "change_ind": "2"
+            "account_holder__cons_info_ind": '',
+            "account_holder__ecoa": '',
+            "account_holder__cons_info_ind_assoc": ["1A", "B"],
+            "account_holder__ecoa_assoc": ["2", "1"],
+            "k2__purch_sold_ind": '',
+            "k2__purch_sold_name": "Fake",
+            "k4__balloon_pmt_amt": 11854,
+            "l1__change_ind": "2",
+            "l1__new_id_num": "0032",
+            "l1__new_acc_num": "32",
         }
 
     def test_account_activity_serializer(self):
@@ -172,6 +182,7 @@ class Metro2EventSerializerTestCase(TestCase):
             { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', }]
         for item in self.activities:
             acct_record(self.data_file, item)
+        post_parse(self.event)  # Ensure the event record has the date range saved
 
     def test_metro2_event_serializer(self):
         serializer = Metro2EventSerializer(self.event)

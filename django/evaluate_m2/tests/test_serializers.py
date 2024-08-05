@@ -5,7 +5,6 @@ from rest_framework.renderers import JSONRenderer
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
-    EvaluatorResultsViewSerializer,
     EventsViewSerializer
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
@@ -16,22 +15,24 @@ e1_expected_fields_used = """
 Identifying information
 DB record id
 activity date
-customer account number
+consumer account number
 
 Fields used for evaluator
 consumer information indicator
 date of last payment
+ID number
 
 Helpful fields that are also displayed currently
 special comment code
 date of first delinquency
+L1 change indicator
 """
 
 e2_expected_fields_used = """
 Identifying information
 DB record id
 activity date
-customer account number
+consumer account number
 
 Fields used for evaluator
 wrong
@@ -41,6 +42,23 @@ Helpful fields that are also displayed currently
 other
 """
 
+e3_expected_fields_used = """
+Identifying information
+DB record id
+activity date
+consumer account number
+
+Fields used for evaluator
+consumer information indicator
+date of last payment
+id number
+
+Helpful fields that are also displayed currently
+special comment code
+date of first delinquency
+L1 change indicator
+ECOA
+"""
 class EvalSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.multi_line_text="""Here is some text.
@@ -50,8 +68,8 @@ class EvalSerializerTestCase(TestCase):
             id="Betsy-1",
             description="desc 1",
             long_description=self.multi_line_text,
-            fields_used=["cons_info_ind", "dolp"],
-            fields_display=["spc_com_cd", "dofd"],
+            fields_used=["account_holder__cons_info_ind", "dolp", "id_num"],
+            fields_display=["spc_com_cd", "dofd", "l1__change_ind"],
             crrg_reference="PDF page 3",
         )
 
@@ -66,6 +84,16 @@ class EvalSerializerTestCase(TestCase):
             'alternate_explanation': '',
         }
 
+        self.e3_json = {
+            'id': 'Betsy-1',
+            'description': 'desc 1',
+            'long_description': self.multi_line_text,
+            'fields_used': e3_expected_fields_used,
+            'crrg_reference': 'PDF page 3',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': '',
+        }
     def test_to_json(self):
         to_json = EvaluatorMetadataSerializer(self.e1)
         self.assertEqual(to_json.data, self.e1_json)
@@ -98,8 +126,20 @@ class EvalSerializerTestCase(TestCase):
         record = from_json.save()
         self.assertEqual(record.id, "BETSY-NEW")
         self.assertEqual(record.description, self.e1_json['description'])
-        self.assertEqual(record.fields_used, ['cons_info_ind', 'dolp'])
-        self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd'])
+        self.assertEqual(record.fields_used, ['account_holder__cons_info_ind', 'dolp', 'id_num'])
+        self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind'])
+
+    def test_from_json_case_insensitive(self):
+        json = self.e3_json.copy()
+        json['id'] = "CASE_INSENSITIVE"
+        from_json = EvaluatorMetadataSerializer(data=json)
+        self.assertTrue(from_json.is_valid())
+        record = from_json.save()
+        self.assertEqual(record.id, "CASE_INSENSITIVE")
+        self.assertEqual(record.description, self.e1_json['description'])
+        self.assertEqual(record.fields_used, ['account_holder__cons_info_ind', 'dolp', 'id_num'])
+        self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind',
+                                                 'account_holder__ecoa'])
 
     def test_many_to_json(self):
         eval_metadata = [self.e1]
@@ -107,39 +147,6 @@ class EvalSerializerTestCase(TestCase):
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render([self.e1_json])
         self.assertEqual(json_output, expected)
-
-
-class EvaluatorResultsViewSerializerTestCase(TestCase):
-    def setUp(self) -> None:
-        self.eval1 = EvaluatorMetadata.objects.create(
-            id='Status-DOFD-1',
-            description='description of Status-DOFD-1',
-            long_description='',
-            fields_used=['placeholder', 'dofd'],
-            fields_display=['amount past due', 'compliance condition code', 'current balance'],
-            crrg_reference='400',
-            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-        )
-        # Create an EvaluatorResults record
-        event = Metro2Event(name="tst")
-        event.save()
-        file = M2DataFile(event=event, file_name="tst.txt")
-        file.save()
-        activity = { 'id': 32, 'activity_date': date(2023,11,20),
-                    'cons_acct_num': '0032','current_bal':0, 'amt_past_due': 5 }
-        acct_activity = acct_record(file, activity)
-        self.ers = EvaluatorResultSummary(event=event, evaluator=self.eval1, hits=1)
-        self.ers.save()
-        self.eval_result = EvaluatorResult(
-            result_summary=self.ers, date=date(2021, 1, 1),
-            field_values={'record': 1, 'acct_type':'y'},
-            source_record= acct_activity, acct_num='0032')
-        self.eval_result.save()
-        self.json_representation = {'record': 1, 'acct_type':'y'}
-
-    def test_evaluator_results_serializer(self):
-        serializer = EvaluatorResultsViewSerializer(self.eval_result)
-        self.assertEqual(serializer.data, self.json_representation)
 
 
 class EventsViewSerializerTestCase(TestCase):

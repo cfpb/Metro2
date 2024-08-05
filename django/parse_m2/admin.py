@@ -26,7 +26,7 @@ class EventParseEvalView(DetailView):
 
 class Metro2EventAdmin(admin.ModelAdmin):
     fields = ['name', 'portfolio', 'eid_or_matter_num', 'other_descriptor', 'directory', 'members']
-    list_display = ['name', 'portfolio', 'eid_or_matter_num', 'import_data']
+    list_display = ['name', 'portfolio', 'eid_or_matter_num', 'import_data', 'date_range_start', 'date_range_end']
     filter_horizontal = ['members']
 
     def get_urls(self):
@@ -69,7 +69,7 @@ class Metro2EventAdmin(admin.ModelAdmin):
 class M2DataFileAdmin(admin.ModelAdmin):
     list_display = ['id', 'event', 'file_name', 'parsing_status',
                     'parsed_lines', 'unparseable_lines', 'timestamp',
-                    'error_message']
+                    'error_message', 'parser_version']
 
     def parsed_lines(self, obj):
         return obj.accountholder_set.count()

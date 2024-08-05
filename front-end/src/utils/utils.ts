@@ -1,13 +1,9 @@
 import { notFound } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
+import type EvaluatorMetadata from 'pages/Evaluator/Evaluator'
+import type Event from 'pages/Event/Event'
 import type { AccountRecord } from './constants'
-import {
-  FIELD_NAMES_LOOKUP,
-  FIELD_TYPES_LOOKUP,
-  M2_FIELDS,
-  M2_FIELD_LOOKUPS
-} from './constants'
-
+import { M2_FIELD_LOOKUPS, M2_FIELD_NAMES } from './constants'
 /**
  * Takes an id and value for a Metro2 field,
  * accesses the lookup for the field's code definitions,
@@ -15,61 +11,99 @@ import {
  * the value provided for the field or undefined.
  */
 export const getM2Definition = (
-  fieldId: string,
-  fieldValue?: number | string | null
+  field: string,
+  value?: number | string | null
 ): string | undefined => {
-  if (fieldValue != null && fieldId in M2_FIELD_LOOKUPS) {
-    const lookup = M2_FIELD_LOOKUPS[fieldId as keyof typeof M2_FIELD_LOOKUPS]
-    return lookup[fieldValue as keyof typeof lookup]
+  if (value != null && field in M2_FIELD_LOOKUPS) {
+    const lookup = M2_FIELD_LOOKUPS[field as keyof typeof M2_FIELD_LOOKUPS]
+    return lookup[value as keyof typeof lookup]
   }
   return undefined
 }
 
-// Iterates through array of account records and adds parenthetical
-// annotations to record's values where they exist
-export const annotateData = (records: AccountRecord[]): AccountRecord[] =>
-  records.map(record => {
-    const obj: Record<string, number | string | null | undefined> = {}
+// Given a Metro2 field and value, checks if there is a human-readable definition for the value.
+// If there is a definition, returns a string with format 'value (definition)'
+// If no definition is available, returns the original value
+export const annotateValue = (
+  field: string,
+  val: number | string | null | undefined
+): number | string | null | undefined => {
+  const annotation = getM2Definition(field, val)
+  return annotation ? `${val} (${annotation})` : val
+}
+
+// Iterates through array of account records and annotates values as needed
+export const annotateAccountRecords = (records: AccountRecord[]): AccountRecord[] =>
+  records.map((record: AccountRecord): AccountRecord => {
+    // Create new object to hold the annotated values
+    const obj: Record<string, unknown[] | number | string | null | undefined> = {}
     for (const field of Object.keys(record)) {
+      // Add a value for each field to the new object, with annotation if available.
+      // If the original value is an array, annotate each item in the new array.
       const val = record[field as keyof AccountRecord]
-      const annotation = getM2Definition(field, val)
-      obj[field] = annotation ? `${val} (${annotation})` : val
+      obj[field] = Array.isArray(val)
+        ? val.map((item: number | string): number | string | null | undefined =>
+            annotateValue(field, item)
+          )
+        : annotateValue(field, val)
     }
     return obj
   })
 
-// Checks whether a string is in the list of Metro 2 fields
-export const isM2Field = (str: string): boolean => !!M2_FIELDS.includes(str)
+// If the first record has a php value, add php1 to the records
+export const addPHP1 = (records: AccountRecord[]): AccountRecord[] => {
+  if (records.length <= 0 || !('php' in records[0])) return records
+  return records.map(
+    (record: AccountRecord): AccountRecord => ({
+      ...record,
+      php1: record.php?.charAt(0)
+    })
+  )
+}
 
-// Annotate and add php1 to account record data
+/**
+ * Given an array of M2 account records, makes some updates for display in tables:
+ *   1. if records include 'php' value, add 'php1' field containing first character of php
+ *   2. add descriptive annotations to records for fields with coded values
+ * Returns updated records
+ */
 export const prepareAccountRecordData = (
   records: AccountRecord[]
 ): AccountRecord[] => {
-  if ('php' in records[0]) {
-    for (const record of records) record.php1 = record.php?.charAt(0)
-  }
-  return annotateData(records)
+  // If the first record has a php value, add php1 to the records
+  // if ('php' in records[0]) {
+  //   for (const record of records) record.php1 = record.php?.charAt(0)
+  // }
+  const updatedRecords = addPHP1(records)
+  // annotate coded record values
+  return annotateAccountRecords(updatedRecords)
 }
 
-// Given a list of M2 fields and a list of M2 fields to pin,
+// Capitalizes first letter of a string
+export const capitalized = (str: string): string =>
+  `${str[0].toUpperCase()}${str.slice(1)}`
+
+// Given a string and a lookup map, returns either the string's value in the lookup
+// or, if the string is not found in the lookup, a capitalized version of the string
+export const getHeaderName = (field: string, lookup: Map<string, string>): string =>
+  lookup.get(field) ?? capitalized(field)
+
+// Given a list of M2 fields and an object of field-specific col def props,
 // generate an array of AgGrid column definition objects
 // with the following format:
 // {
 //    field: field,
-//    headerName: field's name from FIELD_NAMES_LOOKUP,
-//    type: field's type from FIELD_TYPES_LOOKUP,
-//    pinned: 'left' if field is in pinnedLeft array
+//    headerName: field's name from M2_FIELD_NAMES,
+//    ...{field-specific col def props}
 // }
 export const generateColumnDefinitions = (
-  // all the values in these arrays should appear in the M2_FIELDS list
-  fields: (typeof M2_FIELDS)[number][],
-  pinnedLeft: (typeof M2_FIELDS)[number][] = []
+  fields: string[],
+  colDefProps: Record<string, object>
 ): ColDef[] =>
   fields.map(field => ({
     field,
-    headerName: FIELD_NAMES_LOOKUP[field as keyof typeof FIELD_NAMES_LOOKUP],
-    type: FIELD_TYPES_LOOKUP[field as keyof typeof FIELD_TYPES_LOOKUP],
-    pinned: pinnedLeft.includes(field) ? 'left' : undefined
+    headerName: getHeaderName(field, M2_FIELD_NAMES),
+    ...colDefProps[field]
   }))
 
 /**
@@ -161,10 +195,10 @@ export const formatDate = (
 export const generateDownloadData = <T>(
   fields: string[],
   records: T[],
-  headerLookup: Record<string, string>
+  headerMap: Map<string, string>
 ): string => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  const csvHeader = fields.map(field => headerLookup[field] ?? field).join(',')
+  const csvHeader = fields.map(field => getHeaderName(field, headerMap)).join(',')
   const csvBody = records
     .map(record =>
       fields
@@ -290,3 +324,9 @@ export const acceptPIIWarning = (): void => {
 
 // Checks for a cookie indicating PII warning has been acknowledged
 export const hasAcceptedPIIWarning = (): boolean => !!getCookie('acceptedPIIWarning')
+
+export const getEvaluatorDataFromEvent = (
+  data: Event,
+  evaluatorId: string
+): EvaluatorMetadata | undefined =>
+  data.evaluators.find((item: EvaluatorMetadata) => item.id === evaluatorId)

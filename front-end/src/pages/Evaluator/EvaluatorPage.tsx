@@ -35,7 +35,11 @@ export default function EvaluatorPage(): ReactElement {
         icon='flag-round'
         breadcrumbs
       />
-      <EvaluatorSummary metadata={evaluatorMetadata} user={userData} />
+      <EvaluatorSummary
+        metadata={evaluatorMetadata}
+        user={userData}
+        event={eventData}
+      />
       <Suspense fallback={<Loader message='Your data is loading' />}>
         <Await promise={evaluatorHits}>
           {(data): ReactElement => (

@@ -1,16 +1,22 @@
 import { Link } from '@tanstack/react-router'
 import type { Definition } from 'components/DefinitionList/DefinitionList'
 import DefinitionList from 'components/DefinitionList/DefinitionList'
+import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
-import type { AccountRecord } from '../../utils/constants'
-import { FIELD_NAMES_LOOKUP } from '../../utils/constants'
-import { formatDate, getM2Definition } from '../../utils/utils'
+import type { AccountRecord } from 'utils/constants'
+import { M2_FIELD_NAMES } from 'utils/constants'
+import {
+  formatDate,
+  getEvaluatorDataFromEvent,
+  getHeaderName,
+  getM2Definition
+} from 'utils/utils'
 import type Account from './Account'
 import AccountContactInformation from './AccountContactInformation'
 
 interface AccountSummaryProperties {
   accountData: Account
-  eventId: number
+  eventData: Event
 }
 
 const summaryFields = [
@@ -42,7 +48,7 @@ export const getSummaryItems = (
     const definition =
       field === 'date_open' ? formatDate(value) : getM2Definition(field, value)
     return {
-      term: FIELD_NAMES_LOOKUP[field],
+      term: getHeaderName(field, M2_FIELD_NAMES),
       definition: definition ?? value
     }
   })
@@ -55,14 +61,14 @@ export const getSummaryItems = (
 
 export default function AccountSummary({
   accountData,
-  eventId
+  eventData
 }: AccountSummaryProperties): ReactElement {
   // Get latest activity record for account
   // TODO: ensure records are sorted by date or sort them
   const latestRecord = accountData.account_activity[0]
   const contactComponent = (
     <AccountContactInformation
-      eventId={eventId}
+      eventId={eventData.id}
       accountId={accountData.cons_acct_num}
     />
   )
@@ -84,9 +90,16 @@ export default function AccountSummary({
                 <li key={inconsistency}>
                   <Link
                     to='/events/$eventId/evaluators/$evaluatorId'
-                    params={{ eventId, evaluatorId: inconsistency }}>
+                    params={{ eventId: eventData.id, evaluatorId: inconsistency }}>
                     {inconsistency}
                   </Link>
+                  <span>
+                    {' '}
+                    {
+                      getEvaluatorDataFromEvent(eventData, inconsistency)
+                        ?.description
+                    }
+                  </span>
                 </li>
               ))}
             </ol>

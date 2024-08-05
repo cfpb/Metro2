@@ -26,6 +26,16 @@ class EvaluatorMetadata(models.Model):
     def __str__(self) -> str:
         return self.id
 
+    def result_summary_fields(self) -> list[str]:
+        """
+        Return the list of AccountActivity fields (and fields on
+        related records) that should be shown in the evaluator result
+        view API endpoint.
+        """
+        defaults = ['id', 'activity_date', 'cons_acct_num']
+        return defaults + self.fields_used + self.fields_display
+
+
 class EvaluatorResultSummary(models.Model):
     class Meta:
         verbose_name_plural = "Evaluator Result Summaries"
@@ -35,6 +45,7 @@ class EvaluatorResultSummary(models.Model):
     accounts_affected = models.IntegerField(null=True)
     inconsistency_start = models.DateField(null=True)
     inconsistency_end = models.DateField(null=True)
+    evaluator_version = models.CharField(max_length=200, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -47,7 +58,7 @@ class EvaluatorResult(models.Model):
         indexes = [ models.Index(fields=['acct_num',])]
     result_summary = models.ForeignKey(EvaluatorResultSummary, on_delete=models.CASCADE)
     date = models.DateField()
-    field_values = JSONField(encoder=DjangoJSONEncoder)
+    field_values = JSONField(encoder=DjangoJSONEncoder, null=True)
     source_record = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     acct_num = models.CharField(max_length=30)
 

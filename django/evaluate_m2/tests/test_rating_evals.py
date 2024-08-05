@@ -15,6 +15,11 @@ class RatingEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
 
+        # Create the segment data
+        self.expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
+        ]
 
     def test_eval_11_fcl_with_curr_pmt_rtg_but_amt_past_due(self):
     # Hits when all conditions are met:
@@ -46,22 +51,8 @@ class RatingEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=88,
         # 35: NO-pmt_rating=1, 36: NO-amt_past_due=0
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '89', 'amt_past_due': 5, 'pmt_rating': '0',
-            'compl_cond_cd': '', 'current_bal': 0, 'date_closed': None,
-            'dofd': None, 'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '',
-            'terms_freq': '00', 'acct_type': '', 'port_type': 'A'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '89', 'amt_past_due': 10, 'pmt_rating': '0',
-            'compl_cond_cd': '', 'current_bal': 0, 'date_closed': None,
-            'dofd': None, 'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '',
-            'terms_freq': '00', 'acct_type': '', 'port_type': 'A'
-        }]
 
-        self.assert_evaluator_correct(self.event, 'Rating-APD-1', expected)
+        self.assert_evaluator_correct(self.event, 'Rating-APD-1', self.expected)
 
     def test_eval_11_fcl_with_delinquent_pmt_rtg_but_no_amt_past_due(self):
     # Hits when all conditions are met:
@@ -93,19 +84,5 @@ class RatingEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=88,
         # 35: NO-pmt_rating=F, 36: NO-amt_past_due=0
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '89', 'amt_past_due': 0, 'pmt_rating': '1',
-            'compl_cond_cd': '', 'current_bal': 0, 'date_closed': None,
-            'dofd': None, 'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '',
-            'terms_freq': '00', 'acct_type': '', 'port_type': 'A'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '94', 'amt_past_due': 0, 'pmt_rating': '2',
-            'compl_cond_cd': '', 'current_bal': 0, 'date_closed': None,
-            'dofd': None, 'orig_chg_off_amt': 0, 'smpa': 0, 'spc_com_cd': '',
-            'terms_freq': '00', 'acct_type': '', 'port_type': 'A'
-        }]
 
-        self.assert_evaluator_correct(self.event, 'Rating-APD-2', expected)
+        self.assert_evaluator_correct(self.event, 'Rating-APD-2', self.expected)

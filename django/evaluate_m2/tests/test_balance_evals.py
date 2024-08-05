@@ -63,15 +63,10 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 35: NO-L1.acct_type=00, 36: NO-current_bal=1,
         # 37: NO-l1__change_ind=1, 38: NO-amt_past_due=0
 
-        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type':'3A', 'amt_past_due': 1, 'current_bal': 0, 'port_type': 'I',
-            'l1__change_ind': None,'acct_stat': '', 'date_closed': None, 'spc_com_cd': ''
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type':'13', 'amt_past_due': 5, 'current_bal': 0, 'port_type': 'I',
-            'l1__change_ind': None,'acct_stat': '', 'date_closed': None, 'spc_com_cd': ''
         }]
         self.assert_evaluator_correct(self.event, 'Balance-APD-1', expected)
 
@@ -100,13 +95,10 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-current_bal == amt_past_due
         # 35: NO-current_bal < amt_past_due
 
-        # Create the segment data
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-             'amt_past_due': 5, 'current_bal':0
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'amt_past_due': 10, 'current_bal':5
         }]
         self.assert_evaluator_correct(
             self.event, "Balance-APD-2", expected)
@@ -162,11 +154,7 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'current_bal': 1, 'date_closed': date(2019, 12, 31), 'l1__change_ind': None,
-            'port_type': 'C', 'spc_com_cd': 'AX', 'acct_stat': '', 'amt_past_due': 0
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'current_bal': 5, 'date_closed': date(2019, 12, 31), 'l1__change_ind': None,
-            'port_type': 'M', 'spc_com_cd': 'AU', 'acct_stat': '', 'amt_past_due': 0
         }]
         self.assert_evaluator_correct(self.event, "Balance-DateClosed-1", expected)

@@ -1,26 +1,36 @@
+import { useQueryClient } from '@tanstack/react-query'
 import DownloadModal from 'components/Modals/DownloadModal'
-import { Button } from 'design-system-react'
+import { Button, RadioButton } from 'design-system-react'
+import { Workbook } from 'exceljs'
+import {
+  ACCOUNT_HOLDER_FIELDS,
+  accountHolderQueryOptions
+} from 'models/AccountHolder'
 import type Event from 'pages/Event/Event'
+import { EVENT_FIELDS } from 'pages/Event/Event'
 import type { ReactElement } from 'react'
-import { useState } from 'react'
-import type { AccountRecord, M2_FIELDS } from 'utils/constants'
-import { FIELD_NAMES_LOOKUP } from 'utils/constants'
-import { downloadData, generateDownloadData } from 'utils/utils'
+import { useRef, useState } from 'react'
+import type { AccountRecord } from 'utils/constants'
+import { M2_FIELD_NAMES } from 'utils/constants'
+import { getHeaderName } from 'utils/utils'
 
 interface AccountDownloadInterface {
   rows: AccountRecord[]
-  fields: (typeof M2_FIELDS)[number][]
+  fields: string[]
   accountId: string
   eventData: Event
 }
-
 export default function AccountDownloader({
   rows,
   fields,
   accountId,
   eventData
 }: AccountDownloadInterface): ReactElement {
+  const queryClient = useQueryClient()
+
   const [isOpen, setIsOpen] = useState(false)
+
+  const includeContactInfo = useRef<HTMLInputElement>(null)
 
   const onClose = (): void => {
     setIsOpen(false)
@@ -31,9 +41,69 @@ export default function AccountDownloader({
   }
 
   const onDownload = async (): Promise<void> => {
-    const csv = generateDownloadData<AccountRecord>(fields, rows, FIELD_NAMES_LOOKUP)
+    // create a new Excel workbook
+    const workbook = new Workbook()
+
+    // create a sheet for the account records
+    const accountRecordsSheet = workbook.addWorksheet('Account records', {
+      views: [{ state: 'frozen', xSplit: 1, ySplit: 1 }]
+    })
+    // add columns for each account record field
+    // 'fields' is a subset of M2_FIELD_NAMES, excluding 'cons_acct_num'
+    accountRecordsSheet.columns = fields.map(field => ({
+      key: field,
+      header: getHeaderName(field, M2_FIELD_NAMES)
+    }))
+    // create a row in the sheet for each record
+    accountRecordsSheet.addRows(rows)
+
+    // include account holder contact info only if user has selected that option
+    if (includeContactInfo.current?.checked) {
+      // add a sheet for the account holder data
+      const accountHolderSheet = workbook.addWorksheet('Account holder information')
+      // get account holder data
+      const data = await queryClient.fetchQuery(
+        accountHolderQueryOptions(eventData.id, accountId)
+      )
+      // add columns for each of the account holder fields
+      accountHolderSheet.columns = Array.from(
+        ACCOUNT_HOLDER_FIELDS,
+        ([key, header]) => ({ key, header })
+      )
+      // add a row with the account holder data
+      accountHolderSheet.addRow(data)
+    }
+
+    // Add a sheet for event data
+    const eventSheet = workbook.addWorksheet('Event information')
+    // add columns for each of the event fields
+    eventSheet.columns = Array.from(EVENT_FIELDS, ([key, header]) => ({
+      key,
+      header
+    }))
+    // add a row with the event holder data
+    eventSheet.addRow(eventData)
+
+    const buffer = await workbook.xlsx.writeBuffer()
     try {
-      await downloadData(csv, `${eventData.name}_${accountId}.csv`)
+      const handle = await showSaveFilePicker({
+        suggestedName: `${eventData.name}_${accountId}.xlsx`,
+        // @ts-expect-error Typescript doesn't handle File System API well
+        startIn: 'downloads',
+        types: [
+          {
+            description: 'Excel',
+            accept: {
+              'text/xlsx': ['.xlsx']
+            }
+          }
+        ]
+      })
+      const writable = await handle.createWritable()
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      await writable.write(buffer)
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      writable.close()
       setIsOpen(false)
     } catch {
       // TODO determine if we need to handle errors
@@ -42,11 +112,34 @@ export default function AccountDownloader({
   }
 
   const header = (
-    <p>
-      <b>Note: </b>Choosing to download a CSV will create a file that contains all
-      data for account {accountId} for the given date range. This file will contain
-      both PII and CI.
-    </p>
+    <>
+      <p>
+        <b>Note: </b>Choosing to download account data will create a file that
+        contains all data for account {accountId} for the given date range. This file
+        will contain both PII and CI.
+      </p>
+      <fieldset className='o-form_fieldset block block__sub'>
+        <legend className='h4'>Choose download options:</legend>
+        <RadioButton
+          id='include'
+          name='contact-info-download'
+          label='Include latest contact information for account holder'
+          labelClassName=''
+          labelInline
+          isLarge
+          inputRef={includeContactInfo}
+        />
+        <RadioButton
+          id='exclude'
+          name='contact-info-download'
+          label='Do not include account holder contact information'
+          labelClassName=''
+          labelInline
+          defaultChecked
+          isLarge
+        />
+      </fieldset>
+    </>
   )
 
   return (
@@ -63,6 +156,7 @@ export default function AccountDownloader({
         onClose={onClose}
         onDownload={onDownload}
         header={header}
+        title='Download account data'
       />
     </div>
   )

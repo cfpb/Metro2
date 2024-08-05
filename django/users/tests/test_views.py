@@ -4,8 +4,10 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 
+
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
+from parse_m2.initiate_post_parsing import post_parse
 from users.views import users_view
 
 
@@ -27,6 +29,7 @@ class TestUsersView(TestCase):
             { 'id': 33, 'activity_date': date(2019, 10, 31), 'cons_acct_num': '0033', },
             { 'id': 34, 'activity_date': date(2019, 11, 30), 'cons_acct_num': '0034', },
             { 'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035', }]]
+        post_parse(event)  # Ensure the event record has the date range saved
 
         e2 = Metro2Event.objects.create(id=2, name='test_exam2', eid_or_matter_num='887-656565',
                                    portfolio="credit cards", other_descriptor="2025")
@@ -38,13 +41,13 @@ class TestUsersView(TestCase):
             'username': 'examiner',
             'assigned_events': [
                 {
+                    'id': 2, 'name': 'test_exam2', 'portfolio': 'credit cards',
+                    'eid_or_matter_num': '887-656565', 'other_descriptor': '2025',
+                    'date_range_start': None, 'date_range_end': None
+                }, {
                     'id': 1, 'name': 'test_exam', 'portfolio': '',
                     'eid_or_matter_num': '', 'other_descriptor': '',
                     'date_range_start': '2019-07-31', 'date_range_end': '2019-12-31',
-                }, {
-                     'id': 2, 'name': 'test_exam2', 'portfolio': 'credit cards',
-                     'eid_or_matter_num': '887-656565', 'other_descriptor': '2025',
-                     'date_range_start': None, 'date_range_end': None
                 }]}
 
         response = self.client.get('/api/users/1/')

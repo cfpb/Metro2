@@ -21,6 +21,9 @@ class Metro2Event(models.Model):
     other_descriptor = models.CharField(max_length=300, blank=True)
     directory = models.CharField(max_length=300, blank=True)
     members = models.ManyToManyField(User, blank=True)
+    date_range_start = models.DateField(null=True)
+    date_range_end = models.DateField(null=True)
+
 
     def __str__(self) -> str:
         return self.name
@@ -32,22 +35,6 @@ class Metro2Event(models.Model):
     def account_activity_date_range(self) -> dict:
         activity = self.get_all_account_activity()
         return get_activity_date_range(activity)
-
-    def date_range_start(self) -> date:
-        """
-        Return the earliest date contained in the activity date field
-        in the data set for this event. If this event has no AccountActivity
-        records, return None.
-        """
-        return self.account_activity_date_range()['earliest']
-
-    def date_range_end(self) -> date:
-        """
-        Return the latest date contained in the activity date field
-        in the data set for this event. If this event has no AccountActivity
-        records, return None.
-        """
-        return self.account_activity_date_range()['latest']
 
     def evaluate(self):
         call_command('run_evaluators', event_id=self.id)
@@ -73,6 +60,7 @@ class M2DataFile(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     parsing_status = models.CharField(max_length=200, default="Not started")
     error_message = models.CharField(max_length=2000, blank=True)
+    parser_version = models.CharField(max_length=200, blank=True)
 
     def __str__(self) -> str:
         return self.file_name
@@ -182,6 +170,7 @@ class AccountActivity(models.Model):
         return f"AccountActivity {self.id} (File ID: {self.account_holder.data_file.id})"
 
     account_holder = models.OneToOneField(AccountHolder, on_delete=models.CASCADE)
+    previous_values = models.OneToOneField("AccountActivity", on_delete=models.DO_NOTHING, null=True, blank=True)
     activity_date = models.DateField()
     cons_acct_num = models.CharField(max_length=200)
     port_type = models.CharField(max_length=200)

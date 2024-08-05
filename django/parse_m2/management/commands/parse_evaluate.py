@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from evaluate_m2.evaluate import evaluator
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
+from parse_m2.initiate_post_parsing import post_parse
 from parse_m2.models import Metro2Event, M2DataFile
 from evaluate_m2.models import EvaluatorResultSummary
 
@@ -58,7 +59,8 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(f"Finished parsing data for event: {event.name}.")
         )
-
+        self.stdout.write(f"Beginning post parsing process for event: {event.name}.")
+        post_parse(event)
         # Run the evaluators
         self.stdout.write(f"Beginning evaluators for event: {event.name}...")
         evaluator.run_evaluators(event)

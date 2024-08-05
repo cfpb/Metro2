@@ -46,17 +46,10 @@ class DeferredEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 35: NO-terms_freq=P, 36: NO-smpa=0,
 
         # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '11', 'smpa': 5, 'terms_freq': 'D',  'amt_past_due': 0,
-            'compl_cond_cd': '', 'current_bal': 0, 'date_closed': None, 'dofd': None,
-            'orig_chg_off_amt': 0
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '71', 'smpa': 10, 'terms_freq': 'D', 'amt_past_due': 0,
-            'compl_cond_cd': '', 'current_bal': 0, 'date_closed': None, 'dofd': None,
-            'orig_chg_off_amt': 0
-        }]
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
+        ]
 
         self.assert_evaluator_correct(
             self.event, 'Deferred-SMPA-1', expected)

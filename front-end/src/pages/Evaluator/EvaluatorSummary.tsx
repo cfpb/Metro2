@@ -1,6 +1,7 @@
 import DefinitionList from 'components/DefinitionList/DefinitionList'
 import { Expandable, ExpandableGroup } from 'design-system-react'
 import type User from 'models/User'
+import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { formatDate, formatLongDescription, formatNumber } from '../../utils/utils'
 import type EvaluatorMetadata from './Evaluator'
@@ -8,6 +9,7 @@ import type EvaluatorMetadata from './Evaluator'
 interface EvaluatorSummaryProperties {
   metadata: EvaluatorMetadata
   user: User
+  event: Event
 }
 
 const adminUrlPrefix = import.meta.env.DEV ? 'http://localhost:8000' : ''
@@ -41,10 +43,19 @@ const sortExplanatoryFields = (
 
 export default function EvaluatorSummary({
   metadata,
-  user
+  user,
+  event
 }: EvaluatorSummaryProperties): ReactElement {
   const summaryItems = [
-    // { term: 'Data from', definition: '' },
+    {
+      term: 'Data from',
+      definition:
+        event.date_range_start && event.date_range_end
+          ? `${formatDate(event.date_range_start)} - ${formatDate(
+              event.date_range_end
+            )}`
+          : ''
+    },
     {
       term: 'Duration of inconsistency',
       definition:

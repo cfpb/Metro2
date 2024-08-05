@@ -15,9 +15,12 @@ class ParserTestCase(TestCase):
         self.header_seg = os.path.join('parse_m2', 'tests','sample_files', 'header_segment_1.txt')
         self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')
         self.tiny_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small.txt')
+        self.missing_header = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small_no_header.txt')
         self.error_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small_with_error.txt')
 
         self.extras_str = "K1ORIGNALCREDITORNAME           03K22SOLDTONAME                     L12NEWACCTNUMBER                                      "
+
+        self.j1_seg = "J1 SURNAMEJ1                FIRSTNAMEJ1         MIDDLENAMEJ1        S3332244440411200120255598765   "
 
         event = Metro2Event(name='test_exam')
         event.save()
@@ -51,6 +54,18 @@ class ParserTestCase(TestCase):
             self.assertEqual(K3.objects.count(), 0)
             self.assertEqual(K4.objects.count(), 0)
             self.assertEqual(N1.objects.count(), 0)
+
+    def test_parse_file_without_header_line(self):
+        file_size = os.path.getsize(self.missing_header)
+        with open(self.missing_header, mode='r') as filestream:
+            self.parser.parse_file_contents(filestream, file_size)
+
+            # Because the file is missing a header, the parser
+            # uses the DOAI value as the activity_date
+            for aa in AccountActivity.objects.all():
+                doai = aa.doai
+                self.assertEqual(doai, aa.activity_date)
+                self.assertEqual(doai, aa.account_holder.activity_date)
 
     def test_aggregate_fields(self):
         # Test the whole parsing process for a file
@@ -134,6 +149,21 @@ class ParserTestCase(TestCase):
         self.assertNotIn("k4", result)
         self.assertNotIn("n1", result)
 
+    def test_j1_aggregated_segments_cons_info_ind_empty_string(self):
+        records = {
+            "AccountActivity": self.account_activity,
+            "cons_info_ind_assoc": [],
+            "ecoa_assoc": []}
+        result = self.parser.parse_extra_segments(self.j1_seg, records)
+        self.assertNotIn("k1", result)
+        self.assertNotIn("k2", result)
+        self.assertEqual(result["j1"][0].cons_info_ind, "")
+        self.assertEqual(result["j1"][0].ecoa, "5")
+        self.assertEqual(result["cons_info_ind_assoc"], [])
+        self.assertEqual(result["ecoa_assoc"], ['5'])
+        self.assertNotIn("k4", result)
+        self.assertNotIn("n1", result)
+
     def test_no_extra_segments_exist(self):
         records = {"AccountActivity": self.account_activity}
         result = self.parser.parse_extra_segments("", records)
@@ -174,12 +204,12 @@ class ParserTestCase(TestCase):
     def test_header_with_malformed_activity_date(self):
         # 99-99-2023 is not a valid date
         bad_str = "xxxxHEADERxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx99992023xxxxxxxxxxxx"
-        with self.assertRaises(parse_utils.UnreadableLineException):
+        with self.assertRaises(parse_utils.UnreadableFileException):
             self.parser.get_activity_date_from_header(bad_str)
 
     def test_header_too_short(self):
         bad_str = "xxxxHEADER with insufficient characters"
-        with self.assertRaises(parse_utils.UnreadableLineException):
+        with self.assertRaises(parse_utils.UnreadableFileException):
             self.parser.get_activity_date_from_header(bad_str)
 
     def test_get_activity_date_from_header(self):
@@ -189,18 +219,19 @@ class ParserTestCase(TestCase):
             self.assertEqual(activity_date, datetime(2023, 12, 31, 0, 0))
 
     def test_parser_saves_header_as_unparseable(self):
+        # First line of bad_header_file matches the header format, but doesn't
+        # have a valid activity_date
         bad_header_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_bad_header.txt')
         file_size = os.path.getsize(bad_header_file)
 
-        # First line of bad_header_file doesn't match the header format
         with open(bad_header_file, mode='r') as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
             # The file record should show that the parsing failed
             file = self.parser.file_record
             self.assertEqual(file.parsing_status, "Not parsed")
-            self.assertIn("isn't a header", file.error_message)
-            self.assertIn("BADHEADER", file.error_message)
+            self.assertIn("activity_date couldn't be parsed", file.error_message)
+            self.assertIn("HEADERWRONG", file.error_message)
 
             # Everything else should be empty
             self.assertEqual(UnparseableData.objects.count(), 0)

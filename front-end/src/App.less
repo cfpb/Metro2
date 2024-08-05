@@ -29,6 +29,20 @@ body,
   flex-direction: column;
 }
 
+// remove extra padding from nav header and align nav-items
+.m2-nav .navbar {
+  padding: 0;
+
+  .h4 {
+    .respond-to-min(@bp-med-min, {
+      margin-bottom: 0;
+    });
+
+    min-width: fit-content;
+  }
+  
+}
+
 // Metro 2 header is a link but doesn't need link styling
 header h2 a {
   color: black !important;

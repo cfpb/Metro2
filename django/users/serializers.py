@@ -13,8 +13,8 @@ class UserViewSerializer(serializers.ModelSerializer):
         model = User
         fields = ['is_admin','username', 'assigned_events']
 
-    def get_assigned_events(self, obj):
-        events = obj.metro2event_set.all()
+    def get_assigned_events(self, obj: User):
+        events = obj.metro2event_set.order_by('-id')
         eventSerializer = Metro2EventSerializer(events, many=True)
         return eventSerializer.data
 

@@ -7,6 +7,7 @@ RUN apk update --no-cache && \
     apk add libpq && \
     apk add --virtual .build-deps gcc python3-dev musl-dev && \
     apk add --no-cache bash && \
+    apk add libffi-dev && \
     pip install --upgrade pip 
 
 # Ensure that the environment uses UTF-8 encoding by default

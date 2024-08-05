@@ -118,6 +118,8 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
                 "Type-APD-2",
             ],
             "activity_date": "11/30/2023",
+            "account_holder__surname": "",
+            "account_holder__first_name": "",
             "port_type": "I",
             "acct_type": "00",
             "date_open": "1/30/2018",
@@ -140,13 +142,16 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
             "date_closed": "",
             "dolp": "",
             "int_type_ind": "",
-            "cons_info_ind": "",
-            "ecoa": "2",
-            "cons_info_ind_assoc": ["1A", "B"],
-            "ecoa_assoc": ["2", "2", "2", "2"],
-            "purch_sold_ind": null,
-            "balloon_pmt_amt": 11854,
-            "change_ind": "2"
+            "account_holder__cons_info_ind": "",
+            "account_holder__ecoa": "2",
+            "account_holder__cons_info_ind_assoc": ["1A", "B"],
+            "account_holder__ecoa_assoc": ["2", "2", "2", "2"],
+            "k2__purch_sold_ind": null,
+            "k2__purch_sold_name": "",
+            "k4__balloon_pmt_amt": 11854,
+            "l1__change_ind": "2",
+            "l1__new_id_num": "0032",
+            "l1__new_acc_num": "32",
         },
         # ...etc.
     ]
@@ -195,6 +200,12 @@ GET - returns a JSON information about an event, including its name and all eval
 {
     "id": 1,
     "name": "Hyundai2025",
+    "portfolio": "credit cards",
+    "eid_or_matter_num": "123-456789",
+    "other_descriptor": "",
+    "directory": "Enforcement/Huyndai2025",
+    "date_range_start": "2023-11-30",
+    "date_range_end": "2023-12-31",
     "evaluators": [
         {
             "hits": 4209,
