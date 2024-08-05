@@ -127,7 +127,7 @@ def account_summary_view(request, event_id, account_number):
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
         event_activities=get_list_or_404(event.get_all_account_activity().filter(
-            cons_acct_num=account_number))
+            cons_acct_num=account_number).order_by('activity_date'))
         if not event_activities:
             raise Http404()
         activities_serializer = AccountActivitySerializer(event_activities, many=True)
