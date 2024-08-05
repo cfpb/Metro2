@@ -15,9 +15,6 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     ########################################
     # Methods for creating test data
     def setUp(self) -> None:
-        self.event = None
-        self.data_file = None
-        self.prev_file = None
         self.stat_dofd_1 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-1',
             description='description of Status-DOFD-1',
@@ -80,7 +77,6 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             other_descriptor='',date_range_start='2023-11-30',
             date_range_end='2023-12-31')
         self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
-
 
         # Create the Account Activities data
         acct_date=date(2023, 12, 31)
@@ -197,7 +193,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # the response should a hits field with a list of EvaluatorResult field_values
+        # the response should return a hits field with a list of EvaluatorResult
+        # field_values
         # There should be two hits. Each one should have a set of keys that matches
         # the fields in evaluator.result_summary_fields
         hits = response.json()['hits']
@@ -259,15 +256,15 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(response.json(), expected)
 
-    def test_account_summary_view_account_activity_sorted_by_activity_date(self):
+    def test_account_summary_view_multiple_results(self):
         self.create_activity_data()
-        self.prev_file = M2DataFile.objects.create(event=self.event, file_name='prev.txt')
-                # Create the Previous Account Activities data
+
+        # Create the Previous Account Activities data
+        prev_file = M2DataFile.objects.create(event=self.event, file_name='prev.txt')
         prev_date=date(2023, 11, 30)
-        acct_record(self.prev_file, {
+        acct_record(prev_file, {
                 'id': 22, 'activity_date': prev_date, 'cons_acct_num': '0032',
                 'acct_stat':'00', 'pmt_rating':'0', 'amt_past_due': 0, 'surname':'Doe',
                 'cons_info_ind': 'A', 'first_name': 'Jane', 'ecoa_assoc': ['2', '1'],'cons_info_ind_assoc':['1A', 'B']
@@ -286,24 +283,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # the response should a hits field with a list of EvaluatorResult field_values
-        self.assertEqual(response.json(), expected)
-
-    def test_account_summary_view_multiple_results(self):
-        self.create_activity_data()
-        inconsistencies = ['Status-DOFD-1', 'Status-DOFD-4']
-        expected = {
-            'cons_acct_num': '0032',
-            'inconsistencies': inconsistencies,
-            'account_activity': [self.get_account_activity(32, inconsistencies, 'Z', '', 'Jane')]
-        }
-        response = self.client.get('/api/events/1/account/0032/')
-
-        # the response should be a JSON
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.headers['Content-Type'], 'application/json')
-
-        # the response should a hits field with a list of EvaluatorResult field_values
+        # the response should include an account_activity field as a list of
+        # account activities sorted by the actvity_date
         self.assertEqual(response.json(), expected)
 
     def test_account_summary_view_no_accountactivity_for_event(self):
@@ -334,13 +315,12 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # the response should a hits field with a list of EvaluatorResult field_values
         self.assertEqual(response.json(), expected)
 
     ########################################
     # Tests for Events view API endpoint (landing page)
     def test_events_view(self):
-        self.create_activity_data()
+        self.create_activity_data(create_zero_hit=True)
         expected = {
             'id': 1,
             'name': 'test_exam',
@@ -394,58 +374,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
         self.assertEqual(len(response.json()['evaluators']), 3)
-        self.assertEqual(response.json(), expected)
 
-    def test_events_view_does_not_return_no_hits(self):
-        self.create_activity_data(create_zero_hit=True)
-        expected = {
-            'id': 1,
-            'name': 'test_exam',
-            'portfolio': 'credit cards',
-            'eid_or_matter_num': '123-456789',
-            'other_descriptor': '',
-            'directory': 'Enforcement/Huyndai2025',
-            'date_range_start': '2023-11-30',
-            'date_range_end': '2023-12-31',
-            'evaluators': [{
-                'hits': 2,
-                'accounts_affected': 1,
-                'inconsistency_start': '2023-12-31',
-                'inconsistency_end': '2023-12-31',
-                'id': 'Status-DOFD-1',
-                'description': 'description of Status-DOFD-1', 'long_description': '',
-                'fields_used': ['acct_stat', 'dofd'],
-                'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa',],
-                'crrg_reference': '', 'potential_harm': '',
-                'rationale': '', 'alternate_explanation': '',
-            }, {
-                'hits': 1,
-                'accounts_affected': 1,
-                'inconsistency_start': '2023-12-31',
-                'inconsistency_end': '2023-12-31',
-                'id': 'Status-DOFD-4',
-                'description': 'description for a third status-dofd eval',
-                'long_description': '',
-                'fields_used': ['smpa'],
-                'fields_display': ['orig_chg_off_amt', 'terms_freq'],
-                'crrg_reference': '410', 'potential_harm': '',
-                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
-            }, {
-                'hits': 25,
-                'accounts_affected': 1,
-                'inconsistency_start': '2023-12-31',
-                'inconsistency_end': '2023-12-31',
-                'id': 'Status-DOFD-6',
-                'description': 'description for a fourth status-dofd eval', 'long_description': '',
-                'fields_used': ['smpa'],
-                'fields_display': ['orig_chg_off_amt', 'terms_freq'],
-                'crrg_reference': '410',
-                'potential_harm': '',
-                'rationale': '',
-                'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
-        }]}
-
-        response = self.client.get('/api/events/1/')
-
-        # does not return Status-DOFD-2 because it has zero hits
+        # the response should include the evaluator field as a list sorted by the id,
+        # evaluators with a hits field greater than 0 will be returned
         self.assertEqual(response.json(), expected)
