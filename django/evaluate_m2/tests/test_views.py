@@ -8,7 +8,7 @@ from evaluate_m2.models import (
 )
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper, acct_record
-from parse_m2.models import AccountHolder, M2DataFile, Metro2Event
+from parse_m2.models import M2DataFile, Metro2Event
 
 
 class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
@@ -17,6 +17,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self) -> None:
         self.event = None
         self.data_file = None
+        self.prev_file = None
         self.stat_dofd_1 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-1',
             description='description of Status-DOFD-1',
@@ -53,23 +54,23 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         )
 
     def get_account_activity(
-        self, id: int, inconsistencies: list[str], cons_info_ind: str, ecoa: str, first_name: str):
-        return [{ 'id': id, 'inconsistencies': inconsistencies,
-                 'activity_date': '2019-12-31', 'account_holder__surname': 'Doe',
-                 'account_holder__first_name': first_name, 'port_type': 'X',
-                 'acct_type': '00', 'date_open': '2020-01-01', 'credit_limit': 0,
-                 'hcola': 0, 'id_num': '', 'terms_dur': '0', 'terms_freq': '0',
+        self, id: int, inconsistencies: list[str], cons_info_ind: str, ecoa: str, first_name: str, activity_date: str = '2023-12-31'):
+        return { 'id': id, 'inconsistencies': inconsistencies,
+                 'activity_date': activity_date, 'account_holder__surname': 'Doe',
+                 'account_holder__first_name': first_name, 'port_type': 'A',
+                 'acct_type': '', 'date_open': '2018-02-28', 'credit_limit': 0,
+                 'hcola': 0, 'id_num': '', 'terms_dur': '00', 'terms_freq': '00',
                  'smpa': 0, 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0',
-                 'php': 'X', 'spc_com_cd': 'X', 'compl_cond_cd': '0', 'current_bal': 0,
-                 'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2020-01-01',
-                 'dofd': '2020-01-01', 'date_closed': '2020-01-01', 'dolp': None,
+                 'php': '', 'spc_com_cd': '', 'compl_cond_cd': '', 'current_bal': 0,
+                 'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2022-05-01',
+                 'dofd': None, 'date_closed': None, 'dolp': None,
                  'int_type_ind': '', 'account_holder__cons_info_ind': cons_info_ind,
                  'account_holder__ecoa': ecoa,
                  'account_holder__cons_info_ind_assoc': ['1A', 'B'],
                  'account_holder__ecoa_assoc': ['2', '1'],
                  'k2__purch_sold_ind': None, 'k2__purch_sold_name': None,
                  'k4__balloon_pmt_amt': None, 'l1__change_ind': None,
-                 'l1__new_id_num': None, 'l1__new_acc_num': None}]
+                 'l1__new_id_num': None, 'l1__new_acc_num': None}
 
     def create_activity_data(self, create_zero_hit:bool=False):
         # Create the parent records for the AccountActivity data
@@ -80,26 +81,27 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             date_range_end='2023-12-31')
         self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
 
-        # Create the Account Holders
-        AccountHolder.objects.create(id=1, data_file=self.data_file,
-            activity_date=date(2023, 11, 30), surname='Doe', first_name='Jane',
-            middle_name='A', gen_code='F', ssn='012345678', dob='01012000',
-            phone_num='0123456789', ecoa='0', cons_info_ind='Z', cons_acct_num='012345',
-            cons_info_ind_assoc=['1A', 'B'], ecoa_assoc=['2', '1'])
-        AccountHolder.objects.create(id=2, data_file=self.data_file,
-            activity_date=date(2023, 11, 30), surname='Doe', first_name='John',
-            cons_info_ind='Y', cons_acct_num='012345', cons_info_ind_assoc=['1A', 'B'],
-            ecoa_assoc=['2', '1'])
 
         # Create the Account Activities data
-        values = {'id':(32,33), 'account_holder':('Z','Y'),
-                      'cons_acct_num':('0032', '0033')}
-        acct_actvities = self.create_bulk_activities(self.data_file, values, 2)
+        acct_date=date(2023, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'00', 'pmt_rating':'0', 'amt_past_due': 0, 'surname':'Doe',
+                'cons_info_ind': 'Z', 'first_name': 'Jane', 'ecoa_assoc': ['2', '1'],'cons_info_ind_assoc':['1A', 'B']
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'00', 'pmt_rating':'0', 'amt_past_due': 0, 'surname':'Doe',
+                'cons_info_ind': 'Y', 'first_name': 'John', 'ecoa_assoc': ['2', '1'],'cons_info_ind_assoc':['1A', 'B']
+            }]
+        acct_actvities = []
+        for item in activities:
+            acct_actvities.append(acct_record(self.data_file, item))
 
         # Result records for Status-DOFD-1
         eval_rs = EvaluatorResultSummary.objects.create(
             event=self.event, evaluator=self.stat_dofd_1, hits=2, accounts_affected=1,
-            inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
+            inconsistency_start=acct_date, inconsistency_end=acct_date)
         EvaluatorResult.objects.create(result_summary=eval_rs, date=date(2021, 1, 1),
             source_record= acct_actvities[0], acct_num='0032', field_values={
                 'record': 1, 'acct_type': 'y'
@@ -112,20 +114,20 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         # Result records for Status-DOFD-4
         eval_rs2 = EvaluatorResultSummary.objects.create(
             event=self.event, evaluator=self.stat_dofd_4, hits=1, accounts_affected=1,
-            inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
+            inconsistency_start=acct_date, inconsistency_end=acct_date)
         EvaluatorResult.objects.create(result_summary=eval_rs2, date=date(2021, 1, 1),
             source_record= acct_actvities[0], acct_num='0032', field_values={})
 
         # EvaluatorResultSummary for Status-DOFD-6
         self.eval_rs3 = EvaluatorResultSummary.objects.create(
             event=self.event, evaluator=self.stat_dofd_6, hits=25, accounts_affected=1,
-            inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
+            inconsistency_start=acct_date, inconsistency_end=acct_date)
 
         if create_zero_hit:
         # EvaluatorResultSummary for Status-DOFD-2
             self.eval_rs2 = EvaluatorResultSummary.objects.create(
                 event=self.event, evaluator=self.stat_dofd_2, hits=0, accounts_affected=0,
-                inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
+                inconsistency_start=acct_date, inconsistency_end=acct_date)
 
 
     ########################################
@@ -180,13 +182,13 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         # along with the fields that are always returned:
         #     id, activity_date, cons_acct_num
         expected = [{
-            'id': 32, 'activity_date': '2019-12-31', 'cons_acct_num': '0032',
-            'acct_stat': '00', 'dofd': '2020-01-01', 'amt_past_due': 0,
-            'compl_cond_cd': '0', 'smpa': 0
+            'id': 32, 'activity_date': '2023-12-31', 'cons_acct_num': '0032',
+            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
+            'compl_cond_cd': '', 'smpa': 0
         }, {
-            'id': 33, 'activity_date': '2019-12-31', 'cons_acct_num': '0033',
-            'acct_stat': '00', 'dofd': '2020-01-01', 'amt_past_due': 0,
-            'compl_cond_cd': '0', 'smpa': 0
+            'id': 33, 'activity_date': '2023-12-31', 'cons_acct_num': '0033',
+            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
+            'compl_cond_cd': '', 'smpa': 0
         },]
 
         self.create_activity_data()
@@ -249,9 +251,36 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         expected = {
             'cons_acct_num': '0033',
             'inconsistencies': inconsistencies,
-            'account_activity': self.get_account_activity(33, inconsistencies, 'Y', '', 'John')
+            'account_activity': [self.get_account_activity(33, inconsistencies, 'Y', '', 'John')]
         }
         response = self.client.get('/api/events/1/account/0033/')
+
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        # the response should a hits field with a list of EvaluatorResult field_values
+        self.assertEqual(response.json(), expected)
+
+    def test_account_summary_view_account_activity_sorted_by_activity_date(self):
+        self.create_activity_data()
+        self.prev_file = M2DataFile.objects.create(event=self.event, file_name='prev.txt')
+                # Create the Previous Account Activities data
+        prev_date=date(2023, 11, 30)
+        acct_record(self.prev_file, {
+                'id': 22, 'activity_date': prev_date, 'cons_acct_num': '0032',
+                'acct_stat':'00', 'pmt_rating':'0', 'amt_past_due': 0, 'surname':'Doe',
+                'cons_info_ind': 'A', 'first_name': 'Jane', 'ecoa_assoc': ['2', '1'],'cons_info_ind_assoc':['1A', 'B']
+        })
+        inconsistencies = ['Status-DOFD-1', 'Status-DOFD-4']
+        expected = {
+            'cons_acct_num': '0032',
+            'inconsistencies': inconsistencies,
+            'account_activity': [
+                self.get_account_activity(22, [], 'A', '', 'Jane', '2023-11-30'),
+                self.get_account_activity(32, inconsistencies, 'Z', '', 'Jane')]
+        }
+        response = self.client.get('/api/events/1/account/0032/')
 
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
@@ -265,8 +294,8 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         inconsistencies = ['Status-DOFD-1', 'Status-DOFD-4']
         expected = {
             'cons_acct_num': '0032',
-            'inconsistencies': ['Status-DOFD-1', 'Status-DOFD-4'],
-            'account_activity': self.get_account_activity(32, inconsistencies, 'Z', '0', 'Jane')
+            'inconsistencies': inconsistencies,
+            'account_activity': [self.get_account_activity(32, inconsistencies, 'Z', '', 'Jane')]
         }
         response = self.client.get('/api/events/1/account/0032/')
 
@@ -292,14 +321,14 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
     # Tests for Account PII view API endpoint
     def test_account_pii_view(self):
         self.create_activity_data()
-        expected = {'id': 1, 'surname': 'Doe', 'first_name': 'Jane', 'middle_name': 'A',
-                    'gen_code': 'F', 'ssn': '012345678', 'dob': '01012000',
-                    'phone_num': '0123456789', 'ecoa': '0', 'cons_info_ind': 'Z',
+        expected = {'id': 2, 'surname': 'Doe', 'first_name': 'John', 'middle_name': '',
+                    'gen_code': '', 'ssn': '', 'dob': '',
+                    'phone_num': '', 'ecoa': '', 'cons_info_ind': 'Y',
                     'country_cd': '', 'addr_line_1': '', 'addr_line_2': '', 'city': '',
                     'state': '', 'zip': '', 'addr_ind': '', 'res_cd': '',
-                    'cons_acct_num': '012345'}
+                    'cons_acct_num': '0033'}
 
-        response = self.client.get('/api/events/1/account/012345/account_holder/')
+        response = self.client.get('/api/events/1/account/0033/account_holder/')
         # the response should be a JSON
 
         self.assertEqual(response.status_code, 200)
