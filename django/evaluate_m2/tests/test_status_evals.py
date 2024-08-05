@@ -1185,7 +1185,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             }, {
                 'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
                 'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'XA',
-                'port_type':'M', 'pmt_rating':'1', 'dofd':date(2019, 12, 31)
+                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
             }, {
                 'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
                 'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
