@@ -16,6 +16,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
 
+    ############################
+    # Tests for the category Status evaluators
     def test_eval_status_apd_1(self):
     # Hits when all conditions are met:
     # 1. acct_stat == '71','78','80','82','83','84','93','97'
@@ -1143,6 +1145,67 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         }]
         self.assert_evaluator_correct(
             self.event, 'Status-DOFD-6', expected)
+
+    def test_eval_status_dofd_7(self):
+    # Hits when all conditions are met:
+    # 1. acct_type == '19','25','2C'
+    # 2. acct_stat == '88','89'
+    # 3. pmt_rating == '0'
+    # 4. port_type == 'M'
+    # 5. compl_cond_cd != 'XA'
+    # 6. dofd != None
+        # Create previous Account Activities data
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_type':'19', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_type':'25', 'acct_stat':'89', 'compl_cond_cd':'B',
+                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_type':'00', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_type':'19', 'acct_stat':'99', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'1', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'0', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'XA',
+                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
+                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
+                'port_type':'M', 'pmt_rating':'0', 'dofd':None
+            }]
+        for i in range(0, len(activities)):
+            acct_record(self.data_file, activities[i])
+        # 32: HIT, 33: HIT, 34: NO-acct_type=00,
+        # 35: NO-acct_stat=99, 36: NO-pmt_rating=1
+        # 37: NO-port_type=0, 38: NO-compl_cond_cd=XA
+        # 39: NO-dofd=None
+
+        # Create the segment data
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
+        ]
+
+        self.assert_evaluator_correct(
+            self.event, 'Status-DOFD-7', expected)
 
     def test_eval_status_smpa_1(self):
     # Hits when all conditions are met:
