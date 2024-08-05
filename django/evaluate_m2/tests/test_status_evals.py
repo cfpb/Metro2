@@ -1189,7 +1189,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             }, {
                 'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
                 'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
-                'port_type':'M', 'pmt_rating':'1', 'dofd':None
+                'port_type':'M', 'pmt_rating':'0', 'dofd':None
             }]
         for i in range(0, len(activities)):
             acct_record(self.data_file, activities[i])
