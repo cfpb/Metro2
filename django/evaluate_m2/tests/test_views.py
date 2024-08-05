@@ -24,7 +24,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
             fields_used=['placeholder', 'dofd'],
             fields_display=['amt_past_due', 'compl_cond_cd', 'smpa',],
         )
-        self.eval2 = EvaluatorMetadata.objects.create(
+        self.stat_dofd_2 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-2',
             description='description for the other status-dofd eval',
             long_description='',
@@ -71,7 +71,7 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                  'k4__balloon_pmt_amt': None, 'l1__change_ind': None,
                  'l1__new_id_num': None, 'l1__new_acc_num': None}]
 
-    def create_activity_data(self):
+    def create_activity_data(self, create_zero_hit:bool=False):
         # Create the parent records for the AccountActivity data
         self.event = Metro2Event.objects.create(
             id=1, name='test_exam', portfolio='credit cards',
@@ -120,6 +120,12 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         self.eval_rs3 = EvaluatorResultSummary.objects.create(
             event=self.event, evaluator=self.stat_dofd_6, hits=25, accounts_affected=1,
             inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
+
+        if create_zero_hit:
+        # EvaluatorResultSummary for Status-DOFD-2
+            self.eval_rs2 = EvaluatorResultSummary.objects.create(
+                event=self.event, evaluator=self.stat_dofd_2, hits=0, accounts_affected=0,
+                inconsistency_start=date(2023, 12, 31),inconsistency_end=date(2023, 12, 31))
 
 
     ########################################
@@ -353,11 +359,64 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
                 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
         }]}
 
-
         response = self.client.get('/api/events/1/')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
         self.assertEqual(len(response.json()['evaluators']), 3)
+        self.assertEqual(response.json(), expected)
+
+    def test_events_view_does_not_return_no_hits(self):
+        self.create_activity_data(create_zero_hit=True)
+        expected = {
+            'id': 1,
+            'name': 'test_exam',
+            'portfolio': 'credit cards',
+            'eid_or_matter_num': '123-456789',
+            'other_descriptor': '',
+            'directory': 'Enforcement/Huyndai2025',
+            'date_range_start': '2023-11-30',
+            'date_range_end': '2023-12-31',
+            'evaluators': [{
+                'hits': 2,
+                'accounts_affected': 1,
+                'inconsistency_start': '2023-12-31',
+                'inconsistency_end': '2023-12-31',
+                'id': 'Status-DOFD-1',
+                'description': 'description of Status-DOFD-1', 'long_description': '',
+                'fields_used': ['acct_stat', 'dofd'],
+                'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa',],
+                'crrg_reference': '', 'potential_harm': '',
+                'rationale': '', 'alternate_explanation': '',
+            }, {
+                'hits': 1,
+                'accounts_affected': 1,
+                'inconsistency_start': '2023-12-31',
+                'inconsistency_end': '2023-12-31',
+                'id': 'Status-DOFD-4',
+                'description': 'description for a third status-dofd eval',
+                'long_description': '',
+                'fields_used': ['smpa'],
+                'fields_display': ['orig_chg_off_amt', 'terms_freq'],
+                'crrg_reference': '410', 'potential_harm': '',
+                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            }, {
+                'hits': 25,
+                'accounts_affected': 1,
+                'inconsistency_start': '2023-12-31',
+                'inconsistency_end': '2023-12-31',
+                'id': 'Status-DOFD-6',
+                'description': 'description for a fourth status-dofd eval', 'long_description': '',
+                'fields_used': ['smpa'],
+                'fields_display': ['orig_chg_off_amt', 'terms_freq'],
+                'crrg_reference': '410',
+                'potential_harm': '',
+                'rationale': '',
+                'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+        }]}
+
+        response = self.client.get('/api/events/1/')
+
+        # does not return Status-DOFD-2 because it has zero hits
         self.assertEqual(response.json(), expected)
