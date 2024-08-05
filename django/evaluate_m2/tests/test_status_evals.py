@@ -1199,18 +1199,10 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 39: NO-dofd=None
 
         # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_stat': '88', 'acct_type': '19', 'port_type': 'M',
-            'dofd': date(2019, 12, 31), 'pmt_rating': '0', 'terms_freq': '00', 'compl_cond_cd': 'A', 'amt_past_due': 0, 'current_bal': 0,
-            'date_closed': None, 'orig_chg_off_amt': 0, 'smpa': 0
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_stat': '89', 'acct_type': '25', 'port_type': 'M',
-            'dofd': date(2019, 12, 31), 'pmt_rating': '0', 'terms_freq': '00',
-            'compl_cond_cd': 'B', 'amt_past_due': 0, 'current_bal': 0,
-            'date_closed': None, 'orig_chg_off_amt': 0, 'smpa': 0
-        }]
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
+        ]
 
         self.assert_evaluator_correct(
             self.event, 'Status-DOFD-7', expected)
