@@ -28,7 +28,7 @@ date of first delinquency
 L1 change indicator
 """
 
-e2_expected_fields_used = """
+e2_expected_fields = """
 Identifying information
 DB record id
 activity date
@@ -42,20 +42,21 @@ Helpful fields that are also displayed currently
 other
 """
 
+# Import should be case insensitive
 e3_expected_fields_used = """
 Identifying information
 DB record id
 activity date
 consumer account number
 
-Fields used for evaluator
+Fields USED for EvAlUaToR
 consumer information indicator
 date of last payment
 id number
 
-Helpful fields that are also displayed currently
-special comment code
-date of first delinquency
+Helpful FIELDS that ARE ALSO DISPLAYED CURRENTLY
+special comment CODE
+date of FIRST delinquency
 L1 change indicator
 ECOA
 """
@@ -94,11 +95,13 @@ class EvalSerializerTestCase(TestCase):
             'rationale': '',
             'alternate_explanation': '',
         }
-    def test_to_json(self):
+
+    #### Tests for exporting EvaluatorMetadata records
+    def test_export_to_json(self):
         to_json = EvaluatorMetadataSerializer(self.e1)
         self.assertEqual(to_json.data, self.e1_json)
 
-    def test_default_value_if_field_name_nonexistent(self):
+    def test_export_if_field_name_nonexistent(self):
         e2 = EvaluatorMetadata(
             id="TEST-11",
             fields_used=["wrong", "misspelled"],
@@ -108,7 +111,7 @@ class EvalSerializerTestCase(TestCase):
             'id': 'TEST-11',
             'description': '',
             'long_description': '',
-            'fields_used': e2_expected_fields_used,
+            'fields_used': e2_expected_fields,
             'crrg_reference': '',
             'potential_harm': '',
             'rationale': '',
@@ -118,7 +121,8 @@ class EvalSerializerTestCase(TestCase):
         to_json = EvaluatorMetadataSerializer(e2)
         self.assertEqual(to_json.data, e2_json)
 
-    def test_from_json(self):
+    #### Tests for importing EvaluatorMetadata records
+    def test_import_from_json(self):
         json = self.e1_json.copy()
         json['id'] = "BETSY-NEW"
         from_json = EvaluatorMetadataSerializer(data=json)
@@ -129,7 +133,7 @@ class EvalSerializerTestCase(TestCase):
         self.assertEqual(record.fields_used, ['account_holder__cons_info_ind', 'dolp', 'id_num'])
         self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind'])
 
-    def test_from_json_case_insensitive(self):
+    def test_import_from_json_case_insensitive(self):
         json = self.e3_json.copy()
         json['id'] = "CASE_INSENSITIVE"
         from_json = EvaluatorMetadataSerializer(data=json)
