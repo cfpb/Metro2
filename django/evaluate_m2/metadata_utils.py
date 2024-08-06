@@ -48,6 +48,29 @@ code_to_plain_field_map = {
     "l1__change_ind": "L1 change indicator",
     "l1__new_acc_num": "L1 new account number",
     "l1__new_id_num": "L1 new id number",
+
+    # Prior record fields
+    "previous_values__account_holder__cons_info_ind": "prior consumer information indicator",
+    "previous_values__account_holder__cons_info_ind_assoc": "prior consumer information indicators for associated consumers",
+    "previous_values__account_holder__ecoa": "prior ecoa",
+    "previous_values__account_holder__first_name": "prior first name",
+    "previous_values__account_holder__surname": "prior surname",
+
+    "previous_values__l1__change_ind": "prior L1 change indicator",
+    "previous_values__l1__new_acc_num": "prior L1 new account number",
+    "previous_values__l1__new_id_num": "prior L1 new id number",
+
+    "previous_values__activity_date": "prior activity date",
+    "previous_values__port_type": "prior portfolio type",
+    "previous_values__acct_type": "prior account type",
+    "previous_values__date_open": "prior date open",
+    "previous_values__acct_stat": "prior account status",
+    "previous_values__pmt_rating": "prior payment rating",
+    "previous_values__current_bal": "prior current balance",
+    "previous_values__orig_chg_off_amt": "prior original charge-off amount",
+    "previous_values__dofd": "prior date of first delinquency",
+    "previous_values__date_closed": "prior date closed",
+    "previous_values__id_num": "prior ID number",
 }
 
 # Invert the dict above to map the other direction
