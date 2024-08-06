@@ -1,7 +1,7 @@
 # Translate from the plain language field names in the source of
 # truth spreadsheet to code names that match the database columns
 #
-# Any fields that don't appear in the SSOTS are commented out
+# Any fields that don't appear in the SSOTS are removed.
 code_to_plain_field_map = {
     # code : plain language
 
@@ -38,34 +38,16 @@ code_to_plain_field_map = {
     "date_closed": "date closed",
     "dolp": "date of last payment",
     "id_num": "ID number",
-    # "int_type_ind": "",  # looks like this ins't used in any evals?
 
-    # # K segments
-    # "k1__orig_creditor_name": "",
-    # "k1__creditor_classification": "",
+    # K segments
     "k2__purch_sold_ind": "K2 purchased - sold indicator",
     "k2__purch_sold_name": "K2 purchased - sold name",
-    # "k3__agency_id": "",
-    # "k3__agency_acct_num": "",
-    # "k3__min": "",
-    # "k4__spc_pmt_ind": "",
-    # "k4__deferred_pmt_st_dt": "",
-    # "k4__balloon_pmt_due_dt": "",
     "k4__balloon_pmt_amt": "balloon payment amount",
 
-    # # L segment
+    # L segment
     "l1__change_ind": "L1 change indicator",
     "l1__new_acc_num": "L1 new account number",
     "l1__new_id_num": "L1 new id number",
-
-    # # N segment
-    # "n1__employer_name": "",
-    # "n1__employer_addr1": "",
-    # "n1__employer_addr2": "",
-    # "n1__employer_city": "",
-    # "n1__employer_state": "",
-    # "n1__employer_zip": "",
-    # "n1__occupation": "",
 }
 
 # Invert the dict above to map the other direction
