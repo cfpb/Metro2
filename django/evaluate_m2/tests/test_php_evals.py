@@ -222,6 +222,60 @@ class PHPEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'PHP-Status-3', expected)
 
+    def test_eval_php_status_4(self):
+    # Hits when all conditions are met:
+    # 1. previous_values__account_holder__cons_info_ind =''
+    # 2. previous_values__account_holder__cons_info_ind_assoc == ''
+    # 3. previous_values__acct_stat == '65','94'
+    # 4. first character of php != 'H'
+
+        # Create previous Account Activities data
+        prev1 = acct_record(self.prev_file, {'id': 1, 'activity_date': self.pd,
+            'cons_acct_num': '001','acct_stat':'65', 'cons_info_ind':'',
+            'cons_info_ind_assoc': [] })
+        prev2 = acct_record(self.prev_file, {'id': 2, 'activity_date': self.pd,
+            'cons_acct_num': '002', 'acct_stat':'9r', 'cons_info_ind':'',
+            'cons_info_ind_assoc': [] })
+        prev3 = acct_record(self.prev_file, {'id': 3, 'activity_date': self.pd,
+            'cons_acct_num': '003', 'acct_stat':'65', 'cons_info_ind':'X',
+            'cons_info_ind_assoc': [] })
+        prev4 = acct_record(self.prev_file, {'id': 4, 'activity_date': self.pd,
+            'cons_acct_num': '004', 'acct_stat':'62',  'cons_info_ind':'',
+            'cons_info_ind_assoc': [] })
+        prev5 = acct_record(self.prev_file, {'id': 5, 'activity_date': self.pd,
+            'cons_acct_num': '005', 'acct_stat':'94',  'cons_info_ind':'',
+            'cons_info_ind_assoc': ['X'] })
+
+        # Create current Account Activities data
+        acct_record(self.data_file, {'id':11, 'activity_date': self.d,
+            'cons_acct_num': '001', 'cons_info_ind':'', 'php':'2L',
+            'previous_values': prev1})
+        acct_record(self.data_file, {'id':12, 'activity_date': self.d,
+            'cons_acct_num': '002', 'cons_info_ind':'', 'php':'HL',
+            'previous_values': prev2})
+        acct_record(self.data_file, {'id':13, 'activity_date': self.d,
+            'cons_acct_num': '003', 'cons_info_ind':'', 'php':'2L',
+            'previous_values': prev3})
+        acct_record(self.data_file, {'id':14, 'activity_date': self.d,
+            'cons_acct_num': '004', 'cons_info_ind':'', 'php':'2L',
+            'previous_values': prev4})
+        acct_record(self.data_file, {'id':15, 'activity_date': self.d,
+            'cons_acct_num': '005', 'cons_info_ind':'', 'php':'2L',
+            'previous_values': prev5})
+
+        # 11: HIT
+        # 12: NO - first character of php == 'H'
+        # 13: NO - previous_values__account_holder__cons_info_ind == 'X'
+        # 14: NO - previous_values__acct_stat == '62'
+        # 15: NO - previous_values__account_holder__cons_info_ind_assoc == 'X'
+
+        # Create the segment data
+        expected = [{
+            'id': 11, 'activity_date': date(2010, 11, 30), 'cons_acct_num': '001'
+        }]
+
+        self.assert_evaluator_correct(self.event, 'PHP-Status-4', expected)
+
     def test_eval_php_status_5(self):
     # Hits when all conditions are met:
     # 1. previous_values__account_holder__cons_info_ind =''
