@@ -42,6 +42,21 @@ Helpful fields that are also displayed currently
 other
 """
 
+e4_invalid_input = """
+Identifying information
+DB record id
+activity date
+consumer account number
+
+Fields used for evaluator
+date of last payment
+bogus name
+
+Helpful fields that are also displayed currently
+K2 purchased - sold indicator
+something misspelled
+"""
+
 # Import should be case insensitive
 e3_expected_fields_used = """
 Identifying information
@@ -144,6 +159,16 @@ class EvalSerializerTestCase(TestCase):
         self.assertEqual(record.fields_used, ['account_holder__cons_info_ind', 'dolp', 'id_num'])
         self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind',
                                                  'account_holder__ecoa'])
+
+    def test_import_fails_when_field_names_incorrect(self):
+        e4_json = {
+            'id': 'TEST-99',
+            'description': '',
+            'long_description': '',
+            'fields_used': e4_invalid_input,
+        }
+        result = EvaluatorMetadataSerializer(data=e4_json)
+        self.assertFalse(result.is_valid())
 
     def test_many_to_json(self):
         eval_metadata = [self.e1]
