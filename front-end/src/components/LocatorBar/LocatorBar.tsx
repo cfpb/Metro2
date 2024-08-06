@@ -29,12 +29,12 @@ export default function LocatorBar({
         <Icon name={icon} size='47px' />
         <div>
           {eyebrow ? (
-            <div className='h5 eyebrow' data-testid='eyebrow'>
+            <div className='h5 eyebrow' data-testid='locator-bar-eyebrow'>
               {eyebrow}
             </div>
           ) : null}
-          <h2 data-testid='heading'>{heading}</h2>
-          {subhead ? <h3 data-testid='subhead'>{subhead}</h3> : null}
+          <h2 data-testid='locator-bar-heading'>{heading}</h2>
+          {subhead ? <h3 data-testid='locator-bar-subhead'>{subhead}</h3> : null}
         </div>
       </div>
     </div>

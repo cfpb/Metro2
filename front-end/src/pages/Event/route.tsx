@@ -8,6 +8,7 @@ import type Event from './Event'
 import EventPage from './EventPage'
 
 export const processEventData = (data: Event): Event => {
+  console.log(data)
   // add temporary categories to event's evaluators by splitting
   // the id into segments and looking up the segment descriptors
   for (const evaluator of data.evaluators) {

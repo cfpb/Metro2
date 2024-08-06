@@ -23,7 +23,40 @@ describe('Landing page', () => {
     cy.wait('@getUser')
   })
 
-  it('Should show username and welcome message in locator bar', () => {
+  it('Should show a welcome message including username', () => {
     testLocatorBar('Welcome, Test user', 'Here is your events list')
+  })
+
+  it('Should show a list of events assigned to user', () => {
+    cy.get('.event-item')
+      .should('have.length', 2)
+      .then(events => {
+        // Basic event
+        cy.wrap(events[0]).within(() => {
+          cy.findByTestId('event-header').should('have.text', 'Sample-Dataset-007')
+          cy.findByTestId('event-date-range').should(
+            'have.text',
+            'Data from: Jul 2018 - Nov 2018'
+          )
+          cy.findByTestId('event-link')
+            .should('have.text', 'Open evaluator results')
+            .and('have.attr', 'href', '/events/1')
+        })
+
+        // Event with more metadata
+        cy.wrap(events[1]).within(() => {
+          cy.findByTestId('event-header').should(
+            'have.text',
+            'Event two: EID/Matter #123456789'
+          )
+          cy.findByTestId('event-date-range').should(
+            'have.text',
+            'Data from: Nov 2019 - Nov 2020'
+          )
+          cy.findByTestId('event-link')
+            .should('have.text', 'Open evaluator results')
+            .and('have.attr', 'href', '/events/2')
+        })
+      })
   })
 })
