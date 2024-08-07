@@ -28,8 +28,8 @@ class Evaluate():
     def __init__(self):
         self.evaluators = acct_change_evals |  balance_evals | balloon_evals | \
                           bankruptcy_evals | ccc_evals | deferred_evals | \
-                          doai_evals | dtcl_evals | ecoa_evals | rating_evals | \
-                          prog_evals | scc_evals | status_evals | type_evals
+                          doai_evals | dtcl_evals | ecoa_evals | prog_evals | \
+                          rating_evals | scc_evals | status_evals | type_evals
 
 
     # runs evaluators to produce results
