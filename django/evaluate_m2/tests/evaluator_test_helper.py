@@ -57,7 +57,8 @@ def acct_record(file: M2DataFile, custom_values: dict):
         "dolp": None,
         "int_type_ind": "",
         "cons_info_ind_assoc": None,
-        "ecoa_assoc": None
+        "ecoa_assoc": None,
+        "ecoa": ""
     }
     # Override defaults with provided values
     values = default_values | custom_values
@@ -71,6 +72,7 @@ def acct_record(file: M2DataFile, custom_values: dict):
         surname = values["surname"],
         cons_info_ind_assoc = values["cons_info_ind_assoc"],
         ecoa_assoc = values["ecoa_assoc"],
+        ecoa = values["ecoa"],
     )
     acct_holder.save()
     # Create the AccountActivity record with provided values

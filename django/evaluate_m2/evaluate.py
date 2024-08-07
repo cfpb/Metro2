@@ -11,6 +11,7 @@ from evaluate_m2.m2_evaluators.ccc_evals import evaluators as ccc_evals
 from evaluate_m2.m2_evaluators.deferred_evals import evaluators as deferred_evals
 from evaluate_m2.m2_evaluators.doai_evals import evaluators as doai_evals
 from evaluate_m2.m2_evaluators.dtcl_evals import evaluators as dtcl_evals
+from evaluate_m2.m2_evaluators.ecoa_evals import evaluators as ecoa_evals
 from evaluate_m2.m2_evaluators.prog_evals import evaluators as prog_evals
 from evaluate_m2.m2_evaluators.rating_evals import evaluators as rating_evals
 from evaluate_m2.m2_evaluators.scc_evals import evaluators as scc_evals
@@ -27,8 +28,8 @@ class Evaluate():
     def __init__(self):
         self.evaluators = acct_change_evals |  balance_evals | balloon_evals | \
                           bankruptcy_evals | ccc_evals | deferred_evals | \
-                          doai_evals | dtcl_evals | rating_evals | prog_evals | \
-                          scc_evals | status_evals | type_evals
+                          doai_evals | dtcl_evals | ecoa_evals | rating_evals | \
+                          prog_evals | scc_evals | status_evals | type_evals
 
 
     # runs evaluators to produce results
