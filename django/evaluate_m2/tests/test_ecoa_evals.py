@@ -14,8 +14,6 @@ class DOAIEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.event.save()
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
-        # Create the Account Holders
-        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V'))
 
     ############################
     # Tests for the category addl dofd evaluators
@@ -27,7 +25,6 @@ class DOAIEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
-
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
