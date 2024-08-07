@@ -7,7 +7,7 @@ from evaluate_m2.tests.evaluator_test_helper import (
 )
 from parse_m2.models import Metro2Event, M2DataFile
 
-class DOAIEvalsTestCase(TestCase, EvaluatorTestHelper):
+class ECOAEvalsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self):
         # Create the parent records for the AccountActivity data
         self.event = Metro2Event(name='test_exam')
@@ -16,12 +16,11 @@ class DOAIEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.data_file.save()
 
     ############################
-    # Tests for the category ecoa evaluators
 
     def test_eval_ecoa_j1j2_1(self):
     # Hits condition is met:
     # 1. ecoa == 'X'
-    # 2. ecoa_assoc != 'X'
+    # 2. ecoa_assoc does not contain 'X'
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
