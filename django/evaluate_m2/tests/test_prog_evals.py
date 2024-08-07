@@ -4,8 +4,7 @@ from datetime import date
 from parse_m2.initiate_post_parsing import associate_previous_records
 from evaluate_m2.tests.evaluator_test_helper import (
     EvaluatorTestHelper,
-    acct_record,
-    k4_record,
+    acct_record
 )
 from parse_m2.models import Metro2Event, M2DataFile
 
@@ -86,3 +85,58 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
             'id': 43, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'PROG-DOFD-1', expected)
+
+    def test_eval_prog_status_1(self):
+    # Hits when the following one conditions are met...
+    #   a. previous_values__acct_stat == '71' & acct_stat == '80', '82', '83', '84'
+    #   b. previous_values__acct_stat == '78' & acct_stat == '82', '83', '84'
+    #   c. previous_values__acct_stat == '80' & acct_stat == '83', '84'
+    #   d. previous_values__acct_stat == '82' & acct_stat == '84'
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'71'
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'78'
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'79'
+            }, {
+                'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'80'
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'80'
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'84'
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'83'
+            }, {
+                'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'82'
+            }]
+        for i in range(0, len(activities)):
+            acct_record(self.data_file, activities[i])
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__acct_stat=79,
+        # 45: NO-acct_stat=82
+
+        expected = [{
+            'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
+        }, {
+            'id': 43, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+        }]
+        self.assert_evaluator_correct(self.event, 'PROG-Status-1', expected)
