@@ -163,10 +163,10 @@ class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
         csv_content = response.content.decode('utf-8')
 
         expected = '\r\n'.join([
-            'event_name,record,acct_type',
-            'test_exam,1,y',
-            'test_exam,2,n',
-            '',
+            'event_name,id,activity_date,cons_acct_num,acct_stat,dofd,amt_past_due,compl_cond_cd,smpa',
+            'test_exam,32,2023-12-31,0032,00,,0,,0',
+            'test_exam,33,2023-12-31,0033,00,,0,,0',
+            ''
         ])
         self.assertEqual(csv_content, expected)
 
