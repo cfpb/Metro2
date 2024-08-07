@@ -16,7 +16,7 @@ class DOAIEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.data_file.save()
 
     ############################
-    # Tests for the category addl dofd evaluators
+    # Tests for the category ecoa evaluators
 
     def test_eval_ecoa_j1j2_1(self):
     # Hits condition is met:
