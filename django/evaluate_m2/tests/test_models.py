@@ -43,18 +43,14 @@ class EvaluateModelsTestCase(TestCase, EvaluatorTestHelper):
             evaluator = EvaluatorMetadata(),
             hits = 1
         )
-        field_values_json = {
-            'id': 1,
-            'cons_acct_num': '001',
-            'activity_date': acct_date,
-        }
+
         eval_res = EvaluatorResult(
             result_summary = eval_rs1,
-            field_values = field_values_json,
             source_record = record
         )
+        field_list = ['id', 'cons_acct_num', 'activity_date']
         expected = [ 'test', 1, '001', acct_date ]
-        self.assertEqual(eval_res.create_csv_row_data(list(field_values_json.keys())), expected)
+        self.assertEqual(eval_res.create_csv_row_data(field_list), expected)
 
     def test_result_summary_fields(self):
         my_evaluator = EvaluatorMetadata(
