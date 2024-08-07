@@ -91,7 +91,7 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 1. previous_values__acct_stat == '71', '78', '80', '82', '83', '84', '61', '62',
     #                                  '63', '64', '65', '93', '94', '95', '96', '97'
     # 2. acct_stat == '11'
-    # 3. previous_values__dofd != dofd
+    # 3. previous_values__dofd == dofd
 
         # Create previous Account Activities data
         prev_acct_date=date(2019, 11, 30)
