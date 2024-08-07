@@ -3,7 +3,7 @@ from django.test import TestCase
 import os
 from datetime import date, datetime
 
-from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper, acct_record
+from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import (
     Metro2Event,
     M2DataFile, AccountHolder, AccountActivity,
