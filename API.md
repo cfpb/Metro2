@@ -56,12 +56,12 @@ File name: `hyundai2024_Status-DOFD.csv`
 
 File contents:
 ```csv
-event_name,id,dofd,smpa,acct_stat,pmt_rating,spc_com_cd,terms_freq,current_bal,date_closed,amt_past_due,activity_date,compl_cond_cd,cons_acct_num,orig_chg_off_amt
-hyundai2024,1027,,0,13,1,,M,0,2019-01-31,0,2019-01-31,,20121204914009,0
-hyundai2024,1100,,0,13,1,,M,0,2019-01-29,0,2019-01-31,,20121204941549,0
-hyundai2024,1303,,0,13,1,,M,0,2018-11-27,0,2019-01-31,,20120603193654,0
-hyundai2024,1320,,0,13,1,,M,0,2018-11-15,0,2019-01-31,,20121004399540,0
-hyundai2024,1331,,0,13,1,,M,0,2019-01-26,0,2019-01-31,,20121205047544,0
+event_name,id,activity_date,cons_acct_num,dofd,smpa,acct_stat,pmt_rating,spc_com_cd,terms_freq,current_bal,date_closed,amt_past_due,compl_cond_cd,orig_chg_off_amt
+hyundai2024,1027,2019-01-31,20121204914009,,0,13,1,,M,0,2019-01-31,0,,0
+hyundai2024,1100,2019-01-31,20121204941549,,0,13,1,,M,0,2019-01-29,0,,0
+hyundai2024,1303,2019-01-31,20120603193654,,0,13,1,,M,0,2018-11-27,0,,0
+hyundai2024,1320,2019-01-31,20121004399540,,0,13,1,,M,0,2018-11-15,0,,0
+hyundai2024,1331,2019-01-31,20121205047544,,0,13,1,,M,0,2019-01-26,0,,0
 ```
 
 ### Evaluator results view
