@@ -128,8 +128,8 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'82'
             }]
-        for i in range(0, len(activities)):
-            acct_record(self.data_file, activities[i])
+        for r in activities:
+            acct_record(self.data_file, r)
         associate_previous_records(self.event)
         # 42: HIT, 43: HIT, 44: NO-previous_values__acct_stat=79,
         # 45: NO-acct_stat=82
@@ -174,8 +174,8 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
                 'acct_stat':'77'
             }]
-        for i in range(0, len(activities)):
-            acct_record(self.data_file, activities[i])
+        for r in activities:
+            acct_record(self.data_file, r)
         associate_previous_records(self.event)
         # 42: HIT, 43: NO-previous_values__acct_stat=71,
         # 44: NO-acct_stat=77
@@ -225,8 +225,8 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'77', 'port_type': 'A'
             }]
-        for i in range(0, len(activities)):
-            acct_record(self.data_file, activities[i])
+        for r in activities:
+            acct_record(self.data_file, r)
         associate_previous_records(self.event)
         # 42: HIT, 43: NO-previous_values__acct_stat=71,
         # 44: NO-acct_stat=62, 45: NO-port_type='A'
