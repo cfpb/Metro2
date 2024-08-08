@@ -188,23 +188,22 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
     # Hits when both conditions met:
     # 1. previous_values__acct_stat == '13', '61', '62', '63', '64', '65'
     # 2. acct_stat != previous_values__acct_stat
-    # 3. port_type == 'I', 'M'
 
         # Create previous Account Activities data
         prev_acct_date=date(2019, 11, 30)
         prev_activities = [
             {
                 'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'13', 'port_type': 'I'
+                'acct_stat':'13'
             }, {
                 'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'71', 'port_type': 'M'
+                'acct_stat':'61'
             }, {
                 'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'61', 'port_type': 'I'
+                'acct_stat':'71'
             }, {
                 'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'63', 'port_type': 'M'
+                'acct_stat':'64'
             }]
         for r in prev_activities:
             acct_record(self.prev_data_file, r)
@@ -214,23 +213,24 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'97', 'port_type': 'I'
+                'acct_stat':'97'
             }, {
                 'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'61', 'port_type': 'M'
+                'acct_stat':'62'
             }, {
                 'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'61', 'port_type': 'I'
+                'acct_stat':'61'
             }, {
                 'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'64', 'port_type': 'A'
+                'acct_stat':'64'
             }]
         for r in activities:
             acct_record(self.data_file, r)
         associate_previous_records(self.event)
-        # 42: HIT, 43: NO-previous_values__acct_stat=71,
-        # 44: NO-acct_stat == previous_values__acct_stat, 45: NO-port_type='A'
+        # 42: HIT, 43: HIT, 44: NO-previous_values__acct_stat=71,
+        # 45: NO-acct_stat == previous_values__acct_stat
 
         expected = [
-            {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}]
+            {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 43, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}]
         self.assert_evaluator_correct(self.event, 'PROG-Status-3', expected)
