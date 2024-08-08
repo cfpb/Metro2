@@ -24,7 +24,7 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
             {'id': 43, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
         ]
 
-    def create_prog_account_change_activity(self, prev_l1_segments, l1_segments):
+    def create_prog_account_change_activity(self, prev_l1_segments, l1_segments=[]):
         # Create previous Account Activities data
         prev_acct_date=date(2019, 11, 30)
         prev_activities = [
@@ -104,6 +104,28 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         expected = [
             {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}]
         self.assert_evaluator_correct(self.event, 'PROG-AccountChange-2', self.expected)
+
+    def test_eval_prog_account_change_3(self):
+    # Hits when both conditions met:
+    # 1. previous_values__l1__change_ind == '1', '3'
+    # 2. previous_values__l1__new_acc_num == account_holder__cons_acct_num
+
+
+        # Create L1 segment data
+        prev_l1_segments = [
+            {'id': 32, 'change_ind': '1', 'new_acc_num': '0032'},
+            {'id': 33, 'change_ind': '3', 'new_acc_num': '0033'},
+            {'id': 34, 'change_ind': '2', 'new_acc_num': '0034'},
+            {'id': 35, 'change_ind': '3', 'new_acc_num': '35'}]
+
+        # Create Account Activities data
+        self.create_prog_account_change_activity(prev_l1_segments)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__l1__change_ind=2,
+        # 45: NO-previous_values__l1__new_acc_num != account_holder__cons_acct_num
+
+        expected = [
+            {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}]
+        self.assert_evaluator_correct(self.event, 'PROG-AccountChange-3', self.expected)
 
     def test_eval_prog_dofd_1(self):
     # Hits when all conditions met:
