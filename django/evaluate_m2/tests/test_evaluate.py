@@ -6,7 +6,6 @@ from evaluate_m2.m2_evaluators.status_evals import (
     eval_status_dofd_1_func,
     eval_status_dofd_2_func)
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
-from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
 from parse_m2.models import M2DataFile, Metro2Event
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 
@@ -20,7 +19,7 @@ def sample_eval_never_hits(record_set):
 def sample_erroring_eval(record_set):
     return EvaluatorMetadata.objects.filter(rationale='thing')
 
-class EvaluateTestCase(TestCase, EvaluatorTestHelper):
+class EvaluateTestCase(TestCase):
     def setUp(self):
         # Create the parent records for the AccountActivity data
         self.event = Metro2Event.objects.create(name='test_exam')
