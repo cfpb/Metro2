@@ -63,12 +63,15 @@ class EvaluatorResult(models.Model):
     acct_num = models.CharField(max_length=30)
 
     def create_csv_header(self):
-        csv_header = list(self.field_values.keys())
+        csv_header = list(self.result_summary.evaluator.result_summary_fields())
         csv_header.insert(0, 'event_name')
         return csv_header
 
-    def create_csv_row_data(self):
+    def create_csv_row_data(self, fields_list: list[str]):
+        field_values = AccountActivity.objects \
+                    .values_list(*fields_list) \
+                    .get(id=self.source_record.id)
         response = [
             self.result_summary.event.name,
-            ] + list(self.field_values.values())
+            ] + list(field_values)
         return response
