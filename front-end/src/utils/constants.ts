@@ -104,7 +104,7 @@ export const M2_FIELD_NAMES = new Map([
     'previous_values__account_holder__cons_info_ind_assoc',
     'Prior bankruptcy - Consumer information indicator for associated consumers'
   ],
-  ['previous_values__account_holder__ecoa', 'Prior ecoa'],
+  ['previous_values__account_holder__ecoa', 'Prior ECOA code for account holder'],
   ['previous_values__l1__change_ind', 'Prior account change indicator (L1)'],
   ['previous_values__l1__new_acc_num', 'Prior new consumer account number (L1)'],
   ['previous_values__l1__new_id_num', 'Prior new identification number (L1)']
@@ -131,6 +131,7 @@ export const COL_DEF_CONSTANTS = {
   previous_values__account_holder__cons_info_ind: { minWidth: 265 },
   previous_values__account_holder__cons_info_ind_assoc: { minWidth: 265 },
   account_holder__ecoa: { minWidth: 230 },
+  previous_values__account_holder__ecoa: { minWidth: 230 },
   account_holder__ecoa_assoc: { minWidth: 230 },
   k2__purch_sold_ind: { minWidth: 250 },
   k2__purch_sold_name: { minWidth: 210 },
