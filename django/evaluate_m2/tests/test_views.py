@@ -7,11 +7,11 @@ from evaluate_m2.models import (
     EvaluatorResultSummary
 )
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
-from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper, acct_record
+from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
 
 
-class EvaluateViewsTestCase(TestCase, EvaluatorTestHelper):
+class EvaluateViewsTestCase(TestCase):
     ########################################
     # Methods for creating test data
     def setUp(self) -> None:
