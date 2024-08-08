@@ -44,5 +44,7 @@ export const columnDefaults = {
 export const gridOptionDefaults = {
   enableCellTextSelection: true,
   ensureDomOrder: true,
-  skipHeaderOnAutoSize: true
+  skipHeaderOnAutoSize: true,
+  suppressColumnVirtualisation: true,
+  suppressRowVirtualisation: true
 }
