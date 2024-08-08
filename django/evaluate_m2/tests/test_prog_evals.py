@@ -78,8 +78,8 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 46, 'activity_date': acct_date, 'cons_acct_num': '0036',
                 'acct_stat':'78', 'dofd': None
             }]
-        for i in range(0, len(activities)):
-            acct_record(self.data_file, activities[i])
+        for r in activities:
+            acct_record(self.data_file, r)
         associate_previous_records(self.event)
         # 42: HIT, 43: HIT, 44: NO-previous_values__acct_stat=66,
         # 45: NO-acct_stat=77, 46: No-previous_values__dofd == dofd
@@ -134,8 +134,8 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 46, 'activity_date': acct_date, 'cons_acct_num': '0036',
                 'acct_stat':'11', 'dofd': date(2019, 10, 31)
             }]
-        for i in range(0, len(activities)):
-            acct_record(self.data_file, activities[i])
+        for r in activities:
+            acct_record(self.data_file, r)
         associate_previous_records(self.event)
         # 42: HIT, 43: HIT, 44: NO-previous_values__acct_stat=66,
         # 45: NO-acct_stat=77, 46: No-previous_values__dofd != dofd
