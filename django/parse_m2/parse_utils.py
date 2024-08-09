@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 
@@ -117,3 +118,9 @@ def decode_if_needed(input: any) -> str:
     else:
         # We don't know what this is
         raise UnreadableLineException(f"Input type: {type(input)} is neither string nor bytes")
+
+def segment_has_contents(line: str) -> bool:
+    """
+    If a string has no letters and no digits besides 0, return False
+    """
+    return bool(re.search(r'[a-zA-Z1-9]', line[2:]))

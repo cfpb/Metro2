@@ -116,6 +116,28 @@ class ParserTestCase(TestCase):
             self.assertEqual(K1.objects.count(), 1)
             self.assertEqual(K2.objects.count(), 1)
 
+    def test_disregard_empty_extra_segments(self):
+        extra_segs_file = os.path.join(self.sample_files_dir, 'm2_extra_extra_segments.txt')
+        file_size = os.path.getsize(extra_segs_file)
+
+        with open(extra_segs_file, mode='r') as filestream:
+            self.parser.parse_file_contents(filestream, file_size)
+
+            # The test file contains the following segments:
+            self.assertEqual(AccountHolder.objects.count(), 3)
+            self.assertEqual(AccountActivity.objects.count(), 3)
+
+            # The file contains empty placeholders for the extra segments,
+            # so we don't create records for them
+            self.assertEqual(J1.objects.count(), 0)
+            self.assertEqual(J2.objects.count(), 0)
+            self.assertEqual(K1.objects.count(), 0)
+            self.assertEqual(K2.objects.count(), 0)
+            self.assertEqual(L1.objects.count(), 0)
+            self.assertEqual(K3.objects.count(), 0)
+            self.assertEqual(K4.objects.count(), 0)
+            self.assertEqual(N1.objects.count(), 0)
+
     ############################
     # Tests for handling unparseable data in the body of the file
     def test_unparseable_data_in_line(self):
