@@ -50,7 +50,6 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         for r in prev_activities:
             acct_record(self.prev_data_file, r)
 
-
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -94,7 +93,6 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
             }]
         for r in prev_activities:
             acct_record(self.prev_data_file, r)
-
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -146,7 +144,6 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
             }]
         for r in prev_activities:
             acct_record(self.prev_data_file, r)
-
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
