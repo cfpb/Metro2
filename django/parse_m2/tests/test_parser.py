@@ -12,18 +12,19 @@ from parse_m2.models import (
 
 class ParserTestCase(TestCase):
     def setUp(self):
-        self.header_seg = os.path.join('parse_m2', 'tests','sample_files', 'header_segment_1.txt')
-        self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')
-        self.tiny_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small.txt')
-        self.missing_header = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small_no_header.txt')
-        self.error_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small_with_error.txt')
+        self.sample_files_dir = os.path.join('parse_m2', 'tests','sample_files',)
+
+        self.header_seg = os.path.join(self.sample_files_dir, 'header_segment_1.txt')
+        self.base_seg = os.path.join(self.sample_files_dir, 'base_segment_1.txt')
+        self.tiny_file = os.path.join(self.sample_files_dir, 'm2_file_small.txt')
+        self.missing_header = os.path.join(self.sample_files_dir, 'm2_file_small_no_header.txt')
+        self.error_file = os.path.join(self.sample_files_dir, 'm2_file_small_with_error.txt')
 
         self.extras_str = "K1ORIGNALCREDITORNAME           03K22SOLDTONAME                     L12NEWACCTNUMBER                                      "
 
         self.j1_seg = "J1 SURNAMEJ1                FIRSTNAMEJ1         MIDDLENAMEJ1        S3332244440411200120255598765   "
 
-        event = Metro2Event(name='test_exam')
-        event.save()
+        event = Metro2Event.objects.create(name='test_exam')
         self.parser = M2FileParser(event=event, filepath="file.txt")
         self.activity_date = datetime(2021, 1, 1)
         self.account_holder = AccountHolder(
