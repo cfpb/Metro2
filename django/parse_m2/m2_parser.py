@@ -92,8 +92,8 @@ class M2FileParser():
 
         next_segment_indicator = line[:2]
         if next_segment_indicator == "J1":
-            seg_length = fields.seg_length["j1"]
-            j1 = J1.parse_from_segment(line[:seg_length], acct_activity)
+            segment = line[:fields.seg_length["j1"]]
+            j1 = J1.parse_from_segment(segment, acct_activity)
             if "j1" in parsed:
                 parsed["j1"].append(j1)
             else:
@@ -104,8 +104,8 @@ class M2FileParser():
                 parsed["ecoa_assoc"].append(j1.ecoa)
 
         elif next_segment_indicator == "J2":
-            seg_length = fields.seg_length["j2"]
-            j2 = J2.parse_from_segment(line[:seg_length], acct_activity)
+            segment = line[:fields.seg_length["j2"]]
+            j2 = J2.parse_from_segment(segment, acct_activity)
             if "j2" in parsed:
                 parsed["j2"].append(j2)
             else:
@@ -116,33 +116,33 @@ class M2FileParser():
                 parsed["ecoa_assoc"].append(j2.ecoa)
 
         elif next_segment_indicator == "K1":
-            seg_length = fields.seg_length["k1"]
-            k1 = K1.parse_from_segment(line[:seg_length], acct_activity)
+            segment = line[:fields.seg_length["k1"]]
+            k1 = K1.parse_from_segment(segment, acct_activity)
             parsed["k1"] = k1
 
         elif next_segment_indicator == "K2":
-            seg_length = fields.seg_length["k2"]
-            k2 = K2.parse_from_segment(line[:seg_length], acct_activity)
+            segment = line[:fields.seg_length["k2"]]
+            k2 = K2.parse_from_segment(segment, acct_activity)
             parsed["k2"] = k2
 
         elif next_segment_indicator == "K3":
-            seg_length = fields.seg_length["k3"]
-            k3 = K3.parse_from_segment(line[:seg_length], acct_activity)
+            segment = line[:fields.seg_length["k3"]]
+            k3 = K3.parse_from_segment(segment, acct_activity)
             parsed["k3"] = k3
 
         elif next_segment_indicator == "K4":
-            seg_length = fields.seg_length["k4"]
-            k4 = K4.parse_from_segment(line[:seg_length], acct_activity)
+            segment = line[:fields.seg_length["k4"]]
+            k4 = K4.parse_from_segment(segment, acct_activity)
             parsed["k4"] = k4
 
         elif next_segment_indicator == "L1":
-            seg_length = fields.seg_length["l1"]
-            l1 = L1.parse_from_segment(line[:seg_length], acct_activity)
+            segment = line[:fields.seg_length["l1"]]
+            l1 = L1.parse_from_segment(segment, acct_activity)
             parsed["l1"] = l1
 
         elif next_segment_indicator == "N1":
-            seg_length = fields.seg_length["n1"]
-            n1 = N1.parse_from_segment(line[:seg_length], acct_activity)
+            segment = line[:fields.seg_length["n1"]]
+            n1 = N1.parse_from_segment(segment, acct_activity)
             parsed["n1"] = n1
 
         else:
@@ -150,7 +150,8 @@ class M2FileParser():
                 " did not match any valid extra segment"
             raise parse_utils.UnreadableLineException(msg)
 
-        if seg_length:
+        if segment:
+            seg_length = len(segment)
             self.parse_extra_segments(line[seg_length:], parsed)
 
         return parsed
