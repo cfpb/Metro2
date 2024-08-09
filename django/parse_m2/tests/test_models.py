@@ -1,9 +1,9 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 import os
-from datetime import datetime
+from datetime import date, datetime
 
-from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
+from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import (
     Metro2Event,
     M2DataFile, AccountHolder, AccountActivity,
@@ -11,7 +11,7 @@ from parse_m2.models import (
 )
 
 
-class ParserModelsTestCase(TestCase, EvaluatorTestHelper):
+class ParserModelsTestCase(TestCase):
     def setUp(self):
         self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')  # noqa E501
 
@@ -25,34 +25,46 @@ class ParserModelsTestCase(TestCase, EvaluatorTestHelper):
             account_holder = self.account_holder, activity_date = self.activity_date)
 
     def create_exam_activity(self):
+        acct_date=date(2019, 12, 31)
         # Create the Account Activities data
-        activities = {'id':(34,35),  'account_holder':('X','W'),
-                      'acct_type':('12','91'), 'cons_acct_num':('0034','0035'), 'credit_limit':(30,40), 'hcola':(-5,-5), 'port_type':('I','I'),
-                      'terms_dur':('15','20'), 'terms_freq':('P','D')}
+        activities = [
+            {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_type': '12', 'credit_limit': 30, 'hcola': -5, 'port_type': 'I',
+                'cons_info_ind': 'X', 'terms_dur': '15', 'terms_freq':'P'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+              'acct_type': '91', 'credit_limit': 40, 'hcola': -5, 'port_type': 'I',
+              'cons_info_ind': 'W', 'terms_dur': '20', 'terms_freq':'D'
+            }]
         # Create the parent records for the AccountActivity data for first event
         event = Metro2Event(name='test_exam')
         event.save()
         file = M2DataFile(event=event, file_name='file.txt')
         file.save()
 
-        # Create the Account Holders
-        self.create_bulk_account_holders(file, ('X','W'))
-        self.create_bulk_activities(file, activities, 2)
+        for item in activities:
+            acct_record(file, item)
 
         # Create the second exam Account Activities data
-        activities2 = {'id':(32,33),
-                      'account_holder':('Z','Y'), 'acct_type':('00','3A'),
-                      'cons_acct_num':('0032','0033'), 'credit_limit':(10,20),
-                      'hcola':(-1,-1), 'port_type':('I','M'),
-                      'terms_dur':('5','10'),  'terms_freq':('P','W')}
+        activities2 = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_type': '00', 'credit_limit': 10, 'hcola': -1, 'port_type': 'I',
+                'cons_info_ind': 'Z', 'terms_dur': '5', 'terms_freq':'P'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+              'acct_type': '3A', 'credit_limit': 20, 'hcola': -1, 'port_type': 'M',
+              'cons_info_ind': 'Y', 'terms_dur': '10', 'terms_freq':'W'
+            }]
         # Create the parent records for the AccountActivity data for second event
         event_2 = Metro2Event(name='test_exam2')
         event_2.save()
         file2 = M2DataFile(event=event_2, file_name='file2.txt')
         file2.save()
-        # Create the Account Holders
-        self.create_bulk_account_holders(file2, ('Z','Y'))
-        self.create_bulk_activities(file2, activities2, 2)
+
+        for item in activities2:
+            acct_record(file2, item)
 
     def test_metro2_event_get_all_account_activity_returns_results(self):
         self.create_exam_activity()

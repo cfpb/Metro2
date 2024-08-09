@@ -418,3 +418,5 @@ export const M2_FIELD_LOOKUPS = {
   k2__purch_sold_ind: K2_PURCHASED_SOLD_INDICATOR_LOOKUP,
   l1__change_ind: L1_CHANGE_INDICATOR_LOOKUP
 }
+
+export const PII_COOKIE_NAME = 'acceptedPIIWarning'

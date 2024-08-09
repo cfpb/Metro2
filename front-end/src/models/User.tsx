@@ -9,13 +9,8 @@ export default interface User {
   assigned_events: EventMetadata[]
 }
 
-export const fetchUser = async (): Promise<User> => {
-  // Set url based on environment
-  // In dev, add id param for admin user created in setup script
-  // In production, /users/ without an id returns data for logged in user
-  const url = import.meta.env.DEV ? '/api/users/1/' : '/api/users/'
-  return fetchData<User>(url, 'user')
-}
+export const fetchUser = async (): Promise<User> =>
+  fetchData<User>('/api/users/', 'user')
 
 export const userQueryOptions = (): UseQueryOptions<User, Error, User, string[]> =>
   queryOptions({
