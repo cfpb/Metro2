@@ -295,7 +295,7 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'PROG-DOFD-3', self.expected)
 
-    def test_eval_prog_portfolio_3(self):
+    def test_eval_prog_portfolio_1(self):
     # Hits when condition met:
     # 1. previous_values__port_type != port_type
 
