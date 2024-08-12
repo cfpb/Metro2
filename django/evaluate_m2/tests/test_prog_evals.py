@@ -295,6 +295,65 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'PROG-DOFD-3', self.expected)
 
+    def test_eval_prog_rating_1(self):
+    # Hits when all conditions met:
+    # 1. port_type == 'I', 'M'
+    # 2. previous_values__acct_stat == '05', '13',' 62', '65', '88', '89', '94', '95'
+    # 3. pmt_rating != previous_values__pmt_rating
+    # 4. acct_stat == previous_values__acct_stat
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'05', 'port_type': 'I', 'pmt_rating':'0'
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'13', 'port_type': 'M', 'pmt_rating':'5'
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'61', 'port_type': 'I', 'pmt_rating':'10'
+            }, {
+                'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'62', 'port_type': 'M', 'pmt_rating':'15'
+            }, {
+                'id': 36, 'activity_date': prev_acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'65', 'port_type': 'I', 'pmt_rating':'20'
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'05', 'port_type': 'I', 'pmt_rating':'5'
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'12', 'port_type': 'M', 'pmt_rating':'10'
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'61', 'port_type': 'I', 'pmt_rating':'15'
+            }, {
+                'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'62', 'port_type': 'A', 'pmt_rating':'20'
+            }, {
+                'id': 46, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'65', 'port_type': 'M', 'pmt_rating':'20'
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: NO-acct_stat != previous_values__acct_stat,
+        # 44: NO-previous_values__acct_stat=61, 45: NO-port_type='A',
+        # 46: NO- pmt_rating == previous_values__pmt_rating
+
+        expected = [
+            {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}]
+        self.assert_evaluator_correct(self.event, 'PROG-Rating-1', expected)
+
     def test_eval_prog_status_1(self):
     # Hits when the following one conditions are met...
     #   a. previous_values__acct_stat == '71' & acct_stat == '80', '82', '83', '84'
