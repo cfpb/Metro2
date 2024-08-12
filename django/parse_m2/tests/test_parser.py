@@ -12,18 +12,19 @@ from parse_m2.models import (
 
 class ParserTestCase(TestCase):
     def setUp(self):
-        self.header_seg = os.path.join('parse_m2', 'tests','sample_files', 'header_segment_1.txt')
-        self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')
-        self.tiny_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small.txt')
-        self.missing_header = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small_no_header.txt')
-        self.error_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_small_with_error.txt')
+        self.sample_files_dir = os.path.join('parse_m2', 'tests','sample_files',)
+
+        self.header_seg = os.path.join(self.sample_files_dir, 'header_segment_1.txt')
+        self.base_seg = os.path.join(self.sample_files_dir, 'base_segment_1.txt')
+        self.tiny_file = os.path.join(self.sample_files_dir, 'm2_file_small.txt')
+        self.missing_header = os.path.join(self.sample_files_dir, 'm2_file_small_no_header.txt')
+        self.error_file = os.path.join(self.sample_files_dir, 'm2_file_small_with_error.txt')
 
         self.extras_str = "K1ORIGNALCREDITORNAME           03K22SOLDTONAME                     L12NEWACCTNUMBER                                      "
 
         self.j1_seg = "J1 SURNAMEJ1                FIRSTNAMEJ1         MIDDLENAMEJ1        S3332244440411200120255598765   "
 
-        event = Metro2Event(name='test_exam')
-        event.save()
+        event = Metro2Event.objects.create(name='test_exam')
         self.parser = M2FileParser(event=event, filepath="file.txt")
         self.activity_date = datetime(2021, 1, 1)
         self.account_holder = AccountHolder(
@@ -115,6 +116,28 @@ class ParserTestCase(TestCase):
             self.assertEqual(AccountActivity.objects.count(), 2)
             self.assertEqual(K1.objects.count(), 1)
             self.assertEqual(K2.objects.count(), 1)
+
+    def test_disregard_empty_extra_segments(self):
+        extra_segs_file = os.path.join(self.sample_files_dir, 'm2_extra_extra_segments.txt')
+        file_size = os.path.getsize(extra_segs_file)
+
+        with open(extra_segs_file, mode='r') as filestream:
+            self.parser.parse_file_contents(filestream, file_size)
+
+            # The test file contains the following segments:
+            self.assertEqual(AccountHolder.objects.count(), 3)
+            self.assertEqual(AccountActivity.objects.count(), 3)
+
+            # The file contains empty placeholders for the extra segments,
+            # so we don't create records for them
+            self.assertEqual(J1.objects.count(), 0)
+            self.assertEqual(J2.objects.count(), 0)
+            self.assertEqual(K1.objects.count(), 0)
+            self.assertEqual(K2.objects.count(), 0)
+            self.assertEqual(L1.objects.count(), 0)
+            self.assertEqual(K3.objects.count(), 0)
+            self.assertEqual(K4.objects.count(), 0)
+            self.assertEqual(N1.objects.count(), 0)
 
     ############################
     # Tests for handling unparseable data in the body of the file
