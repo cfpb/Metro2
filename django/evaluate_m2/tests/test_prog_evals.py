@@ -127,6 +127,54 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
             {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}]
         self.assert_evaluator_correct(self.event, 'PROG-AccountChange-3', self.expected)
 
+    def test_eval_prog_bankruptcy_1(self):
+    # Hits when both conditions met:
+    # 1. previous_values__account_holder__cons_info_ind == 'V'
+    # 2. account_holder__cons_info_ind == 'R'
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'cons_info_ind':'V'
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'cons_info_ind':'V'
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'cons_info_ind':'R'
+            }, {
+                'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
+                'cons_info_ind':'V'
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'cons_info_ind':'R'
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'cons_info_ind':'R'
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'cons_info_ind':'R'
+            }, {
+                'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'cons_info_ind':'V'
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__account_holder__cons_info_ind='R',
+        # 45: NO-account_holder__cons_info_ind='V'
+
+        self.assert_evaluator_correct(self.event, 'PROG-Bankruptcy-1', self.expected)
+
     def test_eval_prog_dofd_1(self):
     # Hits when all conditions met:
     # 1. previous_values__acct_stat == '61', '62', '63', '64', '65', '71',
