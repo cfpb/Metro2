@@ -495,3 +495,43 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 45: NO-acct_stat == previous_values__acct_stat
 
         self.assert_evaluator_correct(self.event, 'PROG-Status-3', self.expected)
+
+    def test_eval_prog_type_1(self):
+    # Hits when condition met:
+    # 1. previous_values__acct_type != acct_type
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'acct_type': '00'
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'acct_type': '3A'
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'acct_type': '7A'
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_type': '0A'
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_type': '6A'
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_type': '7A'
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__acct_type == acct_type
+
+        self.assert_evaluator_correct(self.event, 'PROG-Type-1', self.expected)
