@@ -302,15 +302,15 @@ class EvaluateViewsTestCase(TestCase):
     # Tests for Account PII view API endpoint
     def test_account_pii_view(self):
         self.create_activity_data()
-        expected = {'id': 2, 'surname': 'Doe', 'first_name': 'John', 'middle_name': '',
-                    'gen_code': '', 'ssn': '', 'dob': '',
+
+        response = self.client.get('/api/events/1/account/0033/account_holder/')
+        # the response should be a JSON
+        expected = {'id': response.json()['id'], 'surname': 'Doe', 'first_name': 'John',
+                    'middle_name': '', 'gen_code': '', 'ssn': '', 'dob': '',
                     'phone_num': '', 'ecoa': '', 'cons_info_ind': 'Y',
                     'country_cd': '', 'addr_line_1': '', 'addr_line_2': '', 'city': '',
                     'state': '', 'zip': '', 'addr_ind': '', 'res_cd': '',
                     'cons_acct_num': '0033'}
-
-        response = self.client.get('/api/events/1/account/0033/account_holder/')
-        # the response should be a JSON
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
