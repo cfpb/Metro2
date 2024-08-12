@@ -189,17 +189,17 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'acct_stat':'61', 'port_type': 'I', 'pmt_rating':'15'
             }, {
                 'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'13', 'port_type': 'A', 'pmt_rating':'20'
+                'acct_stat':'62', 'port_type': 'A', 'pmt_rating':'20'
             }, {
                 'id': 46, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'13', 'port_type': 'M', 'pmt_rating':'20'
+                'acct_stat':'65', 'port_type': 'M', 'pmt_rating':'20'
             }]
         for r in activities:
             acct_record(self.data_file, r)
         associate_previous_records(self.event)
-        # 42: HIT, 43: acct_stat == previous_values__acct_stat,
+        # 42: HIT, 43: NO-acct_stat != previous_values__acct_stat,
         # 44: NO-previous_values__acct_stat=61, 45: NO-port_type='A',
-        # 46: pmt_rating == previous_values__pmt_rating
+        # 46: NO- pmt_rating == previous_values__pmt_rating
 
         expected = [
             {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}]
