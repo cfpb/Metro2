@@ -108,7 +108,7 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
     def test_eval_prog_account_change_3(self):
     # Hits when both conditions met:
     # 1. previous_values__l1__change_ind == '1', '3'
-    # 2. previous_values__l1__new_acc_num == account_holder__cons_acct_num
+    # 2. previous_values__l1__new_acc_num == cons_acct_num
 
 
         # Create L1 segment data
