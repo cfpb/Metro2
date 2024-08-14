@@ -224,6 +224,94 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'PROG-ChargeOff-1', self.expected)
 
+    def test_eval_prog_date_closed_1(self):
+    # Hits when both condition met:
+    # 1. previous_values__date_closed != date_closed
+    # 2. port_type == 'I', 'M'
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'date_closed':date(2019, 1, 31)
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'date_closed': date(2019, 12, 31)
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'date_closed': date(2019, 3, 31)
+            }, {
+                'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
+                'date_closed': date(2019, 5, 31)
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'date_closed': date(2019, 12, 31), 'port_type': 'I'
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'date_closed': date(2019, 1, 31), 'port_type': 'M'
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'date_closed': date(2019, 3, 31), 'port_type': 'I'
+            }, {
+                'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'date_closed': date(2019, 7, 31), 'port_type': 'A'
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__date_closed == date_closed
+        # 45: NO-port_type='A'
+
+        self.assert_evaluator_correct(self.event, 'PROG-DateClosed-1', self.expected)
+
+    def test_eval_prog_date_open_1(self):
+    # Hits when condition met:
+    # 1. previous_values__date_open != date_open
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'date_open':date(2019, 1, 31)
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'date_open': date(2019, 12, 31)
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'date_open': date(2019, 3, 31)
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'date_open': date(2019, 12, 31)
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'date_open': date(2019, 1, 31)
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'date_open': date(2019, 3, 31)
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__date_open == date_open
+
+        self.assert_evaluator_correct(self.event, 'PROG-DateOpen-1', self.expected)
+
     def test_eval_prog_dofd_1(self):
     # Hits when all conditions met:
     # 1. previous_values__acct_stat == '61', '62', '63', '64', '65', '71',
@@ -338,6 +426,110 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 45: NO-acct_stat=77, 46: No-previous_values__dofd != dofd
 
         self.assert_evaluator_correct(self.event, 'PROG-DOFD-3', self.expected)
+
+    def test_eval_prog_ecoa_1(self):
+    # Hits when all conditions met:
+    # 1. previous_values__account_holder__ecoa == 'Z',
+    # 2. previous_values__account_holder__first_name == account_holder__first_name
+    # 3. previous_values__account_holder__surname == account_holder__surname
+    # 4. account_holder__ecoa != 'Z'
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'ecoa':'Z', 'first_name': 'FIRST', 'surname': 'LAST'
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'ecoa':'Z', 'first_name': 'FIRST', 'surname': 'LAST'
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'ecoa':'A', 'first_name': 'FIRST', 'surname': 'LAST'
+            }, {
+                'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
+                'ecoa':'Z', 'first_name': 'FIRST', 'surname': 'LAST'
+            }, {
+                'id': 36, 'activity_date': prev_acct_date, 'cons_acct_num': '0036',
+                'ecoa':'Z', 'first_name': 'FIRST', 'surname': 'LAST'
+            }, {
+                'id': 37, 'activity_date': prev_acct_date, 'cons_acct_num': '0037',
+                'ecoa':'Z', 'first_name': 'FIRST', 'surname': 'LAST'
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'ecoa':'A', 'first_name': 'FIRST', 'surname': 'LAST'
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'ecoa':'B', 'first_name': 'FIRST', 'surname': 'LAST'
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'ecoa':'A', 'first_name': 'FIRST', 'surname': 'LAST'
+            }, {
+                'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'ecoa':'C', 'first_name': 'FIST', 'surname': 'LAST'
+            }, {
+                'id': 46, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'ecoa':'D', 'first_name': 'FIRST', 'surname': 'LIST'
+            }, {
+                'id': 47, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'ecoa':'Z', 'first_name': 'FIRST', 'surname': 'LAST'
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__account_holder__ecoa == 'A',
+        # 45: NO-previous_values__account_holder__first_name != account_holder__first_name
+        # 46: previous_values__account_holder__surname != account_holder__surname
+        # 47: account_holder__ecoa == 'Z'
+
+        self.assert_evaluator_correct(self.event, 'PROG-ECOA-1', self.expected)
+
+    def test_eval_prog_portfolio_1(self):
+    # Hits when condition met:
+    # 1. previous_values__port_type != port_type
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'port_type': 'C'
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'port_type': 'M'
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'port_type': 'I'
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type': 'A'
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type': 'B'
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type': 'I'
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__port_type == port_type
+
+        self.assert_evaluator_correct(self.event, 'PROG-Portfolio-1', self.expected)
 
     def test_eval_prog_rating_1(self):
     # Hits when all conditions met:
@@ -539,3 +731,43 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 45: NO-acct_stat == previous_values__acct_stat
 
         self.assert_evaluator_correct(self.event, 'PROG-Status-3', self.expected)
+
+    def test_eval_prog_type_1(self):
+    # Hits when condition met:
+    # 1. previous_values__acct_type != acct_type
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'acct_type': '00'
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'acct_type': '3A'
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'acct_type': '7A'
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_type': '0A'
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_type': '6A'
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_type': '7A'
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__acct_type == acct_type
+
+        self.assert_evaluator_correct(self.event, 'PROG-Type-1', self.expected)
