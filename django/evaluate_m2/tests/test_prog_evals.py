@@ -175,6 +175,55 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'PROG-Bankruptcy-1', self.expected)
 
+    def test_eval_prog_charge_off_1(self):
+    # Hits when both conditions met:
+    # 1. previous_values__acct_stat == '64', '97'
+    # 2. previous_values__orig_chg_off_amt != orig_chg_off_amt
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'64', 'orig_chg_off_amt': 0
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'97', 'orig_chg_off_amt': 5
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'66', 'orig_chg_off_amt': 10
+            }, {
+                'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'97', 'orig_chg_off_amt': 20
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'orig_chg_off_amt': 5
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'orig_chg_off_amt': 10
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'orig_chg_off_amt':15
+            }, {
+                'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'orig_chg_off_amt':20
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: NO-previous_values__acct_stat=66,
+        # 45: NO-previous_values__orig_chg_off_amt == orig_chg_off_amt
+
+        self.assert_evaluator_correct(self.event, 'PROG-ChargeOff-1', self.expected)
+
     def test_eval_prog_date_closed_1(self):
     # Hits when both condition met:
     # 1. previous_values__date_closed != date_closed
@@ -320,12 +369,7 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 42: HIT, 43: HIT, 44: NO-previous_values__acct_stat=66,
         # 45: NO-acct_stat=77, 46: No-previous_values__dofd == dofd
 
-        expected = [{
-            'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 43, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'PROG-DOFD-1', expected)
+        self.assert_evaluator_correct(self.event, 'PROG-DOFD-1', self.expected)
 
     def test_eval_prog_dofd_3(self):
     # Hits when all conditions met:
