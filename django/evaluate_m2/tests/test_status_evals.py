@@ -15,6 +15,10 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.event.save()
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
+        self.expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}]
+
 
     ############################
     # Tests for the category Status evaluators
@@ -48,15 +52,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=79,
         # 35: NO-compl_cond_cd=XA, 36: NO-amt_past_due > 0
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-
         self.assert_evaluator_correct(
-            self.event, 'Status-APD-1', expected)
+            self.event, 'Status-APD-1', self.expected)
 
     def test_eval_status_adp_2(self):
     # Hits when all conditions are met:
@@ -83,15 +80,8 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=12, 35: NO-amt_past_due == 0
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-
         self.assert_evaluator_correct(
-            self.event, 'Status-APD-2', expected)
+            self.event, 'Status-APD-2', self.expected)
 
     def test_eval_status_apd_3(self):
     # Hits when all conditions are met:
@@ -128,15 +118,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 35: NO-acct_type=3, 36: NO-port_type=1,
         # 37: NO-amt_past_due > 0
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-
-        self.assert_evaluator_correct(
-            self.event, 'Status-APD-3', expected)
+        self.assert_evaluator_correct(self.event, 'Status-APD-3', self.expected)
 
     def test_eval_status_balance_1(self):
     # Hits when all conditions are met:
@@ -163,13 +145,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=01, 35: NO-current_bal=0,
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-1', self.expected)
 
     def test_eval_status_balance_2(self):
     # Hits when all conditions are met:
@@ -196,12 +172,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=79, 35: NO-current_bal=10,
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-2', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-2', self.expected)
 
     def test_eval_status_balance_4(self):
     # Hits when all conditions are met:
@@ -258,13 +229,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: current_bal=0, 37: NO-l1_change_ind=None, 38: NO-port_type=M
         # 39: NO-spc_com_cd=AH
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-4', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-4', self.expected)
 
     def test_eval_status_balance_5(self):
     # Hits when all conditions are met:
@@ -308,13 +273,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-5', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-5', self.expected)
 
     def test_eval_status_balance_6(self):
     # Hits when all conditions are met:
@@ -358,13 +317,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-6', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-6', self.expected)
 
     def test_eval_status_balance_7(self):
     # Hits when all conditions are met:
@@ -410,13 +363,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-7', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-7', self.expected)
 
     def test_eval_status_balance_8(self):
     # Hits when all conditions are met:
@@ -462,13 +409,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AX
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-8', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-8', self.expected)
 
     def test_eval_status_balance_9(self):
     # Hits when all conditions are met:
@@ -512,13 +453,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-9', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-9', self.expected)
 
     def test_eval_status_balance_10(self):
     # Hits when all conditions are met:
@@ -563,13 +498,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-10', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-10', self.expected)
 
     def test_eval_status_balance_11(self):
     # Hits when all conditions are met:
@@ -613,13 +542,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-11', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-11', self.expected)
 
     def test_eval_status_balance_12(self):
     # Hits when all conditions are met:
@@ -664,13 +587,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AH
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-12', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-12', self.expected)
 
     def test_eval_status_balance_13(self):
     # Hits when all conditions are met:
@@ -715,13 +632,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-l1_change_ind=1, 37: NO-port_type=I
         # 38: NO-spc_com_cd=AX
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-13', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-13', self.expected)
 
     def test_eval_status_balance_14(self):
     # Hits when all conditions are met:
@@ -777,13 +688,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: NO-acct_type=11, 36: current_bal=1,
         # 37: NO-l1_change_ind=1, 38: NO-port_type='A', 39: NO-spc_com_cd='O'
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            }]
-        self.assert_evaluator_correct(self.event, 'Status-Balance-14', expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-14', self.expected)
 
     def test_eval_status_chargeoff_1(self):
     # Hits when all conditions are met:
@@ -812,14 +717,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=12,
         # 35: NO-orig_chg_off_amt=0
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(
-            self.event, 'Status-ChargeOff-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-ChargeOff-1', self.expected)
 
     def test_eval_status_chargeoff_2(self):
     # Hits when all conditions are met:
@@ -847,13 +745,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=12,
         # 35: NO-orig_chg_off_amt=5
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-ChargeOff-2', expected)
+        self.assert_evaluator_correct(self.event, 'Status-ChargeOff-2', self.expected)
 
     def test_eval_status_date_closed_1(self):
         # Hits when all conditions are met:
@@ -880,13 +772,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=01, 35: NO-date_closed!=None
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-DateClosed-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DateClosed-1', self.expected)
 
     def test_eval_status_date_closed_2(self):
     # Hits when all conditions are met:
@@ -918,13 +804,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=12,
         # 35: NO-compl_cond_cd=XA, 36: No-date_closed=None
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-DateClosed-2', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DateClosed-2', self.expected)
 
     def test_eval_status_dofd_1(self):
     # Hits when all conditions met:
@@ -952,13 +832,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: NO-dofd=01012020
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-1', self.expected)
 
     def test_eval_status_dofd_2(self):
     # Hits when all conditions met:
@@ -989,13 +863,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: NO-pmt_rating=0, 36: NO-dofd=01012020
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-2', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-2', self.expected)
 
     def test_eval_status_dofd_3(self):
     # Hits when all conditions are met:
@@ -1027,13 +895,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=01,
         # 35: NO-dofd=date(2019, 12, 31), 36: NO-pmt_rating=7
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-3', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-3', self.expected)
 
     def test_eval_status_dofd_4(self):
     # Hits when all conditions met:
@@ -1064,13 +926,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: pmt_rating=3, 36: NO-dofd=01012020
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-4', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-4', self.expected)
 
     def test_eval_status_dofd_5(self):
     # Hits when all conditions are met:
@@ -1102,14 +958,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=01,
         # 35: NO-pmt_rating=1, 36: NO-dofd=None
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(
-            self.event, 'Status-DOFD-5', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-5', self.expected)
 
     def test_eval_status_dofd_6(self):
     # Hits when all conditions are met:
@@ -1137,14 +986,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         # 32: HIT, 33: HIT, 34: NO-acct_stat=01, 35: NO-dofd=None
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(
-            self.event, 'Status-DOFD-6', expected)
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-6', self.expected)
 
     def test_eval_status_dofd_7(self):
     # Hits when all conditions are met:
@@ -1198,14 +1040,54 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 37: NO-port_type=0, 38: NO-compl_cond_cd=XA
         # 39: NO-dofd=None
 
-        # Create the segment data
-        expected = [
-            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
-            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
-        ]
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-7', self.expected)
 
-        self.assert_evaluator_correct(
-            self.event, 'Status-DOFD-7', expected)
+    def test_eval_status_payment_amount_1(self):
+    # Hits when all conditions are met:
+    # 1. port_type  == 'I', 'M'
+    # 2. acct_stat == '11'
+    # 3. terms_freq != 'D'
+    # 4. date_open < (activity_date - 60 days)
+    # 5. actual payment amount == 0
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'11', 'port_type': 'I', 'date_open': date(2019, 10, 29),
+                'terms_freq': '0', 'actual_pmt_amt': 0
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'port_type': 'M', 'date_open': date(2019, 10, 29),
+                'terms_freq': '0', 'actual_pmt_amt': 0
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'11', 'port_type': 'I', 'date_open': date(2019, 10, 29),
+                'terms_freq': 'D', 'actual_pmt_amt': 0
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'11', 'port_type': 'C', 'date_open': date(2019, 10, 29),
+                'terms_freq': '0', 'actual_pmt_amt': 0
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'01', 'port_type': 'M', 'date_open':date(2019, 10, 29),
+                'terms_freq': '0', 'actual_pmt_amt': 0
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'acct_stat':'11', 'port_type': 'I', 'date_open':date(2019, 10, 29),
+                'terms_freq': '0', 'actual_pmt_amt': 1
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'acct_stat':'11', 'port_type': 'M', 'date_open': date(2020, 10, 29),
+                'terms_freq': '0', 'actual_pmt_amt': 0
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: No-term_freq=D, 35: NO-port_type=C,
+        # 36: NO-acct_stat=01, #37: NO-act_pmt_amt=1,
+        # 38: NO-date_open > (activity_date - 60 days)
+
+        self.assert_evaluator_correct(self.event, 'Status-PaymentAmount-1', self.expected)
 
     def test_eval_status_smpa_1(self):
     # Hits when all conditions are met:
@@ -1232,10 +1114,4 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=01, 35: NO-smpa=0
 
-        # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-        }]
-        self.assert_evaluator_correct(self.event, 'Status-SMPA-1', expected)
+        self.assert_evaluator_correct(self.event, 'Status-SMPA-1', self.expected)
