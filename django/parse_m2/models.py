@@ -29,8 +29,7 @@ class Metro2Event(models.Model):
         return self.name
 
     def get_all_account_activity(self):
-        return AccountActivity.objects.filter(
-            account_holder__data_file__event=self)
+        return AccountActivity.objects.filter(event_id=self.id)
 
     def account_activity_date_range(self) -> dict:
         activity = self.get_all_account_activity()
@@ -169,6 +168,8 @@ class AccountActivity(models.Model):
     def __str__(self) -> str:
         return f"AccountActivity {self.id} (File ID: {self.account_holder.data_file.id})"
 
+    # Duplicate event_id here so we don't have to do several joins to find all records for an event
+    event_id = models.IntegerField(default=-1)
     account_holder = models.OneToOneField(AccountHolder, on_delete=models.CASCADE)
     previous_values = models.OneToOneField("AccountActivity", on_delete=models.DO_NOTHING, null=True, blank=True)
     activity_date = models.DateField()
@@ -200,6 +201,7 @@ class AccountActivity(models.Model):
     @classmethod
     def parse_from_segment(cls, base_seg: str, acct_holder: AccountHolder, activity_date):
         return cls(
+            event_id = acct_holder.data_file.event.id,
             account_holder = acct_holder,
             activity_date = activity_date,
             cons_acct_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg),

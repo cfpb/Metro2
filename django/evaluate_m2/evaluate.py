@@ -24,7 +24,7 @@ from parse_m2.models import Metro2Event
 class Evaluate():
     # Evaluator version is saved on each evaluator result summary.
     # Increment this version for all updates to evaluator functionality.
-    evaluator_version = "1.0"
+    evaluator_version = "1.1"
 
     def __init__(self):
         self.evaluators = acct_change_evals |  balance_evals | balloon_evals | \

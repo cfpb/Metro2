@@ -30,9 +30,7 @@ def associate_previous_records(event: Metro2Event):
                 ORDER BY "parse_m2_accountactivity"."activity_date"
             ) as prevals
             FROM "parse_m2_accountactivity"
-            INNER JOIN "parse_m2_accountholder" ON ("parse_m2_accountactivity"."account_holder_id" = "parse_m2_accountholder"."id")
-            INNER JOIN "parse_m2_m2datafile" ON ("parse_m2_accountholder"."data_file_id" = "parse_m2_m2datafile"."id")
-            WHERE "parse_m2_m2datafile"."event_id" = %s
+            WHERE "parse_m2_accountactivity"."event_id" = %s
         ) prv_lag
         WHERE prv_lag.id = parse_m2_accountactivity.id ;
     """
