@@ -78,6 +78,7 @@ def acct_record(file: M2DataFile, custom_values: dict):
     # Create the AccountActivity record with provided values
     acct_activity = AccountActivity(
         id=values["id"],
+        event_id=file.event.id,
         previous_values=values["previous_values"],
         account_holder=acct_holder,
         activity_date=values["activity_date"],
