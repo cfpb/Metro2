@@ -3,7 +3,7 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import JSONField, Q
 from django.core.management import call_command
 
 from parse_m2.parse_utils import get_field_value
@@ -154,7 +154,10 @@ class AccountActivity(models.Model):
 
     class Meta:
         verbose_name_plural = "Account Activities"
-        indexes = [ models.Index(fields=['cons_acct_num',])]
+        indexes = [
+            models.Index(fields=['cons_acct_num',]),
+            models.Index(fields=['event_id',], name="idx_event_id_when_present", condition=Q(event_id__gt=0)),
+        ]
     # Note: Numeric fields are using models.IntegerField, which
     # has a limit of +/- 2.4 billion. Since the Metro2 format limits each of
     # these numeric fields to 9 characters, that size should be sufficient.
