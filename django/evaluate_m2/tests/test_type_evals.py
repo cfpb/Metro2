@@ -930,7 +930,7 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 1. port_type == 'I'
         # 2. acct_type == '06', '18'
         # 3. terms_freq != 'D'
-        # 4. terms_dur == '0'
+        # 4. terms_dur <= '0'
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -942,7 +942,7 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
                 'port_type':'I', 'acct_type':'18', 'terms_freq':'P',
-                'terms_dur': '0'
+                'terms_dur': '-1'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
                 'port_type':'C', 'acct_type':'06', 'terms_freq':'O',
