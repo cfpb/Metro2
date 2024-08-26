@@ -1186,3 +1186,71 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 39: acct_type=15 but port_type != C,  #40: port_type=R but acct_type != 15
 
         self.assert_evaluator_correct(self.event, 'Status-SMPA-2', self.expected)
+
+    def test_eval_status_smpa_3(self):
+    # Hits when all conditions are met:
+    # 1. port_type == 'I'
+    # 2. acct_type == '00', '01', '02', '03', '04', '05', '06', '10', '11', '13', '17',
+    #                 '20', '29', '65', '66', '67', '68', '69', '70', '71', '72', '73',
+    #                 '74', '75', '91', '95', '0A', '0F', '3A', '6A', '6D', '7B', '9A'
+    # 3. acct_stat == '11', '71', '78', '80', '82', '83', '84', '93'
+    # 4. compl_cond_cd != 'XA'
+    # 5. spc_com_cd != 'BS'
+    # 6. terms_freq != 'D'
+    # 7. smpa == 0
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'11', 'acct_type':'00', 'port_type':'I',
+                'compl_cond_cd': 'XB', 'smpa': 0, 'spc_com_cd': 'AH',
+                'terms_freq': '0'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'71', 'acct_type':'01', 'port_type':'I',
+                'compl_cond_cd': 'XC', 'smpa': 0, 'spc_com_cd': 'AT',
+                'terms_freq': '0'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'78', 'acct_type':'02', 'port_type':'R',
+                'compl_cond_cd': 'XD', 'smpa': 0, 'spc_com_cd': 'O', 
+                'terms_freq': '0'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'80', 'acct_type':'0B',  'port_type':'I',
+                'compl_cond_cd': 'XE', 'smpa': 0, 'spc_com_cd': 'BA', 
+                'terms_freq': '0'
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'81', 'acct_type':'03', 'port_type':'I',
+                'compl_cond_cd': 'XB', 'smpa': 0, 'spc_com_cd': 'DF', 
+                'terms_freq': '0'
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'acct_stat':'82', 'acct_type':'04', 'port_type':'I',
+                'compl_cond_cd': 'XA', 'smpa': 0, 'spc_com_cd': 'BC', 
+                'terms_freq': '0'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'acct_stat':'83', 'acct_type':'05', 'port_type':'I',
+                'compl_cond_cd': 'XC', 'smpa': 0, 'spc_com_cd': 'BS', 
+                'terms_freq': '0'
+            }, {
+                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
+                'acct_stat':'84', 'acct_type':'06', 'port_type':'I',
+                'compl_cond_cd': 'XD', 'smpa': 0, 'spc_com_cd': 'BB', 
+                'terms_freq': 'D'
+            }, {
+                'id': 40, 'activity_date': acct_date, 'cons_acct_num': '0040',
+                'acct_stat':'93', 'acct_type':'10', 'port_type':'I',
+                'compl_cond_cd': 'XE', 'smpa': 1, 'spc_com_cd': 'BA', 
+                'terms_freq': '0'
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-port_type=R, 35: NO-acct_type=0B,
+        # 36: NO-acct_stat=81, 37: compl_cond_cd=XA, 38: spc_com_cd=BS,
+        # 39: terms_freq=D,  #40: smpa=1
+
+        self.assert_evaluator_correct(self.event, 'Status-SMPA-3', self.expected)
