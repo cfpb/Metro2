@@ -17,6 +17,9 @@ class ParserUtilsTestCase(TestCase):
         result = parse_utils.cast_to_type("0000000123", "numeric")
         self.assertEqual(result, 123)
 
+        result = parse_utils.cast_to_type("-00000023", "numeric")
+        self.assertEqual(result, -23)
+
         with self.assertRaises(parse_utils.UnreadableLineException):
             parse_utils.cast_to_type("", "numeric")
 
@@ -32,6 +35,9 @@ class ParserUtilsTestCase(TestCase):
 
         result = parse_utils.cast_to_type("0000000123", "numeric optional")
         self.assertEqual(result, 123)
+
+        result = parse_utils.cast_to_type("-00000023", "numeric optional")
+        self.assertEqual(result, -23)
 
         result = parse_utils.cast_to_type("", "numeric optional")
         self.assertEqual(result, None)
