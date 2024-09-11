@@ -1,56 +1,30 @@
+/* eslint-disable unicorn/prefer-set-has */
+import { M2_FIELD_LOOKUPS } from 'utils/annotationLookups'
+import { COL_DEF_CONSTANTS } from 'utils/constants'
 import { annotateValue, formatDate, formatUSD } from '../../src/utils/formatters'
-export const dateFields = [
-  'activity_date',
-  'date_open',
-  'date_closed',
-  'doai',
-  'dofd',
-  'dolp',
-  'previous_values__activity_date',
-  'previous_values__date_open',
-  'previous_values__dofd',
-  'previous_values__date_closed'
-]
 
-export const currencyFields = [
-  'actual_pmt_amt',
-  'amt_past_due',
-  'credit_limit',
-  'current_bal',
-  'hcola',
-  'orig_chg_off_amt',
-  'smpa',
-  'k4__balloon_pmt_amt',
-  'previous_values__current_bal',
-  'previous_values__orig_chg_off_amt'
-]
+// TODO: maybe generate the col definitions from a list of date and currency fields
+// Derive a list of date fields from the account record column definitions
+const dateFields = Object.keys(COL_DEF_CONSTANTS).filter(field => {
+  const coldef = COL_DEF_CONSTANTS[field as keyof typeof COL_DEF_CONSTANTS]
+  'type' in coldef ? coldef.type === 'formattedDate' : false
+})
 
-export const annotatedFields = [
-  'acct_stat',
-  'acct_type',
-  'compl_cond_cd',
-  'php',
-  'php1',
-  'pmt_rating',
-  'port_type',
-  'spc_com_cd',
-  'terms_freq',
-  'account_holder__cons_info_ind',
-  'account_holder__cons_info_ind_assoc',
-  'account_holder__ecoa',
-  'account_holder__ecoa_assoc',
-  'k2__purch_sold_ind',
-  'l1__change_ind',
-  'previous_values__account_holder__cons_info_ind',
-  'previous_values__account_holder__cons_info_ind_assoc',
-  'previous_values__account_holder__ecoa',
-  'previous_values__l1__change_ind',
-  'previous_values__port_type',
-  'previous_values__acct_type',
-  'previous_values__acct_stat',
-  'previous_values__pmt_rating'
-]
+// Derive a list of currency fields from the account record column definitions
+const currencyFields = Object.keys(COL_DEF_CONSTANTS).filter(field => {
+  const coldef = COL_DEF_CONSTANTS[field as keyof typeof COL_DEF_CONSTANTS]
+  'type' in coldef ? coldef.type === 'currency' : false
+})
 
+// Derive a list of annotated fields from the annotation lookup map
+const annotatedFields = Object.keys(M2_FIELD_LOOKUPS)
+
+// Generate the value that should be displayed in the account record table cell
+// for a specific field:
+//    a formatted date for a date field
+//    a USD-formatted number for a currency field
+//    an annotated string for a value with an annotation lookup
+//    and the raw value for any other field
 export const getDisplayValue = (
   field: string,
   value: number | string | null | undefined

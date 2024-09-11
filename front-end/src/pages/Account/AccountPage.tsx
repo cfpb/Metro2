@@ -23,20 +23,38 @@ const getInconsistenciesColDef = (accountInconsistencies: string[]): object => (
 })
 
 // TODO: should we be getting / showing cons_acct_num for L1 evals?
-// get fields from M2_FIELD_NAMES, remove cons_acct_num since we're not currently getting it from API,
+// TODO: should we be showing the name values for PROG-DOFD-3?
+// Get fields from M2_FIELD_NAMES
+// remove cons_acct_num since we're not currently getting it from API
+// remove account holder name values unless the account hit on PROG-DOFD-3, which uses them
 // and add 'inconsistencies' at position 2
-const fields = [...M2_FIELD_NAMES.keys()].filter(
-  field => !['cons_acct_num'].includes(field)
-)
-fields.splice(1, 0, 'inconsistencies')
+const getFields = (inconsistencies: string[]): string[] => {
+  const fields = [...M2_FIELD_NAMES.keys()].filter(field => {
+    let screen = ['cons_acct_num']
+    if (!inconsistencies.includes('PROG-DOFD-3')) {
+      screen = [
+        ...screen,
+        'previous_values__account_holder__first_name',
+        'previous_values__account_holder__surname',
+        'account_holder__first_name',
+        'account_holder__surname'
+      ]
+    }
+    return !screen.includes(field)
+  })
+  fields.splice(1, 0, 'inconsistencies')
+  return fields
+}
 
 export default function AccountPage(): ReactElement {
   const eventData: Event = useLoaderData({ from: '/events/$eventId' })
   const accountData: Account = useLoaderData({
     from: '/events/$eventId/accounts/$accountId'
   })
+  const fields = getFields(accountData.inconsistencies)
   const rows = accountData.account_activity
 
+  // TODO: Move this all into a col def generation helper function
   const colDefProps = {
     ...COL_DEF_CONSTANTS,
     inconsistencies: getInconsistenciesColDef(accountData.inconsistencies),

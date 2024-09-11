@@ -86,8 +86,8 @@ export const M2_FIELD_NAMES = new Map([
   ['dofd', 'DOFD'],
   ['date_closed', 'Date closed'],
   ['dolp', 'Date of last payment'],
-  // ['account_holder__surname', ''],
-  // ['account_holder__first_name', ''],
+  ['account_holder__first_name', 'Account holder first name'],
+  ['account_holder__surname', 'Account holder surname'],
   [
     'account_holder__cons_info_ind',
     'Bankruptcy - Consumer information indicator for account holder'
@@ -113,8 +113,8 @@ export const M2_FIELD_NAMES = new Map([
     'Prior consumer information indicators for associated consumers'
   ],
   ['previous_values__account_holder__ecoa', 'Prior ECOA code for account holder'],
-  ['previous_values__account_holder__first_name', 'Prior first name'],
-  ['previous_values__account_holder__surname', 'Prior surname'],
+  ['previous_values__account_holder__first_name', 'Prior account holder first name'],
+  ['previous_values__account_holder__surname', 'Prior account holder surname'],
   ['previous_values__l1__change_ind', 'Prior account change indicator (L1)'],
   ['previous_values__l1__new_acc_num', 'Prior new consumer account number (L1)'],
   ['previous_values__l1__new_id_num', 'Prior new identification number (L1)'],
@@ -126,7 +126,7 @@ export const M2_FIELD_NAMES = new Map([
   ['previous_values__pmt_rating', 'Prior payment rating'],
   ['previous_values__current_bal', 'Prior current balance'],
   ['previous_values__orig_chg_off_amt', 'Prior original charge-off amount'],
-  ['previous_values__dofd', 'Prior date of first delinquency'],
+  ['previous_values__dofd', 'Prior DOFD'],
   ['previous_values__date_closed', 'Prior date closed'],
   ['previous_values__id_num', 'Prior ID number']
 ])
