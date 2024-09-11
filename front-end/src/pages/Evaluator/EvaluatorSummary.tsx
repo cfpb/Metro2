@@ -3,7 +3,11 @@ import { Expandable, ExpandableGroup } from 'design-system-react'
 import type User from 'models/User'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
-import { formatDate, formatLongDescription, formatNumber } from '../../utils/utils'
+import {
+  formatDate,
+  formatLongDescription,
+  formatNumber
+} from '../../utils/formatters'
 import type EvaluatorMetadata from './Evaluator'
 
 interface EvaluatorSummaryProperties {

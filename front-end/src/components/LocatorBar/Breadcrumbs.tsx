@@ -2,14 +2,23 @@ import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 import './Breadcrumbs.less'
 
-// TODO: This is a preliminary implementation rendering
-// a single breadcrumb that links to parent page
-export default function Breadcrumbs(): ReactElement {
+export interface Breadcrumb {
+  text: string
+  href: string
+}
+
+interface BreadcrumbProperties {
+  links: Breadcrumb[]
+}
+
+export function Breadcrumbs({ links }: BreadcrumbProperties): ReactElement {
   return (
     <nav className='m-breadcrumbs'>
-      <Link className='m-breadcrumbs_crumb' to='../..'>
-        &lt; Back to event results
-      </Link>
+      {links.map(link => (
+        <Link className='m-breadcrumbs_crumb' to={link.href} key={link.href}>
+          &lt; {link.text}{' '}
+        </Link>
+      ))}
     </nav>
   )
 }

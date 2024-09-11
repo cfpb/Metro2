@@ -1,8 +1,8 @@
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
-  createRouter,
+  RouterProvider,
   createRootRoute,
-  RouterProvider
+  createRouter
 } from '@tanstack/react-router'
 import { render } from '@testing-library/react'
 import type { PropsWithChildren, ReactElement } from 'react'

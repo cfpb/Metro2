@@ -43,14 +43,18 @@ export default function AccountPage(): ReactElement {
     activity_date: { pinned: 'left', type: 'formattedDate', minWidth: 160 }
   }
   const colDefs = generateColumnDefinitions(fields, colDefProps)
-
   return (
     <>
       <LocatorBar
         eyebrow='Account'
         heading={accountData.cons_acct_num}
         icon='user-round'
-        breadcrumbs
+        breadcrumbs={[
+          {
+            href: `/events/${String(eventData.id)}`,
+            text: 'Back to event results'
+          }
+        ]}
       />
       <Summary accountData={accountData} eventData={eventData} />
 

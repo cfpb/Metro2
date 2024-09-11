@@ -1,5 +1,7 @@
+/* eslint-disable cypress/require-data-selectors */
 import { PII_COOKIE_NAME } from '../../src/utils/constants'
-import { testLocatorBar } from '../helpers/page_helper'
+import { Metro2Page } from '../helpers/pageHelper'
+const page = new Metro2Page()
 
 describe('Landing page loader', () => {
   it('Should show a loading view while the user data is being fetched', () => {
@@ -24,7 +26,7 @@ describe('Landing page', () => {
   })
 
   it('Should show a welcome message including username', () => {
-    testLocatorBar('Welcome, Test user', 'Here is your events list')
+    page.verifyLocatorBarContent('Welcome, Test user', 'Here is your events list')
   })
 
   it('Should show a list of events assigned to user', () => {
