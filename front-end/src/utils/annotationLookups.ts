@@ -252,11 +252,17 @@ export const CONSUMER_INFORMATION_INDICATOR_LOOKUP = {
   Q: 'Removes previously reported Bankruptcy Indicator or reports bankruptcy has been closed, terminated, dismissed or withdrawn, without being discharged.'
 }
 
+export const INTEREST_TYPE_INDICATOR_LOOKUP = {
+  F: 'Fixed',
+  V: 'Variable/Adjustable'
+}
+
 // Enables accessing a field's lookup by the field's id.
 export const M2_FIELD_LOOKUPS = {
   acct_stat: ACCOUNT_STATUS_LOOKUP,
   acct_type: ACCOUNT_TYPE_LOOKUP,
   compl_cond_cd: COMPLIANCE_CONDTION_CODE_LOOKUP,
+  int_type_ind: INTEREST_TYPE_INDICATOR_LOOKUP,
   php: PAYMENT_HISTORY_PROFILE_LOOKUP,
   php1: PAYMENT_HISTORY_PROFILE_LOOKUP,
   pmt_rating: PAYMENT_RATING_LOOKUP,

@@ -86,6 +86,7 @@ export const M2_FIELD_NAMES = new Map([
   ['dofd', 'DOFD'],
   ['date_closed', 'Date closed'],
   ['dolp', 'Date of last payment'],
+  ['int_type_ind', 'Interest type indicator'],
   ['account_holder__first_name', 'Account holder first name'],
   ['account_holder__surname', 'Account holder surname'],
   [
