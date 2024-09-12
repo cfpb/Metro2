@@ -7,13 +7,13 @@ import { annotateValue, formatDate, formatUSD } from '../../src/utils/formatters
 // Derive a list of date fields from the account record column definitions
 const dateFields = Object.keys(COL_DEF_CONSTANTS).filter(field => {
   const coldef = COL_DEF_CONSTANTS[field as keyof typeof COL_DEF_CONSTANTS]
-  'type' in coldef ? coldef.type === 'formattedDate' : false
+  return 'type' in coldef ? coldef.type === 'formattedDate' : false
 })
 
 // Derive a list of currency fields from the account record column definitions
 const currencyFields = Object.keys(COL_DEF_CONSTANTS).filter(field => {
   const coldef = COL_DEF_CONSTANTS[field as keyof typeof COL_DEF_CONSTANTS]
-  'type' in coldef ? coldef.type === 'currency' : false
+  return 'type' in coldef ? coldef.type === 'currency' : false
 })
 
 // Derive a list of annotated fields from the annotation lookup map
