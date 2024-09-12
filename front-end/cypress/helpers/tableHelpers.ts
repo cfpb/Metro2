@@ -32,17 +32,22 @@ export class Metro2Table {
     expectedData: AccountRecord[]
   ) {
     rows.each((row, rowIndex) => {
-      // get the record for this row
-      const rowData = expectedData[rowIndex]
+      // get the record that corresponds with this row
+      const rowData: AccountRecord = expectedData[rowIndex]
       row.find('.ag-cell-value').each((cellIndex, cell) => {
         // get the field that corresponds with this cell
         const field = fields[cellIndex]
-        // get the value that should be displayed in this cell.
+        // using the field & the record value for that field,
+        // find the value that should be displayed in this cell.
         // depending on the field type,
         // this could be a formatted date, a USD formatted number,
         // a string with parenthetical annotation,
         // or the raw value from the record.
-        const expectedValue = getDisplayValue(field, rowData[field])
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const expectedValue = getDisplayValue(
+          field,
+          rowData[field as keyof AccountRecord]
+        )
         cy.wrap(cell).should('have.text', expectedValue ?? '')
       })
     })
