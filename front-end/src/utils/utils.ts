@@ -2,39 +2,10 @@ import { notFound } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
 import type EvaluatorMetadata from 'pages/Evaluator/Evaluator'
 import type Event from 'pages/Event/Event'
-import {
-  AccountRecord,
-  M2_FIELD_LOOKUPS,
-  M2_FIELD_NAMES,
-  PII_COOKIE_NAME
-} from './constants'
-/**
- * Takes an id and value for a Metro2 field,
- * accesses the lookup for the field's code definitions,
- * and returns either the definition corresponding with
- * the value provided for the field or undefined.
- */
-export const getM2Definition = (
-  field: string,
-  value?: number | string | null
-): string | undefined => {
-  if (value != null && field in M2_FIELD_LOOKUPS) {
-    const lookup = M2_FIELD_LOOKUPS[field as keyof typeof M2_FIELD_LOOKUPS]
-    return lookup[value as keyof typeof lookup]
-  }
-  return undefined
-}
+import type { AccountRecord } from './constants'
+import { M2_FIELD_NAMES, PII_COOKIE_NAME } from './constants'
 
-// Given a Metro2 field and value, checks if there is a human-readable definition for the value.
-// If there is a definition, returns a string with format 'value (definition)'
-// If no definition is available, returns the original value
-export const annotateValue = (
-  field: string,
-  val: number | string | null | undefined
-): number | string | null | undefined => {
-  const annotation = getM2Definition(field, val)
-  return annotation ? `${val} (${annotation})` : val
-}
+import { annotateValue, capitalized } from './formatters'
 
 // Iterates through array of account records and annotates values as needed
 export const annotateAccountRecords = (records: AccountRecord[]): AccountRecord[] =>
@@ -83,10 +54,6 @@ export const prepareAccountRecordData = (
   return annotateAccountRecords(updatedRecords)
 }
 
-// Capitalizes first letter of a string
-export const capitalized = (str: string): string =>
-  `${str[0].toUpperCase()}${str.slice(1)}`
-
 // Given a string and a lookup map, returns either the string's value in the lookup
 // or, if the string is not found in the lookup, a capitalized version of the string
 export const getHeaderName = (field: string, lookup: Map<string, string>): string =>
@@ -117,8 +84,8 @@ export const generateColumnDefinitions = (
  */
 export const fetchData = async <TData>(
   url: string,
-  dataType: string
-  // delay?: number
+  dataType: string,
+  delay?: number
 ): Promise<TData> => {
   try {
     // Fetch data from URL.
@@ -126,11 +93,11 @@ export const fetchData = async <TData>(
     // If unsuccessful, throw an error with the response
     // status (404, 500, etc) as its message.
 
-    // if (delay) {
-    //   // Temporary hack to show loading view
-    //   // eslint-disable-next-line no-promise-executor-return
-    //   await new Promise(r => setTimeout(r, delay))
-    // }
+    if (delay) {
+      // Temporary hack to show loading view
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise(r => setTimeout(r, delay))
+    }
 
     const response = await fetch(url)
     if (response.ok) return (await response.json()) as TData
@@ -142,53 +109,6 @@ export const fetchData = async <TData>(
     if (message === '404') notFound({ throw: true, data: dataType })
     throw new Error(message)
   }
-}
-
-export const numberFormatter = new Intl.NumberFormat('en-US', {
-  notation: 'standard'
-})
-
-export const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 2
-})
-
-// Given a number, returns a formatted numeric string
-// Returns empty string if any other data type is passed in
-export function formatNumber(val: number | null | undefined): string {
-  return typeof val === 'number' ? numberFormatter.format(val) : ''
-}
-
-// Given a number, returns a USD-formatted string
-// Returns empty string if any other data type is passed in
-export function formatUSD(val: number | null | undefined): string {
-  return typeof val === 'number' ? currencyFormatter.format(val) : ''
-}
-
-// // Given a date string in format yyyy-mm-dd, returns a mm/dd/yyyy formatted string
-// // Returns empty string if any other data type is passed in
-// export const formatDate = (val: string | null | undefined): string =>
-//   typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)
-//     ? new Date(`${val}T00:00:00`).toLocaleDateString('en-us')
-//     : ''
-
-// Given a date string in format yyyy-mm-dd, returns a mm/dd/yyyy formatted string
-// Returns empty string if any other data type is passed in
-export const formatDate = (
-  val: string | null | undefined,
-  shorthandDate = false
-): string => {
-  if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
-    return new Date(`${val}T00:00:00`).toLocaleDateString(
-      'en-us',
-      shorthandDate
-        ? { month: 'short', year: 'numeric' }
-        : { month: '2-digit', day: '2-digit', year: '2-digit' }
-    )
-  }
-  return ''
 }
 
 // Takes an ordered list of fields, a header lookup, and an array of records
@@ -280,24 +200,6 @@ export const downloadFileFromURL = (url: string): void => {
 //     console.log(error)
 //   }
 // }
-// Generates html for an evaluator long description that is only formatted with line breaks.
-// Splits string into segments at double line breaks. Breaks segments into lines.
-// If the first line of a segment is explanatory rather than pseudo-code
-// -- determined by checking for absence of symbols used in pseudo code lines --
-// it's formatted as an H4. All other lines are formatted as paragraphs.
-export const formatLongDescription = (longDescription: string): string => {
-  if (!longDescription) return ''
-  let html = ''
-  for (const segment of longDescription.split('\n\n')) {
-    for (const [lineIndex, line] of segment.split('\n').entries()) {
-      const isHeader =
-        lineIndex === 0 &&
-        ![':', '<', '>', '=', '≠'].some(char => line.includes(char))
-      html += `<${isHeader ? 'h4' : 'p'}>${line}</${isHeader ? 'h4' : 'p'}>`
-    }
-  }
-  return html
-}
 
 // Given a cookie name, value, and expire time (in days), sets a cookie.
 // Expire time defaults to 1 day.

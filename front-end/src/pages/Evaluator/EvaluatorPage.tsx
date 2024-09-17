@@ -33,7 +33,12 @@ export default function EvaluatorPage(): ReactElement {
         eyebrow='Inconsistency'
         heading={evaluatorMetadata.id}
         icon='flag-round'
-        breadcrumbs
+        breadcrumbs={[
+          {
+            href: `/events/${String(eventData.id)}`,
+            text: 'Back to event results'
+          }
+        ]}
       />
       <EvaluatorSummary
         metadata={evaluatorMetadata}

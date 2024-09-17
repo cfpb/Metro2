@@ -2,9 +2,8 @@ import { Link } from '@tanstack/react-router'
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community'
 import type { ReactElement } from 'react'
 import type EvaluatorMetadata from '../Evaluator/Evaluator'
-import type Event from './Event'
 
-const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
+const getColumnDefinitions = (eventId: string): ColDef<EvaluatorMetadata>[] => [
   {
     field: 'id',
     headerName: 'Evaluator',
@@ -15,10 +14,12 @@ const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
       data,
       value
     }: {
-      data: Event
+      data: EvaluatorMetadata
       value: string
     }): ReactElement => (
-      <Link to='evaluators/$evaluatorId' params={{ evaluatorId: data.id }}>
+      <Link
+        to='/events/$eventId/evaluators/$evaluatorId'
+        params={{ evaluatorId: data.id, eventId }}>
         {value}
       </Link>
     )
@@ -55,5 +56,4 @@ const columnDefinitions: ColDef<EvaluatorMetadata>[] = [
     flex: 1
   }
 ]
-
-export default columnDefinitions
+export default getColumnDefinitions

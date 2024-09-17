@@ -15,19 +15,18 @@ interface EvaluatorTableData {
   eventData: Event
 }
 
-const accountColDef = {
-  pinned: 'left' as const,
-  cellRenderer: ({ value }: { value: string }): ReactElement => (
-    <Link
-      to='../../accounts/$accountId'
-      params={{ accountId: value }}
-      className='a-link'>
-      {value}
-    </Link>
-  )
-}
-
-const getEvaluatorColDefs = (fields: string[]): ColDef[] => {
+const getEvaluatorColDefs = (fields: string[], eventId: string): ColDef[] => {
+  const accountColDef = {
+    pinned: 'left' as const,
+    cellRenderer: ({ value }: { value: string }): ReactElement => (
+      <Link
+        to='/events/$eventId/accounts/$accountId'
+        params={{ accountId: value, eventId }}
+        className='a-link'>
+        {value}
+      </Link>
+    )
+  }
   const colDefObj = { ...COL_DEF_CONSTANTS, cons_acct_num: accountColDef }
   return generateColumnDefinitions(fields, colDefObj)
 }
@@ -36,16 +35,14 @@ const getEvaluatorFields = (
   fields_used: string[],
   fields_display: string[]
 ): string[] => {
-  // Create list by combining fields_used and fields_display, each sorted alphabetically
-  const fields = [...fields_used, ...fields_display]
-
-  // Remove id and cons_acct_num.
-  // id is internal db id (id_num is Metro2 ID and will be included for relevant evals)
-  // cons_acct_num is added back later at beginning of array
-  fields.filter(item => !['id', 'cons_acct_num'].includes(item))
-
-  // Add cons_acct_num to start of array so it will be in correct location in exported csv
-  fields.unshift('cons_acct_num')
+  // Create list by combining fields_used and fields_display, each sorted alphabetically,
+  // with constant values consumer account number and activity date added at beginning
+  const fields = [
+    'cons_acct_num',
+    'activity_date',
+    ...fields_used.sort(),
+    ...fields_display.sort()
+  ]
 
   // If php is present, add php1 right after it so they'll be adjacent columns.
   // php1 does not appear in fields metadata lists & the values are not in the data returned by the API --
@@ -68,7 +65,7 @@ export default function EvaluatorTable({
   )
 
   // Generate colDefs for this evaluator's fields
-  const colDefs = getEvaluatorColDefs(fields)
+  const colDefs = getEvaluatorColDefs(fields, String(eventData.id))
 
   // Present correct messaging per results in table
   const totalResults = Number(evaluatorMetadata.hits)
@@ -81,7 +78,7 @@ export default function EvaluatorTable({
 
   return (
     <div className='content-row'>
-      <div className='download-row'>
+      <div className='download-row evaluator-hits-row'>
         <h4 className='u-mb0'>{msg}</h4>
         <EvaluatorDownloader
           rows={hits}

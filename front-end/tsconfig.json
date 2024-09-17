@@ -13,7 +13,12 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ESNext",
-    "types": ["vite/client", "vitest/globals", "@types/wicg-file-system-access"]
+    "types": [
+      "vite/client",
+      "vitest/globals",
+      "@types/wicg-file-system-access",
+      "cypress"
+    ]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

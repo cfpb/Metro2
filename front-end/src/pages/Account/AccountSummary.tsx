@@ -5,12 +5,9 @@ import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import { M2_FIELD_NAMES } from 'utils/constants'
-import {
-  formatDate,
-  getEvaluatorDataFromEvent,
-  getHeaderName,
-  getM2Definition
-} from 'utils/utils'
+import { formatDate, getM2Definition } from 'utils/formatters'
+
+import { getEvaluatorDataFromEvent, getHeaderName } from 'utils/utils'
 import type Account from './Account'
 import AccountContactInformation from './AccountContactInformation'
 
@@ -90,7 +87,10 @@ export default function AccountSummary({
                 <li key={inconsistency}>
                   <Link
                     to='/events/$eventId/evaluators/$evaluatorId'
-                    params={{ eventId: eventData.id, evaluatorId: inconsistency }}>
+                    params={{
+                      eventId: String(eventData.id),
+                      evaluatorId: inconsistency
+                    }}>
                     {inconsistency}
                   </Link>
                   <span>

@@ -22,36 +22,52 @@ const getInconsistenciesColDef = (accountInconsistencies: string[]): object => (
   minWidth: 175
 })
 
-// Get fields from M2_FIELD_NAMES,
-// remove cons_acct_num since we're not currently getting it from API,
+// TODO: should we be getting / showing cons_acct_num for L1 evals?
+// TODO: should we be showing the name values for PROG-DOFD-3?
+// Get fields from M2_FIELD_NAMES
+// remove cons_acct_num since we're not currently getting it from API
+// remove account holder name values unless the account hit on PROG-DOFD-3, which uses them
 // remove all the prior value fields since they'll be displayed in the adjacent row,
 // and add 'inconsistencies' at position 2
-const fields = [...M2_FIELD_NAMES.keys()].filter(
-  field => !['cons_acct_num'].includes(field) && !field.startsWith('previous_values')
-)
-fields.splice(1, 0, 'inconsistencies')
+const getFields = (inconsistencies: string[]): string[] => {
+  const fields = [...M2_FIELD_NAMES.keys()].filter(field => {
+    let screen = ['cons_acct_num']
+    if (!inconsistencies.includes('PROG-DOFD-3')) {
+      screen = [...screen, 'account_holder__first_name', 'account_holder__surname']
+    }
+    return !screen.includes(field) && !field.startsWith('previous_values')
+  })
+  fields.splice(1, 0, 'inconsistencies')
+  return fields
+}
 
 export default function AccountPage(): ReactElement {
   const eventData: Event = useLoaderData({ from: '/events/$eventId' })
   const accountData: Account = useLoaderData({
     from: '/events/$eventId/accounts/$accountId'
   })
+  const fields = getFields(accountData.inconsistencies)
   const rows = accountData.account_activity
 
+  // TODO: Move this all into a col def generation helper function
   const colDefProps = {
     ...COL_DEF_CONSTANTS,
     inconsistencies: getInconsistenciesColDef(accountData.inconsistencies),
     activity_date: { pinned: 'left', type: 'formattedDate', minWidth: 160 }
   }
   const colDefs = generateColumnDefinitions(fields, colDefProps)
-
   return (
     <>
       <LocatorBar
         eyebrow='Account'
         heading={accountData.cons_acct_num}
         icon='user-round'
-        breadcrumbs
+        breadcrumbs={[
+          {
+            href: `/events/${String(eventData.id)}`,
+            text: 'Back to event results'
+          }
+        ]}
       />
       <Summary accountData={accountData} eventData={eventData} />
 

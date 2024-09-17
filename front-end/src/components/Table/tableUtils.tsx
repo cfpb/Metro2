@@ -1,5 +1,5 @@
 import type { ValueFormatterParams } from 'ag-grid-community'
-import { formatDate, formatNumber, formatUSD } from 'utils/utils'
+import { formatDate, formatNumber, formatUSD } from 'utils/formatters'
 
 export const columnTypes = {
   wrappableText: {

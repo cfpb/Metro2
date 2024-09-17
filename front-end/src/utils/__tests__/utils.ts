@@ -1,13 +1,13 @@
-import { M2_FIELD_LOOKUPS } from '../constants'
+import { M2_FIELD_LOOKUPS } from 'utils/annotationLookups'
+import { addPHP1, annotateAccountRecords } from '../utils'
+
 import {
-  addPHP1,
-  annotateAccountRecords,
   formatDate,
   formatLongDescription,
   formatNumber,
   formatUSD,
   getM2Definition
-} from '../utils'
+} from 'utils/formatters'
 
 const UNDEFINED = undefined
 
