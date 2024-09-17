@@ -34,31 +34,22 @@ const getEvaluatorColDefs = (fields: string[]): ColDef[] => {
 
 const getEvaluatorFields = (
   fields_used: string[],
-  record: AccountRecord | null
+  fields_display: string[]
 ): string[] => {
-  // return empty array if there are no records
-  if (!record) return []
+  // Create list by combining fields_used and fields_display, each sorted alphabetically
+  const fields = [...fields_used, ...fields_display]
 
-  // get list of fields from record and remove id and cons_acct_num
+  // Remove id and cons_acct_num.
   // id is internal db id (id_num is Metro2 ID and will be included for relevant evals)
   // cons_acct_num is added back later at beginning of array
-  const fields = Object.keys(record).filter(
-    item => !['id', 'cons_acct_num'].includes(item)
-  )
-
-  // sort fields alphabetically and prioritize ones that are used by evaluator
-  fields
-    .sort()
-    .sort(
-      (a, b) =>
-        (fields_used.indexOf(b as keyof AccountRecord) || 100) -
-        (fields_used.indexOf(a as keyof AccountRecord) || 100)
-    )
+  fields.filter(item => !['id', 'cons_acct_num'].includes(item))
 
   // Add cons_acct_num to start of array so it will be in correct location in exported csv
   fields.unshift('cons_acct_num')
 
-  // If php present, add php1 right after it so they'll be adjacent columns
+  // If php is present, add php1 right after it so they'll be adjacent columns.
+  // php1 does not appear in fields metadata lists & the values are not in the data returned by the API --
+  // they are generated on the front end when hits data is fetched
   const phpIndex = fields.indexOf('php')
   if (phpIndex > -1) fields.splice(phpIndex + 1, 0, 'php1')
 
@@ -71,21 +62,27 @@ export default function EvaluatorTable({
   eventData
 }: EvaluatorTableData): ReactElement {
   // Get list of fields to display for this evaluator
-  const fields = getEvaluatorFields(evaluatorMetadata.fields_used, hits[0])
+  const fields = getEvaluatorFields(
+    evaluatorMetadata.fields_used,
+    evaluatorMetadata.fields_display
+  )
 
   // Generate colDefs for this evaluator's fields
   const colDefs = getEvaluatorColDefs(fields)
 
-   // Present correct messaging per results in table
-   const totalResults = Number(evaluatorMetadata.hits)
-   const msg = totalResults <= 20 ? `Showing ${hits.length} out of ${String(evaluatorMetadata.hits)} results` : `Showing representative sample of ${hits.length} out of ${String(evaluatorMetadata.hits)} results`;
+  // Present correct messaging per results in table
+  const totalResults = Number(evaluatorMetadata.hits)
+  const msg =
+    totalResults <= 20
+      ? `Showing ${hits.length} out of ${String(evaluatorMetadata.hits)} results`
+      : `Showing representative sample of ${hits.length} out of ${String(
+          evaluatorMetadata.hits
+        )} results`
 
   return (
     <div className='content-row'>
       <div className='download-row'>
-        <h4 className='u-mb0'>
-          {msg}
-        </h4>
+        <h4 className='u-mb0'>{msg}</h4>
         <EvaluatorDownloader
           rows={hits}
           fields={fields}

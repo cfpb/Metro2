@@ -22,11 +22,12 @@ const getInconsistenciesColDef = (accountInconsistencies: string[]): object => (
   minWidth: 175
 })
 
-// TODO: should we be getting / showing cons_acct_num for L1 evals?
-// get fields from M2_FIELD_NAMES, remove cons_acct_num since we're not currently getting it from API,
+// Get fields from M2_FIELD_NAMES,
+// remove cons_acct_num since we're not currently getting it from API,
+// remove all the prior value fields since they'll be displayed in the adjacent row,
 // and add 'inconsistencies' at position 2
 const fields = [...M2_FIELD_NAMES.keys()].filter(
-  field => !['cons_acct_num'].includes(field)
+  field => !['cons_acct_num'].includes(field) && !field.startsWith('previous_values')
 )
 fields.splice(1, 0, 'inconsistencies')
 

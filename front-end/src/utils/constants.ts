@@ -82,7 +82,32 @@ export const M2_FIELD_NAMES = new Map([
   ['k4__balloon_pmt_amt', 'Balloon payment amount (K4)'],
   ['l1__change_ind', 'Account change indicator (L1)'],
   ['l1__new_acc_num', 'New consumer account number (L1)'],
-  ['l1__new_id_num', 'New identification number (L1)']
+  ['l1__new_id_num', 'New identification number (L1)'],
+  // ['previous_values__account_holder__first_name', 'Prior first name'],
+  // ['previous_values__account_holder__surname', 'Prior surname'],
+  ['previous_values__activity_date', 'Prior activity date'],
+  ['previous_values__id_num', 'Prior ID number'],
+  ['previous_values__port_type', 'Prior portfolio type'],
+  ['previous_values__acct_type', 'Prior account type'],
+  ['previous_values__date_open', 'Prior date open'],
+  ['previous_values__acct_stat', 'Prior account status'],
+  ['previous_values__pmt_rating', 'Prior payment rating'],
+  ['previous_values__current_bal', 'Prior current balance'],
+  ['previous_values__orig_chg_off_amt', 'Prior original charge-off amount'],
+  ['previous_values__dofd', 'Prior DOFD'],
+  ['previous_values__date_closed', 'Prior date closed'],
+  [
+    'previous_values__account_holder__cons_info_ind',
+    'Prior bankruptcy - Consumer information indicator for account holder'
+  ],
+  [
+    'previous_values__account_holder__cons_info_ind_assoc',
+    'Prior bankruptcy - Consumer information indicator for associated consumers'
+  ],
+  ['previous_values__account_holder__ecoa', 'Prior ECOA code for account holder'],
+  ['previous_values__l1__change_ind', 'Prior account change indicator (L1)'],
+  ['previous_values__l1__new_acc_num', 'Prior new consumer account number (L1)'],
+  ['previous_values__l1__new_id_num', 'Prior new identification number (L1)']
 ])
 
 export const COL_DEF_CONSTANTS = {
@@ -103,7 +128,10 @@ export const COL_DEF_CONSTANTS = {
   smpa: { type: 'currency', minWidth: 140 },
   account_holder__cons_info_ind: { minWidth: 265 },
   account_holder__cons_info_ind_assoc: { minWidth: 265 },
+  previous_values__account_holder__cons_info_ind: { minWidth: 265 },
+  previous_values__account_holder__cons_info_ind_assoc: { minWidth: 265 },
   account_holder__ecoa: { minWidth: 230 },
+  previous_values__account_holder__ecoa: { minWidth: 230 },
   account_holder__ecoa_assoc: { minWidth: 230 },
   k2__purch_sold_ind: { minWidth: 250 },
   k2__purch_sold_name: { minWidth: 210 },
@@ -397,7 +425,13 @@ export const CONSUMER_INFORMATION_INDICATOR_LOOKUP = {
   G: 'Discharged through Bankruptcy Chapter 12',
   H: 'Discharged/Completed through Bankruptcy Chapter 13',
   '1A': 'Personal Receivership',
-  Q: 'Removes previously reported Bankruptcy Indicator or reports bankruptcy has been closed, terminated, dismissed or withdrawn, without being discharged.'
+  Q: 'Removes previously reported Bankruptcy Indicator or reports bankruptcy has been closed, terminated, dismissed or withdrawn, without being discharged.',
+  R: 'Chapter 7 Reaffirmation of Debt',
+  V: 'Chapter 7 Reaffirmation of Debt Rescinded',
+  '2A': 'Lease Assumption',
+  S: 'Removes previously reported Reaffirmation of Debt, Reaffirmation of Debt Rescinded and Lease Assumption Indicators (R, V, 2A, and obsolete values W, X, Y)',
+  T: 'Credit Grantor Cannot Locate Consumer',
+  U: 'Consumer Now Located (Removes previously reported T Indicator)'
 }
 
 // Enables accessing a field's lookup by the field's id.
