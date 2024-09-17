@@ -35,6 +35,8 @@ const getEvaluatorFields = (
   fields_used: string[],
   fields_display: string[]
 ): string[] => {
+  // Create list by combining fields_used and fields_display, each sorted alphabetically,
+  // with constant values consumer account number and activity date added at beginning
   const fields = [
     'cons_acct_num',
     'activity_date',
@@ -42,7 +44,9 @@ const getEvaluatorFields = (
     ...fields_display.sort()
   ]
 
-  // If php present, add php1 right after it so they'll be adjacent columns
+  // If php is present, add php1 right after it so they'll be adjacent columns.
+  // php1 does not appear in fields metadata lists & the values are not in the data returned by the API --
+  // they are generated on the front end when hits data is fetched
   const phpIndex = fields.indexOf('php')
   if (phpIndex > -1) fields.splice(phpIndex + 1, 0, 'php1')
 

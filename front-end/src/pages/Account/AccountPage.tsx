@@ -27,20 +27,15 @@ const getInconsistenciesColDef = (accountInconsistencies: string[]): object => (
 // Get fields from M2_FIELD_NAMES
 // remove cons_acct_num since we're not currently getting it from API
 // remove account holder name values unless the account hit on PROG-DOFD-3, which uses them
+// remove all the prior value fields since they'll be displayed in the adjacent row,
 // and add 'inconsistencies' at position 2
 const getFields = (inconsistencies: string[]): string[] => {
   const fields = [...M2_FIELD_NAMES.keys()].filter(field => {
     let screen = ['cons_acct_num']
     if (!inconsistencies.includes('PROG-DOFD-3')) {
-      screen = [
-        ...screen,
-        'previous_values__account_holder__first_name',
-        'previous_values__account_holder__surname',
-        'account_holder__first_name',
-        'account_holder__surname'
-      ]
+      screen = [...screen, 'account_holder__first_name', 'account_holder__surname']
     }
-    return !screen.includes(field)
+    return !screen.includes(field) && !field.startsWith('previous_values')
   })
   fields.splice(1, 0, 'inconsistencies')
   return fields

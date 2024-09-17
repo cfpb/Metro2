@@ -248,8 +248,14 @@ export const CONSUMER_INFORMATION_INDICATOR_LOOKUP = {
   F: 'Discharged through Bankruptcy Chapter 11',
   G: 'Discharged through Bankruptcy Chapter 12',
   H: 'Discharged/Completed through Bankruptcy Chapter 13',
+  Q: 'Removes previously reported Bankruptcy Indicator or reports bankruptcy has been closed, terminated, dismissed or withdrawn, without being discharged.',
+  R: 'Chapter 7 Reaffirmation of Debt',
+  S: 'Removes previously reported Reaffirmation of Debt, Reaffirmation of Debt Rescinded and Lease Assumption Indicators (R, V, 2A, and obsolete values W, X, Y)',
+  T: 'Credit Grantor Cannot Locate Consumer',
+  U: 'Consumer Now Located (Removes previously reported T Indicator)',
+  V: 'Chapter 7 Reaffirmation of Debt Rescinded',
   '1A': 'Personal Receivership',
-  Q: 'Removes previously reported Bankruptcy Indicator or reports bankruptcy has been closed, terminated, dismissed or withdrawn, without being discharged.'
+  '2A': 'Lease Assumption'
 }
 
 export const INTEREST_TYPE_INDICATOR_LOOKUP = {

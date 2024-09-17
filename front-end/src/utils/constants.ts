@@ -1,3 +1,5 @@
+export const PII_COOKIE_NAME = 'acceptedPIIWarning'
+
 // M2 fields that can be displayed for an account record
 export interface AccountRecord {
   activity_date?: string | null
@@ -105,21 +107,10 @@ export const M2_FIELD_NAMES = new Map([
   ['l1__change_ind', 'Account change indicator (L1)'],
   ['l1__new_acc_num', 'New consumer account number (L1)'],
   ['l1__new_id_num', 'New identification number (L1)'],
-  [
-    'previous_values__account_holder__cons_info_ind',
-    'Prior consumer information indicator for account holder'
-  ],
-  [
-    'previous_values__account_holder__cons_info_ind_assoc',
-    'Prior consumer information indicators for associated consumers'
-  ],
-  ['previous_values__account_holder__ecoa', 'Prior ECOA code for account holder'],
   ['previous_values__account_holder__first_name', 'Prior account holder first name'],
   ['previous_values__account_holder__surname', 'Prior account holder surname'],
-  ['previous_values__l1__change_ind', 'Prior account change indicator (L1)'],
-  ['previous_values__l1__new_acc_num', 'Prior new consumer account number (L1)'],
-  ['previous_values__l1__new_id_num', 'Prior new identification number (L1)'],
   ['previous_values__activity_date', 'Prior activity date'],
+  ['previous_values__id_num', 'Prior ID number'],
   ['previous_values__port_type', 'Prior portfolio type'],
   ['previous_values__acct_type', 'Prior account type'],
   ['previous_values__date_open', 'Prior date open'],
@@ -129,7 +120,18 @@ export const M2_FIELD_NAMES = new Map([
   ['previous_values__orig_chg_off_amt', 'Prior original charge-off amount'],
   ['previous_values__dofd', 'Prior DOFD'],
   ['previous_values__date_closed', 'Prior date closed'],
-  ['previous_values__id_num', 'Prior ID number']
+  [
+    'previous_values__account_holder__cons_info_ind',
+    'Prior bankruptcy - Consumer information indicator for account holder'
+  ],
+  [
+    'previous_values__account_holder__cons_info_ind_assoc',
+    'Prior bankruptcy - Consumer information indicator for associated consumers'
+  ],
+  ['previous_values__account_holder__ecoa', 'Prior ECOA code for account holder'],
+  ['previous_values__l1__change_ind', 'Prior account change indicator (L1)'],
+  ['previous_values__l1__new_acc_num', 'Prior new consumer account number (L1)'],
+  ['previous_values__l1__new_id_num', 'Prior new identification number (L1)']
 ])
 
 export const COL_DEF_CONSTANTS = {
@@ -150,7 +152,10 @@ export const COL_DEF_CONSTANTS = {
   smpa: { type: 'currency', minWidth: 140 },
   account_holder__cons_info_ind: { minWidth: 265 },
   account_holder__cons_info_ind_assoc: { minWidth: 265 },
+  previous_values__account_holder__cons_info_ind: { minWidth: 265 },
+  previous_values__account_holder__cons_info_ind_assoc: { minWidth: 265 },
   account_holder__ecoa: { minWidth: 230 },
+  previous_values__account_holder__ecoa: { minWidth: 230 },
   account_holder__ecoa_assoc: { minWidth: 230 },
   k2__purch_sold_ind: { minWidth: 250 },
   k2__purch_sold_name: { minWidth: 210 },
@@ -158,9 +163,6 @@ export const COL_DEF_CONSTANTS = {
   l1__change_ind: { minWidth: 200 },
   l1__new_acc_num: { minWidth: 200 },
   l1__new_id_num: { minWidth: 200 },
-  previous_values__account_holder__cons_info_ind: { minWidth: 265 },
-  previous_values__account_holder__cons_info_ind_assoc: { minWidth: 265 },
-  previous_values__account_holder__ecoa: { minWidth: 230 },
   previous_values__l1__change_ind: { minWidth: 200 },
   previous_values__l1__new_acc_num: { minWidth: 200 },
   previous_values__l1__new_id_num: { minWidth: 200 },
@@ -205,5 +207,3 @@ export const evaluatorSegmentMap = new Map([
   ['termsduration', 'Terms duration'],
   ['accountchange', 'L1 change indicator']
 ])
-
-export const PII_COOKIE_NAME = 'acceptedPIIWarning'
