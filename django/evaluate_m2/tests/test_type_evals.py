@@ -125,8 +125,8 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: NO-port_type=C, 34: NO-acct_stat=5, 35: NO-acct_type=07,
-        # 36: NO-spc_com_cd=AU, 37: NO-current_bal=0
+        # 32: HIT, 33: HIT, 34: NO-port_type=C, 35: NO-acct_stat=5,
+        # 36: NO-acct_type=07, 37: NO-spc_com_cd=AU, 38: NO-current_bal=0
 
         self.assert_evaluator_correct(self.event, 'Type-Balance-1', self.expected)
 
@@ -446,7 +446,8 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'spc_com_cd': 'BS', 'date_closed': None
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'I', 'acct_type':'13', 'current_bal': 0,                'spc_com_cd': 'BS', 'date_closed': None
+                'port_type':'I', 'acct_type':'13', 'current_bal': 0,
+                'spc_com_cd': 'BS', 'date_closed': None
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'port_type':'I', 'acct_type':'02','current_bal': 1,
