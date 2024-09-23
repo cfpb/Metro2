@@ -7,17 +7,17 @@ from django.utils import timezone
 
 def disable_non_priviledged_inactive_users():
     logger = logging.getLogger('users.tasks.disable_non_priviledged_inactive_users')
-    inactive_users = User.objects \
-        .filter(last_login__lt=timezone.now() - timedelta(days=90)) \
-        .exclude(is_superuser=True).exclude(is_active=False)
+    inactive_users = User.objects.filter(
+        last_login__lt=timezone.now() - timedelta(days=90), 
+        is_active=True, is_superuser=False)
     logger.info(f'{inactive_users.count()} non-privileged users will be deactivated and written to the database.')
     inactive_users.update(is_active=False)
     
 def disable_priviledged_inactive_users():
     logger = logging.getLogger('users.tasks.disable_priviledged_inactive_users')
-    inactive_users = User.objects \
-        .filter(last_login__lt=timezone.now() - timedelta(days=45)) \
-        .exclude(is_superuser=False).exclude(is_active=False)
+    inactive_users = User.objects.filter(
+        last_login__lt=timezone.now() - timedelta(days=45),
+        is_active=True, is_superuser=True)
     logger.info(f'{inactive_users.count()} privileged users will be deactivated and written to the database.')
     inactive_users.update(is_active=False)
        
