@@ -749,7 +749,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_eval_status_date_closed_1(self):
         # Hits when all conditions are met:
-        # 1. acct_stat == '05', '13', '62', '64', '65', '89', '94'
+        # 1. acct_stat == '05', '13', '62', '64', '65'
         # 3. date_closed == None
 
         # Create the Account Activities data
