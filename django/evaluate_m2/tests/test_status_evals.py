@@ -149,7 +149,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_eval_status_balance_2(self):
     # Hits when all conditions are met:
-    # 1. acct_stat == '71', '78', '80', '82', '83', '84', '93', '95', '96', '97'
+    # 1. acct_stat == '71', '78', '80', '82', '83', '84', '93', '97'
     # 2. current_bal == 0
 
         # Create the Account Activities data
