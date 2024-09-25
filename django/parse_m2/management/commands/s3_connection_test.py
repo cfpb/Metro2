@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Finding all files in S3 bucket with prefix: {s3_directory}")
         count = 0
-        for file in s3_bucket_files(s3_directory, bucket_name):
+        for file in s3_bucket_files(s3_directory):
             self.stdout.write(f" * {file.key}")
             count += 1
 
