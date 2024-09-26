@@ -328,7 +328,6 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 4. port_type == 'C'
     # 5. spc_com_cd != 'AH', 'AT', 'O'
 
-
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -373,7 +372,6 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 3. l1_change_ind == None
     # 4. port_type == 'C'
     # 5. spc_com_cd == 'AH', 'AT', 'O'
-
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -642,7 +640,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 4. l1_change_ind == None
     # 5. port_type == 'I'
     # 6. spc_com_cd != 'O', 'AH', 'AT', 'BB', 'BE'
-        # Create previous Account Activities data
+
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -690,7 +688,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'Status-Balance-14', self.expected)
 
-    def test_eval_status_smpa_3(self):
+    def test_eval_status_balance_15(self):
     # Hits when all conditions are met:
     # 1. acct_stat == '11'
     # 2. acct_type == '00', '01', '02', '03', '04', '05', '06', '10', '11', '13', '17',
@@ -700,6 +698,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 4. current_bal == 0
     # 5. port_type == 'I'
     # 6. spc_com_cd != 'BS'
+
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -1014,7 +1013,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 1. acct_stat == '05'
     # 2. pmt_rating == '0'
     # 3. dofd != None
-        # Create previous Account Activities data
+
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -1077,7 +1076,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 4. port_type == 'M'
     # 5. compl_cond_cd != 'XA'
     # 6. dofd != None
-        # Create previous Account Activities data
+
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -1130,6 +1129,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 3. terms_freq != 'D'
     # 4. date_open < (activity_date - 60 days)
     # 5. actual payment amount == 0
+
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -1210,6 +1210,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # OR
     # a. port_type == 'C', 'O', 'R'
     # b. acct_type == '43'
+
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -1265,6 +1266,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 5. spc_com_cd != 'BS'
     # 6. terms_freq != 'D'
     # 7. smpa == 0
+
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
