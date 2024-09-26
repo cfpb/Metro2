@@ -743,6 +743,34 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'Status-Balance-15', self.expected)
 
+    def test_eval_status_balance_16(self):
+    # Hits when all conditions are met:
+    # 1. acct_stat == '95', '96'
+    # 2. current_bal == 0
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'95', 'current_bal':0
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'96',  'current_bal':0
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'94',  'current_bal':0
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'95', 'current_bal': 5
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-acct_stat=94,
+        # 35: NO-current_bal=5
+
+        self.assert_evaluator_correct(self.event, 'Status-Balance-16', self.expected)
+
     def test_eval_status_chargeoff_1(self):
     # Hits when all conditions are met:
     # 1. acct_stat == '05', '11', '13', '62', '65', '71', '78',
