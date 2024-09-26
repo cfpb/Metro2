@@ -174,6 +174,60 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'Status-Balance-2', self.expected)
 
+    def test_eval_status_balance_3(self):
+    # Hits when all conditions are met:
+    # 1. acct_stat == '11'
+    # 2. compl_cond_cd != 'XA'
+    # 3. current_bal == 0
+
+    # ... AND at least one of the following sets of conditions
+    # a. port_type == 'C'
+    # b. acct_type == '15', '43', '47', '89', '7A', '9B'
+    # OR
+    # a. port_type == 'O','R'
+    # b. acct_type == '43'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'11', 'acct_type':'15', 'current_bal':0, 'port_type':'C',
+                'compl_cond_cd': 'XB'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'acct_type':'43', 'current_bal':0, 'port_type':'O',
+                'compl_cond_cd': 'XC'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'11', 'acct_type':'15', 'current_bal':0, 'port_type':'M',
+                'compl_cond_cd': 'XE'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'11', 'acct_type':'44', 'current_bal':0, 'port_type':'R',
+                'compl_cond_cd': 'XB'
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'80', 'acct_type':'47', 'current_bal':0, 'port_type':'C',
+                'compl_cond_cd': 'XC'
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'acct_stat':'11', 'acct_type':'43', 'current_bal':0, 'port_type':'O',
+                'compl_cond_cd': 'XA'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'acct_stat':'11', 'acct_type':'43', 'current_bal':1, 'port_type':'R',
+                'compl_cond_cd': 'XD'
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-port_type='M', 35: NO-acct_type=44,
+        # 36: NO-acct_stat=80, 37: compl_cond_cd=XA, 38: current_bal=1
+
+
+        # Create the segment data
+        self.assert_evaluator_correct(self.event, 'Status-Balance-3', self.expected)
+
     def test_eval_status_balance_4(self):
     # Hits when all conditions are met:
     # 1. acct_stat != '11', '71', '78', '80', '82', '83', '84',
