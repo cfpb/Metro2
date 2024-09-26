@@ -806,6 +806,33 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'Status-DateClosed-2', self.expected)
 
+    def test_eval_status_date_closed_3(self):
+    # Hits when all conditions are met:
+    # 1. acct_stat == '89', '94'
+    # 2. date_closed == None
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'89', 'date_closed': None
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'94', 'date_closed':None
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'01', 'date_closed':None
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'89', 'date_closed':date(2019, 12, 31)
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-acct_stat=01, 35: NO-date_closed!=None
+
+        self.assert_evaluator_correct(self.event, 'Status-DateClosed-3', self.expected)
+
     def test_eval_status_dofd_1(self):
     # Hits when all conditions met:
     # 1. acct_stat == '61', '62', '63', '64', '65', '71', '78', '80','82',
