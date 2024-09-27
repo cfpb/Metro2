@@ -40,38 +40,36 @@ class TestUsersView(TestCase):
             is_superuser=False
         )
 
-    def test_disable_non_priviledged_inactive_users(self):
-        # Only non_priv_user2 is_active=True, retu
+    def test_disable_non_privileged_inactive_users(self):
         active_non_priv_user = User.objects.filter(is_active=True, is_superuser=False)
         self.assertEqual(1, active_non_priv_user.count())
         self.assertEqual(active_non_priv_user[0].username, 'user2')
-        
+
         total_deactivated = User.objects.filter(is_active=False, is_superuser=False)
         self.assertEqual(1, total_deactivated.count())
-        
-        task.disable_non_priviledged_inactive_users()
+
+        task.disable_non_privileged_inactive_users()
         total_deactivated = User.objects.filter(is_active=False, is_superuser=False)
         self.assertEqual(total_deactivated.count(), 2)
 
-    def test_disable_priviledged_inactive_users(self):
+    def test_disable_privileged_inactive_users(self):
         user = User.objects.create(
             id=4,
             username="user4",
             email="user4@fake.gov",
-            last_login=timezone.now() - timedelta(days=93),
+            last_login=timezone.now() - timedelta(days=46),
             is_active=True,
             is_superuser=True
         )
-        
-        # Only non_priv_user2 is_active=True, retu
+
         active_priv_user = User.objects.filter(is_active=True, is_superuser=True)
         self.assertEqual(2, active_priv_user.count())
         self.assertEqual(active_priv_user[0].username, 'user1')
         self.assertEqual(active_priv_user[1].username, 'user4')
-        
+
         total_deactivated = User.objects.filter(is_active=False, is_superuser=True)
         self.assertEqual(0, total_deactivated.count())
-        
-        task.disable_priviledged_inactive_users()
+
+        task.disable_privileged_inactive_users()
         total_deactivated = User.objects.filter(is_active=False, is_superuser=True)
         self.assertEqual(total_deactivated.count(), 2)
