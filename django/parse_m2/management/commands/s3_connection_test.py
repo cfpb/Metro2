@@ -6,7 +6,7 @@ from django.conf import settings
 class Command(BaseCommand):
     """
     Run this command by running the following:
-    > python manage.py test_s3_connection -d [s3_folder]
+    > python manage.py s3_connection_test -d [s3_folder]
     """
     help = "This command will use the S3 connection variables provided in this " + \
     "environment's settings file. It will list the files from the given directory " + \
@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Finding all files in S3 bucket with prefix: {s3_directory}")
         count = 0
-        for file in s3_bucket_files(s3_directory, bucket_name):
+        for file in s3_bucket_files(s3_directory):
             self.stdout.write(f" * {file.key}")
             count += 1
 

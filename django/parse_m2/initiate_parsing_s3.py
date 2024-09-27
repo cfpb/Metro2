@@ -1,9 +1,9 @@
 import zipfile
-import boto3
 import io
 import logging
 from django.conf import settings
 
+from django_application.s3_utils import s3_resource
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
 from parse_m2.initiate_parsing_utils import (
@@ -45,8 +45,7 @@ def parse_s3_file(file, event: Metro2Event, skip_existing: bool):
 
 def s3_bucket_files(bucket_directory: str):
     bucket_name = settings.S3_BUCKET_NAME
-    s3 = boto3.resource("s3")
-    bucket = s3.Bucket(bucket_name)
+    bucket = s3_resource().Bucket(bucket_name)
     return bucket.objects.filter(Prefix=bucket_directory)
 
 def parse_zip_file_contents_S3(zip_obj, event: Metro2Event, zipfile_name: str, skip_existing: bool):
