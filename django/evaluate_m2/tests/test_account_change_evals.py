@@ -285,45 +285,6 @@ class AccountChangeEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_eval_account_change_number_4(self):
         # Hits when all conditions are met:
-        # 1. cons_acct_num == L1.new_acc_num
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': 'O33'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activities = [
-            {'id': 32, 'new_acc_num': '0032'},
-            {'id': 33, 'new_acc_num': 'o33'},
-            {'id': 35, 'new_acc_num': '0037'},
-        ]
-        for item in l1_activities:
-            l1_record(item)
-        # 32: HIT, 33: HIT - lowercase/uppercase O,
-        # 34: NO-missing L1 segment,
-        # 35: NO-l1__new_acc_num=0037
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        },
-        {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': 'O33',
-        }]
-        self.assert_evaluator_correct(
-            self.event, 'AccountChange-Number-4', expected)
-
-    def test_eval_account_change_number_5(self):
-        # Hits when all conditions are met:
         # 1. l1_change_ind == '2'
         # 2. cons_acct_num != L1.new_acc_num
 
@@ -356,4 +317,4 @@ class AccountChangeEvalsTestCase(TestCase, EvaluatorTestHelper):
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }]
         self.assert_evaluator_correct(
-            self.event, 'AccountChange-Number-5', expected)
+            self.event, 'AccountChange-Number-4', expected)

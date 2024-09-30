@@ -25,7 +25,6 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     def test_eval_status_apd_1(self):
     # Hits when all conditions are met:
     # 1. acct_stat == '71','78','80','82','83','84','93','97'
-    # 2. compl_cond_cd != 'XA'
     # 3. amt_past_due == 0
 
         # Create the Account Activities data
@@ -42,15 +41,12 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'acct_stat':'79', 'compl_cond_cd':'XD', 'amt_past_due': 0
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'80', 'compl_cond_cd':'XA', 'amt_past_due': 0
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
                 'acct_stat':'82', 'compl_cond_cd':'XB', 'amt_past_due': 1
             }]
         for item in activities:
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=79,
-        # 35: NO-compl_cond_cd=XA, 36: NO-amt_past_due > 0
+        # 35: NO-amt_past_due > 0
 
         self.assert_evaluator_correct(
             self.event, 'Status-APD-1', self.expected)
