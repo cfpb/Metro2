@@ -930,7 +930,7 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 1. port_type == 'I'
         # 2. acct_type == '06', '18'
         # 3. terms_freq != 'D'
-        # 4. terms_dur > '0'
+        # 4. int(terms_dur) > 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -959,10 +959,14 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
                 'port_type':'I', 'acct_type':'06', 'terms_freq':'P',
                 'terms_dur': '0'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'I', 'acct_type':'06', 'terms_freq':'P',
+                'terms_dur': 'REV'
             }]
         for item in activities:
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=0A,
-        # 36: NO-terms_freq=D, 37: NO-terms_dur=0
+        # 36: NO-terms_freq=D, 37: NO-terms_dur=0, 37: NO-terms_dur=REV
 
         self.assert_evaluator_correct(self.event, 'Type-TermsDuration-4', self.expected)
