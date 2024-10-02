@@ -150,11 +150,11 @@ describe('Account data download', {viewportHeight: 1080, viewportWidth: 1920,},(
       modal.getPIICheckbox().should('not.have.attr', 'checked')
     })
   })
-  it.skip('Should launch FileSystemAPI save file dialog when save button clicked', () => {
+  it.only('Should launch FileSystemAPI save file dialog when save button clicked', () => {
     modal.openModal('Download account data')
     modal.verifyShowSaveFilePicker('Sample-Dataset-007_20150602804749', [
       {
-        description: 'XLSXs',
+        description: 'Excel',
         accept: {
           'text/xlsx': ['.xlsx']
         }
