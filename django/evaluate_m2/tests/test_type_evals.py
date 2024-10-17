@@ -849,7 +849,7 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-acct_type=07, 37: NO-spc_com_cd=AU, 38: NO-smpa=0
 
         self.assert_evaluator_correct(self.event, 'Type-SMPA-1', self.expected)
-        
+
     def test_eval_type_terms_dur_1(self):
         # Hits when all conditions are met:
         # 1. port_type == 'C'
@@ -1014,6 +1014,10 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
                 'port_type':'I', 'acct_type':'06', 'terms_freq':'P',
                 'terms_dur': 'REV'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'I', 'acct_type':'06', 'terms_freq':'P',
+                'terms_dur': '***'
             }]
         for item in activities:
             acct_record(self.data_file, item)
