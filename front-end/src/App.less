@@ -43,8 +43,11 @@ body,
 }
 
 // Metro 2 header is a link but doesn't need link styling
-header h1 a {
-  color: black !important;
+header h1 {
+  font-size: 1.25rem !important;
+  a {
+    color: black !important;
+  }
 }
 
 // Styles for summary content on evaluator and account pages
@@ -52,7 +55,7 @@ header h1 a {
   margin-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
 
   h2 {
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 600;
   }
 
@@ -89,13 +92,13 @@ header h1 a {
 // Styles for evaluator long description
 .long-description {
   h4 {
-    margin-bottom: 6px;
-    font-size: 16px;
+    margin-bottom: unit((@grid_gutter-width / 5 / @base-font-size-px), em);
+    font-size: 1rem;
     font-weight: 600;
   }
 
   p {
-    margin-bottom: 25px;
+    margin-bottom: unit((@grid_gutter-width / @base-font-size-px), em);
   }
 }
 
@@ -103,4 +106,8 @@ header h1 a {
 .a-link_text + .cf-icon-svg-wrapper,
 .a-btn__link .cf-icon-svg-wrapper {
   padding-left: 0.2rem;
+}
+
+.u-block {
+  display: block;
 }

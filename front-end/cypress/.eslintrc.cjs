@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  ignorePatterns: ['/**/*'],
   overrides: [
     {
       files: ['*.ts?(x)'],

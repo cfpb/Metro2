@@ -1,5 +1,6 @@
 import type { ValueFormatterParams } from 'ag-grid-community'
 import { formatDate, formatNumber, formatUSD } from 'utils/formatters'
+import suppressKeyboardEvent from './suppressKeyboardEvents'
 
 export const columnTypes = {
   wrappableText: {
@@ -38,7 +39,8 @@ export const columnDefaults = {
   wrapHeaderText: true,
   autoHeaderHeight: true,
   // TODO: set widths on each col type
-  minWidth: 150
+  minWidth: 150,
+  suppressKeyboardEvent
 }
 
 export const gridOptionDefaults = {

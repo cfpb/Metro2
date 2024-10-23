@@ -27,6 +27,7 @@
     "@tanstack/react-router": "^1.57.9",
     "@tanstack/router-devtools": "^1.17.4",
     "ag-grid-react": "^31.1.1",
+    "cypress-real-events": "^1.13.0",
     "design-system-react": "https://github.com/cfpb/design-system-react.git",
     "exceljs": "^4.4.0",
     "postcss": "^8.4.38",

@@ -4050,6 +4050,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cypress-real-events@npm:^1.13.0":
+  version: 1.13.0
+  resolution: "cypress-real-events@npm:1.13.0"
+  peerDependencies:
+    cypress: ^4.x || ^5.x || ^6.x || ^7.x || ^8.x || ^9.x || ^10.x || ^11.x || ^12.x || ^13.x
+  checksum: 10/085e2e4f456fdf4173fd07fc2602ce44d661256628a5b40e89092e9792533f46b808f97106d9f9ea0272279b5c10db4eef3f0606e3705d3638d552d0999425de
+  languageName: node
+  linkType: hard
+
 "cypress@npm:^13.13.2":
   version: 13.13.2
   resolution: "cypress@npm:13.13.2"
@@ -5553,6 +5562,7 @@ display-element-css@cfpb/storybook-addon-display-element-css:
     autoprefixer: "npm:10.4.14"
     css-mediaquery: "npm:0.1.2"
     cypress: "npm:^13.13.2"
+    cypress-real-events: "npm:^1.13.0"
     design-system-react: "https://github.com/cfpb/design-system-react.git"
     eslint: "npm:^8.45.0"
     eslint-config-airbnb: "npm:19.0.4"
