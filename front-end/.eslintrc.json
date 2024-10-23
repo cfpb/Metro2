@@ -164,7 +164,8 @@
     "unicorn/no-nested-ternary": ["error"],
     "unicorn/no-null": "off",
     "unicorn/no-keyword-prefix": "off",
-    "unicorn/prevent-abbreviations": "off"
+    "unicorn/prevent-abbreviations": "off",
+    "unicorn/no-abusive-eslint-disable": "off"
   },
   "settings": {
     "react": {
