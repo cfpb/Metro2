@@ -53,64 +53,77 @@ describe('Table accessibility', () => {
 })
 
 describe('Modal accessibility', () => {
-  beforeEach(() => {
-    cy.viewport(1920, 1080)
-    cy.setCookie(PII_COOKIE_NAME, 'true')
-    cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
-    cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
-    cy.intercept('GET', '/api/events/1/evaluator/Status-DOFD-4/', {
-      fixture: 'evaluatorHits'
-    }).as('getEvaluatorHits')
-    cy.visit('/events/1/evaluators/Status-DOFD-4/')
-    cy.wait(['@getEvent', '@getUser', '@getEvaluatorHits'])
-  })
+  describe('Basic modal tests', () => {
+    beforeEach(() => {
+      cy.viewport(1920, 1080)
+      cy.setCookie(PII_COOKIE_NAME, 'true')
+      cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
+      cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
+      cy.intercept('GET', '/api/events/1/evaluator/Status-DOFD-4/', {
+        fixture: 'evaluatorHits'
+      }).as('getEvaluatorHits')
+      cy.visit('/events/1/evaluators/Status-DOFD-4/')
+      cy.wait(['@getEvent', '@getUser', '@getEvaluatorHits'])
+    })
 
-  it('Should allow keyboard navigation of interactive elements in modal', () => {
-    cy.get('body').realClick()
-    modal.getModal().should('not.exist')
-    cy.get('button')
-      .contains('Download evaluator results')
-      .should('be.visible')
-      .click()
-    modal.getModal().should('be.visible')
-    // When the modal opens, its first interactive element should be focused
-    cy.focused()
-      .should('have.attr', 'name', 'evaluator-download')
-      .and('have.id', 'sample')
-    // Pressing the down arrow should select the other radio button
-    cy.realPress('ArrowDown')
-    cy.focused()
-      .should('have.attr', 'name', 'evaluator-download')
-      .and('have.id', 'all')
-    // Tabbing should go to the PII checkbox
-    cy.realPress('Tab')
-    cy.focused()
-      .should('have.attr', 'name', 'confirmPII')
-      .and('have.attr', 'aria-checked', 'false')
-    // Pressing space bar should check the checkbox
-    cy.realPress('Space')
-    cy.focused()
-      .should('have.attr', 'name', 'confirmPII')
-      .and('have.attr', 'aria-checked', 'true')
-    // Tabbing should go to links in PII text
-    cy.realPress('Tab')
-    cy.focused().should('have.text', 'Service Center')
-    cy.realPress('Tab')
-    cy.focused().should('have.text', 'privacy@cfpb.gov')
-    // Tabbing again should go to save button
-    cy.realPress('Tab')
-    cy.focused().should('contain.text', 'Save file')
-  })
+    it('Should allow keyboard navigation of interactive elements in modal', () => {
+      cy.get('body').realClick()
+      modal.getModal().should('not.exist')
+      cy.get('button')
+        .contains('Download evaluator results')
+        .should('be.visible')
+        .click()
+      modal.getModal().should('be.visible')
+      // When the modal opens, its first interactive element should be focused
+      cy.focused()
+        .should('have.attr', 'name', 'evaluator-download')
+        .and('have.id', 'sample')
+      // Pressing the down arrow should select the other radio button
+      cy.realPress('ArrowDown')
+      cy.focused()
+        .should('have.attr', 'name', 'evaluator-download')
+        .and('have.id', 'all')
+      // Tabbing should go to the PII checkbox
+      cy.realPress('Tab')
+      cy.focused()
+        .should('have.attr', 'name', 'confirmPII')
+        .and('have.attr', 'aria-checked', 'false')
+      // Pressing space bar should check the checkbox
+      cy.realPress('Space')
+      cy.focused()
+        .should('have.attr', 'name', 'confirmPII')
+        .and('have.attr', 'aria-checked', 'true')
+      // Tabbing should go to links in PII text
+      cy.realPress('Tab')
+      cy.focused().should('have.text', 'Service Center')
+      cy.realPress('Tab')
+      cy.focused().should('have.text', 'privacy@cfpb.gov')
+      // Tabbing again should go to save button
+      cy.realPress('Tab')
+      cy.focused().should('contain.text', 'Save file')
+    })
 
-  it('Should prevent modal dialog from closing when escape key is pressed', () => {
-    cy.get('body').realClick()
-    modal.getModal().should('not.exist')
-    cy.get('button')
-      .contains('Download evaluator results')
-      .should('be.visible')
-      .click()
-    modal.getModal().should('be.visible')
-    cy.realPress('Escape')
-    modal.getModal().should('be.visible')
+    it('Should close modal dialog when escape key is pressed', () => {
+      cy.get('body').realClick()
+      modal.getModal().should('not.exist')
+      cy.get('button')
+        .contains('Download evaluator results')
+        .should('be.visible')
+        .click()
+      modal.getModal().should('be.visible')
+      cy.realPress('Escape')
+      modal.getModal().should('not.be.visible')
+    })
+  })
+  describe('Required modal test', () => {
+    it('Should not close modal dialog when escape key is pressed', () => {
+      cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
+      cy.visit('/events/1/')
+      cy.wait(['@getEvent'])
+      cy.get('body').realClick()
+      modal.getModal().should('exist').and('be.visible')
+      cy.realPress('Escape')
+      modal.getModal().should('be.visible')
+    })
   })
 })

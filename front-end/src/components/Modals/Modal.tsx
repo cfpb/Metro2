@@ -5,15 +5,12 @@ import './Modal.less'
 interface ModalProperties {
   children?: ReactNode
   open: boolean
-}
-
-const handleKeyDown = (e: KeyboardEvent): void => {
-  if (e.key !== 'Escape') return
-  e.preventDefault()
+  interactionRequired: boolean
 }
 
 export function Modal({
   children,
+  interactionRequired = false,
   open
 }: ModalProperties & React.HTMLAttributes<HTMLDivElement>): ReactElement | null {
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -23,6 +20,12 @@ export function Modal({
   const closeModal = (): void => {
     dialogRef.current?.close()
   }
+
+  const handleKeyDown = (e: KeyboardEvent): void => {
+    if (e.key !== 'Escape' || !interactionRequired) return
+    e.preventDefault()
+  }
+
   useEffect(() => {
     if (open) {
       openModal()
@@ -37,7 +40,7 @@ export function Modal({
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [])
+  })
 
   return (
     <dialog className='modal' ref={dialogRef}>
