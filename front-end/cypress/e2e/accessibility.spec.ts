@@ -103,16 +103,22 @@ describe('Modal accessibility', () => {
       cy.focused().should('contain.text', 'Save file')
     })
 
-    it('Should close modal dialog when escape key is pressed', () => {
+    it('Modal should close when escape pressed and reopen when launched again', () => {
       cy.get('body').realClick()
       modal.getModal().should('not.exist')
+      // Clicking download button should open download modal
       cy.get('button')
         .contains('Download evaluator results')
         .should('be.visible')
         .click()
       modal.getModal().should('be.visible')
+      // Pressing escape should close modal
       cy.realPress('Escape')
       modal.getModal().should('not.be.visible')
+      // Clicking download button again should reopen modal after
+      // it's been closed by escape button
+      cy.get('button').contains('Download evaluator results').click()
+      modal.getModal().should('be.visible')
     })
   })
   describe('Required modal test', () => {

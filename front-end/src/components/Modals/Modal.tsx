@@ -3,15 +3,17 @@ import { useEffect, useRef } from 'react'
 import './Modal.less'
 
 interface ModalProperties {
-  children?: ReactNode
   open: boolean
-  interactionRequired: boolean
+  children?: ReactNode
+  interactionRequired?: boolean
+  onClose: () => void
 }
 
 export function Modal({
   children,
   interactionRequired = false,
-  open
+  open,
+  onClose
 }: ModalProperties & React.HTMLAttributes<HTMLDivElement>): ReactElement | null {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const openModal = (): void => {
@@ -21,9 +23,15 @@ export function Modal({
     dialogRef.current?.close()
   }
 
+  // If interaction with the modal is required,
+  // don't close the dialog when escape key is pressed
   const handleKeyDown = (e: KeyboardEvent): void => {
-    if (e.key !== 'Escape' || !interactionRequired) return
-    e.preventDefault()
+    if (e.key !== 'Escape') return
+    if (interactionRequired) {
+      e.preventDefault()
+    } else {
+      onClose()
+    }
   }
 
   useEffect(() => {
@@ -34,7 +42,6 @@ export function Modal({
     }
   }, [open])
 
-  // Don't close dialog when escape key is pressed
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
     return () => {
