@@ -1,6 +1,8 @@
 import logging
+from django.conf import settings
 from django.db import connection
 
+from django_application.s3_utils import s3_session
 from evaluate_m2.evaluate_utils import create_eval_insert_query
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
 from evaluate_m2.m2_evaluators.account_change_evals import evaluators as acct_change_evals
@@ -19,6 +21,7 @@ from evaluate_m2.m2_evaluators.scc_evals import evaluators as scc_evals
 from evaluate_m2.m2_evaluators.status_evals import evaluators as status_evals
 from evaluate_m2.m2_evaluators.type_evals import evaluators as type_evals
 from parse_m2.models import Metro2Event
+from smart_open import open
 
 
 class Evaluate():
@@ -33,6 +36,8 @@ class Evaluate():
                           prog_evals | rating_evals | scc_evals | status_evals | \
                           type_evals
 
+    def get_s3_client(self):
+        return s3_session().client('s3')
 
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):
@@ -57,8 +62,35 @@ class Evaluate():
                     self.save_error_result(result_summary)
                     continue
                 self.update_result_summary_with_actual_results(result_summary)
+                if settings.SSO_ENABLED:
+                    self.save_eval_result_file_to_s3(result_summary)
         else:
             logger.info(f"No AccountActivity found for the event '{event.name}'")
+
+    def stream_eval_result_file_to_s3(self, result_summary):
+        """
+        If the EvaluatorResultSummary record has accounts affected,
+        save the evaluator results CSV to an S3 bucket.
+        """
+        logger = logging.getLogger('evaluate.stream_eval_result_file_to_s3')  # noqa: F841
+        bucket_directory='eval_results/event_' + str(result_summary.event.id)
+        header_created=False
+        eval = result_summary.evaluator
+        fields_list = eval.result_summary_fields()
+
+        if result_summary.accounts_affected > 0:
+            filename = f"{result_summary.evaluator.id}.csv"
+            filepath = f"{bucket_directory}/{filename}"
+            url = f"s3://{filepath}"
+            logger.info(f"Saving file: {filename}")
+            with open(url, 'wb', transport_params={'client': self.get_s3_client}) as fout:
+                for eval_result in result_summary.evaluatorresult_set.all():
+                    if not header_created:
+                        # Add the header to the CSV response
+                        fout.writerow(eval_result.create_csv_header())
+                        header_created=True
+                    fout.writerow(eval_result.create_csv_row_data(fields_list))
+            logger.info(f"file saved to S3: {filename}")
 
     def save_evaluator_results(self, result_summary, eval_query):
         """
