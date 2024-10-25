@@ -63,7 +63,7 @@ class Evaluate():
                     continue
                 self.update_result_summary_with_actual_results(result_summary)
                 if settings.SSO_ENABLED:
-                    self.save_eval_result_file_to_s3(result_summary)
+                    self.stream_eval_result_file_to_s3(result_summary)
         else:
             logger.info(f"No AccountActivity found for the event '{event.name}'")
 
