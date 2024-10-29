@@ -1,3 +1,4 @@
+import csv
 import logging
 from django.conf import settings
 from django.db import connection
@@ -73,6 +74,7 @@ class Evaluate():
         save the evaluator results CSV to an S3 bucket.
         """
         logger = logging.getLogger('evaluate.stream_eval_result_file_to_s3')  # noqa: F841
+        bucket_name = settings.S3_BUCKET_NAME
         bucket_directory='eval_results/event_' + str(result_summary.event.id)
         header_created=False
         eval = result_summary.evaluator
@@ -80,10 +82,11 @@ class Evaluate():
 
         if result_summary.accounts_affected > 0:
             filename = f"{result_summary.evaluator.id}.csv"
-            filepath = f"{bucket_directory}/{filename}"
+            filepath = f"{bucket_name}/{bucket_directory}/{filename}"
             url = f"s3://{filepath}"
-            logger.info(f"Saving file: {filename}")
-            with open(url, 'wb', transport_params={'client': self.get_s3_client}) as fout:
+            logger.info(f"Saving file at: {url}")
+            with open(url, 'w', transport_params={'client': s3_session()}) as fout:
+                writer = csv.writer(fout)
                 eval_result_count = result_summary.evaluatorresult_set.count()
                 for i in range(0, eval_result_count, 1000):
                     max_count = eval_result_count if (i + 1000 > eval_result_count) else i + 1000
@@ -91,9 +94,9 @@ class Evaluate():
                     for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
                         if not header_created:
                             # Add the header to the CSV response
-                            fout.writerow(eval_result.create_csv_header())
+                            writer.writerow(eval_result.create_csv_header())
                             header_created=True
-                        fout.writerow(eval_result.create_csv_row_data(fields_list))
+                        writer.writerow(eval_result.create_csv_row_data(fields_list))
             logger.info(f"file saved to S3: {filename}")
 
     def save_evaluator_results(self, result_summary, eval_query):
