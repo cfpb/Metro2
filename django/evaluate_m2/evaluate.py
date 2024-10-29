@@ -84,12 +84,16 @@ class Evaluate():
             url = f"s3://{filepath}"
             logger.info(f"Saving file: {filename}")
             with open(url, 'wb', transport_params={'client': self.get_s3_client}) as fout:
-                for eval_result in result_summary.evaluatorresult_set.all():
-                    if not header_created:
-                        # Add the header to the CSV response
-                        fout.writerow(eval_result.create_csv_header())
-                        header_created=True
-                    fout.writerow(eval_result.create_csv_row_data(fields_list))
+                eval_result_count = result_summary.evaluatorresult_set.count()
+                for i in range(0, eval_result_count, 1000):
+                    max_count = eval_result_count if (i + 1000 > eval_result_count) else i + 1000
+                    logger.info(f"\tGetting chunk size: [{i}: {max_count}]")
+                    for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
+                        if not header_created:
+                            # Add the header to the CSV response
+                            fout.writerow(eval_result.create_csv_header())
+                            header_created=True
+                        fout.writerow(eval_result.create_csv_row_data(fields_list))
             logger.info(f"file saved to S3: {filename}")
 
     def save_evaluator_results(self, result_summary, eval_query):
