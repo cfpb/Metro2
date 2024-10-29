@@ -41,6 +41,6 @@ def s3_session():
         return boto3.Session(
             region_name="us-east-1",
             aws_access_key_id=access_key_id,
-            aws_secret_access_key=secret_key,)
+            aws_secret_access_key=secret_key).client('s3')
     else:
         return boto3.Session("s3")
