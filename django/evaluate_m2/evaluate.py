@@ -79,6 +79,7 @@ class Evaluate():
         header_created=False
         eval = result_summary.evaluator
         fields_list = eval.result_summary_fields()
+        CHUNK_SIZE = 10000
 
         if result_summary.accounts_affected > 0:
             filename = f"{result_summary.evaluator.id}.csv"
@@ -88,8 +89,8 @@ class Evaluate():
             with open(url, 'w', transport_params={'client': s3_session()}) as fout:
                 writer = csv.writer(fout)
                 eval_result_count = result_summary.evaluatorresult_set.count()
-                for i in range(0, eval_result_count, 1000):
-                    max_count = eval_result_count if (i + 1000 > eval_result_count) else i + 1000
+                for i in range(0, eval_result_count, CHUNK_SIZE):
+                    max_count = eval_result_count if (i + CHUNK_SIZE > eval_result_count) else i + CHUNK_SIZE
                     logger.info(f"\tGetting chunk size: [{i}: {max_count}]")
                     for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
                         if not header_created:
