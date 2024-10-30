@@ -1,6 +1,9 @@
 import csv
+import json
 import logging
+
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
 
 from django_application.s3_utils import s3_session
@@ -21,7 +24,8 @@ from evaluate_m2.m2_evaluators.rating_evals import evaluators as rating_evals
 from evaluate_m2.m2_evaluators.scc_evals import evaluators as scc_evals
 from evaluate_m2.m2_evaluators.status_evals import evaluators as status_evals
 from evaluate_m2.m2_evaluators.type_evals import evaluators as type_evals
-from parse_m2.models import Metro2Event
+from evaluate_m2.views_utils import random_sample_id_list
+from parse_m2.models import AccountActivity, Metro2Event
 from smart_open import open
 
 
@@ -48,6 +52,8 @@ class Evaluate():
         """
         logger = logging.getLogger('evaluate.run_evaluators')  # noqa: F841
 
+        if settings.SSO_ENABLED:
+            bucket_name = settings.S3_BUCKET_NAME
         record_set = event.get_all_account_activity()
         # run evaluators only if there are records in the record_set
         if record_set.exists():
@@ -64,41 +70,68 @@ class Evaluate():
                     continue
                 self.update_result_summary_with_actual_results(result_summary)
                 if settings.SSO_ENABLED:
-                    self.stream_eval_result_file_to_s3(result_summary)
+                    self.stream_eval_result_files_to_s3(result_summary, bucket_name)
         else:
             logger.info(f"No AccountActivity found for the event '{event.name}'")
 
-    def stream_eval_result_file_to_s3(self, result_summary):
+    def stream_eval_result_files_to_s3(self, result_summary, bucket_name):
         """
         If the EvaluatorResultSummary record has accounts affected,
-        save the evaluator results CSV to an S3 bucket.
+        save the evaluator results files to an S3 bucket.
         """
-        logger = logging.getLogger('evaluate.stream_eval_result_file_to_s3')  # noqa: F841
-        bucket_name = settings.S3_BUCKET_NAME
+        logger = logging.getLogger('evaluate.stream_eval_result_files_to_s3')  # noqa: F841
         bucket_directory='eval_results/event_' + str(result_summary.event.id)
-        header_created=False
-        eval = result_summary.evaluator
-        fields_list = eval.result_summary_fields()
-        CHUNK_SIZE = 10000
 
         if result_summary.accounts_affected > 0:
-            filename = f"{result_summary.evaluator.id}.csv"
+            filename = f"{result_summary.evaluator.id}"
             filepath = f"{bucket_name}/{bucket_directory}/{filename}"
             url = f"s3://{filepath}"
+
+            self.save_eval_result_csv_to_s3(self, result_summary, url)
+            self.save_eval_result_json_to_s3(self, result_summary, url)
+
+    def save_eval_result_csv_to_s3(self, result_summary, url):
+        """
+        Save the evaluator results CSV to an S3 bucket.
+        """
+        logger = logging.getLogger('evaluate.stream_eval_result_csv_to_s3')  # noqa: F841
+        header_created=False
+        fields_list = eval.result_summary_fields()
+        CHUNK_SIZE = 25000
+
+        logger.info(f"Saving file at: {url}")
+        with open(f"{url}.csv", 'w', transport_params={'client': s3_session()}) as fout:
+            writer = csv.writer(fout)
+            eval_result_count = result_summary.evaluatorresult_set.count()
+            for i in range(0, eval_result_count, CHUNK_SIZE):
+                max_count = eval_result_count if (i + CHUNK_SIZE > eval_result_count) else i + CHUNK_SIZE
+                logger.debug(f"\tGetting chunk size: [{i}: {max_count}]")
+                for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
+                    if not header_created:
+                        # Add the header to the CSV response
+                        writer.writerow(eval_result.create_csv_header())
+                        header_created=True
+                    writer.writerow(eval_result.create_csv_row_data(fields_list))
+        logger.info(f"Completed saving file at: {url}")
+
+    def save_eval_result_json_to_s3(self, result_summary, url):
+        """
+        If the EvaluatorResultSummary record has accounts affected,
+        save the evaluator results JSON to an S3 bucket.
+        """
+        logger = logging.getLogger('evaluate.stream_eval_result_json_to_s3')  # noqa: F841
+        eval = result_summary.evaluator
+        RESULTS_PAGE_SIZE = 20
+
+        if result_summary.accounts_affected > 0:
+            id_list = random_sample_id_list(result_summary, RESULTS_PAGE_SIZE)
             logger.info(f"Saving file at: {url}")
-            with open(url, 'w', transport_params={'client': s3_session()}) as fout:
-                writer = csv.writer(fout)
-                eval_result_count = result_summary.evaluatorresult_set.count()
-                for i in range(0, eval_result_count, CHUNK_SIZE):
-                    max_count = eval_result_count if (i + CHUNK_SIZE > eval_result_count) else i + CHUNK_SIZE
-                    logger.info(f"\tGetting chunk size: [{i}: {max_count}]")
-                    for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
-                        if not header_created:
-                            # Add the header to the CSV response
-                            writer.writerow(eval_result.create_csv_header())
-                            header_created=True
-                        writer.writerow(eval_result.create_csv_row_data(fields_list))
-            logger.info(f"file saved to S3: {filename}")
+            with open(f"{url}.json", 'w', transport_params={'client': s3_session()}) as jsonFile:
+                result = AccountActivity.objects.filter(id__in=id_list) \
+                    .values(*eval.result_summary_fields())
+                response = {'hits': [obj for obj in result]}
+                json.dump(response, jsonFile, cls=DjangoJSONEncoder)
+            logger.info(f"Completed saving file at: {url}")
 
     def save_evaluator_results(self, result_summary, eval_query):
         """
