@@ -79,7 +79,6 @@ class Evaluate():
         If the EvaluatorResultSummary record has accounts affected,
         save the evaluator results files to an S3 bucket.
         """
-        logger = logging.getLogger('evaluate.stream_eval_result_files_to_s3')  # noqa: F841
         bucket_directory='eval_results/event_' + str(result_summary.event.id)
 
         if result_summary.accounts_affected > 0:
@@ -96,7 +95,7 @@ class Evaluate():
         """
         logger = logging.getLogger('evaluate.stream_eval_result_csv_to_s3')  # noqa: F841
         header_created=False
-        fields_list = eval.result_summary_fields()
+        fields_list = result_summary.evaluator.result_summary_fields()
         CHUNK_SIZE = 25000
 
         logger.info(f"Saving file at: {url}")
