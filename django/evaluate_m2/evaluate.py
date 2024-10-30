@@ -87,8 +87,8 @@ class Evaluate():
             filepath = f"{bucket_name}/{bucket_directory}/{filename}"
             url = f"s3://{filepath}"
 
-            self.save_eval_result_csv_to_s3(self, result_summary, url)
-            self.save_eval_result_json_to_s3(self, result_summary, url)
+            self.save_eval_result_csv_to_s3(result_summary, url)
+            self.save_eval_result_json_to_s3(result_summary, url)
 
     def save_eval_result_csv_to_s3(self, result_summary, url):
         """
