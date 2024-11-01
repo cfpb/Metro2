@@ -95,7 +95,7 @@ class Evaluate():
 
             fields_list = result_summary.evaluator.result_summary_fields()
             randomizer = get_randomizer(total_hits, RESULTS_PAGE_SIZE)
-            eval_result_sample = []
+            sample_id_list = []
 
             # TODO: Maximum row size for files should be a million rows
             logger.info(f"Saving file at: {url}.csv")
@@ -106,7 +106,7 @@ class Evaluate():
                     logger.debug(f"\tGetting chunk size: [{i}: {max_count}]")
                     for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
                         if eval_result.source_record_id % randomizer == 0:
-                            eval_result_sample.append(eval_result.source_record_id)
+                            sample_id_list.append(eval_result.source_record_id)
                         if not header_created:
                             # Add the header to the CSV response
                             writer.writerow(eval_result.create_csv_header())
@@ -115,12 +115,18 @@ class Evaluate():
             logger.info(f"Completed saving file at: {url}.csv")
 
             logger.info(f"Saving file at: {url}.json")
-            with open(f"{url}.json", 'w', transport_params={'client': s3_session()}) as jsonFile:
-                result = record_set.filter(id__in=eval_result_sample) \
-                    .values(*fields_list)
-                response = {'hits': [obj for obj in result]}
-                json.dump(response, jsonFile, cls=DjangoJSONEncoder)
+            self.save_evaluator_results_json_to_s3(record_set, fields_list, sample_id_list, url)
             logger.info(f"Completed saving file at: {url}.json")
+
+    def save_evaluator_results_json_to_s3(self, record_set, fields_list, id_list, url):
+        """
+        Save a sample of evaluator results JSON to an S3 bucket.
+        """
+        with open(f"{url}.json", 'w', transport_params={'client': s3_session()}) as jsonFile:
+            result = record_set.filter(id__in=id_list) \
+                .values(*fields_list)
+            response = {'hits': [obj for obj in result]}
+            json.dump(response, jsonFile, cls=DjangoJSONEncoder)
 
     def save_evaluator_results(self, result_summary, eval_query):
         """
