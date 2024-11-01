@@ -50,3 +50,9 @@ def create_eval_insert_query(eval_query: str, result_summary) -> str:
             (source_record_id, date, acct_num, result_summary_id)
     """
     return insert_query + select_query
+
+def get_randomizer(result_total, total_per_page) -> int:
+    randomizer = 1
+    if result_total > total_per_page:
+        randomizer = result_total // total_per_page
+    return randomizer

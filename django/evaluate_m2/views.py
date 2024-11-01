@@ -10,7 +10,6 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from evaluate_m2.views_utils import (
-    get_randomizer,
     has_permissions_for_request,
     random_sample_id_list
 )
