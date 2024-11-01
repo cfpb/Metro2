@@ -79,23 +79,25 @@ class Evaluate():
         If the EvaluatorResultSummary record has accounts affected,
         save the evaluator results files to an S3 bucket.
         """
-        bucket_directory='eval_results/event_' + str(result_summary.event.id)
+        logger = logging.getLogger('evaluate.stream_eval_result_csv_to_s3')  # noqa: F841
+        RESULTS_PAGE_SIZE = 20
+        CHUNK_SIZE = 25000
 
         # Only create files if there are accounts_affected
         if result_summary.accounts_affected > 0:
+            bucket_directory='eval_results/event_' + str(result_summary.event.id)
             filename = f"{result_summary.evaluator.id}"
             filepath = f"{bucket_name}/{bucket_directory}/{filename}"
             url = f"s3://{filepath}"
 
-            # TODO: Maximum row size for files should be a million rows
-            logger = logging.getLogger('evaluate.stream_eval_result_csv_to_s3')  # noqa: F841
-            RESULTS_PAGE_SIZE = 20
-            CHUNK_SIZE = 25000
             header_created=False
             total_hits = result_summary.hits
+
             fields_list = result_summary.evaluator.result_summary_fields()
             randomizer = get_randomizer(total_hits, RESULTS_PAGE_SIZE)
             eval_result_sample = []
+
+            # TODO: Maximum row size for files should be a million rows
             logger.info(f"Saving file at: {url}.csv")
             with open(f"{url}.csv", 'w', transport_params={'client': s3_session()}) as fout:
                 writer = csv.writer(fout)
