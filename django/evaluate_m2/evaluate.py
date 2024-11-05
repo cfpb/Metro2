@@ -7,7 +7,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
 
 from django_application.s3_utils import s3_session
-from evaluate_m2.evaluate_utils import create_eval_insert_query
+from evaluate_m2.evaluate_utils import create_eval_insert_query, get_randomizer
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
 from evaluate_m2.m2_evaluators.account_change_evals import evaluators as acct_change_evals
 from evaluate_m2.m2_evaluators.balance_evals import evaluators as balance_evals
@@ -24,7 +24,7 @@ from evaluate_m2.m2_evaluators.rating_evals import evaluators as rating_evals
 from evaluate_m2.m2_evaluators.scc_evals import evaluators as scc_evals
 from evaluate_m2.m2_evaluators.status_evals import evaluators as status_evals
 from evaluate_m2.m2_evaluators.type_evals import evaluators as type_evals
-from evaluate_m2.views_utils import get_randomizer
+
 from parse_m2.models import Metro2Event
 from smart_open import open
 
