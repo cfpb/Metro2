@@ -79,7 +79,7 @@ class Evaluate():
         If the EvaluatorResultSummary record has accounts affected,
         save the evaluator results files to an S3 bucket.
         """
-        logger = logging.getLogger('evaluate.stream_eval_result_csv_to_s3')  # noqa: F841
+        logger = logging.getLogger('evaluate.stream_eval_result_files_to_s3')  # noqa: F841
         RESULTS_PAGE_SIZE = 20
         CHUNK_SIZE = 25000
 
@@ -89,7 +89,6 @@ class Evaluate():
             filename = f"{result_summary.evaluator.id}"
             filepath = f"{bucket_name}/{bucket_directory}/{filename}"
             url = f"s3://{filepath}"
-
             header_created=False
             total_hits = result_summary.hits
 
@@ -105,7 +104,7 @@ class Evaluate():
                     max_count = total_hits if (i + CHUNK_SIZE > total_hits) else i + CHUNK_SIZE
                     logger.debug(f"\tGetting chunk size: [{i}: {max_count}]")
                     for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
-                        if eval_result.source_record_id % randomizer == 0:
+                        if eval_result.source_record_id % randomizer == 0 and len(sample_id_list) < RESULTS_PAGE_SIZE:
                             sample_id_list.append(eval_result.source_record_id)
                         if not header_created:
                             # Add the header to the CSV response
