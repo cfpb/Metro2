@@ -8,7 +8,7 @@ export class Metro2Page {
   }
 
   verifyEventLocatorBarContent(heading: string, subhead: string) {
-    cy.get('.header-with-icon').should('be.visible')    
+    cy.get('.header-with-icon').should('be.visible')
     cy.findByTestId('locator-bar-heading').should('have.text', heading)
     cy.findByTestId('locator-bar-subhead').should('have.text', subhead)
   }
@@ -42,23 +42,5 @@ export class Metro2Page {
 
   getExpandableTargetByText(text: string) {
     return cy.get('button').contains(text)
-  }
-  verifyDirectSummaryDownload(
-    suggestedFileName: string,
-    types: { description: string; accept: { [key: string]: string[] } }[]
-  ) {
-    cy.window().then((win) =>
-      cy.stub(win, 'showSaveFilePicker').as('showSaveFilePicker').returns(true),
-    )  
-    cy.contains("button", 'Download summary')
-    .click();
-  
-    cy.get('@showSaveFilePicker')
-      .should('have.been.calledOnceWith', {
-        startIn: 'downloads',
-        suggestedName: suggestedFileName,
-        types: types
-      })
-      .invoke('restore')
   }
 }
