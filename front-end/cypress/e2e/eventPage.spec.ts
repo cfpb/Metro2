@@ -41,12 +41,11 @@ describe('Event page', () => {
     table.verifyHeaders(expectedHeaders)
   })
   it('Should show correct number of evaluators', () => {
-    cy.get('.ag-center-cols-container div[role="row"]').should(
+    table.getBodyRows().should(
       'have.length',
       eventData.evaluators.length
     )
   })
-  // Fails because "categories" format does not match displayed text
   it('Should show correct evaluator value per row', () => {
     const fields = ['id', 'description', 'categories', 'hits', 'accounts_affected']
     table.verifyAccountTableBodyContent(
@@ -56,7 +55,7 @@ describe('Event page', () => {
     )
   })
   it('Should contain the correct URL per evaluator', () => {
-    cy.get('.ag-center-cols-container div[role="row"]').each((row, rowIndex) => {
+    table.getBodyRows().each((row, rowIndex) => {
       const rowEvaluator = eventData.evaluators[rowIndex]
       cy.wrap(row)
         .find('.ag-cell-value')
@@ -82,7 +81,6 @@ describe('Event file download', () => {
       .should('be.visible')
       .and('have.text', 'Download summary')
   })
-  // I don't know where this is erroring - "handle.createWritable is not a function"
   it('Verify the downloaded file', () => {
     cy.window().then(win =>
       cy.stub(win, 'showSaveFilePicker').as('showSaveFilePicker').returns(true)
