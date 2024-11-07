@@ -7,6 +7,12 @@ export class Metro2Page {
     cy.findByTestId('locator-bar-heading').should('have.text', heading)
   }
 
+  verifyEventLocatorBarContent(heading: string, subhead: string) {
+    cy.get('.header-with-icon').should('be.visible')
+    cy.findByTestId('locator-bar-heading').should('have.text', heading)
+    cy.findByTestId('locator-bar-subhead').should('have.text', subhead)
+  }
+
   verifyBreadcrumbs(breadcrumbs: [{ text: string; href: string }]) {
     cy.get('.m-breadcrumbs')
       .should('be.visible')
