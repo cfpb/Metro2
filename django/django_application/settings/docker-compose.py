@@ -15,6 +15,7 @@ DATABASES = {
     }
 }
 S3_ENABLED=False
+S3_BUCKET_NAME = "cfpb-metro2-***REMOVED***"
 LOCAL_EVENT_DATA = "parse_m2/local_data/"
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'django']
