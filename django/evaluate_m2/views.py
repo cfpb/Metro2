@@ -61,16 +61,12 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
             content_type="text/csv",
             headers={"Content-Disposition": f"attachment; filename={filename}"}
         )
-        header_created=False
 
         writer = csv.writer(response)
         fields_list = eval.result_summary_fields()
         # Add all evaluator results to the response
+        writer.writerow(eval_result_summary.create_csv_header())
         for eval_result in eval_result_summary.evaluatorresult_set.all():
-            if not header_created:
-                # Add the header to the CSV response
-                writer.writerow(eval_result.create_csv_header())
-                header_created=True
             writer.writerow(eval_result.create_csv_row_data(fields_list))
         return response
     except (
