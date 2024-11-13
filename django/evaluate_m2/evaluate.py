@@ -95,16 +95,14 @@ class Evaluate():
             fields_list = result_summary.evaluator.result_summary_fields()
             randomizer = get_randomizer(total_hits, RESULTS_PAGE_SIZE)
             sample_id_list = []
-
             # TODO: Maximum row size for files should be a million rows
-            logger.info(f"Saving file at: {url}.csv")
             with open(f"{url}.csv", 'w', transport_params={'client': s3_session()}) as fout:
                 writer = csv.writer(fout)
                 for i in range(0, total_hits, CHUNK_SIZE):
                     max_count = total_hits if (i + CHUNK_SIZE > total_hits) else i + CHUNK_SIZE
                     logger.debug(f"\tGetting chunk size: [{i}: {max_count}]")
-                    for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
-                        if eval_result.source_record_id % randomizer == 0 and len(sample_id_list) < RESULTS_PAGE_SIZE:
+                    for idx, eval_result in enumerate(result_summary.evaluatorresult_set.all()[i:max_count], start=i):
+                        if idx % randomizer == 0 and len(sample_id_list) < RESULTS_PAGE_SIZE:
                             sample_id_list.append(eval_result.source_record_id)
                         if not header_created:
                             # Add the header to the CSV response
