@@ -95,6 +95,7 @@ def evaluator_results_view(request, event_id, evaluator_id):
         if e.response['Error']['Code'] == "NoSuchKey":
             error = get_evaluate_m2_not_found_exception(
             e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
+            logger.error(error['message'])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(('GET',))
