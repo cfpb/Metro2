@@ -18,3 +18,9 @@ S3_ENABLED=False
 LOCAL_EVENT_DATA = "parse_m2/local_data/"
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'django']
+
+SETTINGS_DIR = Path(__file__).resolve().parent
+AWS_CREDS_LOCATION = [
+    SETTINGS_DIR / 'aws-svc-access-key.txt',
+    SETTINGS_DIR / 'aws-svc-secret-key.txt',
+]

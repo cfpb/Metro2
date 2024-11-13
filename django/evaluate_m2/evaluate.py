@@ -7,7 +7,11 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
 
 from django_application.s3_utils import s3_session
-from evaluate_m2.evaluate_utils import create_eval_insert_query, get_randomizer
+from evaluate_m2.evaluate_utils import (
+    create_eval_insert_query,
+    get_randomizer,
+    get_url
+)
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
 from evaluate_m2.m2_evaluators.account_change_evals import evaluators as acct_change_evals
 from evaluate_m2.m2_evaluators.balance_evals import evaluators as balance_evals
@@ -41,9 +45,6 @@ class Evaluate():
                           prog_evals | rating_evals | scc_evals | status_evals | \
                           type_evals
 
-    def get_s3_client(self):
-        return s3_session().client('s3')
-
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):
         """
@@ -69,7 +70,7 @@ class Evaluate():
                     self.save_error_result(result_summary)
                     continue
                 self.update_result_summary_with_actual_results(result_summary)
-                if settings.SSO_ENABLED:
+                if settings.S3_ENABLED:
                     self.stream_eval_result_files_to_s3(result_summary, record_set, bucket_name)
         else:
             logger.info(f"No AccountActivity found for the event '{event.name}'")
@@ -83,14 +84,10 @@ class Evaluate():
         RESULTS_PAGE_SIZE = 20
         CHUNK_SIZE = 25000
 
-        # Only create files if there are accounts_affected
-        if result_summary.accounts_affected > 0:
-            bucket_directory='eval_results/event_' + str(result_summary.event.id)
-            filename = f"{result_summary.evaluator.id}"
-            filepath = f"{bucket_name}/{bucket_directory}/{filename}"
-            url = f"s3://{filepath}"
-            header_created=False
-            total_hits = result_summary.hits
+        # Only create files if there are hits
+        if result_summary.hits > 0:
+            url = get_url(str(result_summary.event.id),result_summary.evaluator.id)
+            total_hits = min(result_summary.hits, 1_000_000)
 
             fields_list = result_summary.evaluator.result_summary_fields()
             randomizer = get_randomizer(total_hits, RESULTS_PAGE_SIZE)
@@ -98,16 +95,14 @@ class Evaluate():
             # TODO: Maximum row size for files should be a million rows
             with open(f"{url}.csv", 'w', transport_params={'client': s3_session()}) as fout:
                 writer = csv.writer(fout)
+                # Add the header to the CSV response
+                writer.writerow(result_summary.create_csv_header())
                 for i in range(0, total_hits, CHUNK_SIZE):
-                    max_count = total_hits if (i + CHUNK_SIZE > total_hits) else i + CHUNK_SIZE
+                    max_count = min(total_hits, (i + CHUNK_SIZE))
                     logger.debug(f"\tGetting chunk size: [{i}: {max_count}]")
                     for idx, eval_result in enumerate(result_summary.evaluatorresult_set.all()[i:max_count], start=i):
                         if idx % randomizer == 0 and len(sample_id_list) < RESULTS_PAGE_SIZE:
                             sample_id_list.append(eval_result.source_record_id)
-                        if not header_created:
-                            # Add the header to the CSV response
-                            writer.writerow(eval_result.create_csv_header())
-                            header_created=True
                         writer.writerow(eval_result.create_csv_row_data(fields_list))
             logger.info(f"Completed saving file at: {url}.csv")
 

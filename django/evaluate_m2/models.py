@@ -51,6 +51,11 @@ class EvaluatorResultSummary(models.Model):
     def __str__(self) -> str:
         return f"Event: {self.event} - {self.evaluator}"
 
+    def create_csv_header(self):
+        csv_header = list(self.evaluator.result_summary_fields())
+        csv_header.insert(0, 'event_name')
+        return csv_header
+
 
 class EvaluatorResult(models.Model):
     class Meta:
@@ -61,11 +66,6 @@ class EvaluatorResult(models.Model):
     field_values = JSONField(encoder=DjangoJSONEncoder, null=True)
     source_record = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     acct_num = models.CharField(max_length=30)
-
-    def create_csv_header(self):
-        csv_header = list(self.result_summary.evaluator.result_summary_fields())
-        csv_header.insert(0, 'event_name')
-        return csv_header
 
     def create_csv_row_data(self, fields_list: list[str]):
         field_values = AccountActivity.objects \
