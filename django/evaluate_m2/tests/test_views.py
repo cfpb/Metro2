@@ -171,76 +171,6 @@ class EvaluateViewsTestCase(TestCase):
         self.assertEqual(csv_content, expected)
 
     ########################################
-    # Tests for Eval Results view API endpoint
-    def test_evaluator_results_view(self):
-        # Status-dofd-1 uses the following fields:
-        #     acct_stat, dofd, amt_past_due, compl_cond_cd, smpa
-        # along with the fields that are always returned:
-        #     id, activity_date, cons_acct_num
-        expected = [{
-            'id': 32, 'activity_date': '2023-12-31', 'cons_acct_num': '0032',
-            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
-            'compl_cond_cd': '', 'smpa': 0
-        }, {
-            'id': 33, 'activity_date': '2023-12-31', 'cons_acct_num': '0033',
-            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
-            'compl_cond_cd': '', 'smpa': 0
-        },]
-
-        self.create_activity_data()
-        response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
-        # the response should be a JSON
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.headers['Content-Type'], 'application/json')
-
-        # the response should return a hits field with a list of EvaluatorResult
-        # field_values
-        # There should be two hits. Each one should have a set of keys that matches
-        # the fields in evaluator.result_summary_fields
-        hits = response.json()['hits']
-        self.assertEqual(hits, expected)
-
-    def test_evaluator_results_view_max_20_results(self):
-        self.create_activity_data()
-
-        for index in range(25):
-            activity = {'id': index, 'activity_date': date(2023, 12, 31),
-                    'cons_acct_num': '0032'}
-            record = acct_record(self.data_file, activity)
-            EvaluatorResult.objects.create(
-                result_summary=self.eval_rs3, date=date(2021, 1, 1),
-                field_values={'record': index, 'acct_type':'y'},
-                source_record=record, acct_num='0032')
-
-        response = self.client.get('/api/events/1/evaluator/Status-DOFD-6/')
-        # the response should be a JSON
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()['hits']), 20)
-        self.assertEqual(response.headers['Content-Type'], 'application/json')
-
-    def test_evaluator_results_view_with_error_no_evaluator_metadata(self):
-        self.create_activity_data()
-        response = self.client.get('/api/events/1/evaluator/NON_EXISTENT/')
-
-        self.assertEqual(response.headers['Content-Type'], 'application/json')
-        self.assertContains(response, 'Evaluator: NON_EXISTENT does not exist.',
-            status_code=404)
-
-    def test_evaluator_results_view_with_error_no_event(self):
-        response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
-
-        self.assertEqual(response.headers['Content-Type'], 'application/json')
-        self.assertContains(response, 'Event ID: 1 does not exist.', status_code=404)
-
-    def test_evaluator_results_view_with_error_no_evaluator_results_summary(self):
-        self.create_activity_data()
-        response = self.client.get('/api/events/1/evaluator/Status-DOFD-2/')
-        self.assertEqual(response.headers['Content-Type'], 'application/json')
-        self.assertContains(response,
-            'EvaluatorResultSummary record(s) not found for event ID 1.',
-            status_code=404)
-
-    ########################################
     # Tests for Account Summary view API endpoint
     def test_account_summary_view_single_results(self):
         self.create_activity_data()
@@ -378,3 +308,73 @@ class EvaluateViewsTestCase(TestCase):
         # the response should include the evaluator field as a list sorted by the id,
         # evaluators with a hits field greater than 0 will be returned
         self.assertEqual(response.json(), expected)
+
+
+class EvaluateResultsViewS3TestCase(TestCase):
+    # Test for retrieving files from the S3 bucket. Only run when testing manually.
+    # Before running, make sure S3 secrets are in place and update S3_ENABLED=True in
+    # local.py if testing with venv or docker-compose.py if testing with django docker container.
+
+    # Tests for Eval Results view API endpoint
+    def xtest_evaluator_results_view(self):
+        # PROG-DOFD-1 uses the following fields:
+        #     acct_stat, dofd, previous_values__acct_stat, previous_values__dofd, previous_values__activity_date
+        # along with the fields that are always returned:
+        #     id, activity_date, cons_acct_num
+        expected = [{
+            "id": 2098498, "activity_date": "2016-01-31", "cons_acct_num": "1301519042",
+            "acct_stat": "80", "dofd": "2015-09-30", "previous_values__acct_stat": "80",
+            "previous_values__dofd": "2015-02-28", "previous_values__activity_date": "2015-11-30"
+        },  {
+            "id": 3753260, "activity_date": "2016-06-30", "cons_acct_num": "1403784203",
+            "acct_stat": "84", "dofd": "2015-11-27", "previous_values__acct_stat": "83",
+            "previous_values__dofd": "2015-09-27", "previous_values__activity_date": "2016-04-30"
+        }, {
+            "id": 4364277, "activity_date": "2016-08-31", "cons_acct_num": "1308655907",
+            "acct_stat": "84", "dofd": "2015-10-23", "previous_values__acct_stat": "82",
+            "previous_values__dofd": "2016-02-23", "previous_values__activity_date": "2016-06-30"
+        },  {
+            "id": 4526384, "activity_date": "2016-08-31", "cons_acct_num": "1513099674",
+            "acct_stat": "84", "dofd": "2015-11-08", "previous_values__acct_stat": "84",
+            "previous_values__dofd": "2015-10-08", "previous_values__activity_date": "2016-05-31"
+        },]
+
+        response = self.client.get('/api/events/8/evaluator/PROG-DOFD-1/')
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        # the response should return a hits field with a list of EvaluatorResult
+        # field_values
+        # There should be two hits. Each one should have a set of keys that matches
+        # the fields in evaluator.result_summary_fields
+        hits = response.json()['hits']
+        self.assertEqual(hits, expected)
+
+    def xtest_evaluator_results_view_max_20_results(self):
+        response = self.client.get('/api/events/8/evaluator/Balance-APD-1/')
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['hits']), 20)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+    def xtest_evaluator_results_view_with_error_no_evaluator_metadata(self):
+        response = self.client.get('/api/events/8/evaluator/NON_EXISTENT/')
+
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response, 'Evaluator result does not exist for event ID 8 or evaluator ID NON_EXISTENT.',
+            status_code=404)
+
+    def xtest_evaluator_results_view_with_error_no_event(self):
+        response = self.client.get('/api/events/0/evaluator/Balloon-Balance-1/')
+
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response, 'Evaluator result does not exist for event ID 0 or evaluator ID Balloon-Balance-1.',
+            status_code=404)
+
+    def xtest_evaluator_results_view_with_error_no_evaluator_results_summary(self):
+        response = self.client.get('/api/events/8/evaluator/Status-DOFD-3/')
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response,
+            'Evaluator result does not exist for event ID 8 or evaluator ID Status-DOFD-3.',
+            status_code=404)
