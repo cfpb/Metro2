@@ -59,6 +59,12 @@ def get_randomizer(result_total, total_per_page) -> int:
     return randomizer
 
 def get_url(event_id: str, evaluator_id: str) -> str:
+    """
+    Formulate a string URL.
+    inputs:
+      - event_id: a string representation of an Event ID
+      - evaluator_id: the ID of an evaluator
+    """
     if settings.S3_ENABLED:
         bucket_name = settings.S3_BUCKET_NAME
         bucket_directory=f"eval_results/event_{event_id}"
