@@ -965,240 +965,133 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(self.event, 'Status-DateClosed-3', self.expected)
 
     def test_eval_status_dofd_1(self):
-    # Hits when all conditions met:
-    # 1. acct_stat == '61', '62', '63', '64', '65', '71', '78', '80','82',
+    # Hits when the following condition is met:
+    # 1. dofd == None
+
+    # ...AND one of the following conditions is met:
+    # a. acct_stat == '61', '62', '63', '64', '65', '71', '78', '80','82',
     #                 '83', '84', '88', '89', '94', '95', '96', '93', '97'
-    # 2. dofd == None
+    # b. acct_stat == '05', '13' & pmt_rating == '1', '2', '3', '4', '5',
+    #                                            '6', 'G', 'L'
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'pmt_rating':'1', 'acct_stat':'71', 'dofd':None
+                'pmt_rating':'0', 'acct_stat':'71', 'dofd':None
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'pmt_rating':'2', 'acct_stat':'97', 'dofd':None
+                'pmt_rating':'1', 'acct_stat':'97', 'dofd':None
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'pmt_rating':'3', 'acct_stat':'11', 'dofd':None
+                'pmt_rating':'1', 'acct_stat':'05', 'dofd':None
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'pmt_rating':'0', 'acct_stat':'65', 'dofd':date(2019, 12, 31)
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: NO-dofd=01012020
-
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-1', self.expected)
-
-    def test_eval_status_dofd_2(self):
-    # Hits when all conditions met:
-    # 1. acct_stat == '13'
-    # 2. pmt_rating == '1', '2', '3', '4', '5', '6', 'G', 'L'
-    # 2. dofd == None
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'pmt_rating':'1', 'acct_stat':'13', 'dofd':None
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'pmt_rating':'2', 'acct_stat':'13', 'dofd':None
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'pmt_rating':'3', 'acct_stat':'11', 'dofd':None
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'pmt_rating':'0', 'acct_stat':'13', 'dofd':None
+                'pmt_rating':'G', 'acct_stat':'05', 'dofd':None
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'pmt_rating':'1', 'acct_stat':'13', 'dofd':None
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'pmt_rating':'2', 'acct_stat':'13', 'dofd':None
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'pmt_rating':'3', 'acct_stat':'11', 'dofd':None
+            }, {
+                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
+                'pmt_rating':'7', 'acct_stat':'05', 'dofd':None
+            }, {
+                'id': 40, 'activity_date': acct_date, 'cons_acct_num': '0040',
+                'pmt_rating':'0', 'acct_stat':'13', 'dofd':None
+            }, {
+                'id': 41, 'activity_date': acct_date, 'cons_acct_num': '0041',
+                'pmt_rating':'0', 'acct_stat':'65', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0042',
+                'pmt_rating':'1', 'acct_stat':'05', 'dofd':date(2019, 12, 31)
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0043',
                 'pmt_rating':'L', 'acct_stat':'13', 'dofd':date(2019, 12, 31)
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: NO-pmt_rating=0, 36: NO-dofd=01012020
+        # 32: HIT, 33: HIT, 34: HIT, 35: HIT, 36: HIT, 37: HIT,
+        # 38: NO-acct_stat=11, 39: NO-pmt_rating=7,
+        # 40: NO-pmt_rating=0, 41: NO-dofd=date(2019, 12, 31),
+        # 42: NO-dofd=date(2019, 12, 31), 43: NO-dofd=date(2019, 12, 31)
 
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-2', self.expected)
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'},
+            {'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036'},
+            {'id': 37, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0037'}]
+  
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-1', expected)
 
-    def test_eval_status_dofd_3(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat == '5'
-    # 2. pmt_rating == '1', '2', '3', '4', '5', '6', 'G', 'L'
-    # 3. dofd == None
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'pmt_rating':'1', 'acct_stat':'05', 'dofd':None
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'pmt_rating':'G', 'acct_stat':'05', 'dofd':None
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'pmt_rating':'1', 'acct_stat':'01', 'dofd':None
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'pmt_rating':'7', 'acct_stat':'05', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'pmt_rating':'7', 'acct_stat':'01', 'dofd':None
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=01,
-        # 35: NO-dofd=date(2019, 12, 31), 36: NO-pmt_rating=7
-
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-3', self.expected)
-
-    def test_eval_status_dofd_4(self):
-    # Hits when all conditions met:
-    # 1. acct_stat == '13'
-    # 2. pmt_rating == '0'
-    # 3. dofd != None
+    def test_eval_status_dofd_2(self):
+    # Hits when the following condition is met:
+    # 1. dofd != None
+    # ... AND one of the following sets of conditions is met:
+    #     a. acct_stat == '11'
+    #     b. acct_stat == '05', '13' & pmt_rating == '0'
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'pmt_rating':'0', 'acct_stat':'13', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'pmt_rating':'0', 'acct_stat':'13', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'pmt_rating':'0', 'acct_stat':'11', 'dofd':None
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'pmt_rating':'3', 'acct_stat':'13', 'dofd':None
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'pmt_rating':'0', 'acct_stat':'13', 'dofd':None
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: pmt_rating=3, 36: NO-dofd=01012020
-
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-4', self.expected)
-
-    def test_eval_status_dofd_5(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat == '05'
-    # 2. pmt_rating == '0'
-    # 3. dofd != None
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'pmt_rating':'0', 'acct_stat':'05', 'dofd':date(2019, 12, 31)
+                'pmt_rating':'0', 'acct_stat':'11', 'dofd':date(2019, 12, 31)
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
                 'pmt_rating':'0', 'acct_stat':'05', 'dofd':date(2019, 12, 31)
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'pmt_rating':'0', 'acct_stat':'01', 'dofd':date(2019, 12, 31)
+                'pmt_rating':'0', 'acct_stat':'13', 'dofd':date(2019, 12, 31)
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'pmt_rating':'1', 'acct_stat':'05', 'dofd':date(2019, 12, 31)
-            }, {
+                'pmt_rating':'1', 'acct_stat':'11', 'dofd':date(2019, 12, 31)
+            },  {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'pmt_rating':'0', 'acct_stat':'05', 'dofd':None
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=01,
-        # 35: NO-pmt_rating=1, 36: NO-dofd=None
-
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-5', self.expected)
-
-    def test_eval_status_dofd_6(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat == '11'
-    # 2. dofd != None
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'11', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'11', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'1', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'1', 'dofd':None
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=01, 35: NO-dofd=None
-
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-6', self.expected)
-
-    def test_eval_status_dofd_7(self):
-    # Hits when all conditions are met:
-    # 1. acct_type == '19','25','2C'
-    # 2. acct_stat == '88','89'
-    # 3. pmt_rating == '0'
-    # 4. port_type == 'M'
-    # 5. compl_cond_cd != 'XA'
-    # 6. dofd != None
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_type':'19', 'acct_stat':'88', 'compl_cond_cd':'A',
-                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_type':'25', 'acct_stat':'89', 'compl_cond_cd':'B',
-                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_type':'00', 'acct_stat':'88', 'compl_cond_cd':'A',
-                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_type':'19', 'acct_stat':'99', 'compl_cond_cd':'A',
-                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
-                'port_type':'M', 'pmt_rating':'1', 'dofd':date(2019, 12, 31)
+                'pmt_rating':'3', 'acct_stat':'05', 'dofd':date(2019, 12, 31)
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
-                'port_type':'0', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
+                'pmt_rating':'L', 'acct_stat':'13', 'dofd':date(2019, 12, 31)
             }, {
                 'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'XA',
-                'port_type':'M', 'pmt_rating':'0', 'dofd':date(2019, 12, 31)
+                'pmt_rating':'0', 'acct_stat':'11', 'dofd':None
             }, {
                 'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
-                'acct_type':'25', 'acct_stat':'88', 'compl_cond_cd':'A',
-                'port_type':'M', 'pmt_rating':'0', 'dofd':None
+                'pmt_rating':'0', 'acct_stat':'05', 'dofd':None
+            }, {
+                'id': 40, 'activity_date': acct_date, 'cons_acct_num': '0040',
+                'pmt_rating':'0', 'acct_stat':'13', 'dofd':None
+            }, {
+                'id': 41, 'activity_date': acct_date, 'cons_acct_num': '0041',
+                'pmt_rating':'G', 'acct_stat':'11', 'dofd':None
+            }, {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0042',
+                'pmt_rating':'2', 'acct_stat':'05', 'dofd':None
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0043',
+                'pmt_rating':'1', 'acct_stat':'13', 'dofd':None
             }]
-        for i in range(0, len(activities)):
-            acct_record(self.data_file, activities[i])
-        # 32: HIT, 33: HIT, 34: NO-acct_type=00,
-        # 35: NO-acct_stat=99, 36: NO-pmt_rating=1
-        # 37: NO-port_type=0, 38: NO-compl_cond_cd=XA
-        # 39: NO-dofd=None
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: HIT, 35: HIT,
+        # 36: NO-pmt_rating=3, 37: NO-pmt_rating=L,
+        # 38: NO-dofd=None, #39: NO-dofd=None,
+        # 40: NO-dofd=None, #41: NO-dofd=None,
+        # 42: NO-dofd=None, #43: NO-dofd=None,
 
-        self.assert_evaluator_correct(self.event, 'Status-DOFD-7', self.expected)
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'}]
+        self.assert_evaluator_correct(self.event, 'Status-DOFD-2', expected)
 
     def test_eval_status_payment_amount_1(self):
     # Hits when all conditions are met:
