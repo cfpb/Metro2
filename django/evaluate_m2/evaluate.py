@@ -92,7 +92,6 @@ class Evaluate():
             fields_list = result_summary.evaluator.result_summary_fields()
             randomizer = get_randomizer(total_hits, RESULTS_PAGE_SIZE)
             sample_id_list = []
-            # TODO: Maximum row size for files should be a million rows
             with open(f"{url}.csv", 'w', transport_params={'client': s3_session()}) as fout:
                 writer = csv.writer(fout)
                 # Add the header to the CSV response
