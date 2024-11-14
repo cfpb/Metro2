@@ -85,6 +85,8 @@ class Evaluate():
         # Only create files if there are hits
         if result_summary.hits > 0:
             url = get_url(str(result_summary.event.id),result_summary.evaluator.id)
+            # For now, limit file uploads to 1 million records
+            # TODO: handle uploading results where hits > 1 million
             total_hits = min(result_summary.hits, 1_000_000)
 
             fields_list = result_summary.evaluator.result_summary_fields()
