@@ -29,11 +29,10 @@ def s3_session():
     """
     Return a session for use in uploading files to S3.
 
-    In deployed environments (in EKS), use the credentials from the secrets file
-    to create the S3 session directly.
+    Use the credentials from the secrets files to create the S3 session directly.
 
-    When running locally, allow boto3 to infer the credentials from your environment.
-    Do this by running `aws configure sso`, then using `export AWS_PROFILE=[your profile]`
+    When running locally, you will need to provide an access key and secret key manually.
+    You can use sample settings in settings/docker-compose.py.
     """
     if settings.AWS_CREDS_LOCATION:
         access_key_id = get_file_contents(settings.AWS_CREDS_LOCATION[0])
