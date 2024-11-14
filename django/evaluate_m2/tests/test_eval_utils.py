@@ -1,7 +1,7 @@
 from datetime import date
 from django.test import TestCase
 import re
-from evaluate_m2.evaluate_utils import get_activity_date_range, create_eval_insert_query, get_randomizer
+from evaluate_m2.evaluate_utils import get_activity_date_range, create_eval_insert_query, get_randomizer, get_url
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import Metro2Event, M2DataFile, AccountActivity
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
