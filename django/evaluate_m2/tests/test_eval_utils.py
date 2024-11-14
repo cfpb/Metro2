@@ -64,6 +64,12 @@ class EvaluatorUtilsTestCase(TestCase):
         with self.assertRaises(TypeError):
             create_eval_insert_query(wrong_query_sql, self.result_summary)
 
+    def test_get_url(self):
+        with self.settings(S3_BUCKET_NAME = 'sample-bucket'):
+            result = get_url(event_id='5', evaluator_id='sample-eval-3')
+            expected = "s3://sample-bucket/eval_results/event_5/sample-eval-3"
+            self.assertEqual(result, expected)
+
     def test_get_randomizer_less_than_page_size(self):
         total = 19
         page_total = 20
