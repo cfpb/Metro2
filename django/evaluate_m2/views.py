@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from django_application.s3_utils import s3_session
-from evaluate_m2.views_utils import has_permissions_for_request
+from evaluate_m2.views_utils import has_permissions_for_request, random_sample_id_list
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
@@ -82,19 +82,53 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
 @api_view()
 def evaluator_results_view(request, event_id, evaluator_id):
     logger = logging.getLogger('views.evaluator_results_view')
-    bucket_directory=f"eval_results/event_{event_id}"
-    bucket_name = settings.S3_BUCKET_NAME
-    s3 = s3_session()
-    filename = f"{evaluator_id}.json"
-    bucket_key = f"{bucket_directory}/{filename}"
-    try:
-        file = s3.get_object(Bucket=bucket_name, Key=bucket_key)
-        file_data = file['Body'].read().decode('utf-8')
-        return JsonResponse(json.loads(file_data))
-    except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == "NoSuchKey":
+    if settings.S3_ENABLED:
+        bucket_directory=f"eval_results/event_{event_id}"
+        bucket_name = settings.S3_BUCKET_NAME
+        s3 = s3_session()
+        filename = f"{evaluator_id}.json"
+        bucket_key = f"{bucket_directory}/{filename}"
+        try:
+            file = s3.get_object(Bucket=bucket_name, Key=bucket_key)
+            file_data = file['Body'].read().decode('utf-8')
+            return JsonResponse(json.loads(file_data))
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == "NoSuchKey":
+                error = get_evaluate_m2_not_found_exception(
+                e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
+                logger.error(error['message'])
+                return Response(error, status=status.HTTP_404_NOT_FOUND)
+    else:
+        try:
+            RESULTS_PAGE_SIZE = 20
+            event = Metro2Event.objects.get(id=event_id)
+            if not has_permissions_for_request(request, event):
+                return HttpResponse('Unauthorized', status=401)
+
+            evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
+            eval_result_summary = EvaluatorResultSummary.objects.get(
+                event=event, evaluator=evaluator)
+
+            id_list = random_sample_id_list(eval_result_summary, RESULTS_PAGE_SIZE)
+
+            try:
+                # TODO: update the metadata importer to ensure that
+                # result_summary_fields are always valid AccountActivity field names
+                result = AccountActivity.objects.filter(id__in=id_list) \
+                    .values(*evaluator.result_summary_fields())
+            except FieldError as e:
+                err = f"Metadata for {evaluator.id} has incorrect field name: {e}"
+                return Response(err, status=status.HTTP_404_NOT_FOUND)
+
+            response = {'hits': [obj for obj in result]}
+            return JsonResponse(response)
+        except (
+            Metro2Event.DoesNotExist,
+            EvaluatorMetadata.DoesNotExist,
+            EvaluatorResultSummary.DoesNotExist
+        ) as e:
             error = get_evaluate_m2_not_found_exception(
-            e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
+                str(e), event_id, evaluator_id, request.path)
             logger.error(error['message'])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
 
