@@ -24,3 +24,22 @@ def s3_resource():
         )
     else:
         return boto3.resource("s3")
+
+def s3_session():
+    """
+    Return a session for use in uploading files to S3.
+
+    Use the credentials from the secrets files to create the S3 session directly.
+
+    When running locally, you will need to provide an access key and secret key manually.
+    You can use sample settings in settings/docker-compose.py.
+    """
+    if settings.AWS_CREDS_LOCATION:
+        access_key_id = get_file_contents(settings.AWS_CREDS_LOCATION[0])
+        secret_key = get_file_contents(settings.AWS_CREDS_LOCATION[1])
+        return boto3.Session(
+            region_name="us-east-1",
+            aws_access_key_id=access_key_id,
+            aws_secret_access_key=secret_key).client('s3')
+    else:
+        return boto3.Session("s3")

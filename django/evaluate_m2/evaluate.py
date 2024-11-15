@@ -1,7 +1,17 @@
+import csv
+import json
 import logging
+
+from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
 
-from evaluate_m2.evaluate_utils import create_eval_insert_query
+from django_application.s3_utils import s3_session
+from evaluate_m2.evaluate_utils import (
+    create_eval_insert_query,
+    get_randomizer,
+    get_url
+)
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
 from evaluate_m2.m2_evaluators.account_change_evals import evaluators as acct_change_evals
 from evaluate_m2.m2_evaluators.balance_evals import evaluators as balance_evals
@@ -18,7 +28,9 @@ from evaluate_m2.m2_evaluators.rating_evals import evaluators as rating_evals
 from evaluate_m2.m2_evaluators.scc_evals import evaluators as scc_evals
 from evaluate_m2.m2_evaluators.status_evals import evaluators as status_evals
 from evaluate_m2.m2_evaluators.type_evals import evaluators as type_evals
+
 from parse_m2.models import Metro2Event
+from smart_open import open
 
 
 class Evaluate():
@@ -32,7 +44,6 @@ class Evaluate():
                           doai_evals | dtcl_evals | ecoa_evals | php_evals | \
                           prog_evals | rating_evals | scc_evals | status_evals | \
                           type_evals
-
 
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):
@@ -57,8 +68,56 @@ class Evaluate():
                     self.save_error_result(result_summary)
                     continue
                 self.update_result_summary_with_actual_results(result_summary)
+                if settings.S3_ENABLED:
+                    self.stream_eval_result_files_to_s3(result_summary, record_set)
         else:
             logger.info(f"No AccountActivity found for the event '{event.name}'")
+
+    def stream_eval_result_files_to_s3(self, result_summary, record_set):
+        """
+        If the EvaluatorResultSummary record has accounts affected,
+        save the evaluator results files to an S3 bucket.
+        """
+        logger = logging.getLogger('evaluate.stream_eval_result_files_to_s3')  # noqa: F841
+        RESULTS_PAGE_SIZE = 20
+        CHUNK_SIZE = 25000
+
+        # Only create files if there are hits
+        if result_summary.hits > 0:
+            url = get_url(str(result_summary.event.id),result_summary.evaluator.id)
+            # For now, limit file uploads to 1 million records
+            # TODO: handle uploading results where hits > 1 million
+            total_hits = min(result_summary.hits, 1_000_000)
+
+            fields_list = result_summary.evaluator.result_summary_fields()
+            randomizer = get_randomizer(total_hits, RESULTS_PAGE_SIZE)
+            sample_id_list = []
+            with open(f"{url}.csv", 'w', transport_params={'client': s3_session()}) as fout:
+                writer = csv.writer(fout)
+                # Add the header to the CSV response
+                writer.writerow(result_summary.create_csv_header())
+                for i in range(0, total_hits, CHUNK_SIZE):
+                    max_count = min(total_hits, (i + CHUNK_SIZE))
+                    logger.debug(f"\tGetting chunk size: [{i}: {max_count}]")
+                    for idx, eval_result in enumerate(result_summary.evaluatorresult_set.all()[i:max_count], start=i):
+                        if idx % randomizer == 0 and len(sample_id_list) < RESULTS_PAGE_SIZE:
+                            sample_id_list.append(eval_result.source_record_id)
+                        writer.writerow(eval_result.create_csv_row_data(fields_list))
+            logger.info(f"Completed saving file at: {url}.csv")
+
+            logger.info(f"Saving file at: {url}.json")
+            self.save_evaluator_results_json_to_s3(record_set, fields_list, sample_id_list, url)
+            logger.info(f"Completed saving file at: {url}.json")
+
+    def save_evaluator_results_json_to_s3(self, record_set, fields_list, id_list, url):
+        """
+        Save a sample of evaluator results JSON to an S3 bucket.
+        """
+        with open(f"{url}.json", 'w', transport_params={'client': s3_session()}) as jsonFile:
+            result = record_set.filter(id__in=id_list) \
+                .values(*fields_list)
+            response = {'hits': [obj for obj in result]}
+            json.dump(response, jsonFile, cls=DjangoJSONEncoder)
 
     def save_evaluator_results(self, result_summary, eval_query):
         """
