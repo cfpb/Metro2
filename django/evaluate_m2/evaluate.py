@@ -53,8 +53,6 @@ class Evaluate():
         """
         logger = logging.getLogger('evaluate.run_evaluators')  # noqa: F841
 
-        if settings.SSO_ENABLED:
-            bucket_name = settings.S3_BUCKET_NAME
         record_set = event.get_all_account_activity()
         # run evaluators only if there are records in the record_set
         if record_set.exists():
@@ -71,11 +69,11 @@ class Evaluate():
                     continue
                 self.update_result_summary_with_actual_results(result_summary)
                 if settings.S3_ENABLED:
-                    self.stream_eval_result_files_to_s3(result_summary, record_set, bucket_name)
+                    self.stream_eval_result_files_to_s3(result_summary, record_set)
         else:
             logger.info(f"No AccountActivity found for the event '{event.name}'")
 
-    def stream_eval_result_files_to_s3(self, result_summary, record_set, bucket_name):
+    def stream_eval_result_files_to_s3(self, result_summary, record_set):
         """
         If the EvaluatorResultSummary record has accounts affected,
         save the evaluator results files to an S3 bucket.
@@ -87,12 +85,13 @@ class Evaluate():
         # Only create files if there are hits
         if result_summary.hits > 0:
             url = get_url(str(result_summary.event.id),result_summary.evaluator.id)
+            # For now, limit file uploads to 1 million records
+            # TODO: handle uploading results where hits > 1 million
             total_hits = min(result_summary.hits, 1_000_000)
 
             fields_list = result_summary.evaluator.result_summary_fields()
             randomizer = get_randomizer(total_hits, RESULTS_PAGE_SIZE)
             sample_id_list = []
-            # TODO: Maximum row size for files should be a million rows
             with open(f"{url}.csv", 'w', transport_params={'client': s3_session()}) as fout:
                 writer = csv.writer(fout)
                 # Add the header to the CSV response

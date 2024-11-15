@@ -32,5 +32,6 @@ export const getDisplayValue = (
   if (currencyFields.includes(field)) return formatUSD(value)
   if (dateFields.includes(field)) return formatDate(value)
   if (annotatedFields.includes(field)) return annotateValue(field, value)
+  if (Array.isArray(value)) return value.join('')
   return value
 }
