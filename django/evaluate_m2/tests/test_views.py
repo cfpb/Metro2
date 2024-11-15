@@ -1,4 +1,5 @@
-from django.test import TestCase
+from django.conf import settings
+from django.test import TestCase, override_settings
 from datetime import date
 
 from evaluate_m2.models import (
@@ -12,6 +13,7 @@ from parse_m2.models import M2DataFile, Metro2Event
 
 
 class EvaluateViewsTestCase(TestCase):
+    @override_settings(S3_ENABLED=False)
     ########################################
     # Methods for creating test data
     def setUp(self) -> None:
@@ -125,7 +127,6 @@ class EvaluateViewsTestCase(TestCase):
                 event=self.event, evaluator=self.stat_dofd_2, hits=0, accounts_affected=0,
                 inconsistency_start=acct_date, inconsistency_end=acct_date)
 
-
     ########################################
     # Tests for Eval Metadata download
     def test_download_eval_metadata(self):
@@ -169,6 +170,76 @@ class EvaluateViewsTestCase(TestCase):
             ''
         ])
         self.assertEqual(csv_content, expected)
+
+    ########################################
+    # Tests for Eval Results view API endpoint
+    def test_evaluator_results_view(self):
+        # Status-dofd-1 uses the following fields:
+        #     acct_stat, dofd, amt_past_due, compl_cond_cd, smpa
+        # along with the fields that are always returned:
+        #     id, activity_date, cons_acct_num
+        expected = [{
+            'id': 32, 'activity_date': '2023-12-31', 'cons_acct_num': '0032',
+            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
+            'compl_cond_cd': '', 'smpa': 0
+        }, {
+            'id': 33, 'activity_date': '2023-12-31', 'cons_acct_num': '0033',
+            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
+            'compl_cond_cd': '', 'smpa': 0
+        },]
+
+        self.create_activity_data()
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        # the response should return a hits field with a list of EvaluatorResult
+        # field_values
+        # There should be two hits. Each one should have a set of keys that matches
+        # the fields in evaluator.result_summary_fields
+        hits = response.json()['hits']
+        self.assertEqual(hits, expected)
+
+    def test_evaluator_results_view_max_20_results(self):
+        self.create_activity_data()
+
+        for index in range(25):
+            activity = {'id': index, 'activity_date': date(2023, 12, 31),
+                    'cons_acct_num': '0032'}
+            record = acct_record(self.data_file, activity)
+            EvaluatorResult.objects.create(
+                result_summary=self.eval_rs3, date=date(2021, 1, 1),
+                field_values={'record': index, 'acct_type':'y'},
+                source_record=record, acct_num='0032')
+
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-6/')
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['hits']), 20)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+    def test_evaluator_results_view_with_error_no_evaluator_metadata(self):
+        self.create_activity_data()
+        response = self.client.get('/api/events/1/evaluator/NON_EXISTENT/')
+
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response, 'Evaluator: NON_EXISTENT does not exist.',
+            status_code=404)
+
+    def test_evaluator_results_view_with_error_no_event(self):
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
+
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response, 'Event ID: 1 does not exist.', status_code=404)
+
+    def test_evaluator_results_view_with_error_no_evaluator_results_summary(self):
+        self.create_activity_data()
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-2/')
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        self.assertContains(response,
+            'EvaluatorResultSummary record(s) not found for event ID 1.',
+            status_code=404)
 
     ########################################
     # Tests for Account Summary view API endpoint
@@ -314,7 +385,7 @@ class EvaluateResultsViewS3TestCase(TestCase):
     # Test for retrieving files from the S3 bucket. Only run when testing manually.
     # Before running, make sure S3 secrets are in place and update S3_ENABLED=True in
     # local.py if testing with venv or docker-compose.py if testing with django docker container.
-
+    override_settings(S3_ENABLED=True)
     # Tests for Eval Results view API endpoint
     def xtest_evaluator_results_view(self):
         # PROG-DOFD-1 uses the following fields:
