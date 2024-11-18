@@ -26,7 +26,3 @@ def random_sample_id_list(eval_result_summary, number_of_results):
         .order_by('id')[0:final_index:randomizer]
 
     return [result.source_record_id for result in eval_result_sample]
-
-def get_s3_bucket():
-    bucket = s3_resource()
-    return bucket
