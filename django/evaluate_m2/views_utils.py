@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from django_application.s3_utils import s3_resource
 
 def has_permissions_for_request(request, event) -> bool:
     if settings.SSO_ENABLED:
