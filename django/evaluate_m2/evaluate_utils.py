@@ -60,7 +60,7 @@ def get_randomizer(result_total, total_per_page) -> int:
 
 def get_url(event_id: str, evaluator_id: str) -> str:
     """
-    Formulate a string URL.
+    Generate the URL where evaluator results files should be saved in the S3 bucket.
     inputs:
       - event_id: a string representation of an Event ID
       - evaluator_id: the ID of an evaluator
