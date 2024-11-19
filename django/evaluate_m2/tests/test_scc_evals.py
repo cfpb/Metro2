@@ -336,9 +336,10 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(self.event, 'SCC-PurchasedSold-2', expected)
 
     def test_eval_scc_status_1(self):
-        # hits when both conditions met:
-        # 1. spc_com_cd == 'AU', 'AX', 'BP', 'C'
-        # 2. acct_stat != '13', '61', '62', '63', '64', '65'
+        # Hits when one of the following sets of conditions met:
+        # 1. spc_com_cd == 'BC', 'BF' & acct_stat != '13'
+        # 2. spc_com_cd == 'AU', 'AX', 'BP', 'C' & 
+        #       acct_stat != '13', '61', '62', '63', '64', '65'
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -353,23 +354,88 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'spc_com_cd': 'AX'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'89', 'amt_past_due': 9, 'current_bal': 9,
+                'spc_com_cd': 'BC'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'62', 'amt_past_due': 9, 'current_bal': 9,
+                'spc_com_cd': 'BF'
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
                 'acct_stat':'71', 'amt_past_due': 0, 'current_bal': 0,
                 'spc_com_cd': 'WT'
             }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
                 'acct_stat':'65', 'amt_past_due': 0, 'current_bal': 0,
                 'spc_com_cd': 'AU'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'acct_stat':'13', 'amt_past_due': 0, 'current_bal': 0,
+                'spc_com_cd': 'BC'
             }]
         self.create_data(activities)
-        # 32: HIT, 33: HIT, 34: NO-spc_com_cd=WT, 35: NO-acct_stat=65
+        # 32: HIT, 33: HIT, 34: HIT, 35: HIT,
+        # 36: NO-spc_com_cd=WT, 37: NO-acct_stat=65, 38: NO-acct_stat=13
 
-        self.assert_evaluator_correct(self.event, 'SCC-Status-1', self.expected)
+        # Create the segment data
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'}
+        ]
+
+        self.assert_evaluator_correct(self.event, 'SCC-Status-1', expected)
 
     def test_eval_scc_status_2(self):
         # hits when both conditions met:
+        # 1. spc_com_cd == 'AP', 'BD', CP'
+        # 2. acct_stat == '13', '61', '62', '63', '64', '65'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'13', 'spc_com_cd': 'CP'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'61', 'spc_com_cd': 'CP'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'62', 'spc_com_cd': 'AP'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'65', 'spc_com_cd': 'BD'
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'97', 'spc_com_cd': 'AP'
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'acct_stat':'11', 'spc_com_cd': 'CP'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'acct_stat':'62', 'spc_com_cd': 'CK',
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: HIT, 35: HIT,
+        # 36: NO-acct_stat=97, 37: NO-acct_stat=11, 38: NO-spc_com_cd=CK
+
+        # Create the segment data
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'}
+        ]
+
+        self.assert_evaluator_correct(self.event, 'SCC-Status-2', expected)
+
+    def test_eval_scc_status_3(self):
+        # hits when both conditions met:
         # 1. spc_com_cd == 'BA'
-        # 2. acct_stat != '71', '78', '80', '82', '83', '84',
-        #                 '88', '89', '93', '94', '97'
+        # 2. acct_stat != '71', '78', '80', '82', '83', '84', '88',
+        #                 '89', '93', '94', '95', '96', '97'
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -386,143 +452,17 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'0G', 'spc_com_cd': 'BC',
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'95', 'spc_com_cd': 'BA',
             }]
         self.create_data(activities)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=71, 35: NO-spc_com_cd=BC
-
-        self.assert_evaluator_correct(self.event, 'SCC-Status-2', self.expected)
-
-    def test_eval_scc_status_3(self):
-        # hits when both conditions met:
-        # 1. spc_com_cd == 'CP'
-        # 2. acct_stat == '13', '61', '62', '63', '64', '65'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'13', 'spc_com_cd': 'CP'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'61', 'spc_com_cd': 'CP'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'spc_com_cd': 'CP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'62', 'spc_com_cd': 'CK',
-            }]
-        self.create_data(activities)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: NO-spc_com_cd=CK
+        # 32: HIT, 33: HIT, 34: NO-acct_stat=71, 35: NO-spc_com_cd=BC,
+        # 36: NO-acct_stat=95
 
         self.assert_evaluator_correct(self.event, 'SCC-Status-3', self.expected)
 
     def test_eval_scc_status_4(self):
-        # hits when both conditions met:
-        # 1. spc_com_cd == 'BC'
-        # 2. acct_stat != '13', '62', '63', '64'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'08', 'spc_com_cd': 'BC'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'26', 'spc_com_cd': 'BC'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'13', 'spc_com_cd': 'BC'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'0G', 'spc_com_cd': 'BF',
-            }]
-        self.create_data(activities)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: NO-spc_com_cd=BF
-
-        self.assert_evaluator_correct(self.event, 'SCC-Status-4', self.expected)
-
-    def test_eval_scc_status_5(self):
-        # hits when both conditions met:
-        # 1. spc_com_cd == 'BD'
-        # 2. acct_stat == '13', '62', '63', '64'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'13', 'spc_com_cd': 'BD'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'62', 'spc_com_cd': 'BD'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'66', 'spc_com_cd': 'BD'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'63', 'spc_com_cd': 'BC',
-            }]
-        self.create_data(activities)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=66, 35: NO-spc_com_cd=BC
-
-        self.assert_evaluator_correct(self.event, 'SCC-Status-5', self.expected)
-
-    def test_eval_scc_status_6(self):
-        # hits when both conditions met:
-        # 1. spc_com_cd == 'BF'
-        # 2. acct_stat != '13', '62', '64'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'08', 'spc_com_cd': 'BF'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'26', 'spc_com_cd': 'BF'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'13', 'spc_com_cd': 'BF'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'0G', 'spc_com_cd': 'BC',
-            }]
-        self.create_data(activities)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: NO-spc_com_cd=BC
-
-        self.assert_evaluator_correct(self.event, 'SCC-Status-6', self.expected)
-
-    def test_eval_scc_status_7(self):
-        # hits when both conditions met:
-        # 1. spc_com_cd == 'AP'
-        # 2. acct_stat == '13', '62', '64'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'13', 'spc_com_cd': 'AP'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'62', 'spc_com_cd': 'AP'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'0G', 'spc_com_cd': 'AP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'64', 'spc_com_cd': 'BC',
-            }]
-        self.create_data(activities)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=OG, 35: NO-spc_com_cd=BC
-
-        self.assert_evaluator_correct(self.event, 'SCC-Status-7', self.expected)
-
-    def test_eval_scc_status_8(self):
         # hits when both conditions met:
         # 1. spc_com_cd == 'BO'
         # 2. acct_stat == '13', '61', '62', '63', '64',
@@ -547,4 +487,4 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.create_data(activities)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=OG, 35: NO-spc_com_cd=BC
 
-        self.assert_evaluator_correct(self.event, 'SCC-Status-8', self.expected)
+        self.assert_evaluator_correct(self.event, 'SCC-Status-4', self.expected)
