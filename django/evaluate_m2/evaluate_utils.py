@@ -1,6 +1,7 @@
 from datetime import  date
 import re
 
+from django.conf import settings
 from django.db.models.query import QuerySet
 
 
@@ -50,3 +51,17 @@ def create_eval_insert_query(eval_query: str, result_summary) -> str:
             (source_record_id, date, acct_num, result_summary_id)
     """
     return insert_query + select_query
+
+def get_randomizer(result_total, total_per_page) -> int:
+    randomizer = 1
+    if result_total > total_per_page:
+        randomizer = result_total // total_per_page
+    return randomizer
+
+def get_url(event_id: str, evaluator_id: str) -> str:
+    bucket_name = settings.S3_BUCKET_NAME
+    bucket_directory=f"eval_results/event_{event_id}"
+    filename = f"{evaluator_id}"
+    filepath = f"{bucket_name}/{bucket_directory}/{filename}"
+    url = f"s3://{filepath}"
+    return url

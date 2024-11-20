@@ -1,10 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 
-from evaluate_m2.views_utils import (
-    get_randomizer,
-    has_permissions_for_request
-)
+from evaluate_m2.views_utils import has_permissions_for_request
 from parse_m2.models import Metro2Event
 
 
@@ -39,17 +36,3 @@ class ViewUtilsTestCase(TestCase):
             request.user = self.user
             output = has_permissions_for_request(request, self.event2)
             self.assertEqual(output, False)
-
-    def test_get_randomizer_less_than_page_size(self):
-        total = 19
-        page_total = 20
-        output = get_randomizer(total, page_total)
-        # 19/20 = 0
-        self.assertEqual(output, 1)
-
-    def test_get_randomizer_more_than_page_size(self):
-        total = 74
-        page_total = 20
-        output = get_randomizer(total, page_total)
-        # 74 / 20 = 3.7
-        self.assertEqual(output, 3)

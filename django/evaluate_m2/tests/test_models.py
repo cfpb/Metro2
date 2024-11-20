@@ -30,7 +30,7 @@ class EvaluateModelsTestCase(TestCase):
         expected = ['event_name', 'id', 'activity_date',
             'cons_acct_num', 'field1', 'field2', 'field3']
 
-        self.assertEqual(eval_res.create_csv_header(), expected)
+        self.assertEqual(eval_rs1.create_csv_header(), expected)
 
     def test_eval_res_create_csv_row_data(self):
         acct_date=date(2019, 12, 31)
