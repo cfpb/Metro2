@@ -185,8 +185,8 @@ class PHPEvalsTestCase(TestCase, EvaluatorTestHelper):
             'previous_values': prev5})
         # 11: HIT
         # 12: HIT
-        # 13: NO - first character of php == 'G'
-        # 14: NO - first character of php == 'L'
+        # 13: NO - previous_values__acct_stat = 93 & first character of php == 'G'
+        # 14: NO - previous_values__acct_stat = 97 & first character of php == 'L'
         # 15: NO - previous_values__account_holder__cons_info_ind == 'X'
         # 16: NO - previous_values__acct_stat == '61'
         # 17: NO - previous_values__account_holder__cons_info_ind_assoc == 'X'
