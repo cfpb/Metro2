@@ -554,7 +554,7 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
     #     a. port_type == 'C' & terms_dur != 'LOC'
     #     b. port_type == 'O' & terms_dur != '001'
     #     c. port_type == 'R' & terms_dur != 'REV'
-    #     d. port_type == 'I' & int(terms_dur) not > 0
+    #     d. port_type == 'I' & int(terms_dur) <= 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
