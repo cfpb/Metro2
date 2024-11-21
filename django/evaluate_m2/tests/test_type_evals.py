@@ -629,9 +629,9 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: HIT, 35: HIT, 36: HIT,
         # 37: HIT, 38: HIT, 39: HIT, 40: HIT, 41: HIT,
-        # 42: NO-terms_freq=D, 43: NO-terms_dur=LOC,
-        # 44: NO-terms_dur=001, 45: NO-terms_dur=REV,
-        # 46: NO-terms_dur=12, 47: NO-terms_dur=001
+        # 42: NO-terms_freq=D, 43: NO-port_type=C & terms_dur=LOC,
+        # 44: NO-port_type=O & terms_dur=001, 45: NO-port_type=R & terms_dur=REV,
+        # 46: NO-port_type=I & terms_dur=12, 47: NO-port_type=I & terms_dur=001
 
         expected = [
             {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
