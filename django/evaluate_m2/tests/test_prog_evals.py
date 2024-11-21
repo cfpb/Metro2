@@ -371,6 +371,96 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'PROG-DOFD-1', self.expected)
 
+    def test_eval_prog_dofd_2(self):
+    # Hits when all conditions met:
+    # 1. previous_values__acct_stat == '13'
+    # 2. previous_values__pmt != '0'
+    # 3. acct_stat == '13'
+    # 4. previous_values__dofd != dofd
+
+        # Create previous Account Activities data
+        prev_acct_date=date(2019, 11, 30)
+        prev_activities = [
+            {
+                'id': 32, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 11, 1)
+            }, {
+                'id': 33, 'activity_date': prev_acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 11, 1)
+            }, {
+                'id': 34, 'activity_date': prev_acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': None
+            }, {
+                'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 11, 1)
+            }, {
+                'id': 36, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'11', 'pmt_rating': 1, 'dofd': date(2019, 11, 1)
+            }, {
+                'id': 37, 'activity_date': prev_acct_date, 'cons_acct_num': '0037',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 11, 1)
+            }, {
+                'id': 38, 'activity_date': prev_acct_date, 'cons_acct_num': '0038',
+                'acct_stat':'13', 'pmt_rating': 0, 'dofd': date(2019, 11, 1)
+            }, {
+                'id': 39, 'activity_date': prev_acct_date, 'cons_acct_num': '0039',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 11, 1)
+            }, {
+                'id': 40, 'activity_date': prev_acct_date, 'cons_acct_num': '0040',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': None
+            }]
+        for r in prev_activities:
+            acct_record(self.prev_data_file, r)
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 12, 1)
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'13', 'pmt_rating': 0, 'dofd': date(2019, 12, 1)
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 12, 1)
+            }, {
+                'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': None
+            }, {
+                'id': 46, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 12, 1)
+            }, {
+                'id': 47, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'acct_stat':'11', 'pmt_rating': 1, 'dofd': date(2019, 12, 1)
+            }, {
+                'id': 48, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'acct_stat':'13', 'pmt_rating': 0, 'dofd': date(2019, 12, 1)
+            }, {
+                'id': 49, 'activity_date': acct_date, 'cons_acct_num': '0039',
+                'acct_stat':'13', 'pmt_rating': 0, 'dofd': date(2019, 11, 1)
+            }, {
+                'id': 50, 'activity_date': acct_date, 'cons_acct_num': '0040',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': None
+            }]
+        for r in activities:
+            acct_record(self.data_file, r)
+        associate_previous_records(self.event)
+        # 42: HIT, 43: HIT, 44: HIT, 45:HIT
+        # 46: NO-previous_values__acct-stat=11
+        # 47: NO-acct-stat=11
+        # 48: NO-previous_values__pmt-rating=0
+        # 49: NO-previous_values__dofd == dofd
+        # 50: NO-previous_values__dofd == dofd
+
+        expected = [
+            {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 43, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 44, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 45, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'}]
+
+        self.assert_evaluator_correct(self.event, 'PROG-DOFD-2', expected)
+
     def test_eval_prog_dofd_3(self):
     # Hits when all conditions met:
     # 1. previous_values__acct_stat == '71', '78', '80', '82', '83', '84', '61', '62',
