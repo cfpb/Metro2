@@ -56,10 +56,14 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
     try:
         event = Metro2Event.objects.get(id=event_id)
         evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
+
+        if not has_permissions_for_request(request, event):
+            return HttpResponse('Unauthorized', status=401)
+
         if settings.S3_ENABLED:
-            fetch_csv_results_from_s3(request, event_id, evaluator_id)
+            return fetch_csv_results_from_s3(request, event_id, evaluator_id)
         else:
-            generate_eval_results_csv(request, event, evaluator)
+            return generate_eval_results_csv(request, event, evaluator)
     except (
         Metro2Event.DoesNotExist,
         EvaluatorMetadata.DoesNotExist
@@ -227,8 +231,6 @@ def fetch_json_results_from_s3(request, event_id, evaluator_id):
 def generate_eval_results_csv(request, event, evaluator):
     logger = logging.getLogger('views.generate_eval_results_csv')
     try:
-        if not has_permissions_for_request(request, event):
-            return HttpResponse('Unauthorized', status=401)
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=event, evaluator=evaluator)
 
@@ -239,7 +241,7 @@ def generate_eval_results_csv(request, event, evaluator):
         )
 
         writer = csv.writer(response)
-        fields_list = eval.result_summary_fields()
+        fields_list = evaluator.result_summary_fields()
         # Add all evaluator results to the response
         writer.writerow(eval_result_summary.create_csv_header())
         for eval_result in eval_result_summary.evaluatorresult_set.all():
