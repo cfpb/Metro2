@@ -36,7 +36,7 @@ from smart_open import open
 class Evaluate():
     # Evaluator version is saved on each evaluator result summary.
     # Increment this version for all updates to evaluator functionality.
-    evaluator_version = "1.1"
+    evaluator_version = "1.2"
 
     def __init__(self):
         self.evaluators = acct_change_evals |  balance_evals | balloon_evals | \

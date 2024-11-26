@@ -1,4 +1,5 @@
-from django.test import TestCase
+from django.conf import settings
+from django.test import TestCase, override_settings
 from datetime import date
 
 from evaluate_m2.models import (
@@ -11,7 +12,9 @@ from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
 
 
+@override_settings(S3_ENABLED=False)
 class EvaluateViewsTestCase(TestCase):
+
     ########################################
     # Methods for creating test data
     def setUp(self) -> None:
@@ -124,7 +127,6 @@ class EvaluateViewsTestCase(TestCase):
             self.eval_rs2 = EvaluatorResultSummary.objects.create(
                 event=self.event, evaluator=self.stat_dofd_2, hits=0, accounts_affected=0,
                 inconsistency_start=acct_date, inconsistency_end=acct_date)
-
 
     ########################################
     # Tests for Eval Metadata download
@@ -378,3 +380,5 @@ class EvaluateViewsTestCase(TestCase):
         # the response should include the evaluator field as a list sorted by the id,
         # evaluators with a hits field greater than 0 will be returned
         self.assertEqual(response.json(), expected)
+
+
