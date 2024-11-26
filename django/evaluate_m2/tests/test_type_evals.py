@@ -500,12 +500,8 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         # Hits when all conditions are met:
         # 1. port_type == 'I'
         # 2. acct_stat == '11'
-        # 3. acct_type == '00', '01', '02', '03', '04', '05', '06', '10', '11',
-        #                 '13', '17', '20', '29', '65', '66', '67', '68', '69',
-        #                 '70', '71', '72', '73', '74', '75', '91', '95', '0A',
-        #                 '0F', '3A', '6A', '6D', '7B', '9A'
-        # 4. spc_com_cd == 'BS'
-        # 5. smpa > 0
+        # 3. spc_com_cd == 'BS'
+        # 4. smpa > 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -520,16 +516,16 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'spc_com_cd': 'BS', 'smpa': 20
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'07',
+                'spc_com_cd': 'BS', 'smpa': 5
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'port_type':'C', 'acct_stat':'11', 'acct_type':'02',
                 'spc_com_cd': 'BS', 'smpa': 15
             }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
                 'port_type':'I', 'acct_stat':'05', 'acct_type':'03',
                 'spc_com_cd': 'BS', 'smpa': 10
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'I', 'acct_stat':'11', 'acct_type':'07',
-                'spc_com_cd': 'BS', 'smpa': 5
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
                 'port_type':'I', 'acct_stat':'11', 'acct_type':'04',
@@ -541,10 +537,15 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-port_type=C, 35: NO-acct_stat=5,
-        # 36: NO-acct_type=07, 37: NO-spc_com_cd=AU, 38: NO-smpa=0
+        # 32: HIT, 33: HIT, 34: HIT, 35: NO-port_type=C, 
+        # 36: NO-acct_stat=5, 37: NO-spc_com_cd=AU, 38: NO-smpa=0
 
-        self.assert_evaluator_correct(self.event, 'Type-SMPA-1', self.expected)
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'}]
+
+        self.assert_evaluator_correct(self.event, 'Type-SMPA-1', expected)
 
     def test_eval_type_terms_dur_1(self):
     # Hits when the following condition is met...
