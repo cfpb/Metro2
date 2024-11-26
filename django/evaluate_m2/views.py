@@ -5,7 +5,7 @@ import botocore
 
 from datetime import date
 from django.conf import settings
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
 from django.core.exceptions import FieldError
 from rest_framework.decorators import api_view
@@ -13,7 +13,12 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from django_application.s3_utils import s3_session
-from evaluate_m2.views_utils import has_permissions_for_request, random_sample_id_list
+from evaluate_m2.views_utils import (
+    get_object,
+    get_total_bytes,
+    has_permissions_for_request,
+    random_sample_id_list
+)
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
@@ -50,29 +55,18 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
     logger = logging.getLogger('views.download_evaluator_results_csv')
     try:
         event = Metro2Event.objects.get(id=event_id)
+        evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
+
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        eval = EvaluatorMetadata.objects.get(id=evaluator_id)
-        eval_result_summary = EvaluatorResultSummary.objects.get(
-            event=event, evaluator=eval)
 
-        filename = f"{event.name}_{eval.id}.csv"
-        response = HttpResponse(
-            content_type="text/csv",
-            headers={"Content-Disposition": f"attachment; filename={filename}"}
-        )
-
-        writer = csv.writer(response)
-        fields_list = eval.result_summary_fields()
-        # Add all evaluator results to the response
-        writer.writerow(eval_result_summary.create_csv_header())
-        for eval_result in eval_result_summary.evaluatorresult_set.all():
-            writer.writerow(eval_result.create_csv_row_data(fields_list))
-        return response
+        if settings.S3_ENABLED:
+            return fetch_csv_results_from_s3(request, event_id, evaluator_id)
+        else:
+            return generate_eval_results_csv(request, event, evaluator)
     except (
         Metro2Event.DoesNotExist,
-        EvaluatorMetadata.DoesNotExist,
-        EvaluatorResultSummary.DoesNotExist
+        EvaluatorMetadata.DoesNotExist
     ) as e:
         error = get_evaluate_m2_not_found_exception(
             str(e), event_id, evaluator_id, request.path)
@@ -193,6 +187,29 @@ def events_view(request, event_id):
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
+def fetch_csv_results_from_s3(request, event_id, evaluator_id):
+    logger = logging.getLogger('views.fetch_csv_results_from_s3')
+    bucket_directory=f"eval_results/event_{event_id}"
+    s3 = s3_session()
+    bucket_name = settings.S3_BUCKET_NAME
+    filename = f"{evaluator_id}.csv"
+    bucket_key = f"{bucket_directory}/{filename}"
+    try:
+        total_bytes = get_total_bytes(s3, bucket_name, bucket_key)
+        response = StreamingHttpResponse(
+            get_object(s3, total_bytes, bucket_name, bucket_key),
+            status=200,
+            content_type="text/csv",
+        )
+        response["Content-Disposition"] = f"attachment; filename={filename}"
+        return response
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "NoSuchKey":
+            error = get_evaluate_m2_not_found_exception(
+            e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
+            logger.error(error['message'])
+            return Response(error, status=status.HTTP_404_NOT_FOUND)
+
 def fetch_json_results_from_s3(request, event_id, evaluator_id):
     logger = logging.getLogger('views.fetch_json_results_from_s3')
     bucket_directory=f"eval_results/event_{event_id}"
@@ -210,6 +227,33 @@ def fetch_json_results_from_s3(request, event_id, evaluator_id):
             e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
             logger.error(error['message'])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+def generate_eval_results_csv(request, event, evaluator):
+    logger = logging.getLogger('views.generate_eval_results_csv')
+    try:
+        eval_result_summary = EvaluatorResultSummary.objects.get(
+            event=event, evaluator=evaluator)
+
+        filename = f"{event.name}_{evaluator.id}.csv"
+        response = HttpResponse(
+            content_type="text/csv",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+
+        writer = csv.writer(response)
+        fields_list = evaluator.result_summary_fields()
+        # Add all evaluator results to the response
+        writer.writerow(eval_result_summary.create_csv_header())
+        for eval_result in eval_result_summary.evaluatorresult_set.all():
+            writer.writerow(eval_result.create_csv_row_data(fields_list))
+        return response
+    except (
+        EvaluatorResultSummary.DoesNotExist
+    ) as e:
+        error = get_evaluate_m2_not_found_exception(
+            str(e), event.id, evaluator.id, request.path)
+        logger.error(error['message'])
+        return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 def generate_eval_results_json(request, event, evaluator):
     logger = logging.getLogger('views.generate_eval_results_json')
