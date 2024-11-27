@@ -488,3 +488,41 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=OG, 35: NO-spc_com_cd=BC
 
         self.assert_evaluator_correct(self.event, 'SCC-Status-4', self.expected)
+
+    def test_eval_scc_status_5(self):
+    # Hits when all conditions are met:
+    # 1. spc_com_cd == 'AH', 'AT', 'O'
+    # 2. current_bal == 0
+    # 3. l1_change_ind == None
+    #
+    # ... AND none of the following sets of conditions is met
+    #     a. acct_stat = '11', '71', '78', '80', '82', '83', '84',
+    #                    '93', '97', 'DA', 'DF'
+    #     b. port_type='I', acct_stat = '96'
+    #     c. port_type='C', 'M', acct_stat = '89', '94'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type': 'C', 'acct_stat':'13', 'spc_com_cd': 'AH',
+                'current_bal': 0
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type': 'R', 'acct_stat':'96', 'spc_com_cd': 'AT',
+                'current_bal': 0
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type': 'C', 'acct_stat':'13', 'spc_com_cd': 'BO',
+                'current_bal': 35
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type': 'C', 'acct_stat':'11', 'spc_com_cd': 'AH',
+                'current_bal': 0
+            }]
+        self.create_data(activities)
+        # 32: HIT, 33: HIT, 34: NO-current_bal=35, 35: NO-spc_com_cd=BO,
+        # 36: NO-acct_stat=11
+
+        self.assert_evaluator_correct(self.event, 'SCC-Status-5', self.expected)
