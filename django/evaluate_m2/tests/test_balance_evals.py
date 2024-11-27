@@ -17,7 +17,8 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
     def test_eval_balance_apd_1(self):
         # Hits when both conditions met:
         # 1. current_bal = 0
-        # 2. amt_past_due > 0
+        # 2. l1_change_ind == None
+        # 3. amt_past_due > 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -35,13 +36,19 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'current_bal': 0, 'amt_past_due': 0
             }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
                 'current_bal': 10, 'amt_past_due': 5
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'current_bal': 0, 'amt_past_due': 5
             }]
         for item in activities:
             acct_record(self.data_file, item)
+        l1_activity = {'id': 37, 'change_ind': '1'}
+        l1_record(l1_activity)
         # 32: HIT, 33: NO-current_bal > 0, 34: NO-current_bal < 0,
-        # 35: NO-amt_past_due == 0, 36: NO-current_bal > amt_past_due
+        # 35: NO-amt_past_due == 0, 36: NO-current_bal > amt_past_due,
+        # 37: NO-l1_change_ind = 1
 
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
