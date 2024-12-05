@@ -223,38 +223,38 @@ class BankruptcyEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat': '71', 'smpa': 1000, 'cons_info_ind': 'F',
+                'acct_stat': '71', 'smpa': 0, 'cons_info_ind': 'F',
                 'cons_info_ind_assoc': []
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat': '82', 'smpa': 100, 'cons_info_ind': 'H',
+                'acct_stat': '82', 'smpa': -100, 'cons_info_ind': 'H',
                 'cons_info_ind_assoc': []
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat': '80', 'smpa': 225, 'cons_info_ind': '',
+                'acct_stat': '80', 'smpa': 0, 'cons_info_ind': '',
                 'cons_info_ind_assoc': ['E']
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat': '71', 'smpa': 0, 'cons_info_ind': 'E',
+                'acct_stat': '71', 'smpa': 100, 'cons_info_ind': 'E',
                 'cons_info_ind_assoc': []
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat': '61', 'smpa': 100, 'cons_info_ind': 'G',
+                'acct_stat': '61', 'smpa': 0, 'cons_info_ind': 'G',
                 'cons_info_ind_assoc': []
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat': '80', 'smpa': 140, 'cons_info_ind': '',
+                'acct_stat': '80', 'smpa': 0, 'cons_info_ind': '',
                 'cons_info_ind_assoc': []
             }, {
                 'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat': '80', 'smpa': 180, 'cons_info_ind': 'B',
+                'acct_stat': '80', 'smpa': 0, 'cons_info_ind': 'B',
                 'cons_info_ind_assoc': []
             }]
         for item in activities:
             acct_record(self.data_file, item)
 
         # 32: HIT, 33: HIT, 34: HIT,
-        # 35: NO-smpa = 0, 36: NO-acct_stat='61',
+        # 35: NO-smpa = 100, 36: NO-acct_stat='61',
         # 37: NO-cons_info_ind='' & cons_info_ind_assoc=[], 
         # 38: NO-cons_info_ind='B' & cons_info_ind_assoc=[]
 
