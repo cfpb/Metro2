@@ -212,7 +212,7 @@ class BankruptcyEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(self.event, 'Bankruptcy-ECOA-1', expected)
 
  # Hits when all conditions met:
-    # 1. smpa > 0
+    # 1. smpa <= 0
     # 2. acct_stat != '05', '13', '61', '62', '63', '64', '65', 'DA', 'DF'
     # 3. (cons_info_ind == 'E', 'F', 'G', 'H') ||
     #    (account_holder__cons_info_ind_assoc == 'E', 'F', 'G', 'H')
