@@ -8,14 +8,10 @@ The front-end provides a React-based interface for authenticated and authorized 
 
 ## Sections
 - [Deployments](#deployments)
-    - [Alto Dev](#alto-dev-internal)
-    - [Alto Staging](#alto-staging-internal)
-    - [Alto Prod](#alto-prod-internal)
-- [Deployment automations](#deployment-automations)
 - [Running the project locally](#running-the-project-locally)
-    - [Running in Helm](#running-in-helm)
     - [Running in docker-compose](#running-in-docker-compose)
-    - [Running jobs individually](#individual-jobs)
+- [Management commands](#running-management-commands)
+    - [Using Jenkins](#using-jenkins)
 - [Handling evaluator metadata](#handling-evaluator-metadata)
 - [Testing](#testing)
   - [Running tests and checking coverage](#running-tests-and-checking-coverage)
@@ -23,75 +19,25 @@ The front-end provides a React-based interface for authenticated and authorized 
 
 # Deployments
 
-Metro2 is deployed to the internal accounts of ALTO's 3 Environments: Dev, Staging, and Prod.
+Metro2 is deployed to the internal accounts of ALTO's 3 Environments: Dev, Staging, and Prod. See [helm/README.md](helm/README.md) for more information about deployment automations.
 
-## ALTO Dev-Internal
+## Quick links
 
-**Quick Links**
-- [Metro2 in Dev-Internal](https://INTERNAL/)
+| Alto account | Metro2 | Jenkins | Entra | Entra | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Dev-Internal | https://INTERNAL/ | [Jenkins](https://INTERNAL/) (CFPB DEV creds) | N/A (managed by ICAM) | N/A (managed by ICAM) | Users log in with `@cfpa.gov` accounts using CFPB TEST credentials. |
+| Staging-Internal | https://INTERNAL/ | [Jenkins](https://INTERNAL/) (CFPB TEST creds) | [Entra (privileged)](INTERNAL) | [Entra (non-privileged)](INTERNAL) | Users log in with normal ActiveDirectory accounts + PIV PIN |
+| Production-Internal | https://INTERNAL/ | [Jenkins](https://INTERNAL/) (CFPB AD creds) | [Entra (privileged)](INTERNAL) | [Entra (non-privileged)](INTERNAL) | Users log in with normal ActiveDirectory accounts + PIV PIN |
 
-**How to deploy**
-1. Prepare a branch that has the changes you wish to make.
-2. In that branch, make any updates to the `buildspec.yaml` file to customize your deployment. (See [CodeBuild automation](#codebuild-automation) below for details)
-3. Push your branch to the `dev` branch of this repo.
-4. AWS CodeBuild will automatically run the buildspec code, which builds and deploys Metro2 to the Dev-Internal cluster.
-5. The app will be available at `https://INTERNAL/` (if using the `metro` release), or `https://[release-name]-eksINTERNAL/` (if you specified a release name)
-
-## ALTO Staging-Internal
-
-**Quick Links**
-- [Metro2 in Staging-Internal](https://INTERNAL/)
-
-**How to deploy**
-1. Prepare a branch that has the changes you wish to make.
-2. In that branch, make any updates to the `buildspec.yaml` file to customize your deployment. (See [CodeBuild automation](#codebuild-automation) below for details)
-3. Push your branch to the `staging` branch of this repo.
-4. AWS CodeBuild will automatically run the buildspec code, which builds and deploys Metro2 to the Staging-Internal cluster.
-5. The app will be available at `https://INTERNAL/`.
-
-## ALTO Prod-Internal
-
-Not currently available
-
-## Deployment automations
-### CodeBuild automation
-
-Inside the Dev-Internal and Staging-Internal accounts in Alto, a Codebuild Job has been set up from the [Service Catalog](https://GHE/aws/service-catalog-cdk/blob/master/products/shared/codebuild-project-eks/v1/product.yml). The job is pointed to a target branch of the Metro2 repo.  Whenever a change is pushed to that branch, the job is automatically triggered and begins running that branch's [buildspec](./buildspec.yaml).
-- In Dev-Internal, the job is called `cfpb-team-metro2-metro2-dev-deploy` and is pointed at the [`dev` branch](https://GHE/Metro2/metro2/tree/dev).
-- In Staging-Internal, it's called `cfpb-metro2-StagingDeploy` and is pointed at the [`staging` branch](https://GHE/Metro2/metro2/tree/staging).
-
-What the buildspec does:
-First, the `env` section of the [buildspec](./buildspec.yaml) configures the environment with the necessary env vars. Two important env vars that will affect your deployment are:
-- `ENABLE_SSO`: if you want SSO enabled, set to `enabled` or blank. (default: blank)
-- `RELEASE_NAME`: the name of the metro2 release, which determines the URL of the deployed application. (default: `metro2`)
-
-Next, The `build` section of the [buildspec](./buildspec.yaml) is broken into three phases: [install](https://GHE/Metro2/metro2/blob/4bf5b4ce4f65f743746aa49f315e1514586815bf/buildspec.yaml#L26), [pre-build](https://GHE/Metro2/metro2/blob/4bf5b4ce4f65f743746aa49f315e1514586815bf/buildspec.yaml#L60), and [build](https://GHE/Metro2/metro2/blob/4bf5b4ce4f65f743746aa49f315e1514586815bf/buildspec.yaml#L84). Each phase's purpose and steps are explained in the buildspec file.
 
 # Running the project locally
+**Docker-compose** is best way to run Metro2 for local development. It allows dynamically reloading code while still providing all parts of the project setup.
 
-Choose the way to run the project that best suits your needs:
-1. **Helm** is the way the project will run in deployed environments. Use this when you need a production-like setup and you don't need the code to reload when there are local changes.
-2. **Docker-compose** is best for local development. It allows dynamically reloading code while still providing all parts of the project setup.
-3. It is also possible to run some of the sub-projects locally, but this is usually only practical for active development on a specific aspect of the codebase.
-
-## Running in Helm
-
-When running a helm deployment locally, we use the docker-desktop cluster that comes with Docker.
-To prepare your environment, make sure that you have [kubernetes enabled in Docker](https://docs.docker.com/desktop/kubernetes/).
-Install helm (`brew install helm`) and optionally install [OpenLens](https://github.com/MuhammedKalkan/OpenLens) for better visualization.
-
-With that in place, you must do the following:
-    1. Ensure that your Docker daemon is running.
-        - Without Docker running, your docker-desktop cluster will not be running.
-    2. Run `build-images.sh -e local`
-    3. Run `helm-install-local.sh`
-
-This will deploy the Metro2 Application to the Docker Desktop Cluster and create two images:
-    1. A postgres database
-    2. The metro2 application, including the react front-end and django back-end
+Other ways to run the project:
+1. **Helm** is the way the project runs in deployed environments. Use this when you need a production-like setup and you don't need the code to reload when there are local changes. NOTE: This method of running locally is not currently maintained.
+2. It is also possible to run some of the sub-projects **locally**, but this is usually only practical for active development on a specific aspect of the codebase.
 
 ## Running in docker-compose
-
 If docker desktop is not already installed, please [download and install it](https://www.docker.com/products/docker-desktop/).
 
 `docker-compose build` to build the images.
@@ -105,9 +51,34 @@ To connect to a running container, (e.g. to run scripts or tests), `docker-compo
 To bring down the created containers when you are done with them, run `docker-compose down`. To also remove volumes at the same time, run `docker-compose down -v`. To remove images in addition to volumes, run `docker-compose down --rmi "all" -v`.
 
 
+## Running in Helm
+See [helm/README.MD](helm/README.md#using-helm-locally) for instructions on running Metro2 locally in Helm.
+
 ## Individual jobs
 
 Both the **Django** and **Front-end** code bases can be run locally. See the README for each subdirectory for instructions.
+
+# Running management commands
+Django management commands are used for several essential actions in the Metro2 application, including parsing new data, running evaluators, and importing evaluator metadata from CSV.
+In local environments, use the command line to run these commands.
+
+## Using Jenkins
+In all three Alto environments, use the Metro2 Jenkins instances (see [Quick links](#quick-links) above) to run management commands.
+Jenkins jobs run in an ephemeral python pod in the EKS cluster, not in the metro2 pod.
+The Jenkins jobs clone the `jenkins-jobs` branch of the Metro2 repo and connect to the S3 and RDS instances in the Alto account.
+
+Jenkins jobs are configured in the [jenkins/](jenkins/) directory of this repo.
+For now, Jenkins uses the configuration in the [`jenkins-jobs`](https://GHE/Metro2/metro2/tree/jenkins-jobs) branch, NOT the `main` branch.
+This is configured [here](https://GHE/dev-platforms/eks-jenkins/blob/main/overrides/metro2-jobs.yaml), in the `dev-platforms/eks-jenkins` repo.
+
+
+## Maintaining Jenkins
+To re-deploy a Jenkins instance, use the `cfpb-metro2-jenkins` CodeBuild job in the same Alto account as the Jenkins.
+
+**Jenkins to-dos**
+1. At some point, when we are done actively developing Jenkins job code, we should update EKS Jenkins to pull Jenkins configuration from `main`.
+2. Consider updating the Jenkins `seed.groovy` file to clone metro2 code from the `dev`, `staging`, or `production` branch (depending on which Alto account it is running in), rather than the `jenkins-jobs` branch.
+
 
 # Handling evaluator metadata
 
@@ -116,9 +87,10 @@ We seed the database with initial metadata about each evaluator, then allow user
 
 ## Evaluator CSV format
 When importing and exporting evaluator metadata, we use a CSV with the following columns:
-`id`, `description`, `long_description`, `fields_used`, `fields_display`, `crrg_reference`, `potential_harm`, `rationale`, and `alternate_explanation`.
+`id`, `description`, `long_description`, `fields_used`, `crrg_reference`, `potential_harm`, `rationale`, and `alternate_explanation`.
 Column headers in the file should match the column names in this list.
-For columns contain a list of fields (`fields_used` and `fields_display`, currently), the items in each list should be separated by colons (`;`).
+The `fields_used` column has a specialized format, described [here](https://GHE/Metro2/metro2/blob/08814c11b4d5c7a96cf8efa0f6ac7361b950b740/django/evaluate_m2/metadata_utils.py#L81-L90).
+Fields used and supplementary fields for the evaluator should be separated by newlines, positioned under the headings specified at the link.
 
 The `id` column is what we use to connect the evaluator metadata to the evaluator function, which is defined in code.
 This means that the `id` column needs to exactly match the name of the function in the code.
