@@ -416,6 +416,9 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         acct_date=date(2019, 12, 31)
         activities = [
             {
+                'id': 41, 'activity_date': acct_date, 'cons_acct_num': '0031',
+                'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 12, 1)
+            }, {
                 'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0032',
                 'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 12, 1)
             }, {
@@ -446,6 +449,7 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         for r in activities:
             acct_record(self.data_file, r)
         associate_previous_records(self.event)
+        # 41: NO-no previous record
         # 42: HIT, 43: HIT, 44: HIT, 45:HIT
         # 46: NO-previous_values__acct-stat=11
         # 47: NO-acct-stat=11
