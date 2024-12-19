@@ -394,7 +394,7 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
                 'acct_stat':'13', 'pmt_rating': 1, 'dofd': date(2019, 11, 1)
             }, {
-                'id': 36, 'activity_date': prev_acct_date, 'cons_acct_num': '0032',
+                'id': 36, 'activity_date': prev_acct_date, 'cons_acct_num': '0036',
                 'acct_stat':'11', 'pmt_rating': 1, 'dofd': date(2019, 11, 1)
             }, {
                 'id': 37, 'activity_date': prev_acct_date, 'cons_acct_num': '0037',
