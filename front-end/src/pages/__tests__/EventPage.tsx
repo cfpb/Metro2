@@ -4,7 +4,8 @@ import renderWithProviders from '../../testUtils'
 
 describe.skip('<EventPage />', () => {
   it('renders Event page', async () => {
+    // await act(() => renderWithProviders(<EventPage />))
     renderWithProviders(<EventPage />)
-    expect(await screen.findByText('Bank A auto exam')).toBeVisible()
+    expect(await screen.findByText('Sample-Dataset-007')).toBeVisible()
   })
 })

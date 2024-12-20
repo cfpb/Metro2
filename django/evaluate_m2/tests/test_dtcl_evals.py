@@ -51,14 +51,9 @@ class DateClosedEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 35: NO-acct_stat=01, 36: No-date_closed=dolp
 
         # Create the segment data
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'port_type':'I', 'acct_stat':'13',
-            'date_closed': date(2020,2,2),'dolp': date(2020, 1, 1)
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'port_type':'M', 'acct_stat':'61',
-            'date_closed': date(2020, 1, 1),'dolp': None
-        }]
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
+        ]
         self.assert_evaluator_correct(
             self.event, 'DTCL-DOLP-1', expected)

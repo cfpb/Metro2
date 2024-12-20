@@ -6,42 +6,31 @@ from evaluate_m2.m2_evaluators.status_evals import (
     eval_status_dofd_1_func,
     eval_status_dofd_2_func)
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
-from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper
-from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
+from parse_m2.models import M2DataFile, Metro2Event
+from evaluate_m2.tests.evaluator_test_helper import acct_record
 
 
-class EvaluateTestCase(TestCase, EvaluatorTestHelper):
+def sample_eval_always_hits(record_set):
+    return record_set
+
+def sample_eval_never_hits(record_set):
+    return record_set.filter(cons_acct_num="bogus")
+
+def sample_erroring_eval(record_set):
+    return EvaluatorMetadata.objects.filter(rationale='thing')
+
+class EvaluateTestCase(TestCase):
     def setUp(self):
         # Create the parent records for the AccountActivity data
-        self.event = Metro2Event(name='test_exam')
-        self.event.save()
-        self.data_file = M2DataFile(event=self.event, file_name='file.txt')
-        self.data_file.save()
-        # Create the Account Holders
-        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W'))
-        self.expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0032', 'acct_stat': '71', 'dofd': None,
-            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
-            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0033', 'acct_stat': '97', 'dofd': None,
-            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
-            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
-        }]
-        self.unexpected = {
-            'id': 36, 'activity_date': date(2019, 12, 31),
-            'cons_acct_num': '0036', 'acct_stat': '71', 'dofd': None,
-            'amt_past_due': 0, 'compl_cond_cd':'0', 'current_bal': 0,
-            'date_closed': date(2020, 1, 1), 'orig_chg_off_amt': 0,
-            'smpa': 0, 'spc_com_cd': 'X', 'terms_freq': '0'
-        }
+        self.event = Metro2Event.objects.create(name='test_exam')
+        self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
+        # Create AccountActivity records
+        # activity_date defaults to 2022-05-30
+        acct_record(self.data_file, {'id': 44, 'cons_acct_num': '1044'})
+        acct_record(self.data_file, {'id': 45, 'cons_acct_num': '1045'})
+        acct_record(self.data_file, {'id': 46, 'cons_acct_num': '1046'})
+        acct_record(self.data_file, {'id': 47, 'cons_acct_num': '1047'})
 
-    ############################
-    # Tests for evaluate
     def test_run_evaluators_no_evals(self):
         # set empty evaluators list (should not run any evaluators)
         evaluator.evaluators = {}
@@ -53,122 +42,79 @@ class EvaluateTestCase(TestCase, EvaluatorTestHelper):
         self.assertEqual(0, EvaluatorResultSummary.objects.count())
         self.assertEqual(0, EvaluatorMetadata.objects.count())
 
-    def test_run_evaluators_produces_results(self):
-        # should correctly insert one statement and one metadata statement
-        # Account Activity data
-        activities = { 'id':(32,33,34,35), 'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'),
-            'acct_stat':('71','97','11','65'),
-            'dofd':(None,None,None,date(2019, 12, 31))}
-        # 1: HIT, 2: HIT, 3: NO-acct_stat=11, 4: NO-dofd=01012020
-        self.create_bulk_activities(self.data_file, activities, 4)
-
-        evaluator.evaluators = {"Status-DOFD-1": eval_status_dofd_1_func}
-
+    def test_run_evaluators_produces_correct_results(self):
+        evaluator.evaluators = {"Sample-1": sample_eval_always_hits}
         evaluator.run_evaluators(self.event)
 
-        self.assertEqual(2, EvaluatorResult.objects.count())
+        self.assertEqual(4, EvaluatorResult.objects.count())
         self.assertEqual(1, EvaluatorResultSummary.objects.count())
 
-    def test_run_evaluators_with_two_evaluators_produces_results(self):
-        activities = { 'id':(32,33,34,35),
-            'cons_acct_num':('0032','0033','0034','0035'),
-            'account_holder':('Z','Y','X','W'),
-            'acct_stat':('71','13','11','97'),
-            'dofd':(None,None,date(2019, 12, 31),None),
-            'pmt_rating':('1','2','0','L')}
-        # 1: Evaluator1 - HIT, 2: Evaluator2 - HIT,
-        # 3: NO HIT 4: Evaluator1 - HIT
-        self.create_bulk_activities(self.data_file, activities, 4)
+        # Creates correct EvaluatorResult records
+        results = EvaluatorResultSummary.objects.get(event=self.event, evaluator__id='Sample-1') \
+            .evaluatorresult_set.order_by('acct_num')
 
-        evaluator.evaluators = {"Status-DOFD-1": eval_status_dofd_1_func,
-                                "Status-DOFD-2": eval_status_dofd_2_func}
+        # Test that results match AccountActivity records for the event
+        self.assertEqual(results[0].source_record_id, 44)
+        self.assertEqual(results[1].source_record_id, 45)
+        self.assertEqual(results[2].source_record_id, 46)
+        self.assertEqual(results[3].source_record_id, 47)
+
+        self.assertEqual(results[0].acct_num, '1044')
+        self.assertEqual(results[1].acct_num, '1045')
+        self.assertEqual(results[2].acct_num, '1046')
+        self.assertEqual(results[3].acct_num, '1047')
+
+    def test_run_evaluators_with_two_evaluators_produces_results(self):
+        evaluator.evaluators = {"Sample-1": sample_eval_always_hits,
+                                "Sample-2": sample_eval_never_hits}
         evaluator.run_evaluators(self.event)
         self.assertEqual(2, EvaluatorResultSummary.objects.count())
-        self.assertEqual(2, EvaluatorMetadata.objects.count())
 
-        # first evaluator metadata and results
-        eval1 = EvaluatorMetadata.objects.get(id="Status-DOFD-1")
+        # evaluator creates EvaluatorMetadata object for Sample-1
+        eval1 = EvaluatorMetadata.objects.get(id="Sample-1")
         summary1 = eval1.evaluatorresultsummary_set.first()
-        self.assertEqual(2, summary1.hits)
-        self.assertEqual(2, summary1.evaluatorresult_set.count())
+        # actual number of hits matches EvaluatorResultSummary.hits
+        self.assertEqual(4, summary1.hits)
+        self.assertEqual(4, summary1.evaluatorresult_set.count())
 
-        # second evaluator metadata and results
-        eval2 = EvaluatorMetadata.objects.get(id="Status-DOFD-2")
+        # evaluator creates EvaluatorMetadata object for Sample-2
+        eval2 = EvaluatorMetadata.objects.get(id="Sample-2")
         summary2 = eval2.evaluatorresultsummary_set.first()
-        self.assertEqual(1, summary2.hits)
-        self.assertEqual(1, summary2.evaluatorresult_set.count())
+        # actual number of hits matches EvaluatorResultSummary.hits
+        self.assertEqual(0, summary2.hits)
+        self.assertEqual(0, summary2.evaluatorresult_set.count())
 
-    def test_prepare_results_creates_an_object(self):
-        # should correctly create one EvaluatorResult object
-        activities = { 'id':(32,33,34), 'cons_acct_num':('0032','0033','0034'),
-            'account_holder':('Z','Y','X'),
-            'acct_stat':('71','66','65'),
-            'dofd':(None,None,date(2019, 12, 31))}
-        # 1: HIT, 2: NO-acct_stat=66, 3: NO-acct_stat=11, 4: NO-dofd=01012020
-        self.create_bulk_activities(self.data_file, activities, 3)
-
-        eval_id = "Status-DOFD-1"
-        result_summary = evaluator.prepare_result_summary(self.event, eval_id, self.expected)
-        result = evaluator.prepare_result(result_summary, self.expected[0])
-
-        self.assertEqual(EvaluatorMetadata.objects.get(id=eval_id),
-                         result.result_summary.evaluator)
-        self.assertEqual(self.expected[0]['activity_date'], result.date)
-        self.assertEqual(AccountActivity.objects.get(id=self.expected[0]['id']),
-                         result.source_record)
-        self.assertEqual(self.expected[0]['cons_acct_num'], result.acct_num)
-        self.assertEqual(self.expected[0], result.field_values)
-
-    def test_prepare_result_summary_creates_an_object(self):
-        # should correctly create one EvaluatorResultSummary object
-        eval_id = "Status-DOFD-1"
-        return_value = evaluator.prepare_result_summary(self.event, eval_id, self.expected)
-        self.assertEqual(eval_id, return_value.evaluator.id)
-        self.assertEqual(2, return_value.hits)
-        self.assertEqual(2, return_value.accounts_affected)
-        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_start)
-        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_end)
-
-    def test_prepare_result_summary(self):
-        # should correctly create one EvaluatorResultSummary object
-        eval_id = "Status-DOFD-1"
-
-        results = [{
-            'id': 32, 'activity_date': date(2019, 10, 31), 'cons_acct_num': '0032'
-        }, {
-            'id': 33, 'activity_date': date(2019, 11, 30), 'cons_acct_num': '0033',
-        }, {
-            'id': 34, 'activity_date': date(2019, 1, 31), 'cons_acct_num': '0034',
-        }, {
-            'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }]
-        return_value = evaluator.prepare_result_summary(self.event, eval_id, results)
-        self.assertEqual(eval_id, return_value.evaluator.id)
-        self.assertEqual(4, return_value.hits)
-        self.assertEqual(3, return_value.accounts_affected)
-        self.assertEqual(date(2019, 1, 31), return_value.inconsistency_start)
-        self.assertEqual(date(2019, 12, 31), return_value.inconsistency_end)
-
-    def test_run_evaluators_missing_parameter_raises_exception(self):
-        # should raise an exception when the source_record does not exist
-        bad_func = lambda: [self.unexpected]  # noqa: E731
-        evaluator.evaluators = {"Test": bad_func}
-
-        with self.assertRaises(TypeError) as cm:
-            evaluator.run_evaluators()
-        self.assertEqual(cm.exception.args[0], "Evaluate.run_evaluators() missing 1 required positional argument: 'event'")
+    def test_eval_summary_gets_updated_with_actual_results(self):
+        act_date = date(2022, 5, 30)
+        evaluator.evaluators = {"Sample-1": sample_eval_always_hits}
+        evaluator.run_evaluators(self.event)
+        result_summary = EvaluatorResultSummary.objects.get(event=self.event, evaluator__id='Sample-1')
+        self.assertEqual(result_summary.hits, 4)
+        self.assertEqual(result_summary.accounts_affected, 4)
+        self.assertEqual(result_summary.inconsistency_start, act_date)
+        self.assertEqual(result_summary.inconsistency_end, act_date)
 
     def test_run_evaluators_with_no_records_does_not_raise_exception(self):
-        event = Metro2Event(name='test_no_activity_exam')
-        event.save()
-        data_file = M2DataFile(event=self.event, file_name='file.txt')
-        data_file.save()
+        event = Metro2Event.objects.create(name='test_no_activity_exam')
         evaluator.evaluators = {"Status-DOFD-1": eval_status_dofd_1_func,
                                 "Status-DOFD-2": eval_status_dofd_2_func}
         evaluator.run_evaluators(event)
 
-        self.assertEqual(0, AccountActivity.objects.count())
         self.assertEqual(0, EvaluatorResult.objects.count())
         self.assertEqual(0, EvaluatorResultSummary.objects.count())
         self.assertEqual(0, EvaluatorMetadata.objects.count())
+
+    def test_erroring_eval_gets_skipped(self):
+        evaluator.evaluators = {"Sample-err": sample_erroring_eval,
+                                "Sample-1": sample_eval_always_hits,}
+        evaluator.run_evaluators(self.event)
+
+        eval2 = EvaluatorMetadata.objects.get(id="Sample-err")
+        summary2 = eval2.evaluatorresultsummary_set.first()
+        # errored evals get hits = -1
+        self.assertEqual(-1, summary2.hits)
+
+        # Other evals still run after the error
+        eval1 = EvaluatorMetadata.objects.get(id="Sample-1")
+        summary1 = eval1.evaluatorresultsummary_set.first()
+        self.assertEqual(4, summary1.hits)

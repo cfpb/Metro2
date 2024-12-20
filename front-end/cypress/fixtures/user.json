@@ -1,0 +1,24 @@
+{
+  "is_admin": false,
+  "username": "Test user",
+  "assigned_events": [
+    {
+      "id": 1,
+      "name": "Sample-Dataset-007",
+      "portfolio": "",
+      "eid_or_matter_num": "",
+      "other_descriptor": "",
+      "date_range_start": "2018-07-30",
+      "date_range_end": "2018-11-30"
+    },
+    {
+      "id": 2,
+      "name": "Event two",
+      "portfolio": "Mortgage",
+      "eid_or_matter_num": "123456789",
+      "other_descriptor": "Mortgage event",
+      "date_range_start": "2019-11-01",
+      "date_range_end": "2020-11-01"
+    }
+  ]
+}

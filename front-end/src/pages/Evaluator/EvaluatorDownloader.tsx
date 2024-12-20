@@ -3,7 +3,7 @@ import { Button, RadioButton } from 'design-system-react'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { useRef, useState } from 'react'
-import type { AccountRecord} from 'utils/constants';
+import type { AccountRecord } from 'utils/constants'
 import { M2_FIELD_NAMES } from 'utils/constants'
 import { downloadData, downloadFileFromURL, generateDownloadData } from 'utils/utils'
 

@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  ignorePatterns: ['/**/*'],
   overrides: [
     {
       files: ['*.ts?(x)'],
@@ -35,7 +36,16 @@ module.exports = {
         'cypress/no-force': 'error',
         'cypress/assertion-before-screenshot': 'error',
         'cypress/require-data-selectors': 'error',
-        'cypress/no-pause': 'error'
+        'cypress/no-pause': 'error',
+        'unicorn/filename-case': [
+          'error',
+          {
+            cases: {
+              camelCase: true,
+              pascalCase: true
+            }
+          }
+        ]
       }
     }
   ]

@@ -1,18 +1,18 @@
 # Translate from the plain language field names in the source of
 # truth spreadsheet to code names that match the database columns
 #
-# Any fields that don't appear in the SSOTS are commented out
+# Any fields that don't appear in the SSOTS are removed.
 code_to_plain_field_map = {
     # code : plain language
 
     # Account Holder fields
-    "cons_acct_num": "consumer account number",
-    "ecoa": "ecoa",
-    "cons_info_ind": "consumer information indicator",
-    "cons_info_ind_assoc": "consumer information indicators for associated consumers",
-    "ecoa_assoc": "ECOA for associated consumers",
-    "first_name": "first name",
-    "surname": "surname",
+    "account_holder__cons_acct_num": "consumer account number",
+    "account_holder__ecoa": "ecoa",
+    "account_holder__cons_info_ind": "consumer information indicator",
+    "account_holder__cons_info_ind_assoc": "consumer information indicators for associated consumers",
+    "account_holder__ecoa_assoc": "ECOA for associated consumers",
+    "account_holder__first_name": "first name",
+    "account_holder__surname": "surname",
 
     # Account Activity fields
     "activity_date": "activity date",
@@ -38,34 +38,39 @@ code_to_plain_field_map = {
     "date_closed": "date closed",
     "dolp": "date of last payment",
     "id_num": "ID number",
-    # "int_type_ind": "",  # looks like this ins't used in any evals?
 
-    # # K segments
-    # "k1__orig_creditor_name": "",
-    # "k1__creditor_classification": "",
+    # K segments
     "k2__purch_sold_ind": "K2 purchased - sold indicator",
     "k2__purch_sold_name": "K2 purchased - sold name",
-    # "k3__agency_id": "",
-    # "k3__agency_acct_num": "",
-    # "k3__min": "",
-    # "k4__spc_pmt_ind": "",
-    # "k4__deferred_pmt_st_dt": "",
-    # "k4__balloon_pmt_due_dt": "",
     "k4__balloon_pmt_amt": "balloon payment amount",
 
-    # # L segment
+    # L segment
     "l1__change_ind": "L1 change indicator",
     "l1__new_acc_num": "L1 new account number",
     "l1__new_id_num": "L1 new id number",
 
-    # # N segment
-    # "n1__employer_name": "",
-    # "n1__employer_addr1": "",
-    # "n1__employer_addr2": "",
-    # "n1__employer_city": "",
-    # "n1__employer_state": "",
-    # "n1__employer_zip": "",
-    # "n1__occupation": "",
+    # Prior record fields
+    "previous_values__account_holder__cons_info_ind": "prior consumer information indicator",
+    "previous_values__account_holder__cons_info_ind_assoc": "prior consumer information indicators for associated consumers",
+    "previous_values__account_holder__ecoa": "prior ecoa",
+    "previous_values__account_holder__first_name": "prior first name",
+    "previous_values__account_holder__surname": "prior surname",
+
+    "previous_values__l1__change_ind": "prior L1 change indicator",
+    "previous_values__l1__new_acc_num": "prior L1 new account number",
+    "previous_values__l1__new_id_num": "prior L1 new id number",
+
+    "previous_values__activity_date": "prior activity date",
+    "previous_values__port_type": "prior portfolio type",
+    "previous_values__acct_type": "prior account type",
+    "previous_values__date_open": "prior date open",
+    "previous_values__acct_stat": "prior account status",
+    "previous_values__pmt_rating": "prior payment rating",
+    "previous_values__current_bal": "prior current balance",
+    "previous_values__orig_chg_off_amt": "prior original charge-off amount",
+    "previous_values__dofd": "prior date of first delinquency",
+    "previous_values__date_closed": "prior date closed",
+    "previous_values__id_num": "prior ID number",
 }
 
 # Invert the dict above to map the other direction

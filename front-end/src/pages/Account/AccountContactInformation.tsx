@@ -1,30 +1,22 @@
 import { useQuery } from '@tanstack/react-query'
 import { Icon } from 'design-system-react'
+import { accountHolderQueryOptions } from 'models/AccountHolder'
 import type { ReactElement } from 'react'
-import { fetchData } from 'utils/utils'
-import type { AccountHolder } from './Account'
+import { useState } from 'react'
 
 interface AccountHolderProperties {
   accountId: string
   eventId: number
-}
-export const fetchAccountPII = async (
-  eventId: number,
-  accountId: string
-): Promise<AccountHolder> => {
-  const url = `/api/events/${eventId}/account/${accountId}/account_holder/`
-  return fetchData<AccountHolder>(url, 'account')
 }
 
 export default function AccountContactInformation({
   accountId,
   eventId
 }: AccountHolderProperties): ReactElement {
-  const { data, refetch, isLoading } = useQuery({
-    queryKey: ['events', eventId, 'accountPII', accountId],
-    queryFn: async (): Promise<AccountHolder> => fetchAccountPII(eventId, accountId),
-    enabled: false
-  })
+  const { data, refetch, isLoading } = useQuery(
+    accountHolderQueryOptions(eventId, accountId)
+  )
+  const [showPII, setShowPII] = useState(false)
 
   if (isLoading) {
     return (
@@ -37,10 +29,11 @@ export default function AccountContactInformation({
 
   function onClickHandler(): void {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    refetch()
+    if (!data) refetch()
+    setShowPII(true)
   }
 
-  return data ? (
+  return data && showPII ? (
     <div>
       <div>{`${data.first_name} ${data.surname}`}</div>
       <div>{data.addr_line_1}</div>

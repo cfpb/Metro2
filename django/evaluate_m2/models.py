@@ -26,6 +26,16 @@ class EvaluatorMetadata(models.Model):
     def __str__(self) -> str:
         return self.id
 
+    def result_summary_fields(self) -> list[str]:
+        """
+        Return the list of AccountActivity fields (and fields on
+        related records) that should be shown in the evaluator result
+        view API endpoint.
+        """
+        defaults = ['id', 'activity_date', 'cons_acct_num']
+        return defaults + self.fields_used + self.fields_display
+
+
 class EvaluatorResultSummary(models.Model):
     class Meta:
         verbose_name_plural = "Evaluator Result Summaries"
@@ -35,10 +45,16 @@ class EvaluatorResultSummary(models.Model):
     accounts_affected = models.IntegerField(null=True)
     inconsistency_start = models.DateField(null=True)
     inconsistency_end = models.DateField(null=True)
+    evaluator_version = models.CharField(max_length=200, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
         return f"Event: {self.event} - {self.evaluator}"
+
+    def create_csv_header(self):
+        csv_header = list(self.evaluator.result_summary_fields())
+        csv_header.insert(0, 'event_name')
+        return csv_header
 
 
 class EvaluatorResult(models.Model):
@@ -47,17 +63,15 @@ class EvaluatorResult(models.Model):
         indexes = [ models.Index(fields=['acct_num',])]
     result_summary = models.ForeignKey(EvaluatorResultSummary, on_delete=models.CASCADE)
     date = models.DateField()
-    field_values = JSONField(encoder=DjangoJSONEncoder)
+    field_values = JSONField(encoder=DjangoJSONEncoder, null=True)
     source_record = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     acct_num = models.CharField(max_length=30)
 
-    def create_csv_header(self):
-        csv_header = list(self.field_values.keys())
-        csv_header.insert(0, 'event_name')
-        return csv_header
-
-    def create_csv_row_data(self):
+    def create_csv_row_data(self, fields_list: list[str]):
+        field_values = AccountActivity.objects \
+                    .values_list(*fields_list) \
+                    .get(id=self.source_record.id)
         response = [
             self.result_summary.event.name,
-            ] + list(self.field_values.values())
+            ] + list(field_values)
         return response

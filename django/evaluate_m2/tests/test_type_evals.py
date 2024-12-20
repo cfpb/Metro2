@@ -16,9 +16,12 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.event.save()
         self.data_file = M2DataFile(event=self.event, file_name='file.txt')
         self.data_file.save()
-        # Create the Account Holders
-        self.create_bulk_account_holders(self.data_file, ('Z','Y','X','W','V','U','T'))
 
+        # Create the segment data
+        self.expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
+        ]
     ############################
     # Tests for the category 12 evaluators
     def test_eval_type_apd_1(self):
@@ -71,12 +74,10 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-spc_com_cd=AH, 37: NO-l1_change_ind=1,
         # 38: NO-amt_past_due=0
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '00', 'amt_past_due': 1, 'current_bal': 0,
-            'l1__change_ind': None, 'port_type': 'I', 'spc_com_cd': 'BS',
-            'acct_stat': '', 'date_closed': None
-        }]
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}
+        ]
+
         self.assert_evaluator_correct(self.event, "Type-APD-1", expected)
 
     def test_type_balance_1(self):
@@ -124,29 +125,19 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: NO-port_type=C, 34: NO-acct_stat=5, 35: NO-acct_type=07,
-        # 36: NO-spc_com_cd=AU, 37: NO-current_bal=0
+        # 32: HIT, 33: HIT, 34: NO-port_type=C, 35: NO-acct_stat=5,
+        # 36: NO-acct_type=07, 37: NO-spc_com_cd=AU, 38: NO-current_bal=0
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032', 'acct_type': '00', 'acct_stat': '11', 'port_type': 'I', 'current_bal': 25,
-            'spc_com_cd': 'BS', 'amt_past_due': 0, 'compl_cond_cd': '',
-            'date_closed': None,  'dofd': None,'orig_chg_off_amt': 0, 'smpa':0,
-            'terms_freq':'00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033', 'acct_type': '01', 'acct_stat': '11', 'port_type': 'I', 'current_bal': 20,
-            'spc_com_cd': 'BS', 'amt_past_due': 0, 'compl_cond_cd': '',
-            'date_closed': None,  'dofd': None,'orig_chg_off_amt': 0, 'smpa':0,
-            'terms_freq':'00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-Balance-1', expected)
+        self.assert_evaluator_correct(self.event, 'Type-Balance-1', self.expected)
 
     def test_eval_type_credit_limit_1(self):
         # Hits when all conditions are met:
-        # 1. port_type == 'I'
-        # 2. acct_type == '0A', '6A', '9A', '7B', '6D', '0F', '01', '02', '03', '04',
-        #                 '05', '06', '10', '11', '13', '17', '20', '47', '91'
-        # 3. terms_freq != 'D'
-        # 4. credit_limit > 0
+        # 1. acct_type == '0A', '0C', '0F', '2C', '5A', '5B', '6A', '6B', '6D', 
+        #                 '7B', '9A', '01', '02', '03', '04', '05', '06', '08',
+        #                 '10', '11', '13', '17', '19', '20', '25', '26', '47',
+        #                 '48', '77', '91'
+        # 2. terms_freq != 'D'
+        # 3. credit_limit > 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -161,145 +152,54 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'credit_limit': 20
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'C', 'acct_type':'9A', 'terms_freq':'O',
-                'credit_limit': 15
+                'port_type':'M', 'acct_type':'08', 'terms_freq':'M',
+                'credit_limit': 25
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'M', 'acct_type':'19', 'terms_freq':'P',
+                'credit_limit': 20
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'O', 'acct_type':'0C', 'terms_freq':'M',
+                'credit_limit': 25
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'O', 'acct_type':'48', 'terms_freq':'P',
+                'credit_limit': 20
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
                 'port_type':'I', 'acct_type':'9B', 'terms_freq':'M',
                 'credit_limit': 10
             }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
                 'port_type':'I', 'acct_type':'6D', 'terms_freq':'D',
                 'credit_limit': 5
             }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'id': 40, 'activity_date': acct_date, 'cons_acct_num': '0040',
                 'port_type':'I', 'acct_type':'0F', 'terms_freq':'P',
                 'credit_limit': 0
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=9B,
-        # 36: NO-terms_freq=D, 37: NO-credit_limit=0
+        # 32: HIT, 33: HIT, 34: HIT, 35: HIT, 36: HIT, 37: HIT, 
+        # 38: NO-acct_type=9B, 39: NO-terms_freq=D, 40: NO-credit_limit=0
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '0A', 'credit_limit': 25, 'port_type': 'I', 'terms_freq': 'M',
-            'hcola': 0, 'terms_dur': '00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '6A', 'credit_limit': 20, 'port_type': 'I', 'terms_freq': 'P',
-            'hcola': 0, 'terms_dur': '00'
-        }]
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'},
+            {'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036'},
+            {'id': 37, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0037'}]
+
         self.assert_evaluator_correct(self.event, 'Type-CreditLimit-1', expected)
 
     def test_eval_type_credit_limit_2(self):
         # Hits when all conditions are met:
-        # 1. port_type == 'M'
-        # 2. acct_type == '08', '19', '25', '26', '2C', '5A', '5B', '6B'
-        # 3. terms_freq != 'D'
-        # 4. credit_limit > 0
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'M', 'acct_type':'08', 'terms_freq':'M',
-                'credit_limit': 25
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'M', 'acct_type':'19', 'terms_freq':'P',
-                'credit_limit': 20
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'C', 'acct_type':'25', 'terms_freq':'O',
-                'credit_limit': 15
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'M', 'acct_type':'27', 'terms_freq':'M',
-                'credit_limit': 10
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'M', 'acct_type':'2C', 'terms_freq':'D',
-                'credit_limit': 5
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'M', 'acct_type':'5A', 'terms_freq':'P',
-                'credit_limit': 0
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=27,
-        # 36: NO-terms_freq=D, 37: NO-credit_limit=0
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '08', 'credit_limit': 25, 'port_type': 'M', 'terms_freq': 'M',
-            'hcola': 0, 'terms_dur': '00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '19', 'credit_limit': 20, 'port_type': 'M', 'terms_freq': 'P',
-            'hcola': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-CreditLimit-2', expected)
-
-    def test_eval_type_credit_limit_3(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'O'
-        # 2. acct_type == '0C', '48', '77'
-        # 3. terms_freq != 'D'
-        # 4. credit_limit > 0
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'O', 'acct_type':'0C', 'terms_freq':'M',
-                'credit_limit': 25
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'O', 'acct_type':'48', 'terms_freq':'P',
-                'credit_limit': 20
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'C', 'acct_type':'77', 'terms_freq':'O',
-                'credit_limit': 15
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'O', 'acct_type':'0A', 'terms_freq':'M',
-                'credit_limit': 10
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'O', 'acct_type':'0C', 'terms_freq':'D',
-                'credit_limit': 5
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'O', 'acct_type':'48', 'terms_freq':'P',
-                'credit_limit': 0
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=0A,
-        # 36: NO-terms_freq=D, 37: NO-credit_limit=0
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '0C', 'credit_limit': 25, 'port_type': 'O', 'terms_freq': 'M',
-            'hcola': 0, 'terms_dur': '00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '48', 'credit_limit': 20, 'port_type': 'O', 'terms_freq': 'P',
-            'hcola': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-CreditLimit-3', expected)
-
-    def test_eval_type_credit_limit_4(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'C'
-        # 2. acct_type == '7A', '9B', '15', '43', '47', '89'
-        # 3. terms_freq != 'D'
-        # 4. credit_limit == 0
+        # 1. acct_type == '0G', '2A', '7A', '8A', '9B', '07',
+        #                 '15', '18', '37', '43', '47', '89'
+        # 2. terms_freq != 'D'
+        # 3. credit_limit == 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -314,181 +214,52 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'credit_limit': 0
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'O', 'acct_type':'15', 'terms_freq':'O',
+                'port_type':'O', 'acct_type':'2A', 'terms_freq':'M',
                 'credit_limit': 0
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'C', 'acct_type':'0A', 'terms_freq':'M',
+                'port_type':'O', 'acct_type':'8A', 'terms_freq':'P',
                 'credit_limit': 0
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'C', 'acct_type':'43', 'terms_freq':'D',
+                'port_type':'R', 'acct_type':'2A', 'terms_freq':'M',
                 'credit_limit': 0
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'R', 'acct_type':'8A', 'terms_freq':'P',
+                'credit_limit': 0
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'I', 'acct_type':'18', 'terms_freq':'M',
+                'credit_limit': 0
+            }, {
+                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
+                'port_type':'C', 'acct_type':'0A', 'terms_freq':'M',
+                'credit_limit': 0
+            }, {
+                'id': 40, 'activity_date': acct_date, 'cons_acct_num': '0040',
+                'port_type':'C', 'acct_type':'43', 'terms_freq':'D',
+                'credit_limit': 0
+            }, {
+                'id': 41, 'activity_date': acct_date, 'cons_acct_num': '0041',
                 'port_type':'C', 'acct_type':'47', 'terms_freq':'P',
                 'credit_limit': 10
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=O, 35: NO-acct_type=0A,
-        # 36: NO-terms_freq=D, 37: NO-credit_limit=10
+        # 32: HIT, 33: HIT, 34: HIT, 35: HIT, 36: HIT, 37: HIT, 38: HIT,
+        # 39: NO-acct_type=0A, 40: NO-terms_freq=D, 41: NO-credit_limit=10
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '7A', 'credit_limit': 0, 'port_type': 'C', 'terms_freq': 'M',
-            'hcola': 0, 'terms_dur': '00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '9B', 'credit_limit': 0, 'port_type': 'C', 'terms_freq': 'P',
-            'hcola': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-CreditLimit-4', expected)
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'},
+            {'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036'},
+            {'id': 37, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0037'},
+            {'id': 38, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0038'}]
 
-    def test_eval_type_credit_limit_5(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'O'
-        # 2. acct_type == '2A', '8A', '18', '37', '43'
-        # 3. terms_freq != 'D'
-        # 4. credit_limit == 0
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'O', 'acct_type':'2A', 'terms_freq':'M',
-                'credit_limit': 0
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'O', 'acct_type':'8A', 'terms_freq':'P',
-                'credit_limit': 0
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'C', 'acct_type':'18', 'terms_freq':'O',
-                'credit_limit': 0
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'O', 'acct_type':'0A', 'terms_freq':'M',
-                'credit_limit': 0
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'O', 'acct_type':'37', 'terms_freq':'D',
-                'credit_limit': 0
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'O', 'acct_type':'43', 'terms_freq':'P',
-                'credit_limit': 10
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=0A,
-        # 36: NO-terms_freq=D, 37: NO-credit_limit=10
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '2A', 'credit_limit': 0, 'port_type': 'O', 'terms_freq': 'M',
-            'hcola': 0, 'terms_dur': '00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '8A', 'credit_limit': 0, 'port_type': 'O', 'terms_freq': 'P',
-            'hcola': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-CreditLimit-5', expected)
-
-    def test_eval_type_credit_limit_6(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'R'
-        # 2. acct_type == '2A', '8A', '0G', '07', '18', '37', '43'
-        # 3. terms_freq != 'D'
-        # 4. credit_limit == 0
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'R', 'acct_type':'2A', 'terms_freq':'M',
-                'credit_limit': 0
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'R', 'acct_type':'8A', 'terms_freq':'P',
-                'credit_limit': 0
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'C', 'acct_type':'0G', 'terms_freq':'O',
-                'credit_limit': 0
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'R', 'acct_type':'0A', 'terms_freq':'M',
-                'credit_limit': 0
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'R', 'acct_type':'37', 'terms_freq':'D',
-                'credit_limit': 0
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'R', 'acct_type':'43', 'terms_freq':'P',
-                'credit_limit': 10
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=0A,
-        # 36: NO-terms_freq=D, 37: NO-credit_limit=10
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '2A', 'credit_limit': 0, 'port_type': 'R', 'terms_freq': 'M',
-            'hcola': 0, 'terms_dur': '00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '8A', 'credit_limit': 0, 'port_type': 'R', 'terms_freq': 'P',
-            'hcola': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-CreditLimit-6', expected)
-
-    def test_eval_type_credit_limit_7(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'I'
-        # 2. acct_type == '18'
-        # 3. terms_freq != 'D'
-        # 4. credit_limit == 0
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'I', 'acct_type':'18', 'terms_freq':'M',
-                'credit_limit': 0
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'R', 'acct_type':'18', 'terms_freq':'P',
-                'credit_limit': 0
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'I', 'acct_type':'0A', 'terms_freq':'O',
-                'credit_limit': 0
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'I', 'acct_type':'18', 'terms_freq':'D',
-                'credit_limit': 0
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'I', 'acct_type':'18', 'terms_freq':'M',
-                'credit_limit': 10
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33:NO-port_type=C, 34: NO-acct_type=0A,
-        # 35: NO-terms_freq=D, 36: NO-credit_limit=10
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '18', 'credit_limit': 0, 'port_type': 'I', 'terms_freq': 'M',
-            'hcola': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-CreditLimit-7', expected)
+        self.assert_evaluator_correct(self.event, 'Type-CreditLimit-2', expected)
 
     def test_type_date_closed_1(self):
         # Hits when all conditions are met:
@@ -511,7 +282,8 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'spc_com_cd': 'BS', 'date_closed': None
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'I', 'acct_type':'13', 'current_bal': 0,                'spc_com_cd': 'BS', 'date_closed': None
+                'port_type':'I', 'acct_type':'13', 'current_bal': 0,
+                'spc_com_cd': 'BS', 'date_closed': None
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'port_type':'I', 'acct_type':'02','current_bal': 1,
@@ -538,12 +310,10 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-spc_com_cd=AH, 37: NO-l1_change_ind=1,
         # 38: NO-date_closed=date(2019, 12, 31)
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '00', 'current_bal': 0, 'date_closed': None,
-            'l1__change_ind': None, 'port_type': 'I', 'spc_com_cd': 'BS',
-            'acct_stat': '', 'amt_past_due': 0
-        }]
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}
+        ]
+
         self.assert_evaluator_correct(self.event, "Type-DateClosed-1", expected)
 
     def test_type_date_closed_2(self):
@@ -579,11 +349,10 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: NO-port_type=I, 34: NO-current_bal=1,
         # 35: NO-l1_change_ind=1, 36: NO-date_closed=date(2019, 12, 31)
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'current_bal': 0, 'date_closed': None, 'l1__change_ind': None,
-            'port_type': 'M', 'acct_stat': '', 'amt_past_due': 0, 'spc_com_cd': ''
-        }]
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}
+        ]
+
         self.assert_evaluator_correct(self.event, "Type-DateClosed-2", expected)
 
     def test_type_date_closed_3(self):
@@ -628,25 +397,17 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 36: NO-spc_com_cd=BS, 37: NO-l1_change_ind=1,
         # 38: NO-date_closed=date(2019, 12, 31)
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'current_bal': 0, 'date_closed': None, 'l1__change_ind': None,
-            'port_type': 'C', 'spc_com_cd': 'AH', 'acct_stat': '', 'amt_past_due': 0
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'current_bal': 0, 'date_closed': None, 'l1__change_ind': None,
-            'port_type': 'O', 'spc_com_cd': 'AT', 'acct_stat': '', 'amt_past_due': 0
-        }]
-        self.assert_evaluator_correct(self.event, "Type-DateClosed-3", expected)
+        self.assert_evaluator_correct(self.event, "Type-DateClosed-3", self.expected)
 
     def test_eval_type_hcola_1(self):
         # Hits when all conditions are met:
-        # 1. port_type == 'I'
-        # 2. acct_type == '00', '3A', '10', '91', '6A', '7B', '05',
-        #                 '0A', '0F', '47', '9A', '17', '01', '02',
-        #                 '03', '11', '13', '04', '20', '6D', '06'
-        # 3. terms_freq != 'D'
-        # 4. hcola <= 0
+        # 1. acct_type == '00', '0A', '0C', '0F', '2C', '3A', '5A',
+        #                 '5B', '6A', '6B', '6D', '7B', '9A', '01',
+        #                 '02', '03', '04', '05', '06', '08', '10',
+        #                 '11', '13', '17', '19', '20', '25', '26',
+        #                 '47', '48', '77', '91'
+        # 2. terms_freq != 'D'
+        # 3. hcola <= 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -656,126 +417,43 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'port_type':'I', 'acct_type':'00', 'hcola': -1, 'terms_freq': 'P'
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'M', 'acct_type':'3A', 'hcola': -1, 'terms_freq': 'W'
+                'port_type':'M', 'acct_type':'08', 'hcola': -1, 'terms_freq': 'W'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'I', 'acct_type':'12', 'hcola': -5, 'terms_freq': 'P'
+                'port_type':'O', 'acct_type':'0C', 'hcola': -1, 'terms_freq': 'P'
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'I', 'acct_type':'91', 'hcola': -5, 'terms_freq': 'D'
+                'port_type':'I', 'acct_type':'12', 'hcola': -5, 'terms_freq': 'P'
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'I', 'acct_type':'00', 'hcola': 0, 'terms_freq': 'W'
+                'port_type':'I', 'acct_type':'91', 'hcola': -5, 'terms_freq': 'D'
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'I', 'acct_type':'00', 'hcola': 0, 'terms_freq': 'W'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
                 'port_type':'I', 'acct_type':'3A', 'hcola': 5, 'terms_freq': 'P'
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: NO-port_type=M, 34: NO-acct_type=12, 35: NO-terms_freq=D,
-        # 36: HIT, 37: NO-hcola=5
+        # 32: HIT, 33: HIT, 34: HIT, 35: NO-acct_type=12, 36: NO-terms_freq=D,
+        # 37: HIT, 38: NO-hcola=5
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032', 'acct_type': '00', 'port_type': 'I', 'hcola': -1,
-            'terms_freq': 'P', 'credit_limit': 0, 'terms_dur': '00'
-        }, {
-            'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '00', 'port_type': 'I', 'hcola': 0,
-            'terms_freq': 'W', 'credit_limit': 0, 'terms_dur': '00'
-        }]
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 37, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0037'}
+        ]
+
         self.assert_evaluator_correct(self.event, 'Type-HCOLA-1', expected)
 
     def test_eval_type_hcola_2(self):
         # Hits when all conditions are met:
-        # 1. port_type == 'M'
-        # 2. acct_type == '08', '19', '25', '26', '2C', '5A', '5B', '6B'
-        # 3. terms_freq != 'D'
-        # 4. hcola <= 0
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'M', 'acct_type':'08', 'hcola': -1, 'terms_freq': 'P'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'I', 'acct_type':'19', 'hcola': -1, 'terms_freq': 'W'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'M', 'acct_type':'11', 'hcola': -5, 'terms_freq': 'P'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'M', 'acct_type':'25', 'hcola': -5, 'terms_freq': 'D'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'M', 'acct_type':'2C', 'hcola': 0, 'terms_freq': 'W'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'M', 'acct_type':'26', 'hcola': 5, 'terms_freq': 'P'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: NO-port_type=I, 34: NO-acct_type=11, 35: NO-terms_freq=D,
-        # 36: HIT, 37: NO-hcola=5
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032', 'acct_type': '08', 'port_type': 'M', 'hcola': -1,
-            'terms_freq': 'P', 'credit_limit': 0, 'terms_dur': '00'
-        }, {
-            'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '2C', 'port_type': 'M', 'hcola': 0,
-            'terms_freq': 'W', 'credit_limit': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-HCOLA-2', expected)
-
-    def test_eval_type_hcola_3(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'O'
-        # 2. acct_type == '0C', '48', '77'
-        # 3. terms_freq != 'D'
-        # 4. hcola <= 0
-        # hcola cannot be an empty string or NULL by constraints
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'O', 'acct_type':'0C', 'hcola': -1, 'terms_freq': 'P'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'I', 'acct_type':'48', 'hcola': -1, 'terms_freq': 'W'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'O', 'acct_type':'11', 'hcola': -5, 'terms_freq': 'P'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'O', 'acct_type':'77', 'hcola': -5, 'terms_freq': 'D'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'O', 'acct_type':'0C', 'hcola': 0, 'terms_freq': 'W'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'O', 'acct_type':'48', 'hcola': 5, 'terms_freq': 'P'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: NO-port_type=I, 34: NO-acct_type=11, 35: NO-terms_freq=D,
-        # 36: HIT, 37: NO-hcola=5
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032', 'acct_type': '0C', 'port_type': 'O', 'hcola': -1,
-            'terms_freq': 'P', 'credit_limit': 0, 'terms_dur': '00'
-        }, {
-            'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036', 'acct_type': '0C', 'port_type': 'O', 'hcola': 0,
-            'terms_freq': 'W', 'credit_limit': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-HCOLA-3', expected)
-
-    def test_eval_type_hcola_4(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'O'
-        # 2. acct_type == '2A', '8A', '18', '37'
-        # 3. terms_freq != 'D'
-        # 4. hcola == 0
+        # 1. acct_type == '0G', '2A', '7A', '8A', '9B', '07',
+#                         '15', '18', '37', '43', '47', '89'
+        # 2. terms_freq != 'D'
+        # 3. hcola == 0
         # hcola cannot be an empty string or NULL by constraints
 
         # Create the Account Activities data
@@ -789,128 +467,94 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'port_type':'O', 'acct_type':'8A', 'hcola': 0, 'terms_freq': 'W'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'I', 'acct_type':'18', 'hcola': 0, 'terms_freq': 'P'
+                'port_type':'R', 'acct_type':'0G', 'hcola': 0, 'terms_freq': 'P'
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'O', 'acct_type':'77', 'hcola': 0, 'terms_freq': 'W'
+                'port_type':'C', 'acct_type':'9B', 'hcola': 0, 'terms_freq': 'W'
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'O', 'acct_type':'37', 'hcola': 0, 'terms_freq': 'D'
+                'port_type':'O', 'acct_type':'77', 'hcola': 0, 'terms_freq': 'W'
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'O', 'acct_type':'37', 'hcola': 0, 'terms_freq': 'D'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
                 'port_type':'O', 'acct_type':'2A', 'hcola': 10, 'terms_freq': 'P'
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-port_type=I, 35: NO-acct_type=77,
-        # 36: terms_freq=D, 37: NO-hcola=10
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '2A', 'port_type': 'O', 'hcola': 0, 'terms_freq': 'P',
-            'credit_limit': 0, 'terms_dur': '00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '8A', 'port_type': 'O', 'hcola': 0, 'terms_freq': 'W',
-            'credit_limit': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-HCOLA-4', expected)
+        # 32: HIT, 33: HIT, 34: HIT, 35: HIT,
+        # 36: NO-acct_type=77, 37: NO-terms_freq=D, 
+        # 38: NO-hcola=10
 
-    def test_eval_type_hcola_5(self):
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'}
+        ]
+
+        self.assert_evaluator_correct(self.event, 'Type-HCOLA-2', expected)
+
+    def test_type_smpa_1(self):
         # Hits when all conditions are met:
-        # 1. port_type == 'R'
-        # 2. acct_type == '2A', '8A', '0G', '07', '18', '37'
-        # 3. terms_freq != 'D'
-        # 4. hcola == 0
-        # hcola cannot be an empty string or NULL by constraints
+        # 1. port_type == 'I'
+        # 2. acct_stat == '11'
+        # 3. acct_type == '00', '01', '02', '03', '04', '05', '06', '10', '11',
+        #                 '13', '17', '20', '29', '65', '66', '67', '68', '69',
+        #                 '70', '71', '72', '73', '74', '75', '91', '95', '0A',
+        #                 '0F', '3A', '6A', '6D', '7B', '9A'
+        # 4. spc_com_cd == 'BS'
+        # 5. smpa > 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'R', 'acct_type':'2A', 'hcola': 0, 'terms_freq': 'P'
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'00',
+                'spc_com_cd': 'BS', 'smpa': 25
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'R', 'acct_type':'8A', 'hcola': 0, 'terms_freq': 'W'
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'01',
+                'spc_com_cd': 'BS', 'smpa': 20
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'I', 'acct_type':'0G', 'hcola': 0, 'terms_freq': 'P'
+                'port_type':'C', 'acct_stat':'11', 'acct_type':'02',
+                'spc_com_cd': 'BS', 'smpa': 15
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'R', 'acct_type':'77', 'hcola': 0, 'terms_freq': 'W'
+                'port_type':'I', 'acct_stat':'05', 'acct_type':'03',
+                'spc_com_cd': 'BS', 'smpa': 10
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'R', 'acct_type':'18', 'hcola': 0, 'terms_freq': 'D'
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'07',
+                'spc_com_cd': 'BS', 'smpa': 5
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'R', 'acct_type':'37', 'hcola': 10, 'terms_freq': 'P'
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'04',
+                'spc_com_cd': 'AU', 'smpa': 1
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'I', 'acct_stat':'11', 'acct_type':'05',
+                'spc_com_cd': 'BS', 'smpa': 0
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-port_type=I, 35: NO-acct_type=77,
-        # 36: terms_freq=D, 37: NO-hcola=10
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '2A', 'port_type': 'R', 'hcola': 0, 'terms_freq': 'P',
-            'credit_limit': 0, 'terms_dur': '00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '8A', 'port_type': 'R', 'hcola': 0, 'terms_freq': 'W',
-            'credit_limit': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-HCOLA-5', expected)
+        # 32: HIT, 33: HIT, 34: NO-port_type=C, 35: NO-acct_stat=5,
+        # 36: NO-acct_type=07, 37: NO-spc_com_cd=AU, 38: NO-smpa=0
 
-    def test_eval_type_hcola_6(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'C'
-        # 2. acct_type == '7A', '9B', '15', '43', '47', '89'
-        # 3. terms_freq != 'D'
-        # 4. hcola == 0
-        # hcola cannot be an empty string or NULL by constraints
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'C', 'acct_type':'7A', 'hcola': 0, 'terms_freq': 'P'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'C', 'acct_type':'9B', 'hcola': 0, 'terms_freq': 'W'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'I', 'acct_type':'15', 'hcola': 0, 'terms_freq': 'P'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'C', 'acct_type':'77', 'hcola': 0, 'terms_freq': 'W'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'C', 'acct_type':'43', 'hcola': 0, 'terms_freq': 'D'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'C', 'acct_type':'47', 'hcola': 10, 'terms_freq': 'P'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-port_type=I, 35: NO-acct_type=77,
-        # 36: terms_freq=D, 37: NO-hcola=10
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '7A', 'port_type': 'C', 'hcola': 0, 'terms_freq': 'P',
-            'credit_limit': 0, 'terms_dur': '00'
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '9B', 'port_type': 'C', 'hcola': 0, 'terms_freq': 'W',
-            'credit_limit': 0, 'terms_dur': '00'
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-HCOLA-6', expected)
+        self.assert_evaluator_correct(self.event, 'Type-SMPA-1', self.expected)
 
     def test_eval_type_terms_dur_1(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'C'
-        # 2. acct_type == '7A', '9B', '15', '43', '47', '89'
-        # 3. terms_freq != 'D'
-        # 4. terms_dur != 'LOC'
+    # Hits when the following condition is met...
+    #     1. terms_freq != 'D'
+
+    # ... AND one of the following sets of conditions
+    #     a. port_type == 'C' & terms_dur != 'LOC'
+    #     b. port_type == 'O' & terms_dur != '001'
+    #     c. port_type == 'R' & terms_dur != 'REV'
+    #     d. port_type == 'I' & int(terms_dur) <= 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -918,193 +562,88 @@ class TypeEvalsTestCase(TestCase, EvaluatorTestHelper):
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
                 'port_type':'C', 'acct_type':'7A', 'terms_freq':'M',
-                'terms_dur': '001'
+                'terms_dur': 'REV'
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'C', 'acct_type':'9B', 'terms_freq':'P',
-                'terms_dur': 'REV'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'O', 'acct_type':'15', 'terms_freq':'O',
-                'terms_dur': '001'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'C', 'acct_type':'0A', 'terms_freq':'M',
-                'terms_dur': 'REV'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'C', 'acct_type':'47', 'terms_freq':'D',
-                'terms_dur': '001'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'C', 'acct_type':'43', 'terms_freq':'P',
-                'terms_dur': 'LOC'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=O, 35: NO-acct_type=0A,
-        # 36: NO-terms_freq=D, 37: NO-terms_dur=LOC
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '7A', 'port_type': 'C', 'terms_dur': '001', 'terms_freq': 'M',
-            'credit_limit': 0, 'hcola': 0
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '9B', 'port_type': 'C', 'terms_dur': 'REV', 'terms_freq': 'P',
-            'credit_limit': 0, 'hcola': 0
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-TermsDuration-1', expected)
-
-    def test_eval_type_terms_dur_2(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'O'
-        # 2. acct_type == '2A', '8A', '8B', '18', '37'
-        # 3. terms_freq != 'D'
-        # 4. terms_dur != '001'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'O', 'acct_type':'2A', 'terms_freq':'M',
-                'terms_dur': 'LOC'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'O', 'acct_type':'8A', 'terms_freq':'P',
-                'terms_dur': 'REV'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'C', 'acct_type':'8B', 'terms_freq':'O',
-                'terms_dur': 'LOC'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'O', 'acct_type':'0A', 'terms_freq':'M',
-                'terms_dur': 'REV'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'C', 'acct_type':'18', 'terms_freq':'D',
-                'terms_dur': 'LOC'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'C', 'acct_type':'37', 'terms_freq':'P',
-                'terms_dur': '001'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=0A,
-        # 36: NO-terms_freq=D, 37: NO-terms_dur=001
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '2A', 'port_type': 'O', 'terms_dur': 'LOC', 'terms_freq': 'M',
-            'credit_limit': 0, 'hcola': 0
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '8A', 'port_type': 'O', 'terms_dur': 'REV', 'terms_freq': 'P',
-            'credit_limit': 0, 'hcola': 0
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-TermsDuration-2', expected)
-
-    def test_eval_type_terms_dur_3(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'R'
-        # 2. acct_type == '2A', '8A', '0G', '07', '18', '37', '43'
-        # 3. terms_freq != 'D'
-        # 4. terms_dur != 'REV'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type':'R', 'acct_type':'2A', 'terms_freq':'M',
-                'terms_dur': 'LOC'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'R', 'acct_type':'8A', 'terms_freq':'P',
+                'port_type':'C', 'acct_type':'7A', 'terms_freq':'M',
                 'terms_dur': '001'
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'C', 'acct_type':'0G', 'terms_freq':'O',
+                'port_type':'O', 'acct_type':'9B', 'terms_freq':'P',
                 'terms_dur': 'LOC'
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'R', 'acct_type':'0A', 'terms_freq':'M',
-                'terms_dur': '001'
+                'port_type':'O', 'acct_type':'9B', 'terms_freq':'P',
+                'terms_dur': '12'
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'R', 'acct_type':'18', 'terms_freq':'D',
+                'port_type':'R', 'acct_type':'15', 'terms_freq':'O',
                 'terms_dur': 'LOC'
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'R', 'acct_type':'37', 'terms_freq':'P',
-                'terms_dur': 'REV'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=0A,
-        # 36: NO-terms_freq=D, 37: NO-terms_dur=REV
-
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '2A', 'port_type': 'R', 'terms_dur': 'LOC', 'terms_freq': 'M',
-            'credit_limit': 0, 'hcola': 0
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '8A', 'port_type': 'R', 'terms_dur': '001', 'terms_freq': 'P',
-            'credit_limit': 0, 'hcola': 0
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-TermsDuration-3', expected)
-
-    def test_eval_type_terms_dur_4(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'I'
-        # 2. acct_type == '06', '18'
-        # 3. terms_freq != 'D'
-        # 4. terms_dur == '0'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'R', 'acct_type':'15', 'terms_freq':'O',
+                'terms_dur': '001'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
                 'port_type':'I', 'acct_type':'06', 'terms_freq':'M',
-                'terms_dur': '0'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type':'I', 'acct_type':'18', 'terms_freq':'P',
-                'terms_dur': '0'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'C', 'acct_type':'06', 'terms_freq':'O',
-                'terms_dur': '0'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'I', 'acct_type':'0A', 'terms_freq':'M',
-                'terms_dur': '0'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'I', 'acct_type':'18', 'terms_freq':'D',
-                'terms_dur': '0'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'I', 'acct_type':'06', 'terms_freq':'P',
                 'terms_dur': 'REV'
-            }]
+            }, {
+                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
+                'port_type':'I', 'acct_type':'15', 'terms_freq':'O',
+                'terms_dur': '000'
+            }, {
+                'id': 40, 'activity_date': acct_date, 'cons_acct_num': '0040',
+                'port_type':'I', 'acct_type':'15', 'terms_freq':'O',
+                'terms_dur': '0'
+            }, {
+                'id': 41, 'activity_date': acct_date, 'cons_acct_num': '0041',
+                'port_type':'I', 'acct_type':'15', 'terms_freq':'O',
+                'terms_dur': '-1'
+            }, {
+                'id': 42, 'activity_date': acct_date, 'cons_acct_num': '0042',
+                'port_type':'C', 'acct_type':'7A', 'terms_freq':'D',
+                'terms_dur': 'REV'
+            }, {
+                'id': 43, 'activity_date': acct_date, 'cons_acct_num': '0043',
+                'port_type':'C', 'acct_type':'7A', 'terms_freq':'M',
+                'terms_dur': 'LOC'
+            }, {
+                'id': 44, 'activity_date': acct_date, 'cons_acct_num': '0044',
+                'port_type':'O', 'acct_type':'7A', 'terms_freq':'M',
+                'terms_dur': '001'
+            }, {
+                'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0045',
+                'port_type':'R', 'acct_type':'7A', 'terms_freq':'M',
+                'terms_dur': 'REV'
+            }, {
+                'id': 46, 'activity_date': acct_date, 'cons_acct_num': '0046',
+                'port_type':'I', 'acct_type':'7A', 'terms_freq':'M',
+                'terms_dur': '12'
+            }, {
+                'id': 47, 'activity_date': acct_date, 'cons_acct_num': '0047',
+                'port_type':'I', 'acct_type':'7A', 'terms_freq':'M',
+                'terms_dur': '001'
+            }
+            ]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34:NO-port_type=C, 35: NO-acct_type=0A,
-        # 36: NO-terms_freq=D, 37: NO-terms_dur=REV
+        # 32: HIT, 33: HIT, 34: HIT, 35: HIT, 36: HIT,
+        # 37: HIT, 38: HIT, 39: HIT, 40: HIT, 41: HIT,
+        # 42: NO-terms_freq=D, 43: NO-port_type=C & terms_dur=LOC,
+        # 44: NO-port_type=O & terms_dur=001, 45: NO-port_type=R & terms_dur=REV,
+        # 46: NO-port_type=I & terms_dur=12, 47: NO-port_type=I & terms_dur=001
 
-        expected = [{
-            'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-            'acct_type': '06', 'port_type': 'I', 'terms_dur': '0', 'terms_freq': 'M',
-            'credit_limit': 0, 'hcola': 0
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
-            'acct_type': '18', 'port_type': 'I', 'terms_dur': '0', 'terms_freq': 'P',
-            'credit_limit': 0, 'hcola': 0
-        }]
-        self.assert_evaluator_correct(self.event, 'Type-TermsDuration-4', expected)
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'},
+            {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'},
+            {'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036'},
+            {'id': 37, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0037'},
+            {'id': 38, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0038'},
+            {'id': 39, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0039'},
+            {'id': 40, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0040'},
+            {'id': 41, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0041'}]
+
+
+        self.assert_evaluator_correct(self.event, 'Type-TermsDuration-1', expected)

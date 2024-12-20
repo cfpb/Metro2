@@ -127,10 +127,15 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
 
         return vals
 
-class EvaluatorResultsViewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = EvaluatorResult
-        fields = ['field_values']
-
-    def to_representation(self, obj):
-        return obj.field_values
+    def validate(self, data):
+        """
+        Check that the values from the fields_used column in the evaluator CSV
+        are all valid fields. If not, is_valid() returns False.
+        """
+        invalid_fields = []
+        for f in data['fields_used'] + data['fields_display']:
+            if f not in code_to_plain_field_map.keys():
+                invalid_fields.append(f)
+        if invalid_fields:
+            raise serializers.ValidationError(f"Invalid field names: {invalid_fields}")
+        return data

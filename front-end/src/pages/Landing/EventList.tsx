@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import type { EventMetadata } from 'pages/Event/Event'
 import type { ReactElement } from 'react'
-import { formatDate } from 'utils/utils'
+import { formatDate } from 'utils/formatters'
 
 import './EventList.less'
 

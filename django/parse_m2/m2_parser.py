@@ -14,7 +14,7 @@ from parse_m2 import parse_utils
 class M2FileParser():
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
-    parser_version = "1.0"
+    parser_version = "1.5"
 
     chunk_size = 2000  # TODO: determine a good number for this
     header_format = r'.{4}HEADER$'
@@ -92,65 +92,74 @@ class M2FileParser():
 
         next_segment_indicator = line[:2]
         if next_segment_indicator == "J1":
-            seg_length = fields.seg_length["j1"]
-            j1 = J1.parse_from_segment(line[:seg_length], acct_activity)
-            if "j1" in parsed:
-                parsed["j1"].append(j1)
-            else:
-                parsed["j1"] = [j1]
-            if j1.cons_info_ind:
-                parsed["cons_info_ind_assoc"].append(j1.cons_info_ind)
-            if j1.ecoa:
-                parsed["ecoa_assoc"].append(j1.ecoa)
+            segment = line[:fields.seg_length["j1"]]
+            if parse_utils.segment_has_contents(segment):
+                j1 = J1.parse_from_segment(segment, acct_activity)
+                if "j1" in parsed:
+                    parsed["j1"].append(j1)
+                else:
+                    parsed["j1"] = [j1]
+                if j1.cons_info_ind:
+                    parsed["cons_info_ind_assoc"].append(j1.cons_info_ind)
+                if j1.ecoa:
+                    parsed["ecoa_assoc"].append(j1.ecoa)
 
         elif next_segment_indicator == "J2":
-            seg_length = fields.seg_length["j2"]
-            j2 = J2.parse_from_segment(line[:seg_length], acct_activity)
-            if "j2" in parsed:
-                parsed["j2"].append(j2)
-            else:
-                parsed["j2"] = [j2]
-            if j2.cons_info_ind:
-                parsed["cons_info_ind_assoc"].append(j2.cons_info_ind)
-            if j2.ecoa:
-                parsed["ecoa_assoc"].append(j2.ecoa)
+            segment = line[:fields.seg_length["j2"]]
+            if parse_utils.segment_has_contents(segment):
+                j2 = J2.parse_from_segment(segment, acct_activity)
+                if "j2" in parsed:
+                    parsed["j2"].append(j2)
+                else:
+                    parsed["j2"] = [j2]
+                if j2.cons_info_ind:
+                    parsed["cons_info_ind_assoc"].append(j2.cons_info_ind)
+                if j2.ecoa:
+                    parsed["ecoa_assoc"].append(j2.ecoa)
 
         elif next_segment_indicator == "K1":
-            seg_length = fields.seg_length["k1"]
-            k1 = K1.parse_from_segment(line[:seg_length], acct_activity)
-            parsed["k1"] = k1
+            segment = line[:fields.seg_length["k1"]]
+            if parse_utils.segment_has_contents(segment):
+                k1 = K1.parse_from_segment(segment, acct_activity)
+                parsed["k1"] = k1
 
         elif next_segment_indicator == "K2":
-            seg_length = fields.seg_length["k2"]
-            k2 = K2.parse_from_segment(line[:seg_length], acct_activity)
-            parsed["k2"] = k2
+            segment = line[:fields.seg_length["k2"]]
+            if parse_utils.segment_has_contents(segment):
+                k2 = K2.parse_from_segment(segment, acct_activity)
+                parsed["k2"] = k2
 
         elif next_segment_indicator == "K3":
-            seg_length = fields.seg_length["k3"]
-            k3 = K3.parse_from_segment(line[:seg_length], acct_activity)
-            parsed["k3"] = k3
+            segment = line[:fields.seg_length["k3"]]
+            if parse_utils.segment_has_contents(segment):
+                k3 = K3.parse_from_segment(segment, acct_activity)
+                parsed["k3"] = k3
 
         elif next_segment_indicator == "K4":
-            seg_length = fields.seg_length["k4"]
-            k4 = K4.parse_from_segment(line[:seg_length], acct_activity)
-            parsed["k4"] = k4
+            segment = line[:fields.seg_length["k4"]]
+            if parse_utils.segment_has_contents(segment):
+                k4 = K4.parse_from_segment(segment, acct_activity)
+                parsed["k4"] = k4
 
         elif next_segment_indicator == "L1":
-            seg_length = fields.seg_length["l1"]
-            l1 = L1.parse_from_segment(line[:seg_length], acct_activity)
-            parsed["l1"] = l1
+            segment = line[:fields.seg_length["l1"]]
+            if parse_utils.segment_has_contents(segment):
+                l1 = L1.parse_from_segment(segment, acct_activity)
+                parsed["l1"] = l1
 
         elif next_segment_indicator == "N1":
-            seg_length = fields.seg_length["n1"]
-            n1 = N1.parse_from_segment(line[:seg_length], acct_activity)
-            parsed["n1"] = n1
+            segment = line[:fields.seg_length["n1"]]
+            if parse_utils.segment_has_contents(segment):
+                n1 = N1.parse_from_segment(segment, acct_activity)
+                parsed["n1"] = n1
 
         else:
             msg = f"Extra segment indicator `{next_segment_indicator}`" + \
                 " did not match any valid extra segment"
             raise parse_utils.UnreadableLineException(msg)
 
-        if seg_length:
+        if segment:
+            seg_length = len(segment)
             self.parse_extra_segments(line[seg_length:], parsed)
 
         return parsed

@@ -97,6 +97,7 @@ USE_I18N = True
 USE_TZ = True
 
 SSO_ENABLED = False
+S3_ENABLED = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -109,6 +110,10 @@ STATIC_ROOT = BASE_DIR / STATIC_URL
 STATICFILES_DIRS = [
     FRONT_END_DIR / 'dist',
 ]
+
+# When running locally, the creds aren't stored in a file location
+# instead, they'll be discoverable by boto in the environment
+AWS_CREDS_LOCATION = None
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -133,12 +138,6 @@ LOGGING = {
     'root': {
         'handlers': ['console'],
         'level': 'INFO',
-    },
-    'loggers': {
-        'django_auth_adfs': {
-            'handlers': ['console'],
-            'level': 'INFO',
-        },
     },
 }
 

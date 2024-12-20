@@ -17,11 +17,17 @@ class ParserUtilsTestCase(TestCase):
         result = parse_utils.cast_to_type("0000000123", "numeric")
         self.assertEqual(result, 123)
 
+        result = parse_utils.cast_to_type("-00000023", "numeric")
+        self.assertEqual(result, -23)
+
         with self.assertRaises(parse_utils.UnreadableLineException):
             parse_utils.cast_to_type("", "numeric")
 
         with self.assertRaises(parse_utils.UnreadableLineException):
             parse_utils.cast_to_type("123.45", "numeric")
+
+        with self.assertRaises(parse_utils.UnreadableLineException):
+            parse_utils.cast_to_type("$1234", "numeric")
 
     def test_cast_field_to_value_for_optional_int_type(self):
         result = parse_utils.cast_to_type("123", "numeric optional")
@@ -33,10 +39,16 @@ class ParserUtilsTestCase(TestCase):
         result = parse_utils.cast_to_type("0000000123", "numeric optional")
         self.assertEqual(result, 123)
 
+        result = parse_utils.cast_to_type("-00000023", "numeric optional")
+        self.assertEqual(result, -23)
+
         result = parse_utils.cast_to_type("", "numeric optional")
         self.assertEqual(result, None)
 
         result = parse_utils.cast_to_type("123.45", "numeric optional")
+        self.assertEqual(result, None)
+
+        result = parse_utils.cast_to_type("$1234", "numeric optional")
         self.assertEqual(result, None)
 
     def test_cast_field_to_value_for_required_date_type(self):

@@ -3,7 +3,11 @@ import { Expandable, ExpandableGroup } from 'design-system-react'
 import type User from 'models/User'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
-import { formatDate, formatLongDescription, formatNumber } from '../../utils/utils'
+import {
+  formatDate,
+  formatLongDescription,
+  formatNumber
+} from '../../utils/formatters'
 import type EvaluatorMetadata from './Evaluator'
 
 interface EvaluatorSummaryProperties {
@@ -85,11 +89,11 @@ export default function EvaluatorSummary({
     <div className='content-row summary-row'>
       <div className='content-l'>
         <div className='content-l_col content-l_col-1-3'>
-          <h2>Details</h2>
+          <h3 className='h2'>Details</h3>
           <DefinitionList items={summaryItems} />
         </div>
         <div className='content-l_col content-l_col-2-3'>
-          <h2>Description</h2>
+          <h3 className='h2'>Description</h3>
           <p>{metadata.description}</p>
           <ExpandableGroup accordion groupId='AccordionGroup'>
             <Expandable header='Criteria evaluated'>
