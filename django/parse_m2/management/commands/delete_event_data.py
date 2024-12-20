@@ -38,6 +38,9 @@ class Command(BaseCommand):
         self.stdout.write(f"Checking if M2DataFile records exist for event ID: {event_id}.")
         parsed_files = M2DataFile.objects.filter(event=event)
         if parsed_files.exists():
+            # Remove all "previous values" associations, since they prevent deleting files
+            event.get_all_account_activity().update(previous_values_id=None)
+
             self.stdout.write(f"Deleting {parsed_files.count()} existing files.")
             parsed_files.delete()
 
