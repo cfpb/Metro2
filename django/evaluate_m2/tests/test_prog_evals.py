@@ -244,6 +244,12 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
             }, {
                 'id': 35, 'activity_date': prev_acct_date, 'cons_acct_num': '0035',
                 'date_closed': date(2019, 5, 31)
+            }, {
+                'id': 36, 'activity_date': prev_acct_date, 'cons_acct_num': '0036',
+                'date_closed': None
+            }, {
+                'id': 37, 'activity_date': prev_acct_date, 'cons_acct_num': '0037',
+                'date_closed': None
             }]
         for r in prev_activities:
             acct_record(self.prev_data_file, r)
@@ -263,12 +269,22 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
             }, {
                 'id': 45, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'date_closed': date(2019, 7, 31), 'port_type': 'A'
+            }, {
+                'id': 46, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'date_closed': None, 'port_type': 'I'
+            }, {
+                'id': 47, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'date_closed': date(2025,1,1), 'port_type': 'I'
+            }, {
+                'id': 48, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'date_closed': date(2025,1,1), 'port_type': 'I'
             }]
         for r in activities:
             acct_record(self.data_file, r)
         associate_previous_records(self.event)
         # 42: HIT, 43: HIT, 44: NO-previous_values__date_closed == date_closed
-        # 45: NO-port_type='A'
+        # 45: NO-port_type='A', 46: NO-date_closed=None, 47: NO-prior date_closed=None
+        # 48: NO-no prior values
 
         self.assert_evaluator_correct(self.event, 'PROG-DateClosed-1', self.expected)
 
