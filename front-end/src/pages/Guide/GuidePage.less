@@ -3,21 +3,45 @@
 
     .content_wrapper {
         margin-left: 0;
+        padding: 0;
+        height: 100%;
     }
     
     .content_main{
+        padding-left: 1rem;
+        height: 100%;
         border-width: 0;
         border-left: 1px solid #b4b5b6;
-        padding-left: 30px;
 
         &::after{
             border-left: none;
+        }
+
+        .content-pad {
+            h5 {
+                margin-top: 1rem;
+            }
+
+            img {
+                margin-bottom: 1rem;
+            }
         }
     }
 }
 
 #sidebar {
-    width: fit-content;
-    padding-left: 5rem;
+    width: 100%;
+    max-width: 280px;
     border-width: 0;
+    padding: 1rem 2rem 0 4rem;
+    position: static;
+
+    h4 {margin-bottom: 1rem;}
+
+    a{
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+    }
+
 }
