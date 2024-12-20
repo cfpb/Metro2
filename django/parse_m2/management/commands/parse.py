@@ -2,20 +2,19 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
-from parse_m2.initiate_post_parsing import post_parse
-from parse_m2.models import Metro2Event, M2DataFile
-from evaluate_m2.models import EvaluatorResultSummary
+from parse_m2.models import Metro2Event
 
 
 class Command(BaseCommand):
     """
     Run this command by running the following:
-    > python manage.py parse -e [event_id]
+    > python manage.py parse_additional -e [event_id]
     """
-    help = "Starts the parse process for the given event. " + \
-            "Checks the SSO_ENABLED setting to determine whether to use local or S3 files. " + \
-            "Uses all files in the `directory` field on the event. " + \
-            "Deletes all results of previous parse and evaluate runs for this event."
+    help = "Checks all files in the S3 directory for this event, and parses any that " + \
+            "haven't already been parsed. " + \
+            "Can be used to resume parsing on an event that already has some files parsed. " + \
+            "Does not run the post_parse function, so it will need to be run manually. " + \
+            "Checks the S3_ENABLED setting to determine whether to use local or S3 files. "
 
     def add_arguments(self, argparser):
         event_help = "The ID of the event record"
@@ -31,45 +30,13 @@ class Command(BaseCommand):
             # If the event doesn't exist, exit
             raise CommandError(f"No event found with id {event_id}. Exiting.")
 
-        # Delete results of previous parse
-        self.stdout.write(f"Checking if M2DataFile records exist for event ID: {event_id}.")
-        parsed_files = M2DataFile.objects.filter(event=event)
-        if parsed_files.exists():
-            self.stdout.write(f"Deleting {parsed_files.count()} existing files.")
-            parsed_files.delete()
-
-        # Delete results of previous evaluator run
-        self.stdout.write(f"Checking if EvaluatorResultSummary records exist for event ID: {event_id}.")
-        eval_results = EvaluatorResultSummary.objects.filter(event=event)
-        if eval_results.exists():
-            self.stdout.write(f"Deleting results of {eval_results.count()} evaluators from previous run of this event.")
-            eval_results.delete()
-
         # Parse the data
         self.stdout.write(f"Parsing files from {event.directory} directory...")
-        if settings.SSO_ENABLED:
-            parse_files_from_s3_bucket(event)
+        if settings.S3_ENABLED:
+            parse_files_from_s3_bucket(event, skip_existing=True)
         else:
-            parse_files_from_local_filesystem(event)
+            parse_files_from_local_filesystem(event, skip_existing=True)
 
         self.stdout.write(
             self.style.SUCCESS(f"Finished parsing data for event: {event.name}.")
-        )
-
-        # Post-parse
-        self.stdout.write(f"Beginning post parsing process for event: {event.name}...")
-        post_parse(event)
-
-        self.stdout.write(f"Done. Generating report...")
-
-        record_set = event.get_all_account_activity()
-
-        total_updated = record_set.filter(previous_values_id__isnull=False).count()
-        self.stdout.write(f"Records with a previous record associated: {total_updated}")
-
-        total_not_updated = record_set.filter(previous_values_id__isnull=True).count()
-        self.stdout.write(f"Records with NO previous record associated: {total_not_updated}")
-
-        self.stdout.write(
-            self.style.SUCCESS(f"Finished parsing and post-parse for event: {event.name}.")
         )
