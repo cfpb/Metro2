@@ -49,7 +49,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Checking if EvaluatorResultSummary records exist for event ID: {event_id}.")
         eval_results = EvaluatorResultSummary.objects.filter(event=event, evaluator__id=eval_name)
         if eval_results.exists():
-            self.stdout.write(f"Deleting results of {eval_results.count()} evaluators from previous run of this evaluator.")
+            self.stdout.write(f"Deleting results from previous run of this evaluator.")
             eval_results.delete()
 
         self.stdout.write(f"Beginning to run {eval_name}...")
