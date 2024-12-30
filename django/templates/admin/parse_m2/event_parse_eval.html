@@ -20,6 +20,7 @@
             <thead>
             <tr>
                 <td>File name</td>
+                <td>Activity date</td>
                 <td>Parsing status</td>
                 <td>Parsed lines</td>
                 <td>Unparseable lines</td>
@@ -29,11 +30,12 @@
             </tr>
             </thead>
             <tbody>
-            {% for file in object.m2datafile_set.all %}
+            {% for file in object.get_files_in_order %}
                 <tr>
                     <td>{{ file.file_name }}</td>
+                    <td>{{ file.activity_date }}</td>
                     <td>{{ file.parsing_status }}</td>
-                    <td>{{ file.accountholder_set.count|intcomma }}</td>
+                    <td>{{ file.accountactivity_set.count|intcomma }}</td>
                     <td>{{ file.unparseabledata_set.count|intcomma }}</td>
                     <td>{{ file.timestamp|localtime }}</td>
                     <td>{{ file.error_message }}</td>
