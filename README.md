@@ -60,24 +60,23 @@ Both the **Django** and **Front-end** code bases can be run locally. See the REA
 
 # Running management commands
 Django management commands are used for several essential actions in the Metro2 application, including parsing new data, running evaluators, and importing evaluator metadata from CSV.
+To see the full list of available management commands, run `python manage.py help` from the django directory.
 In local environments, use the command line to run these commands.
 
 ## Using Jenkins
-In all three Alto environments, use the Metro2 Jenkins instances (see [Quick links](#quick-links) above) to run management commands.
+In the Alto environments, use the Metro2 Jenkins instances (see [Quick links](#quick-links) above) to run management commands.
 Jenkins jobs run in an ephemeral python pod in the EKS cluster, not in the metro2 pod.
-The Jenkins jobs clone the `jenkins-jobs` branch of the Metro2 repo and connect to the S3 and RDS instances in the Alto account.
+The Jenkins jobs clone the `main` branch of the Metro2 repo and connect to the S3 and RDS instances in the Alto account.
 
-Jenkins jobs are configured in the [jenkins/](jenkins/) directory of this repo.
-For now, Jenkins uses the configuration in the [`jenkins-jobs`](https://GHE/Metro2/metro2/tree/jenkins-jobs) branch, NOT the `main` branch.
-This is configured [here](https://GHE/dev-platforms/eks-jenkins/blob/main/overrides/metro2-jobs.yaml), in the `dev-platforms/eks-jenkins` repo.
+Jenkins jobs are configured in the [jenkins/](jenkins/) directory of this repo, in the [`main`](https://GHE/Metro2/metro2/tree/main).
+Metro2 Jenkins instances receive customizations that are configured [here](https://GHE/dev-platforms/eks-jenkins/blob/main/overrides/metro2-jobs.yaml), in the `dev-platforms/eks-jenkins` repo, whenever they are deployed.
 
 
 ## Maintaining Jenkins
 To re-deploy a Jenkins instance, use the `cfpb-metro2-jenkins` CodeBuild job in the same Alto account as the Jenkins.
 
 **Jenkins to-dos**
-1. At some point, when we are done actively developing Jenkins job code, we should update EKS Jenkins to pull Jenkins configuration from `main`.
-2. Consider updating the Jenkins `seed.groovy` file to clone metro2 code from the `dev`, `staging`, or `production` branch (depending on which Alto account it is running in), rather than the `jenkins-jobs` branch.
+1. Consider updating the Jenkins `seed.groovy` file to clone metro2 code from the `dev`, `staging`, or `production` branch (depending on which Alto account it is running in), rather than the `main` branch.
 
 
 # Handling evaluator metadata
