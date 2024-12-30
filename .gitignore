@@ -10,6 +10,8 @@
 !helm/**
 !build-utils/
 !build-utils/**
+!jenkins/
+!jenkins/**
 
 # ...and the following files
 !Dockerfile
