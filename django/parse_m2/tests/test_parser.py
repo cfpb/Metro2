@@ -27,10 +27,10 @@ class ParserTestCase(TestCase):
         event = Metro2Event.objects.create(name='test_exam')
         self.parser = M2FileParser(event=event, filepath="file.txt")
         self.activity_date = datetime(2021, 1, 1)
-        self.account_holder = AccountHolder(
-            data_file = self.parser.file_record, activity_date = self.activity_date)
         self.account_activity = AccountActivity(
-            account_holder = self.account_holder, activity_date = self.activity_date)
+            data_file=self.parser.file_record, activity_date = self.activity_date)
+        self.account_holder = AccountHolder(
+            account_activity=self.account_activity, activity_date = self.activity_date)
 
     ############################
     # Tests for the whole parsing process
@@ -66,7 +66,6 @@ class ParserTestCase(TestCase):
             for aa in AccountActivity.objects.all():
                 doai = aa.doai
                 self.assertEqual(doai, aa.activity_date)
-                self.assertEqual(doai, aa.account_holder.activity_date)
 
     def test_aggregate_fields(self):
         # Test the whole parsing process for a file

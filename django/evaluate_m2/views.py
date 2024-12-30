@@ -140,9 +140,10 @@ def account_pii_view(request, event_id, account_number):
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        result = AccountHolder.objects.filter(
+        latest_acct_activity = AccountActivity.objects.filter(
             data_file__event=event,
             cons_acct_num=account_number).latest('activity_date')
+        result = latest_acct_activity.account_holder
         acct_holder_serializer = AccountHolderSerializer(result)
         return JsonResponse(acct_holder_serializer.data)
     except (
