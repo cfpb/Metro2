@@ -5,4 +5,4 @@ def get_json_file_contents(filepath: str):
 
 def get_file_contents(filepath: str):
     with open(filepath, "r") as f:
-        return f.read()
+        return f.read().strip()
