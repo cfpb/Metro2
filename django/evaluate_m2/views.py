@@ -167,11 +167,13 @@ def events_view(request, event_id):
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        eval_result_summary = EvaluatorResultSummary.objects \
-            .filter(event=event, hits__gt=0).order_by('evaluator__id')
-        evaluators = [ers.evaluator for ers in eval_result_summary]
+
+        eval_result_summaries = EvaluatorResultSummary.objects \
+                .filter(event=event, hits__gt=0) \
+                .select_related('evaluator') \
+                .order_by('evaluator__id')
         evaluator_metadata_serializer = EventsViewSerializer(
-            evaluators, many=True, context={'event': event})
+            eval_result_summaries, many=True, context={'event': event})
         result = {
             'id': event.id,
             'name': event.name,

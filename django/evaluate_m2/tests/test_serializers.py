@@ -206,11 +206,13 @@ class EventsViewSerializerTestCase(TestCase):
             }
 
     def test_evaluator_metadata_serializer(self):
-        serializer = EventsViewSerializer(self.eval, many=False, context={'event': self.event})
-        self.assertEqual(serializer.data, self.json_representation)
+        serializer = EventsViewSerializer(self.eval_rs, many=False, context={'event': self.event})
+        json_output = JSONRenderer().render(serializer.data)
+        expected = JSONRenderer().render(self.json_representation)
+        self.assertEqual(json_output, expected)
 
     def test_group_serializer_many_true(self):
-        evals = [self.eval]
+        evals = [self.eval_rs]
         serializer = EventsViewSerializer(evals, many=True, context={'event': self.event})
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render([self.json_representation])
