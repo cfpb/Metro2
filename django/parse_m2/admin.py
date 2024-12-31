@@ -72,7 +72,7 @@ class M2DataFileAdmin(admin.ModelAdmin):
                     'error_message', 'parser_version']
 
     def parsed_lines(self, obj):
-        return obj.accountholder_set.count()
+        return obj.accountactivity_set.count()
 
     def unparseable_lines(self, obj):
         return obj.unparseabledata_set.count()
@@ -98,13 +98,14 @@ class UnparseableDataAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-class AccountHolderAdmin(admin.ModelAdmin):
-    list_display = ['data_file', 'activity_date', 'cons_acct_num', 'surname',
-                    'first_name', 'middle_name', 'gen_code','ssn', 'dob',
-                    'phone_num', 'ecoa', 'cons_info_ind', 'country_cd',
-                    'addr_line_1', 'addr_line_2', 'city', 'state', 'zip',
-                    'addr_ind', 'res_cd', 'cons_info_ind_assoc',
-                    'ecoa_assoc']
+class AccountActivityAdmin(admin.ModelAdmin):
+    list_display = ['data_file', 'activity_date', 'cons_acct_num', 'port_type',
+                    'acct_type', 'date_open', 'credit_limit','hcola', 'terms_dur',
+                    'terms_freq', 'smpa', 'actual_pmt_amt', 'acct_stat', 'pmt_rating',
+                    'php', 'spc_com_cd', 'compl_cond_cd', 'current_bal', 'amt_past_due',
+                    'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp',
+                    'int_type_ind']
+
     def has_add_permission(self, request, obj=None):
         return False
     def has_view_permission(self, request, obj=None):
@@ -114,14 +115,13 @@ class AccountHolderAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-class AccountActivityAdmin(admin.ModelAdmin):
-    list_display = ['account_holder', 'activity_date', 'cons_acct_num', 'port_type',
-                    'acct_type', 'date_open', 'credit_limit','hcola', 'terms_dur',
-                    'terms_freq', 'smpa', 'actual_pmt_amt', 'acct_stat', 'pmt_rating',
-                    'php', 'spc_com_cd', 'compl_cond_cd', 'current_bal', 'amt_past_due',
-                    'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp',
-                    'int_type_ind']
-
+class AccountHolderAdmin(admin.ModelAdmin):
+    list_display = ['account_activity', 'activity_date', 'cons_acct_num', 'surname',
+                    'first_name', 'middle_name', 'gen_code','ssn', 'dob',
+                    'phone_num', 'ecoa', 'cons_info_ind', 'country_cd',
+                    'addr_line_1', 'addr_line_2', 'city', 'state', 'zip',
+                    'addr_ind', 'res_cd', 'cons_info_ind_assoc',
+                    'ecoa_assoc']
     def has_add_permission(self, request, obj=None):
         return False
     def has_view_permission(self, request, obj=None):
@@ -244,8 +244,8 @@ class N1Admin(admin.ModelAdmin):
 admin.site.register(Metro2Event, Metro2EventAdmin)
 admin.site.register(M2DataFile, M2DataFileAdmin)
 admin.site.register(UnparseableData, UnparseableDataAdmin)
-admin.site.register(AccountHolder, AccountHolderAdmin)
 admin.site.register(AccountActivity, AccountActivityAdmin)
+admin.site.register(AccountHolder, AccountHolderAdmin)
 admin.site.register(J1, J1Admin)
 admin.site.register(J2, J2Admin)
 admin.site.register(K1, K1Admin)

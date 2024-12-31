@@ -13,17 +13,11 @@ from parse_m2.serializers import (
 class AccountActivitySerializerTestCase(TestCase):
     def setUp(self) -> None:
         # Create an AccountActivity record
-        event = Metro2Event(name="tst")
-        event.save()
-        file = M2DataFile(event=event, file_name="tst.txt")
-        file.save()
-        acct_holder = AccountHolder(
-            data_file=file, activity_date=date(2023, 11, 30),
-            surname="Doe", first_name="Jane", cons_acct_num="98765",
-            cons_info_ind_assoc=["1A", "B"], ecoa_assoc=["2", "1"])
-        acct_holder.save()
-        self.acct_activity = AccountActivity(
-            account_holder=acct_holder,
+        event = Metro2Event.objects.create(name="tst")
+        file = M2DataFile.objects.create(event=event, file_name="tst.txt")
+        self.acct_activity = AccountActivity.objects.create(
+            data_file=file,
+            event=event,
             activity_date=date(2023,11,20),
             cons_acct_num="98765",
             port_type="port_type",
@@ -49,14 +43,14 @@ class AccountActivitySerializerTestCase(TestCase):
             dolp=date(2023,1,1),
             int_type_ind="int_type_ind",
         )
-        self.acct_activity.save()
-        k2 = K2(account_activity=self.acct_activity, purch_sold_name="Fake")
-        k2.save()
-        k4 = K4(account_activity=self.acct_activity, balloon_pmt_amt=11854)
-        k4.save()
-        l1 = L1(account_activity=self.acct_activity, change_ind="2",
+        AccountHolder.objects.create(
+            account_activity=self.acct_activity, activity_date=date(2023, 11, 30),
+            surname="Doe", first_name="Jane", cons_acct_num="98765",
+            cons_info_ind_assoc=["1A", "B"], ecoa_assoc=["2", "1"])
+        K2.objects.create(account_activity=self.acct_activity, purch_sold_name="Fake")
+        K4.objects.create(account_activity=self.acct_activity, balloon_pmt_amt=11854)
+        L1.objects.create(account_activity=self.acct_activity, change_ind="2",
                 new_id_num="0032", new_acc_num="32")
-        l1.save()
         self.json_representation = {
             "id": self.acct_activity.id,
             "inconsistencies": [],
@@ -112,26 +106,25 @@ class AccountActivitySerializerTestCase(TestCase):
 class AccountHolderSerializerTestCase(TestCase):
     def setUp(self) -> None:
         # Create an AccountActivity record
+        test_date = date(2023, 11, 30)
         event = Metro2Event(name="test")
         event.save()
-        file = M2DataFile(event=event, file_name="test.txt")
-        file.save()
-        self.acct_holder = AccountHolder(
-            data_file=file,
-            activity_date=date(2023, 11, 30),
-            cons_acct_num="12345",
-            surname="Doe",
-            first_name="Jane",
-            middle_name="A",
-            gen_code="F",
-            ssn="012345678",
-            dob=date(2000, 1, 1),
-            phone_num="0123456789",
-            ecoa="0",
-            cons_info_ind="Z"
-        )
-        self.acct_holder.save()
+        file = M2DataFile.objects.create(event=event, file_name="test.txt")
+        acct_activity = acct_record(file, {
+            "activity_date": test_date,
+            "cons_acct_num": "12345",
+            "surname": "Doe",
+            "first_name": "Jane",
+            "middle_name": "A",
+            "gen_code": "F",
+            "ssn": "012345678",
+            "dob": date(2000, 1, 1),
+            "phone_num": "0123456789",
+            "ecoa": "0",
+            "cons_info_ind": "Z"
+        })
 
+        self.acct_holder = acct_activity.account_holder
 
         self.json_representation = {
             "id": self.acct_holder.id,
