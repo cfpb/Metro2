@@ -145,7 +145,9 @@ def account_pii_view(request, event_id, account_number):
             return HttpResponse('Unauthorized', status=401)
         latest_acct_activity = AccountActivity.objects.filter(
             data_file__event=event,
-            cons_acct_num=account_number).latest('activity_date')
+            cons_acct_num=account_number) \
+                .select_related('account_holder') \
+                .latest('activity_date')
         result = latest_acct_activity.account_holder
         acct_holder_serializer = AccountHolderSerializer(result)
         return JsonResponse(acct_holder_serializer.data)
