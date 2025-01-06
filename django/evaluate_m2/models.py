@@ -47,6 +47,7 @@ class EvaluatorResultSummary(models.Model):
     inconsistency_start = models.DateField(null=True)
     inconsistency_end = models.DateField(null=True)
     evaluator_version = models.CharField(max_length=200, blank=True)
+    sample_ids = models.JSONField(encoder=DjangoJSONEncoder, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
