@@ -1,17 +1,11 @@
-import csv
-import json
 import logging
 
 from django.conf import settings
-from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection
 
-from django_application.s3_utils import s3_session
-from evaluate_m2.evaluate_utils import (
-    create_eval_insert_query,
-    get_randomizer,
-    get_url
-)
+from evaluate_m2.evaluate_utils import  create_eval_insert_query
+from evaluate_m2.upload_utils import stream_results_files_to_s3
+
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
 from evaluate_m2.m2_evaluators.account_change_evals import evaluators as acct_change_evals
 from evaluate_m2.m2_evaluators.balance_evals import evaluators as balance_evals
@@ -30,13 +24,12 @@ from evaluate_m2.m2_evaluators.status_evals import evaluators as status_evals
 from evaluate_m2.m2_evaluators.type_evals import evaluators as type_evals
 
 from parse_m2.models import Metro2Event
-from smart_open import open
 
 
 class Evaluate():
     # Evaluator version is saved on each evaluator result summary.
     # Increment this version for all updates to evaluator functionality.
-    evaluator_version = "1.2"
+    evaluator_version = "1.3"
 
     def __init__(self):
         self.evaluators = acct_change_evals |  balance_evals | balloon_evals | \
@@ -56,68 +49,29 @@ class Evaluate():
         record_set = event.get_all_account_activity()
         # run evaluators only if there are records in the record_set
         if record_set.exists():
-            for eval_name, func in self.evaluators.items():
-                logger.info(f"Running evaluator: {eval_name}")
-                result_summary = self.prepare_result_summary(event, eval_name)
-                try:
-                    self.save_evaluator_results(result_summary, func(record_set))
-                except TypeError as e:
-                    # If the evaluator errors, take note in the eval summary,
-                    # then continue with the next evaluator
-                    logger.error(f"Error in evaluator {eval_name}: {e}")
-                    self.save_error_result(result_summary)
-                    continue
-                self.update_result_summary_with_actual_results(result_summary)
-                if settings.S3_ENABLED:
-                    self.stream_eval_result_files_to_s3(result_summary, record_set)
+            for eval_name, eval_func in self.evaluators.items():
+                self.run_single_evaluator(event, eval_name, eval_func, record_set)
         else:
             logger.info(f"No AccountActivity found for the event '{event.name}'")
 
-    def stream_eval_result_files_to_s3(self, result_summary, record_set):
-        """
-        If the EvaluatorResultSummary record has accounts affected,
-        save the evaluator results files to an S3 bucket.
-        """
-        logger = logging.getLogger('evaluate.stream_eval_result_files_to_s3')  # noqa: F841
-        RESULTS_PAGE_SIZE = 20
-        CHUNK_SIZE = 25000
+    def run_single_evaluator(self, event, eval_name, eval_func, record_set):
+        logger = logging.getLogger('evaluate.run_single_evaluator')
+        logger.info(f"Running evaluator: {eval_name}")
+        result_summary = self.prepare_result_summary(event, eval_name)
+        try:
+            self.save_evaluator_results(result_summary, eval_func(record_set))
+        except TypeError as e:
+            # If the evaluator errors, take note in the eval summary,
+            # then continue with the next evaluator
+            logger.error(f"Error in evaluator {eval_name}: {e}")
+            self.save_error_result(result_summary)
+            return
 
-        # Only create files if there are hits
-        if result_summary.hits > 0:
-            url = get_url(str(result_summary.event.id),result_summary.evaluator.id)
-            # For now, limit file uploads to 1 million records
-            # TODO: handle uploading results where hits > 1 million
-            total_hits = min(result_summary.hits, 1_000_000)
+        self.update_result_summary_with_actual_results(result_summary)
 
-            fields_list = result_summary.evaluator.result_summary_fields()
-            randomizer = get_randomizer(total_hits, RESULTS_PAGE_SIZE)
-            sample_id_list = []
-            with open(f"{url}.csv", 'w', transport_params={'client': s3_session()}) as fout:
-                writer = csv.writer(fout)
-                # Add the header to the CSV response
-                writer.writerow(result_summary.create_csv_header())
-                for i in range(0, total_hits, CHUNK_SIZE):
-                    max_count = min(total_hits, (i + CHUNK_SIZE))
-                    logger.debug(f"\tGetting chunk size: [{i}: {max_count}]")
-                    for idx, eval_result in enumerate(result_summary.evaluatorresult_set.all()[i:max_count], start=i):
-                        if idx % randomizer == 0 and len(sample_id_list) < RESULTS_PAGE_SIZE:
-                            sample_id_list.append(eval_result.source_record_id)
-                        writer.writerow(eval_result.create_csv_row_data(fields_list))
-            logger.info(f"Completed saving file at: {url}.csv")
+        if settings.S3_ENABLED and result_summary.hits > 0:
+            stream_results_files_to_s3(result_summary, record_set)
 
-            logger.info(f"Saving file at: {url}.json")
-            self.save_evaluator_results_json_to_s3(record_set, fields_list, sample_id_list, url)
-            logger.info(f"Completed saving file at: {url}.json")
-
-    def save_evaluator_results_json_to_s3(self, record_set, fields_list, id_list, url):
-        """
-        Save a sample of evaluator results JSON to an S3 bucket.
-        """
-        with open(f"{url}.json", 'w', transport_params={'client': s3_session()}) as jsonFile:
-            result = record_set.filter(id__in=id_list) \
-                .values(*fields_list)
-            response = {'hits': [obj for obj in result]}
-            json.dump(response, jsonFile, cls=DjangoJSONEncoder)
 
     def save_evaluator_results(self, result_summary, eval_query):
         """
@@ -151,7 +105,7 @@ class Evaluate():
             evaluator_version = self.evaluator_version,
         )
 
-    def update_result_summary_with_actual_results(self, result_summary):
+    def update_result_summary_with_actual_results(self, result_summary: EvaluatorResultSummary):
         """
         If the evaluator had any hits, update the information about the hits
         in the EvaluatorResultSummary record.
@@ -167,6 +121,7 @@ class Evaluate():
             result_summary.accounts_affected = accounts_affected
             result_summary.inconsistency_start = earliest_date
             result_summary.inconsistency_end = latest_date
+            result_summary.sample_ids = result_summary.sample_of_results()
             result_summary.save()
 
     def save_error_result(self, result_summary):
