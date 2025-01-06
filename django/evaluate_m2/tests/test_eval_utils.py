@@ -1,7 +1,7 @@
 from datetime import date
 from django.test import TestCase
 import re
-from evaluate_m2.evaluate_utils import get_activity_date_range, create_eval_insert_query, get_randomizer, get_url
+from evaluate_m2.evaluate_utils import get_activity_date_range, create_eval_insert_query
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import Metro2Event, M2DataFile, AccountActivity
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
@@ -63,23 +63,3 @@ class EvaluatorUtilsTestCase(TestCase):
         # Since the query isn't of the expected type, the method raises a TypeError.
         with self.assertRaises(TypeError):
             create_eval_insert_query(wrong_query_sql, self.result_summary)
-
-    def test_get_url(self):
-        with self.settings(S3_BUCKET_NAME = 'sample-bucket'):
-            result = get_url(event_id='5', evaluator_id='sample-eval-3')
-            expected = "s3://sample-bucket/eval_results/event_5/sample-eval-3"
-            self.assertEqual(result, expected)
-
-    def test_get_randomizer_less_than_page_size(self):
-        total = 19
-        page_total = 20
-        output = get_randomizer(total, page_total)
-        # 19/20 = 0
-        self.assertEqual(output, 1)
-
-    def test_get_randomizer_more_than_page_size(self):
-        total = 74
-        page_total = 20
-        output = get_randomizer(total, page_total)
-        # 74 / 20 = 3.7
-        self.assertEqual(output, 3)
