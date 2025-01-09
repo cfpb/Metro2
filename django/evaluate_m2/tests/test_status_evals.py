@@ -907,7 +907,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_eval_status_date_closed_2(self):
     # Hits when all conditions are met:
-    # 1. acct_stat == '11','71','78','80','82','83','84','93'
+    # 1. acct_stat == '11','71','78','80','82','83','84','93', '97'
     # 2. compl_cond_cd != 'XA'
     # 3. date_closed != None
 
@@ -922,20 +922,28 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'acct_stat':'71',  'compl_cond_cd': 'XC', 'date_closed': date(2020, 1, 1)
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'12',  'compl_cond_cd': 'XD', 'date_closed': date(2020, 1, 1)
+                'acct_stat':'97',  'compl_cond_cd': 'XD', 'date_closed': date(2020, 1, 1)
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'78', 'compl_cond_cd': 'XA', 'date_closed': date(2020, 1, 1)
+                'acct_stat':'12',  'compl_cond_cd': 'XD', 'date_closed': date(2020, 1, 1)
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'78', 'compl_cond_cd': 'XA', 'date_closed': date(2020, 1, 1)
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
                 'acct_stat':'80', 'compl_cond_cd': 'XE', 'date_closed': None
             }]
         for item in activities:
             acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=12,
+        # 32: HIT, 33: HIT, 34: HIT, 35: NO-acct_stat=12,
         # 35: NO-compl_cond_cd=XA, 36: No-date_closed=None
 
-        self.assert_evaluator_correct(self.event, 'Status-DateClosed-2', self.expected)
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'}]
+
+        self.assert_evaluator_correct(self.event, 'Status-DateClosed-2', expected)
 
     def test_eval_status_date_closed_3(self):
     # Hits when all conditions are met:
