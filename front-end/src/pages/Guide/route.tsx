@@ -14,7 +14,7 @@ export const guideRoute = createRoute({
 })
 
 export const overviewRoute = createRoute({
-  path: '/overview',
+  path: '/',
   getParentRoute: () => guideRoute,
   component:Overview
 })
@@ -32,7 +32,7 @@ export const contributeRoute = createRoute({
 })
 
 export const helpusRoute = createRoute({
-  path: '/helpus',
+  path: '/help-us',
   getParentRoute: () => guideRoute,
   component:HelpUs
 })

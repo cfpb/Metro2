@@ -7,11 +7,11 @@ import Overview from './Overview'
 export default function GuidePage(): ReactElement {
 
   const menuItems =[
-    {name:'1. Metro2 evaluator tool overview', path: '//guide/overview'}, 
-    {name:'2. Explore the Metro2 UI', path: '//guide/explore'}, 
-    {name:'3. Contributing to an evaluator’s metadata', path: '//guide/contribute'}, 
-    {name:'4. Help us improve the Metro2 evaluator tool for you', path: '//guide/helpus'}, 
-    {name:'5. Metro 2 administrator features', path: '//guide/m2admin'}]
+    {name:'1. Metro2 evaluator tool overview', path: '/guide/'}, 
+    {name:'2. Explore the Metro2 UI', path: '/guide/explore'}, 
+    {name:'3. Contributing to an evaluator’s metadata', path: '/guide/contribute'}, 
+    {name:'4. Help us improve the Metro2 evaluator tool for you', path: '/guide/help-us'}, 
+    {name:'5. Metro 2 administrator features', path: '/guide/m2admin'}]
 
   return (
     <Layout.Main layout="1-3">
@@ -26,6 +26,7 @@ export default function GuidePage(): ReactElement {
                 key={item.name}
                 to={item.path}
                 className='??'
+                activeOptions={{ exact:true }}
                 activeProps={{ className: 'hover' }}>
                 {item.name}
               </Link>
