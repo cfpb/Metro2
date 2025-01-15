@@ -187,7 +187,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'spc_com_cd': 'AU'
             }]
         self.create_data(activities)
-        # 32: HIT, 33: HIT, 34: NO-current_bal<0, 35:NO-spc_com_cd=WT, 
+        # 32: HIT, 33: HIT, 34: NO-current_bal<0, 35:NO-spc_com_cd=WT,
         # 36: NO-current_bal=0
 
         self.assert_evaluator_correct(self.event, 'SCC-Balance-1', self.expected)
@@ -244,7 +244,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'spc_com_cd': 'BC', 'date_closed': date(2019, 12, 31)
             }]
         self.create_data(activities)
-        # 32: HIT, # 33: HIT, 34: No-DateClosed=None, 35: NO-spc_com_cd=BC        
+        # 32: HIT, # 33: HIT, 34: No-DateClosed=None, 35: NO-spc_com_cd=BC
 
         self.assert_evaluator_correct(self.event, 'SCC-DateClosed-1', self.expected)
 
@@ -338,7 +338,7 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
     def test_eval_scc_status_1(self):
         # Hits when one of the following sets of conditions met:
         # 1. spc_com_cd == 'BC', 'BF' & acct_stat != '13'
-        # 2. spc_com_cd == 'AU', 'AX', 'BP', 'C' & 
+        # 2. spc_com_cd == 'AU', 'AX', 'BP', 'C' &
         #       acct_stat != '13', '61', '62', '63', '64', '65'
 
         # Create the Account Activities data

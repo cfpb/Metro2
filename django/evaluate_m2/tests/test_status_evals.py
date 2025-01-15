@@ -324,7 +324,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
     # 2. pmt_rating == '1', '2', '3', '4', '5', '6', 'G', 'L'
     # 3. current_bal == 0
     # 4. compl_cond_cd != 'XA'
-    
+
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -372,22 +372,22 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type': 'M', 'acct_stat':'11', 'spc_com_cd': 'AB', 'current_bal': 0, 
+                'port_type': 'M', 'acct_stat':'11', 'spc_com_cd': 'AB', 'current_bal': 0,
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type': 'I', 'acct_stat':'05', 'spc_com_cd': 'M', 'current_bal': 0, 
+                'port_type': 'I', 'acct_stat':'05', 'spc_com_cd': 'M', 'current_bal': 0,
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type': 'R', 'acct_stat':'11', 'spc_com_cd': 'F', 'current_bal': 0, 
+                'port_type': 'R', 'acct_stat':'11', 'spc_com_cd': 'F', 'current_bal': 0,
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type': 'M', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 5, 
+                'port_type': 'M', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 5,
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type': 'I', 'acct_stat':'11', 'spc_com_cd': 'AH', 'current_bal': 0, 
+                'port_type': 'I', 'acct_stat':'11', 'spc_com_cd': 'AH', 'current_bal': 0,
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type': 'M', 'acct_stat':'13', 'spc_com_cd': 'AB', 'current_bal': 0, 
+                'port_type': 'M', 'acct_stat':'13', 'spc_com_cd': 'AB', 'current_bal': 0,
             }]
         for item in activities:
             acct_record(self.data_file, item)
@@ -414,22 +414,22 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 0, 
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 0,
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type': 'R', 'acct_stat':'93', 'spc_com_cd': 'M', 'current_bal': 0, 
+                'port_type': 'R', 'acct_stat':'93', 'spc_com_cd': 'M', 'current_bal': 0,
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type': 'M', 'acct_stat':'05', 'spc_com_cd': 'F', 'current_bal': 0, 
+                'port_type': 'M', 'acct_stat':'05', 'spc_com_cd': 'F', 'current_bal': 0,
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 33, 
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 33,
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 0, 
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 0,
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type': 'C', 'acct_stat':'13', 'spc_com_cd': 'AB', 'current_bal': 0, 
+                'port_type': 'C', 'acct_stat':'13', 'spc_com_cd': 'AB', 'current_bal': 0,
             }]
         for item in activities:
             acct_record(self.data_file, item)
@@ -457,19 +457,19 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 300, 
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 300,
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type': 'R', 'acct_stat':'95', 'spc_com_cd': 'M', 'current_bal': 500, 
+                'port_type': 'R', 'acct_stat':'95', 'spc_com_cd': 'M', 'current_bal': 500,
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 0, 
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 0,
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 500, 
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 500,
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 500, 
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 500,
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
                 'port_type': 'C', 'acct_stat':'88', 'spc_com_cd': 'AB', 'current_bal': 1,
@@ -689,7 +689,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'},
             {'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036'},
             {'id': 37, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0037'}]
-  
+
         self.assert_evaluator_correct(self.event, 'Status-DOFD-1', expected)
 
     def test_eval_status_dofd_2(self):
