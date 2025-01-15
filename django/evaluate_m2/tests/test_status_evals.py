@@ -277,12 +277,15 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
                 'port_type': 'C', 'acct_type': '01', 'acct_stat':'11', 'current_bal': 0
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type': 'O', 'acct_type': '89', 'acct_stat':'11', 'current_bal': 0
             }]
         for item in activities:
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-port_type=M,
         # 35: NO-current_bal=5, 36: NO-acct_stat=13,
-        # 37: NO-acct_type=01
+        # 37: NO-acct_type=01, 38: NO- port_type=O & acct_type=89
 
         self.assert_evaluator_correct(self.event, 'Status-Balance-5', self.expected)
 
@@ -353,17 +356,17 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(self.event, 'Status-Balance-7', self.expected)
 
     def test_eval_status_balance_8(self):
-    # Hits when all conditions are met:
-    # 1. port_type == 'M' OR port_type == 'I'
-    # 2. current_bal == 0
-    # 3. l1_change_ind == None
-    # 4. spc_com_cd != 'AH', 'AT', 'O', 'BB', 'BE'
-    #
-    # ... AND neither of the following sets of conditions are met
-    #     a. port_type='M' & acct_stat == '13', '62', '64', 'DA', 'DF'
-    #     b. port_type='I' & acct_stat == '13', '61', '62', '63', '64',
-    #                                     '88', '95', '96', 'DA', 'DF'
-    
+        # Hits when all conditions are met:
+        # 1. port_type == 'M' OR port_type == 'I'
+        # 2. current_bal == 0
+        # 3. l1_change_ind == None
+        # 4. spc_com_cd != 'AH', 'AT', 'O', 'BB', 'BE'
+        # 5. acct_stat != '13', '62', '64', 'DA', 'DF'
+        #
+        # ... AND the following set of conditions is NOT met
+        # a. port_type='I' & acct_stat == '61', '63', '88', '95', '96'
+        # b. port_type='M' & acct_stat == '65', '94'
+
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
@@ -395,17 +398,16 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(self.event, 'Status-Balance-8', self.expected)
 
     def test_eval_status_balance_9(self):
-    # Hits when all following conditions are met:
-    # 1. port_type == 'C', 'O', 'R'
-    # 2. current_bal == 0
-    # 3. l1_change_ind == None
-    # 4. spc_com_cd != 'AH', 'AT', 'O'
+        # Hits when all following conditions are met:
+        # 1. port_type == 'C', 'O', 'R'
+        # 2. current_bal == 0
+        # 3. l1_change_ind == None
+        # 4. spc_com_cd != 'AH', 'AT', 'O'
+        # 5. acct_stat != '11', '13', '62', '64', 'DA', 'DF'
 
-    # ... AND none of the following sets of conditions is met
-    #     a. port_type='R', acct_stat == '11', '13', '62', '64', 'DA', 'DF'
-    #     b. port_type='O', acct_stat == '11', '13', '62', '64', '88', 'DA', 'DF'
-    #     c. port_type='C', acct_stat == '11', '13', '62', '64', '65', '88', '89', 
-    #                                    '94', 'DA', 'DF'
+        # ... AND none of the following sets of conditions is met
+        #  a. port_type='C', acct_stat == '65', '88', '89', '94'
+        #  b. port_type='O', acct_stat == '88'
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -438,17 +440,17 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         self.assert_evaluator_correct(self.event, 'Status-Balance-9', self.expected)
 
     def test_eval_status_balance_10(self):
-    # Hits when all conditions are met:
-    # 1. current_bal > 0
-    # 2. l1_change_ind == None
-    # 3. spc_com_cd != 'AH', 'AT', 'O'
-    #
-    # ... AND none of the following sets of conditions is met
-    #     a. acct_stat == '11', '71', '78', '80', '82', '83',
-    #                     '84','93', '97', 'DA', 'DF'
-    #     b. port_type == 'I', acct_stat = '95', '96'
-    #     b. port_type == 'O', acct_stat = '88'
-    #     c. port_type == 'C', acct_stat = '88', '89', '94'
+        # Hits when all conditions are met:
+        # 1. current_bal > 0
+        # 2. l1_change_ind == None
+        # 3. spc_com_cd != 'AH', 'AT', 'O'
+        # 4. acct_stat != '11', '71', '78', '80', '82', '83',
+        #                 '84','93', '97', 'DA', 'DF'
+        #
+        # ... AND none of the following sets of conditions is met
+        #  a. port_type == 'I' & acct_stat = '95', '96'
+        #  b. port_type == 'O' & acct_stat = '88'
+        #  c. port_type == 'C', 'M' &  acct_stat = '88', '89', '94'
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
@@ -470,12 +472,13 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 500, 
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type': 'C', 'acct_stat':'11', 'spc_com_cd': 'AB', 'current_bal': 0, 
+                'port_type': 'C', 'acct_stat':'88', 'spc_com_cd': 'AB', 'current_bal': 1,
             }]
         for item in activities:
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34:  NO-current_bal=0,
         # 35: NO-spc_com_cd=AH, 36: NO-acct_stat=11
+        # 37: NO-port_type=c & acct_stat=88
 
         self.assert_evaluator_correct(self.event, 'Status-Balance-10', self.expected)
 
