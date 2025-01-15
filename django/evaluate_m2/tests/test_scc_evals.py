@@ -505,24 +505,46 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         acct_date=date(2019, 12, 31)
         activities = [
             {
+                'id': 31, 'activity_date': acct_date, 'cons_acct_num': '0031',
+                'port_type': 'I', 'acct_stat':'89', 'spc_com_cd': 'AH',
+                'current_bal': 0  # HIT
+            }, {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type': 'C', 'acct_stat':'13', 'spc_com_cd': 'AH',
-                'current_bal': 0
+                'port_type': 'C', 'acct_stat':'13', 'spc_com_cd': 'O',
+                'current_bal': 0  # HIT
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
                 'port_type': 'R', 'acct_stat':'96', 'spc_com_cd': 'AT',
-                'current_bal': 0
+                'current_bal': 0  # HIT
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type': 'C', 'acct_stat':'13', 'spc_com_cd': 'BO',
-                'current_bal': 35
+                'port_type': 'C', 'acct_stat':'13', 'spc_com_cd': 'O',
+                'current_bal': 34  # No: current_bal !=0
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'port_type': 'C', 'acct_stat':'11', 'spc_com_cd': 'AH',
-                'current_bal': 0
+                'current_bal': 0  # No: acct_stat=11
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type': 'I', 'acct_stat':'96', 'spc_com_cd': 'AH',
+                'current_bal': 0  # No: port_type=I & acct_stat=96
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type': 'C', 'acct_stat':'94', 'spc_com_cd': 'AH',
+                'current_bal': 0  # No: port_type=C & acct_stat=94
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type': 'C', 'acct_stat':'12', 'spc_com_cd': 'AH',
+                'current_bal': 0  # No: l1_change_ind is present
             }]
-        self.create_data(activities)
-        # 32: HIT, 33: HIT, 34: NO-current_bal=35, 35: NO-spc_com_cd=BO,
-        # 36: NO-acct_stat=11
+        for item in activities:
+            acct_record(self.data_file, item)
 
-        self.assert_evaluator_correct(self.event, 'SCC-Status-5', self.expected)
+        l1_record({'id': 38, 'change_ind': '1'})
+
+        expected = [
+            {'id': 31, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0031'},
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
+        ]
+        self.assert_evaluator_correct(self.event, 'SCC-Status-5', expected)
