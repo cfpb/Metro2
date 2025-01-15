@@ -40,11 +40,6 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
         for item in k2_segments:
             k2_record(item)
 
-    def create_other_segments(self):
-        # Create the other segment data
-        self.l1 = l1_record({'id':32})
-        self.l1.save()
-
     ############################
     # Tests for the category SCC evaluators
     def test_eval_scc_acct_change_1(self):
