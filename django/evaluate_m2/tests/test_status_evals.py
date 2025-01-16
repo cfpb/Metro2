@@ -1371,4 +1371,5 @@ def test_eval_status_smpa_4(self):
             {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}, 
             {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'}]
 
-        self.assert_evaluator_correct(self.event, 'Status-SMPA-2', expected)
+        self.assert_evaluator_correct(self.event, 'Status-SMPA-4', expected)
+        
