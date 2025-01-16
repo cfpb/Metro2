@@ -1306,19 +1306,19 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'Status-SMPA-3', expected)
 
-def test_eval_status_smpa_4(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat == '11'
-    # 2. compl_cond_cd != 'XA'
-    # 3. terms_freq != 'D'
-    # 4. smpa == 0
+    def test_eval_status_smpa_4(self):
+        # Hits when all conditions are met:
+        # 1. acct_stat == '11'
+        # 2. compl_cond_cd != 'XA'
+        # 3. terms_freq != 'D'
+        # 4. smpa == 0
 
-    # ... AND at least one of the following sets of conditions
-    # a. port_type == 'C'
-    # b. acct_type == 15', '43', '47', '89', '7A', '9B'
-    # OR
-    # a. port_type == 'O', 'R'
-    # b. acct_type == '18', '37', '43', '2A', '8A'
+        # ... AND at least one of the following sets of conditions
+        # a. port_type == 'C'
+        # b. acct_type == 15', '43', '47', '89', '7A', '9B'
+        # OR
+        # a. port_type == 'O', 'R'
+        # b. acct_type == '18', '37', '43', '2A', '8A'
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
