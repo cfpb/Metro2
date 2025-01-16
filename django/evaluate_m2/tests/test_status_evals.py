@@ -1219,7 +1219,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'compl_cond_cd': 'XD', 'smpa': 0, 'terms_freq': '0'
             }, {
                 'id': 40, 'activity_date': acct_date, 'cons_acct_num': '0040',
-                'acct_stat':'11', 'acct_type':'15', 'port_type':'R',
+                'acct_stat':'71', 'acct_type':'15', 'port_type':'R',
                 'compl_cond_cd': 'XE', 'smpa': 0, 'terms_freq': '0'
             }]
         for item in activities:
