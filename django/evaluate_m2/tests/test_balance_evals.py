@@ -31,7 +31,7 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'current_bal': 10, 'amt_past_due': 15
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'current_bal': -10, 'amt_past_due': 0
+                'current_bal': -10, 'amt_past_due': 1
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
                 'current_bal': 0, 'amt_past_due': 0
