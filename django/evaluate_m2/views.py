@@ -104,21 +104,24 @@ def account_summary_view(request, event_id, account_number):
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        event_activities=get_list_or_404(event.get_all_account_activity().filter(
-            cons_acct_num=account_number).order_by('activity_date'))
+        event_activities=get_list_or_404(
+            event.get_all_account_activity().filter(
+                cons_acct_num=account_number).order_by('activity_date') \
+                .select_related('account_holder', 'k2', 'k4', 'l1')
+            )
         if not event_activities:
             raise Http404()
         activities_serializer = AccountActivitySerializer(event_activities, many=True)
+
         eval_results = EvaluatorResult.objects.filter(
             acct_num=account_number,
-            result_summary__event=event)
-        eval_metadata=[]
-        for e in eval_results:
-            eval=e.result_summary.evaluator.id
-            if eval not in eval_metadata:
-                eval_metadata.append(eval)
+            result_summary__event=event) \
+            .select_related('result_summary')
+        evals_hit = [e.result_summary.evaluator_id for e in eval_results]
+        evals_hit_uniq = sorted(list(set(evals_hit)))
+
         data = {'cons_acct_num': account_number,
-                'inconsistencies': eval_metadata,
+                'inconsistencies': evals_hit_uniq,
                 'account_activity': activities_serializer.data}
         return JsonResponse(data)
     except (
@@ -142,7 +145,9 @@ def account_pii_view(request, event_id, account_number):
             return HttpResponse('Unauthorized', status=401)
         latest_acct_activity = AccountActivity.objects.filter(
             data_file__event=event,
-            cons_acct_num=account_number).latest('activity_date')
+            cons_acct_num=account_number) \
+                .select_related('account_holder') \
+                .latest('activity_date')
         result = latest_acct_activity.account_holder
         acct_holder_serializer = AccountHolderSerializer(result)
         return JsonResponse(acct_holder_serializer.data)
@@ -162,11 +167,13 @@ def events_view(request, event_id):
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        eval_result_summary = EvaluatorResultSummary.objects \
-            .filter(event=event, hits__gt=0).order_by('evaluator__id')
-        evaluators = [ers.evaluator for ers in eval_result_summary]
+
+        eval_result_summaries = EvaluatorResultSummary.objects \
+                .filter(event=event, hits__gt=0) \
+                .select_related('evaluator') \
+                .order_by('evaluator__id')
         evaluator_metadata_serializer = EventsViewSerializer(
-            evaluators, many=True, context={'event': event})
+            eval_result_summaries, many=True, context={'event': event})
         result = {
             'id': event.id,
             'name': event.name,

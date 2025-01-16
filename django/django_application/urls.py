@@ -40,8 +40,9 @@ try:
     ]
 except ImproperlyConfigured:
     pass
-# Handles fall through route for all erroneous api calls to return bad request
+
+# All erroneous API calls to return 400: bad request
 urlpatterns.append(re_path(r'api(?:.*)?', error_view.bad_request_view ))
 
-# Fall through route to handle all other urls through front end
+# Fall through route: Handle all other URLs through the front end
 urlpatterns.append(re_path(r'^(?:.*)?', TemplateView.as_view(template_name='m2/index.html')))

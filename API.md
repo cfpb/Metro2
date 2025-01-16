@@ -244,12 +244,10 @@ GET - returns a JSON information about an event, including its name and all eval
 If SSO is enabled:
     `/api/users/`
 
-    GET - returns a JSON that includes a list of all events that the user has permission to view, as well as their username and admin status
-
 If SSO is not enabled:
     `/api/users/{user_id}/`
 
-    GET - returns a JSON that includes a list of all events that the user has permission to view, as well as their username and admin status
+GET - returns a JSON that includes a list of all events that the user has permission to view, as well as their username and admin status
 
 **Example response:**
 ```JSON

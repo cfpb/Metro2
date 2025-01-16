@@ -16,35 +16,42 @@ from evaluate_m2.metadata_utils import (
 )
 
 class EventsViewSerializer(serializers.ModelSerializer):
-    hits = serializers.SerializerMethodField(read_only=True)
-    accounts_affected = serializers.SerializerMethodField(read_only=True)
-    inconsistency_start = serializers.SerializerMethodField(read_only=True)
-    inconsistency_end = serializers.SerializerMethodField(read_only=True)
+    id = serializers.SerializerMethodField(read_only=True)
+    description = serializers.SerializerMethodField(read_only=True)
+    long_description = serializers.SerializerMethodField(read_only=True)
+    fields_used = serializers.SerializerMethodField(read_only=True)
+    fields_display = serializers.SerializerMethodField(read_only=True)
+    crrg_reference = serializers.SerializerMethodField(read_only=True)
+    potential_harm = serializers.SerializerMethodField(read_only=True)
+    rationale = serializers.SerializerMethodField(read_only=True)
+    alternate_explanation = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
-        model = EvaluatorMetadata
+        model = EvaluatorResultSummary
         fields = ['hits', 'accounts_affected', 'inconsistency_start',
                   'inconsistency_end', 'id', 'description', 'long_description',
                   'fields_used', 'fields_display', 'crrg_reference',
                   'potential_harm','rationale', 'alternate_explanation']
 
-    def get_hits(self, obj):
-        event = self.context.get("event")
-        return EvaluatorResultSummary.objects.get(evaluator=obj, event=event).hits
+    def get_id(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.id
+    def get_description(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.description
+    def get_long_description(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.long_description
+    def get_fields_used(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.fields_used
+    def get_fields_display(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.fields_display
+    def get_crrg_reference(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.crrg_reference
+    def get_potential_harm(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.potential_harm
+    def get_rationale(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.rationale
+    def get_alternate_explanation(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.alternate_explanation
 
-    def get_accounts_affected(self, obj):
-        event = self.context.get("event")
-        return EvaluatorResultSummary.objects.get(evaluator=obj,
-            event=event).accounts_affected
-
-    def get_inconsistency_start(self, obj):
-        event = self.context.get("event")
-        return EvaluatorResultSummary.objects.get(evaluator=obj,
-            event=event).inconsistency_start
-
-    def get_inconsistency_end(self, obj):
-        event = self.context.get("event")
-        return EvaluatorResultSummary.objects.get(evaluator=obj,
-            event=event).inconsistency_end
 
 class EvaluatorMetadataSerializer(serializers.Serializer):
     """
