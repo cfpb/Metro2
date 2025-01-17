@@ -227,7 +227,8 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
     def test_eval_prog_date_closed_1(self):
     # Hits when both condition met:
     # 1. previous_values__date_closed != date_closed
-    # 2. port_type == 'I', 'M'
+    # 2. previous_values__date_closed != None
+    # 3. port_type == 'I', 'M'
 
         # Create previous Account Activities data
         prev_acct_date=date(2019, 11, 30)
