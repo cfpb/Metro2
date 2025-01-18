@@ -25,7 +25,6 @@ export default function GuidePage(): ReactElement {
               <Link
                 key={item.name}
                 to={item.path}
-                className='??'
                 activeOptions={{ exact:true }}
                 activeProps={{ className: 'hover' }}>
                 {item.name}
