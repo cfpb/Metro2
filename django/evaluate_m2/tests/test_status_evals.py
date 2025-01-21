@@ -22,7 +22,36 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     ############################
     # Tests for the category Status evaluators
+
     def test_eval_status_apd_1(self):
+    # Hits when all conditions are met:
+    # 1. acct_stat == '05','11','13','61','62','63','64','65'
+    # 2. amt_past_due > 0
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'05', 'amt_past_due': 1
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'11', 'amt_past_due': 5
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'12', 'amt_past_due': 10
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'13', 'amt_past_due': 0
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-acct_stat=12, 35: NO-amt_past_due == 0
+
+        self.assert_evaluator_correct(
+            self.event, 'Status-APD-1', self.expected)
+
+    def test_eval_status_apd_2(self):
     # Hits when all conditions are met:
     # 1. acct_stat == '71','78','80','82','83','84','93','97'
     # 3. amt_past_due == 0
@@ -47,34 +76,6 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             acct_record(self.data_file, item)
         # 32: HIT, 33: HIT, 34: NO-acct_stat=79,
         # 35: NO-amt_past_due > 0
-
-        self.assert_evaluator_correct(
-            self.event, 'Status-APD-1', self.expected)
-
-    def test_eval_status_adp_2(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat == '05','11','13','61','62','63','64','65'
-    # 2. amt_past_due > 0
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'amt_past_due': 1
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'11', 'amt_past_due': 5
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'12', 'amt_past_due': 10
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'13', 'amt_past_due': 0
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=12, 35: NO-amt_past_due == 0
 
         self.assert_evaluator_correct(
             self.event, 'Status-APD-2', self.expected)
@@ -172,629 +173,6 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
 
     def test_eval_status_balance_3(self):
     # Hits when all conditions are met:
-    # 1. acct_stat == '11'
-    # 2. compl_cond_cd != 'XA'
-    # 3. current_bal == 0
-
-    # ... AND at least one of the following sets of conditions
-    # a. port_type == 'C'
-    # b. acct_type == '15', '43', '47', '89', '7A', '9B'
-    # OR
-    # a. port_type == 'O','R'
-    # b. acct_type == '43'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'11', 'acct_type':'15', 'current_bal':0, 'port_type':'C',
-                'compl_cond_cd': 'XB'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'11', 'acct_type':'43', 'current_bal':0, 'port_type':'O',
-                'compl_cond_cd': 'XC'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'acct_type':'15', 'current_bal':0, 'port_type':'M',
-                'compl_cond_cd': 'XE'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'11', 'acct_type':'44', 'current_bal':0, 'port_type':'R',
-                'compl_cond_cd': 'XB'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'80', 'acct_type':'47', 'current_bal':0, 'port_type':'C',
-                'compl_cond_cd': 'XC'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'11', 'acct_type':'43', 'current_bal':0, 'port_type':'O',
-                'compl_cond_cd': 'XA'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'11', 'acct_type':'43', 'current_bal':1, 'port_type':'R',
-                'compl_cond_cd': 'XD'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-port_type='M', 35: NO-acct_type=44,
-        # 36: NO-acct_stat=80, 37: compl_cond_cd=XA, 38: current_bal=1
-
-
-        # Create the segment data
-        self.assert_evaluator_correct(self.event, 'Status-Balance-3', self.expected)
-
-    def test_eval_status_balance_4(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '11', '71', '78', '80', '82', '83', '84',
-    #                 '93', '95', '96', '97', 'DA', 'DF'
-    # 2. acct_type != '13', '3A'
-    # 3. current_bal > 0
-    # 4. l1_change_ind == None
-    # 5. port_type == 'I'
-    # 6. spc_com_cd != 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'acct_type': '00', 'current_bal':1,
-                'port_type':'I', 'spc_com_cd': 'AU'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'62', 'acct_type': '10', 'current_bal':5,
-                'port_type':'I', 'spc_com_cd': 'AX'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'acct_type': '0C', 'current_bal':10,
-                'port_type':'I', 'spc_com_cd': 'BP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'63', 'acct_type': '3A', 'current_bal':15,
-                'port_type':'I', 'spc_com_cd': 'BC'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'64', 'acct_type': '7A', 'current_bal':0,
-                'port_type':'I', 'spc_com_cd': 'BD'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'65', 'acct_type': '9B', 'current_bal':20,
-                'port_type':'I', 'spc_com_cd': 'BF'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'66', 'acct_type': '15', 'current_bal':25,
-                'port_type':'M', 'spc_com_cd': 'BJ'
-            }, {
-                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
-                'acct_stat':'67', 'acct_type': '43', 'current_bal':30,
-                'port_type':'I', 'spc_com_cd': 'AH'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activitiy = {'id': 37, 'change_ind': '1'}
-        l1_record(l1_activitiy)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: NO-acct_type=3A,
-        # 36: current_bal=0, 37: NO-l1_change_ind=None, 38: NO-port_type=M
-        # 39: NO-spc_com_cd=AH
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-4', self.expected)
-
-    def test_eval_status_balance_5(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '13', '62', '64', '65', '94', 'DA', 'DF'
-    # 2. current_bal == 0
-    # 3. l1_change_ind == None
-    # 4. port_type == 'M'
-    # 5. spc_com_cd != 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'AU'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'11', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'AX'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'13', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'BP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'71', 'current_bal':1, 'port_type':'M', 'spc_com_cd': 'BC'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'78', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'BD'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'80', 'current_bal':0, 'port_type':'I', 'spc_com_cd': 'BF'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'82', 'current_bal':0, 'port_type':'M', 'spc_com_cd': 'AH'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activitiy = {'id': 36, 'change_ind': '1'}
-        l1_record(l1_activitiy)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: current_bal=1,
-        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
-        # 38: NO-spc_com_cd=AH
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-5', self.expected)
-
-    def test_eval_status_balance_6(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '11', '13', '62', '64', '65', '88', '89', '94', 'DA', 'DF'
-    # 2. current_bal == 0
-    # 3. l1_change_ind == None
-    # 4. port_type == 'C'
-    # 5. spc_com_cd != 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AU'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'06', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AX'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'13', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'BP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'71', 'current_bal':1, 'port_type':'C', 'spc_com_cd': 'BC'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'78', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'BD'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'80', 'current_bal':0, 'port_type':'I', 'spc_com_cd': 'BF'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'82', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AH'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activitiy = {'id': 36, 'change_ind': '1'}
-        l1_record(l1_activitiy)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: current_bal=1,
-        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
-        # 38: NO-spc_com_cd=AH
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-6', self.expected)
-
-    def test_eval_status_balance_7(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '11', '71', '78', '80', '82', '83', '84',
-    #                 '88', '89', '93', '94', '97', 'DA', 'DF'
-    # 2. current_bal > 0
-    # 3. l1_change_ind == None
-    # 4. port_type == 'C'
-    # 5. spc_com_cd != 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'60', 'current_bal':1, 'port_type':'C', 'spc_com_cd': 'AU'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'61', 'current_bal':5, 'port_type':'C', 'spc_com_cd': 'AX'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'current_bal':10, 'port_type':'C', 'spc_com_cd': 'BP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'62', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'BC'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'63', 'current_bal':15, 'port_type':'C', 'spc_com_cd': 'BD'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'64', 'current_bal':20, 'port_type':'I', 'spc_com_cd': 'BF'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'65', 'current_bal':25, 'port_type':'C', 'spc_com_cd': 'AH'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activitiy = {'id': 36, 'change_ind': '1'}
-        l1_record(l1_activitiy)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=0,
-        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
-        # 38: NO-spc_com_cd=AH
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-7', self.expected)
-
-    def test_eval_status_balance_8(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '11', '71', '78', '80', '82', '83', '84',
-    #                 '89', '93', '94', '97', 'DA', 'DF'
-    # 2. current_bal == 0
-    # 3. l1_change_ind == None
-    # 4. port_type == 'C'
-    # 5. spc_com_cd == 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'60', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AH'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'61', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AT'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'O'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'62', 'current_bal':1, 'port_type':'C', 'spc_com_cd': 'AH'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'63', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AT'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'64', 'current_bal':0, 'port_type':'I', 'spc_com_cd': '0'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'65', 'current_bal':0, 'port_type':'C', 'spc_com_cd': 'AX'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activitiy = {'id': 36, 'change_ind': '1'}
-        l1_record(l1_activitiy)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=0,
-        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
-        # 38: NO-spc_com_cd=AX
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-8', self.expected)
-
-    def test_eval_status_balance_9(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '11', '13', '62', '64', '88', 'DA', 'DF'
-    # 2. current_bal == 0
-    # 3. l1_change_ind == None
-    # 4. port_type == 'O'
-    # 5. spc_com_cd != 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'60', 'current_bal':0, 'port_type':'O', 'spc_com_cd': 'AU'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'61', 'current_bal':0, 'port_type':'O', 'spc_com_cd': 'AX'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'current_bal':0, 'port_type':'O', 'spc_com_cd': 'BP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'71', 'current_bal':1, 'port_type':'O', 'spc_com_cd': 'BC'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'78', 'current_bal':0, 'port_type':'O', 'spc_com_cd': 'BD'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'80', 'current_bal':0, 'port_type':'I', 'spc_com_cd': 'BF'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'82', 'current_bal':0, 'port_type':'O', 'spc_com_cd': 'AH'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activitiy = {'id': 36, 'change_ind': '1'}
-        l1_record(l1_activitiy)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=1,
-        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
-        # 38: NO-spc_com_cd=AH
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-9', self.expected)
-
-    def test_eval_status_balance_10(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '11', '71', '78', '80', '82', '83',
-    #                 '84', '88', '93', '97', 'DA', 'DF'
-    # 2. current_bal > 0
-    # 3. l1_change_ind == None
-    # 4. port_type == 'O'
-    # 5. spc_com_cd != 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'current_bal':1, 'port_type':'O', 'spc_com_cd': 'AU'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'13', 'current_bal':5, 'port_type':'O', 'spc_com_cd': 'AX'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'current_bal':10, 'port_type':'O', 'spc_com_cd': 'BP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'62', 'current_bal':0, 'port_type':'O', 'spc_com_cd': 'BC'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'64', 'current_bal':15, 'port_type':'O', 'spc_com_cd': 'BD'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'65', 'current_bal':20, 'port_type':'I', 'spc_com_cd': 'BF'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'89', 'current_bal':25, 'port_type':'O', 'spc_com_cd': 'AH'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activity = {'id': 36, 'change_ind': '1'}
-        l1_record(l1_activity)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=0,
-        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
-        # 38: NO-spc_com_cd=AH
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-10', self.expected)
-
-    def test_eval_status_balance_11(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '11', '13', '62', '64', 'DA', 'DF'
-    # 2. current_bal == 0
-    # 3. l1_change_ind == None
-    # 4. port_type == 'R'
-    # 5. spc_com_cd != 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'current_bal':0, 'port_type':'R', 'spc_com_cd': 'AU'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'71', 'current_bal':0, 'port_type':'R', 'spc_com_cd': 'AX'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'current_bal':0, 'port_type':'R', 'spc_com_cd': 'BP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'78', 'current_bal':1, 'port_type':'R', 'spc_com_cd': 'BC'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'80', 'current_bal':0, 'port_type':'R', 'spc_com_cd': 'BD'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'82', 'current_bal':0, 'port_type':'I', 'spc_com_cd': 'BF'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'83', 'current_bal':0, 'port_type':'R', 'spc_com_cd': 'AH'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activity = {'id': 36, 'change_ind': '1'}
-        l1_record(l1_activity)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=1,
-        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
-        # 38: NO-spc_com_cd=AH
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-11', self.expected)
-
-    def test_eval_status_balance_12(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '11', '71', '78', '80', '82', '83',
-    #                 '84', '93', '97', 'DA', 'DF'
-    # 2. current_bal > 0
-    # 3. l1_change_ind == None
-    # 4. port_type == 'R'
-    # 5. spc_com_cd != 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'current_bal':1, 'port_type':'R', 'spc_com_cd': 'AU'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'13', 'current_bal':5, 'port_type':'R', 'spc_com_cd': 'AX'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'current_bal':10, 'port_type':'R', 'spc_com_cd': 'BP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'62', 'current_bal':0, 'port_type':'R', 'spc_com_cd': 'BC'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'64', 'current_bal':15, 'port_type':'R', 'spc_com_cd': 'BD'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'89', 'current_bal':20, 'port_type':'I', 'spc_com_cd': 'BF'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'94', 'current_bal':25, 'port_type':'R', 'spc_com_cd': 'AH'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activity = {'id': 36, 'change_ind': '1'}
-        l1_record(l1_activity)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=1,
-        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
-        # 38: NO-spc_com_cd=AH
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-12', self.expected)
-
-    def test_eval_status_balance_13(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '11', '71', '78', '80', '82', '83',
-    #                 '84', '93', '97', 'DA', 'DF'
-    # 2. current_bal == 0
-    # 3. l1_change_ind == None
-    # 4. port_type == 'O','R'
-    # 5. spc_com_cd == 'AH', 'AT', 'O'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'05', 'current_bal':0, 'port_type':'O', 'spc_com_cd': 'AH'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'13', 'current_bal':0, 'port_type':'R', 'spc_com_cd': 'AT'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'current_bal':0, 'port_type':'O', 'spc_com_cd': 'O'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'62', 'current_bal':1, 'port_type':'R', 'spc_com_cd': 'AH'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'64', 'current_bal':0, 'port_type':'O', 'spc_com_cd': 'AT'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'89', 'current_bal':0, 'port_type':'I', 'spc_com_cd': 'O'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'94', 'current_bal':0, 'port_type':'R', 'spc_com_cd': 'AX'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activity = {'id': 36, 'change_ind': '1'}
-        l1_record(l1_activity)
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=11, 35: current_bal=0,
-        # 36: NO-l1_change_ind=1, 37: NO-port_type=I
-        # 38: NO-spc_com_cd=AX
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-13', self.expected)
-
-    def test_eval_status_balance_14(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat != '13','61','62','63','64','88','96','DA','DF'
-    # 2. acct_type == '3A', '13'
-    # 3. current_bal == 0
-    # 4. l1_change_ind == None
-    # 5. port_type == 'I'
-    # 6. spc_com_cd != 'O', 'AH', 'AT', 'BB', 'BE'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'01', 'acct_type':'3A', 'current_bal':0, 'port_type':'I',
-                'spc_com_cd':'AU'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'02', 'acct_type':'13', 'current_bal':0, 'port_type':'I',
-                 'spc_com_cd':'AX'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'13', 'acct_type':'3A', 'current_bal':0, 'port_type':'I',
-                 'spc_com_cd':'BP'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'65', 'acct_type':'11', 'current_bal':0, 'port_type':'I',
-                 'spc_com_cd':'C'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'66', 'acct_type':'3A', 'current_bal':1, 'port_type':'I',
-                 'spc_com_cd':'BD'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'67', 'acct_type':'13', 'current_bal':0, 'port_type':'I',
-                 'spc_com_cd':'BG'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'68', 'acct_type':'3A', 'current_bal':0, 'port_type':'A',
-                 'spc_com_cd':'BI'
-            }, {
-                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
-                'acct_stat':'69', 'acct_type':'3A', 'current_bal':0, 'port_type':'I',
-                 'spc_com_cd':'O'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-
-        l1_activity = {'id': 37, 'change_ind': '1'}
-        l1_record(l1_activity)
-
-        # 32: HIT, 33: HIT, 34: NO-acct_stat=13, 35: NO-acct_type=11, 36: current_bal=1,
-        # 37: NO-l1_change_ind=1, 38: NO-port_type='A', 39: NO-spc_com_cd='O'
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-14', self.expected)
-
-    def test_eval_status_balance_15(self):
-    # Hits when all conditions are met:
-    # 1. acct_stat == '11'
-    # 2. acct_type == '00', '01', '02', '03', '04', '05', '06', '10', '11', '13', '17',
-    #                 '20', '29', '65', '66', '67', '68', '69', '70', '71', '72', '73',
-    #                 '74', '75', '91', '95', '0A', '0F', '3A', '6A', '6D', '7B', '9A'
-    # 3. compl_cond_cd != 'XA'
-    # 4. current_bal == 0
-    # 5. port_type == 'I'
-    # 6. spc_com_cd != 'BS'
-
-        # Create the Account Activities data
-        acct_date=date(2019, 12, 31)
-        activities = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'11', 'acct_type':'00', 'compl_cond_cd': 'XB',
-                'current_bal':0, 'port_type':'I', 'spc_com_cd': 'AH'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'11', 'acct_type':'01', 'compl_cond_cd': 'XC',
-                'current_bal':0, 'port_type':'I', 'spc_com_cd': 'AT'
-            }, {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_stat':'11', 'acct_type':'02', 'compl_cond_cd': 'XD',
-                'current_bal':0, 'port_type':'R', 'spc_com_cd': 'O'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'acct_stat':'11', 'acct_type':'0B',  'compl_cond_cd': 'XE',
-                'current_bal':0, 'port_type':'I', 'spc_com_cd': 'BA'
-            }, {
-                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'acct_stat':'81', 'acct_type':'03', 'compl_cond_cd': 'XB',
-                'current_bal':0, 'port_type':'I', 'spc_com_cd': 'DF'
-            }, {
-                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'acct_stat':'11', 'acct_type':'04', 'compl_cond_cd': 'XA',
-                'current_bal':0, 'port_type':'I', 'spc_com_cd': 'BC'
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'acct_stat':'11', 'acct_type':'05', 'compl_cond_cd': 'XC',
-                'current_bal':0, 'port_type':'I', 'spc_com_cd': 'BS'
-            }, {
-                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
-                'acct_stat':'11', 'acct_type':'06', 'compl_cond_cd': 'XD',
-                'current_bal':10, 'port_type':'I', 'spc_com_cd': 'BB'
-            }]
-        for item in activities:
-            acct_record(self.data_file, item)
-        # 32: HIT, 33: HIT, 34: NO-port_type=R, 35: NO-acct_type=0B,
-        # 36: NO-acct_stat=81, 37: compl_cond_cd=XA, 38: spc_com_cd=BS,
-        # 39: current_bal=10
-
-        self.assert_evaluator_correct(self.event, 'Status-Balance-15', self.expected)
-
-    def test_eval_status_balance_16(self):
-    # Hits when all conditions are met:
     # 1. acct_stat == '95', '96'
     # 2. current_bal == 0
 
@@ -819,7 +197,290 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 32: HIT, 33: HIT, 34: NO-acct_stat=94,
         # 35: NO-current_bal=5
 
-        self.assert_evaluator_correct(self.event, 'Status-Balance-16', self.expected)
+        self.assert_evaluator_correct(self.event, 'Status-Balance-3', self.expected)
+
+    def test_eval_status_balance_4(self):
+    # Hits when all conditions are met:
+    # 1. port_type == 'I', 'M'
+    # 2. acct_stat == 11
+    # 3. spc_com_cd != 'BS'
+    # 4. compl_cond_cd != 'XA'
+    # 5. current_bal == 0
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type': 'I', 'acct_stat':'11', 'current_bal': 0, 'spc_com_cd': 'M',
+                'compl_cond_cd': 'XB'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type': 'M', 'acct_stat':'11', 'current_bal': 0, 'spc_com_cd': 'BB',
+                'compl_cond_cd': 'O'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type': 'R', 'acct_stat':'11', 'current_bal': 0, 'spc_com_cd': 'BB',
+                'compl_cond_cd': 'XB'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type': 'M', 'acct_stat':'11', 'current_bal': 5, 'spc_com_cd': 'BB',
+                'compl_cond_cd': 'XB'
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type': 'M', 'acct_stat':'13', 'current_bal': 0, 'spc_com_cd': 'BB',
+                'compl_cond_cd': 'XB'
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type': 'M', 'acct_stat':'11', 'current_bal': 0, 'spc_com_cd': 'BS',
+                'compl_cond_cd': 'XB'
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type': 'M', 'acct_stat':'11', 'current_bal': 0, 'spc_com_cd': 'BB',
+                'compl_cond_cd': 'XA'
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-port_type=R,
+        # 35: NO-current_bal=5, 36: NO-acct_stat=13,
+        # 37: NO-spc_com_cd='BS', 38: NO-compl_cond_cd='XA'
+
+        self.assert_evaluator_correct(self.event, 'Status-Balance-4', self.expected)
+
+    def test_eval_status_balance_5(self):
+    # Hits when all conditions are met:
+    # 1. acct_stat == 11
+    # 2. current_bal == 0
+    #
+    # ... AND one of the following sets of conditions is met:
+    #     a. port_type == 'C' & acct_type == '15','43','47','89','7A','9B'
+    #     b. port_type == 'O', 'R' & acct_type == '18','37','43','2A','8A'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type': 'C', 'acct_type': '15', 'acct_stat':'11', 'current_bal': 0
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type': 'R', 'acct_type': '43', 'acct_stat':'11', 'current_bal': 0
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type': 'M', 'acct_type': '43', 'acct_stat':'11', 'current_bal': 0
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type': 'R', 'acct_type': '43', 'acct_stat':'11', 'current_bal': 5
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type': 'C', 'acct_type': '15', 'acct_stat':'13', 'current_bal': 0
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type': 'C', 'acct_type': '01', 'acct_stat':'11', 'current_bal': 0
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type': 'O', 'acct_type': '89', 'acct_stat':'11', 'current_bal': 0
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-port_type=M,
+        # 35: NO-current_bal=5, 36: NO-acct_stat=13,
+        # 37: NO-acct_type=01, 38: NO- port_type=O & acct_type=89
+
+        self.assert_evaluator_correct(self.event, 'Status-Balance-5', self.expected)
+
+
+    def test_eval_status_balance_6(self):
+    # Hits when all conditions are met:
+    # 1. acct_stat == '88', '89'
+    # 3. current_bal == 0
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'89', 'current_bal': 0
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'88', 'current_bal': 0
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'13', 'current_bal': 0
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'11', 'current_bal': 5
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-acct_stat=13,
+        # 35: NO-current_bal=5
+
+        self.assert_evaluator_correct(self.event, 'Status-Balance-6', self.expected)
+
+    def test_eval_status_balance_7(self):
+    # Hits when all conditions are met:
+    # 1. acct_stat == '94'
+    # 2. pmt_rating == '1', '2', '3', '4', '5', '6', 'G', 'L'
+    # 3. current_bal == 0
+    # 4. compl_cond_cd != 'XA'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_stat':'94', 'pmt_rating': 'L', 'current_bal': 0, 'compl_cond_cd': 'XB'
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_stat':'94', 'pmt_rating': '1', 'current_bal': 0, 'compl_cond_cd': 'XB'
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_stat':'13', 'pmt_rating': '1', 'current_bal': 0, 'compl_cond_cd': 'XB'
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'acct_stat':'94', 'pmt_rating': '1', 'current_bal': 5, 'compl_cond_cd': 'XB'
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'acct_stat':'94', 'pmt_rating': '0', 'current_bal': 0, 'compl_cond_cd': 'XB'
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'acct_stat':'94', 'pmt_rating': '1', 'current_bal': 0, 'compl_cond_cd': 'XA'
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-acct_stat=13,
+        # 35: NO-current_bal=5, 36: NO-pmt_rating=0,
+        # 37: NO-compl_cond_cd=XA
+
+        self.assert_evaluator_correct(self.event, 'Status-Balance-7', self.expected)
+
+    def test_eval_status_balance_8(self):
+        # Hits when all conditions are met:
+        # 1. port_type == 'M' OR port_type == 'I'
+        # 2. current_bal == 0
+        # 3. l1_change_ind == None
+        # 4. spc_com_cd != 'AH', 'AT', 'O', 'BB', 'BE'
+        # 5. acct_stat != '13', '62', '64', 'DA', 'DF'
+        #
+        # ... AND the following set of conditions is NOT met
+        # a. port_type='I' & acct_stat == '61', '63', '88', '95', '96'
+        # b. port_type='M' & acct_stat == '65', '94'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type': 'M', 'acct_stat':'11', 'spc_com_cd': 'AB', 'current_bal': 0,
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type': 'I', 'acct_stat':'05', 'spc_com_cd': 'M', 'current_bal': 0,
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type': 'R', 'acct_stat':'11', 'spc_com_cd': 'F', 'current_bal': 0,
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type': 'M', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 5,
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type': 'I', 'acct_stat':'11', 'spc_com_cd': 'AH', 'current_bal': 0,
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type': 'M', 'acct_stat':'13', 'spc_com_cd': 'AB', 'current_bal': 0,
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-port_type=R,
+        # 35: NO-current_bal=5, 36: NO-spc_com_cd=AH,
+        # 37: NO-acct_stat=13
+
+        self.assert_evaluator_correct(self.event, 'Status-Balance-8', self.expected)
+
+    def test_eval_status_balance_9(self):
+        # Hits when all following conditions are met:
+        # 1. port_type == 'C', 'O', 'R'
+        # 2. current_bal == 0
+        # 3. l1_change_ind == None
+        # 4. spc_com_cd != 'AH', 'AT', 'O'
+        # 5. acct_stat != '11', '13', '62', '64', 'DA', 'DF'
+
+        # ... AND none of the following sets of conditions is met
+        #  a. port_type='C', acct_stat == '65', '88', '89', '94'
+        #  b. port_type='O', acct_stat == '88'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 0,
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type': 'R', 'acct_stat':'93', 'spc_com_cd': 'M', 'current_bal': 0,
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type': 'M', 'acct_stat':'05', 'spc_com_cd': 'F', 'current_bal': 0,
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 33,
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 0,
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type': 'C', 'acct_stat':'13', 'spc_com_cd': 'AB', 'current_bal': 0,
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34: NO-port_type=M,
+        # 35: NO-current_bal=33, 36: NO-spc_com_cd=AH,
+        # 37: NO-acct_stat=13
+
+        self.assert_evaluator_correct(self.event, 'Status-Balance-9', self.expected)
+
+    def test_eval_status_balance_10(self):
+        # Hits when all conditions are met:
+        # 1. current_bal > 0
+        # 2. l1_change_ind == None
+        # 3. spc_com_cd != 'AH', 'AT', 'O'
+        # 4. acct_stat != '11', '71', '78', '80', '82', '83',
+        #                 '84','93', '97', 'DA', 'DF'
+        #
+        # ... AND none of the following sets of conditions is met
+        #  a. port_type == 'I' & acct_stat = '95', '96'
+        #  b. port_type == 'O' & acct_stat = '88'
+        #  c. port_type == 'C', 'M' &  acct_stat = '88', '89', '94'
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 300,
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type': 'R', 'acct_stat':'95', 'spc_com_cd': 'M', 'current_bal': 500,
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AB', 'current_bal': 0,
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 500,
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type': 'C', 'acct_stat':'05', 'spc_com_cd': 'AH', 'current_bal': 500,
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type': 'C', 'acct_stat':'88', 'spc_com_cd': 'AB', 'current_bal': 1,
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+        # 32: HIT, 33: HIT, 34:  NO-current_bal=0,
+        # 35: NO-spc_com_cd=AH, 36: NO-acct_stat=11
+        # 37: NO-port_type=c & acct_stat=88
+
+        self.assert_evaluator_correct(self.event, 'Status-Balance-10', self.expected)
 
     def test_eval_status_chargeoff_1(self):
     # Hits when all conditions are met:
@@ -1036,7 +697,7 @@ class StatusEvalsTestCase(TestCase, EvaluatorTestHelper):
             {'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035'},
             {'id': 36, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0036'},
             {'id': 37, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0037'}]
-  
+
         self.assert_evaluator_correct(self.event, 'Status-DOFD-1', expected)
 
     def test_eval_status_dofd_2(self):
