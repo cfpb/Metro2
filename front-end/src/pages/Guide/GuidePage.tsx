@@ -35,7 +35,7 @@ export default function GuidePage(): ReactElement {
           <Layout.Content>
 
             <div className='content-pad'>
-              <Heading type="2">
+              <Heading type="2" className='h1'>
                 User guide for Metro 2
               </Heading>
 
