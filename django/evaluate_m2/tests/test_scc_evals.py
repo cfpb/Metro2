@@ -272,6 +272,56 @@ class SCCEvalsTestCase(TestCase, EvaluatorTestHelper):
 
         self.assert_evaluator_correct(self.event, 'SCC-DateClosed-2', expected)
 
+    def test_scc_date_closed_3(self):
+        # Hits when all conditions are met:
+        # 1. spc_com_cd == 'AH', 'AT', 'O'
+        # 2. current_bal == 0
+        # 3. l1_change_ind == None
+        # 4. date_closed == None
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'C', 'current_bal': 0, 'spc_com_cd': 'AH', 'date_closed': None
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type':'O', 'current_bal': 0, 'spc_com_cd': 'AT', 'date_closed': None
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'M', 'current_bal': 0, 'spc_com_cd': 'O', 'date_closed': None
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'R', 'current_bal': 1, 'spc_com_cd': 'AH', 'date_closed': None
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'O', 'current_bal': 0, 'spc_com_cd': 'BS', 'date_closed': None
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'O', 'current_bal': 0, 'spc_com_cd': 'AT', 'date_closed': None
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'C', 'current_bal': 0, 'spc_com_cd': 'O',
+                'date_closed': acct_date
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+
+        l1_activity = {'id': 37, 'change_ind': '1'}
+        l1_record(l1_activity)
+        # 32: HIT, 33: HIT, 34: HIT, 35: NO-current_bal=1,
+        # 36: NO-spc_com_cd=BS, 37: NO-l1_change_ind=1,
+        # 38: NO-date_closed=date(2019, 12, 31)
+
+        # Create the segment data
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'},
+            {'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034'}
+        ]
+
+        self.assert_evaluator_correct(self.event, "SCC-DateClosed-3", expected)
+
     def test_eval_scc_purchase_sold_1_func(self):
         # Hits when both conditions met:
         # 1. spc_com_cd == 'AH'

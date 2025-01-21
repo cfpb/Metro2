@@ -23,10 +23,6 @@ def acct_record(file: M2DataFile, custom_values: dict):
     # If we end up needing more values in AccountHolder, add
     # them here as well.
     default_values = {
-        # AccountHolder values
-        "cons_info_ind": "",
-        "first_name": "",
-        "surname": "",
         # Shared values (used in both AccountHolder and AccountActivity)
         "activity_date": date(2022, 5, 30),
         "cons_acct_num": "",
@@ -56,31 +52,28 @@ def acct_record(file: M2DataFile, custom_values: dict):
         "date_closed": None,
         "dolp": None,
         "int_type_ind": "",
+
+        # AccountHolder values
         "cons_info_ind_assoc": None,
         "ecoa_assoc": None,
-        "ecoa": ""
+        "ecoa": "",
+        "cons_info_ind": "",
+        "first_name": "",
+        "middle_name": "",
+        "surname": "",
+        "gen_code": "",
+        "dob": "",
+        "phone_num": "",
+        "ssn": "",
     }
     # Override defaults with provided values
     values = default_values | custom_values
-    # Create the AccountHolder record with provided values
-    acct_holder = AccountHolder(
-        data_file = file,
-        activity_date=values["activity_date"],
-        cons_acct_num = values["cons_acct_num"],
-        cons_info_ind = values["cons_info_ind"],
-        first_name = values["first_name"],
-        surname = values["surname"],
-        cons_info_ind_assoc = values["cons_info_ind_assoc"],
-        ecoa_assoc = values["ecoa_assoc"],
-        ecoa = values["ecoa"],
-    )
-    acct_holder.save()
     # Create the AccountActivity record with provided values
     acct_activity = AccountActivity(
         id=values["id"],
-        event_id=file.event.id,
+        data_file = file,
+        event=file.event,
         previous_values=values["previous_values"],
-        account_holder=acct_holder,
         activity_date=values["activity_date"],
         cons_acct_num = values["cons_acct_num"],
         port_type = values["port_type"],
@@ -108,6 +101,26 @@ def acct_record(file: M2DataFile, custom_values: dict):
         int_type_ind = values["int_type_ind"],
     )
     acct_activity.save()
+
+    # Create the AccountHolder record with provided values
+    acct_holder = AccountHolder(
+        id=values["id"],
+        account_activity=acct_activity,
+        activity_date=values["activity_date"],
+        cons_acct_num = values["cons_acct_num"],
+        cons_info_ind = values["cons_info_ind"],
+        first_name = values["first_name"],
+        middle_name = values["middle_name"],
+        surname = values["surname"],
+        gen_code = values["gen_code"],
+        dob = values["dob"],
+        phone_num = values["phone_num"],
+        ssn = values["ssn"],
+        cons_info_ind_assoc = values["cons_info_ind_assoc"],
+        ecoa_assoc = values["ecoa_assoc"],
+        ecoa = values["ecoa"],
+    )
+    acct_holder.save()
     return acct_activity
 
 def k2_record(custom_values: dict):

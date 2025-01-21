@@ -1,25 +1,31 @@
 import csv
+import json
 import logging
+import botocore
 
 from datetime import date
-from django.http import Http404, HttpResponse, JsonResponse
+from django.conf import settings
+from django.http import Http404, HttpResponse, JsonResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
 from django.core.exceptions import FieldError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+from django_application.s3_utils import s3_session
 from evaluate_m2.views_utils import (
+    get_object,
     has_permissions_for_request,
-    random_sample_id_list
 )
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
     EventsViewSerializer)
+from evaluate_m2 import upload_utils
 from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
+
 
 @api_view(('GET',))
 def download_evaluator_metadata_csv(request):
@@ -49,25 +55,24 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
     logger = logging.getLogger('views.download_evaluator_results_csv')
     try:
         event = Metro2Event.objects.get(id=event_id)
+        evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
+        eval_result_summary = EvaluatorResultSummary.objects.get(
+            event=event, evaluator=evaluator)
+
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        eval = EvaluatorMetadata.objects.get(id=evaluator_id)
-        eval_result_summary = EvaluatorResultSummary.objects.get(
-            event=event, evaluator=eval)
 
-        filename = f"{event.name}_{eval.id}.csv"
-        response = HttpResponse(
-            content_type="text/csv",
-            headers={"Content-Disposition": f"attachment; filename={filename}"}
-        )
+        if settings.S3_ENABLED:
+            return fetch_csv_results_from_s3(request, event_id, evaluator_id)
 
-        writer = csv.writer(response)
-        fields_list = eval.result_summary_fields()
-        # Add all evaluator results to the response
-        writer.writerow(eval_result_summary.create_csv_header())
-        for eval_result in eval_result_summary.evaluatorresult_set.all():
-            writer.writerow(eval_result.create_csv_row_data(fields_list))
-        return response
+        # TODO: fall back on generating the response if the fetch from S3 fails
+        else:
+            filename = f"{event.name}_{evaluator.id}.csv"
+            response = HttpResponse(
+                content_type="text/csv",
+                headers={"Content-Disposition": f"attachment; filename={filename}"}
+            )
+            return upload_utils.generate_full_csv(eval_result_summary, response)
     except (
         Metro2Event.DoesNotExist,
         EvaluatorMetadata.DoesNotExist,
@@ -81,29 +86,24 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
 @api_view()
 def evaluator_results_view(request, event_id, evaluator_id):
     logger = logging.getLogger('views.evaluator_results_view')
-    RESULTS_PAGE_SIZE = 20
     try:
         event = Metro2Event.objects.get(id=event_id)
-        if not has_permissions_for_request(request, event):
-            return HttpResponse('Unauthorized', status=401)
-
         evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
         eval_result_summary = EvaluatorResultSummary.objects.get(
             event=event, evaluator=evaluator)
 
-        id_list = random_sample_id_list(eval_result_summary, RESULTS_PAGE_SIZE)
+        if not has_permissions_for_request(request, event):
+            return HttpResponse('Unauthorized', status=401)
 
-        try:
-            # TODO: update the metadata importer to ensure that
-            # result_summary_fields are always valid AccountActivity field names
-            result = AccountActivity.objects.filter(id__in=id_list) \
-                .values(*evaluator.result_summary_fields())
-        except FieldError as e:
-            err = f"Metadata for {evaluator.id} has incorrect field name: {e}"
-            return Response(err, status=status.HTTP_404_NOT_FOUND)
+        if settings.S3_ENABLED:
+            return fetch_json_results_from_s3(request, event_id, evaluator_id)
 
-        response = {'hits': [obj for obj in result]}
-        return JsonResponse(response)
+        # TODO: fall back on generating the response if the fetch from S3 fails
+        else:
+            records = event.get_all_account_activity()
+            sample_json = upload_utils.generate_json_sample(eval_result_summary, records)
+            return JsonResponse(sample_json)
+
     except (
         Metro2Event.DoesNotExist,
         EvaluatorMetadata.DoesNotExist,
@@ -113,6 +113,11 @@ def evaluator_results_view(request, event_id, evaluator_id):
             str(e), event_id, evaluator_id, request.path)
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
+    except FieldError as e:
+        # TODO: update the metadata importer to ensure that
+        # result_summary_fields are always valid AccountActivity field names
+        err = f"Metadata for {evaluator.id} has incorrect field name: {e}"
+        return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(('GET',))
 def account_summary_view(request, event_id, account_number):
@@ -121,21 +126,24 @@ def account_summary_view(request, event_id, account_number):
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        event_activities=get_list_or_404(event.get_all_account_activity().filter(
-            cons_acct_num=account_number).order_by('activity_date'))
+        event_activities=get_list_or_404(
+            event.get_all_account_activity().filter(
+                cons_acct_num=account_number).order_by('activity_date') \
+                .select_related('account_holder', 'k2', 'k4', 'l1')
+            )
         if not event_activities:
             raise Http404()
         activities_serializer = AccountActivitySerializer(event_activities, many=True)
+
         eval_results = EvaluatorResult.objects.filter(
             acct_num=account_number,
-            result_summary__event=event)
-        eval_metadata=[]
-        for e in eval_results:
-            eval=e.result_summary.evaluator.id
-            if eval not in eval_metadata:
-                eval_metadata.append(eval)
+            result_summary__event=event) \
+            .select_related('result_summary')
+        evals_hit = [e.result_summary.evaluator_id for e in eval_results]
+        evals_hit_uniq = sorted(list(set(evals_hit)))
+
         data = {'cons_acct_num': account_number,
-                'inconsistencies': eval_metadata,
+                'inconsistencies': evals_hit_uniq,
                 'account_activity': activities_serializer.data}
         return JsonResponse(data)
     except (
@@ -157,9 +165,12 @@ def account_pii_view(request, event_id, account_number):
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        result = AccountHolder.objects.filter(
+        latest_acct_activity = AccountActivity.objects.filter(
             data_file__event=event,
-            cons_acct_num=account_number).latest('activity_date')
+            cons_acct_num=account_number) \
+                .select_related('account_holder') \
+                .latest('activity_date')
+        result = latest_acct_activity.account_holder
         acct_holder_serializer = AccountHolderSerializer(result)
         return JsonResponse(acct_holder_serializer.data)
     except (
@@ -178,11 +189,13 @@ def events_view(request, event_id):
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
-        eval_result_summary = EvaluatorResultSummary.objects \
-            .filter(event=event, hits__gt=0).order_by('evaluator__id')
-        evaluators = [ers.evaluator for ers in eval_result_summary]
+
+        eval_result_summaries = EvaluatorResultSummary.objects \
+                .filter(event=event, hits__gt=0) \
+                .select_related('evaluator') \
+                .order_by('evaluator__id')
         evaluator_metadata_serializer = EventsViewSerializer(
-            evaluators, many=True, context={'event': event})
+            eval_result_summaries, many=True, context={'event': event})
         result = {
             'id': event.id,
             'name': event.name,
@@ -203,3 +216,39 @@ def events_view(request, event_id):
             str(e), event_id, None, request.path)
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+###########################################
+## Helper methods for eval results when S3_ENABLED == True
+def fetch_csv_results_from_s3(request, event_id, evaluator_id):
+    logger = logging.getLogger('views.fetch_csv_results_from_s3')
+    filename = upload_utils.s3_filename(evaluator_id, "csv")
+    key = upload_utils.s3_bucket_key(event_id, evaluator_id, "csv")
+    try:
+        response = StreamingHttpResponse(
+            get_object(s3_session(), settings.S3_BUCKET_NAME, key),
+            status=200,
+            content_type="text/csv",
+        )
+        response["Content-Disposition"] = f"attachment; filename={filename}"
+        return response
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "NoSuchKey":
+            error = get_evaluate_m2_not_found_exception(
+            e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
+            logger.error(error['message'])
+            return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+def fetch_json_results_from_s3(request, event_id, evaluator_id):
+    logger = logging.getLogger('views.fetch_json_results_from_s3')
+    s3 = s3_session()
+    key = upload_utils.s3_bucket_key(event_id, evaluator_id, "json")
+    try:
+        file = s3.get_object(Bucket=settings.S3_BUCKET_NAME, Key=key)
+        file_data = file['Body'].read().decode('utf-8')
+        return JsonResponse(json.loads(file_data))
+    except botocore.exceptions.ClientError as e:
+        if e.response['Error']['Code'] == "NoSuchKey":
+            error = get_evaluate_m2_not_found_exception(
+            e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
+            logger.error(error['message'])
+            return Response(error, status=status.HTTP_404_NOT_FOUND)

@@ -16,9 +16,10 @@ class Command(BaseCommand):
     help =  "Starts the evaluate process on the dataset linked to the Metro2Event " + \
             "record. If any EvaluatorResultSummary records exist for the Metro2Event " + \
             "record, the previous results will be deleted. The evaluate process " + \
-            "will continue and create a new EvaluatorResultSummary record for " + \
-            "each evaluator that returns a result list, and EvaluatorResult records " + \
-            "for each item in the results list."
+            "will create a new EvaluatorResultSummary record for each evaluator, " + \
+            "and EvaluatorResult records for each hit. When S3_ENABLED==True, " + \
+            "result files will be saved to the S3 bucket " + \
+            "for evals with >0 hits."
 
     def add_arguments(self, argparser):
         event_help = "The ID of the event record in the database"

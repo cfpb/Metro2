@@ -15,58 +15,43 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
     ############################
     # Tests for the balance evaluators
     def test_eval_balance_apd_1(self):
-        # hits when both conditions met:
-        # 1. port_type == 'I'
-        # 2. acct_type == '3A', '13'
-        # 3. current_bal == 0
-        # 4. l1__change_ind == None
-        # 5. amt_past_due > 0
+        # Hits when both conditions met:
+        # 1. current_bal = 0
+        # 2. l1_change_ind == None
+        # 3. amt_past_due > 0
 
         # Create the Account Activities data
         acct_date=date(2019, 12, 31)
         activities = [
             {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'port_type': 'I', 'acct_type':'3A', 'current_bal': 0,
-                'amt_past_due': 1
+                'current_bal': 0, 'amt_past_due': 5
             }, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'port_type': 'I','acct_type':'13', 'current_bal': 0,
-                'amt_past_due': 5
+                'current_bal': 10, 'amt_past_due': 15
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type': 'O', 'acct_type':'3A', 'current_bal': 0,
-                'amt_past_due': 10
+                'current_bal': -10, 'amt_past_due': 1
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type': 'I', 'acct_type':'00', 'current_bal': 0,
-                'amt_past_due': 15
+                'current_bal': 0, 'amt_past_due': 0
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type': 'I', 'acct_type':'00', 'current_bal': 1,
-                'amt_past_due': 20
+                'current_bal': 10, 'amt_past_due': 5
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type': 'I', 'acct_type':'00', 'current_bal': 0,
-                'amt_past_due': 25
-            }, {
-                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
-                'port_type': 'I', 'acct_type':'00', 'current_bal': 0,
-                'amt_past_due': 0
+                'current_bal': 0, 'amt_past_due': 5
             }]
         for item in activities:
             acct_record(self.data_file, item)
-
-        l1_segment = {'id': 37, 'change_ind': '1'}
-        l1_record(l1_segment)
-        # 32: HIT, 33: HIT, 34: NO-port_type=O,
-        # 35: NO-L1.acct_type=00, 36: NO-current_bal=1,
-        # 37: NO-l1__change_ind=1, 38: NO-amt_past_due=0
+        l1_activity = {'id': 37, 'change_ind': '1'}
+        l1_record(l1_activity)
+        # 32: HIT, 33: NO-current_bal > 0, 34: NO-current_bal < 0,
+        # 35: NO-amt_past_due == 0, 36: NO-current_bal > amt_past_due,
+        # 37: NO-l1_change_ind = 1
 
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
-        }, {
-            'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
         }]
         self.assert_evaluator_correct(self.event, 'Balance-APD-1', expected)
 
@@ -104,10 +89,10 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
             self.event, "Balance-APD-2", expected)
 
     def test_balance_date_closed_1(self):
-        # Hits when all conditions are met:
-        # 1. port_type == 'C', 'M'
+        # Hits when all conditions met:
+        # 1. port_type == 'C', 'M' , 'I'
         # 2. current_bal > 0
-        # 3. spc_com_cd != 'AH', 'AT', 'O'
+        # 3. spc_com_cd != 'AH', 'AT', 'O', 'BB', 'BE'
         # 4. l1_change_ind == None
         # 5. date_closed != None
 
@@ -124,37 +109,100 @@ class BalanceEvalsTestCase(TestCase, EvaluatorTestHelper):
                 'date_closed': acct_date
             }, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'port_type':'R', 'current_bal': 10, 'spc_com_cd': 'BC',
+                'port_type':'I', 'current_bal': 25, 'spc_com_cd': 'AU',
                 'date_closed': acct_date
             }, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-                'port_type':'C', 'current_bal': 0, 'spc_com_cd': 'BD',
+                'port_type':'R', 'current_bal': 10, 'spc_com_cd': 'BC',
                 'date_closed': acct_date
             }, {
                 'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
-                'port_type':'M', 'current_bal': 15, 'spc_com_cd': 'AH',
+                'port_type':'C', 'current_bal': 0, 'spc_com_cd': 'BD',
                 'date_closed': acct_date
             }, {
                 'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
-                'port_type':'C', 'current_bal': 20, 'spc_com_cd': 'BF',
+                'port_type':'M', 'current_bal': 15, 'spc_com_cd': 'AH',
                 'date_closed': acct_date
             }, {
                 'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'C', 'current_bal': 20, 'spc_com_cd': 'BF',
+                'date_closed': acct_date
+            }, {
+                'id': 39, 'activity_date': acct_date, 'cons_acct_num': '0039',
                 'port_type':'M', 'current_bal': 25, 'spc_com_cd': 'BG',
                 'date_closed': None
             }]
         for item in activities:
             acct_record(self.data_file, item)
 
-        l1_activity = {'id': 37, 'change_ind': '1'}
+        l1_activity = {'id': 38, 'change_ind': '1'}
         l1_record(l1_activity)
-        # 32: HIT, 33: HIT, 34: NO-port_type=R, 35: NO-current_bal=0,
-        # 36: NO-spc_com_cd=BS, 37: NO-l1_change_ind=1,
-        # 38: NO-date_closed=None
+        # 32: HIT, 33: HIT, 34: HIT, 35: NO-port_type=R,
+        # 36: NO-current_bal=0, 37: NO-spc_com_cd=AH, 
+        # 38: NO-l1_change_ind=1, 39: NO-date_closed=None
 
         expected = [{
             'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032',
         }, {
             'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033',
+        }, {
+            'id': 34, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0034',
         }]
         self.assert_evaluator_correct(self.event, "Balance-DateClosed-1", expected)
+
+
+    def test_balance_date_closed_2(self):
+        # Hits when all conditions are met:
+        # 1. port_type == 'I', 'M'
+        # 2. current_bal == 0
+        # 3. spc_com_cd != 'AH', 'AT', 'O', 'BB', 'BE'
+        # 4. l1_change_ind == None
+        # 5. date_closed == None
+
+        # Create the Account Activities data
+        acct_date=date(2019, 12, 31)
+        activities = [
+            {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'port_type':'I', 'current_bal': 0, 'spc_com_cd': 'BS',
+                'date_closed': None
+            }, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'port_type':'M', 'current_bal': 0, 'spc_com_cd': 'BS',
+                'date_closed': None
+            }, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'port_type':'C', 'current_bal': 0, 'spc_com_cd': 'BS',
+                'date_closed': None
+            }, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+                'port_type':'I', 'current_bal': 1, 'spc_com_cd': 'BS',
+                'date_closed': None
+            }, {
+                'id': 36, 'activity_date': acct_date, 'cons_acct_num': '0036',
+                'port_type':'I', 'current_bal': 0, 'spc_com_cd': 'AH',
+                'date_closed': None
+            }, {
+                'id': 37, 'activity_date': acct_date, 'cons_acct_num': '0037',
+                'port_type':'I', 'current_bal': 0, 'spc_com_cd': 'BS',
+                'date_closed': None
+            }, {
+                'id': 38, 'activity_date': acct_date, 'cons_acct_num': '0038',
+                'port_type':'I', 'current_bal': 0, 'spc_com_cd': 'BS',
+                'date_closed': date(2019, 12, 31)
+            }]
+        for item in activities:
+            acct_record(self.data_file, item)
+
+        l1_activity = {'id': 37, 'change_ind': '1'}
+        l1_record(l1_activity)
+        # 32: HIT, 33: HIT, 34: NO-port_type=C, 35: NO-current_bal=1,
+        # 36: NO-spc_com_cd=AH, 37: NO-l1_change_ind=1,
+        # 38: NO-date_closed=date(2019, 12, 31)
+
+        expected = [
+            {'id': 32, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'},
+            {'id': 33, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0033'}
+        ]
+
+        self.assert_evaluator_correct(self.event, "Balance-DateClosed-2", expected)

@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from datetime import date
 
 from evaluate_m2.models import (
@@ -11,7 +11,9 @@ from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
 
 
+@override_settings(S3_ENABLED=False)
 class EvaluateViewsTestCase(TestCase):
+
     ########################################
     # Methods for creating test data
     def setUp(self) -> None:
@@ -125,7 +127,6 @@ class EvaluateViewsTestCase(TestCase):
                 event=self.event, evaluator=self.stat_dofd_2, hits=0, accounts_affected=0,
                 inconsistency_start=acct_date, inconsistency_end=acct_date)
 
-
     ########################################
     # Tests for Eval Metadata download
     def test_download_eval_metadata(self):
@@ -211,11 +212,13 @@ class EvaluateViewsTestCase(TestCase):
                 result_summary=self.eval_rs3, date=date(2021, 1, 1),
                 field_values={'record': index, 'acct_type':'y'},
                 source_record=record, acct_num='0032')
+        self.eval_rs3.sample_ids = [1,3,5,7,9]
+        self.eval_rs3.save()
 
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-6/')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()['hits']), 20)
+        self.assertEqual(len(response.json()['hits']), 5)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
     def test_evaluator_results_view_with_error_no_evaluator_metadata(self):
@@ -378,3 +381,5 @@ class EvaluateViewsTestCase(TestCase):
         # the response should include the evaluator field as a list sorted by the id,
         # evaluators with a hits field greater than 0 will be returned
         self.assertEqual(response.json(), expected)
+
+
