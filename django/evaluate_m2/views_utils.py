@@ -10,33 +10,20 @@ def has_permissions_for_request(request, event) -> bool:
     else:
         return True
 
-def get_randomizer(result_total, total_per_page) -> int:
-    randomizer = 1
-    if result_total > total_per_page:
-        randomizer = result_total // total_per_page
-    return randomizer
-
-def random_sample_id_list(eval_result_summary, number_of_results):
-    randomizer = get_randomizer(eval_result_summary.hits, number_of_results)
-
-    final_index = randomizer * number_of_results
-
-    eval_result_sample = eval_result_summary.evaluatorresult_set \
-        .only('source_record_id') \
-        .order_by('id')[0:final_index:randomizer]
-
-    return [result.source_record_id for result in eval_result_sample]
-
 def get_total_bytes(s3, bucket_name, bucket_key):
     file = s3.head_object(Bucket=bucket_name, Key=bucket_key)
     return file["ContentLength"]
 
-def get_object(s3, total_bytes, bucket_name, bucket_key):
+def get_object(s3, bucket_name, bucket_key):
     logger = logging.getLogger('views_utils.get_object')
+
+    total_bytes = get_total_bytes(s3, bucket_name, bucket_key)
     if total_bytes > 100000:
         logger.debug(f"Total Bytes: {total_bytes}")
         return get_object_range(s3, total_bytes, bucket_name, bucket_key)
-    return s3.get_object(Bucket=bucket_name, Key=bucket_key)['Body'].read()
+    else:
+        return s3.get_object(Bucket=bucket_name, Key=bucket_key)['Body'] \
+            .read().decode('utf-8')
 
 def get_object_range(s3, total_bytes, bucket_name, bucket_key):
     logger = logging.getLogger('views_utils.get_object_range')

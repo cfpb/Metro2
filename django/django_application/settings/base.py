@@ -99,6 +99,8 @@ USE_TZ = True
 SSO_ENABLED = False
 S3_ENABLED = False
 
+M2_RESULT_SAMPLE_SIZE = 20
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 

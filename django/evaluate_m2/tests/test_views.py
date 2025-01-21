@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.test import TestCase, override_settings
 from datetime import date
 
@@ -213,11 +212,13 @@ class EvaluateViewsTestCase(TestCase):
                 result_summary=self.eval_rs3, date=date(2021, 1, 1),
                 field_values={'record': index, 'acct_type':'y'},
                 source_record=record, acct_num='0032')
+        self.eval_rs3.sample_ids = [1,3,5,7,9]
+        self.eval_rs3.save()
 
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-6/')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()['hits']), 20)
+        self.assertEqual(len(response.json()['hits']), 5)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
     def test_evaluator_results_view_with_error_no_evaluator_metadata(self):

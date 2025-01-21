@@ -52,10 +52,11 @@ def acct_record(file: M2DataFile, custom_values: dict):
         "date_closed": None,
         "dolp": None,
         "int_type_ind": "",
+
+        # AccountHolder values
         "cons_info_ind_assoc": None,
         "ecoa_assoc": None,
         "ecoa": "",
-        # AccountHolder values
         "cons_info_ind": "",
         "first_name": "",
         "middle_name": "",

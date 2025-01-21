@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import JSONField
@@ -46,6 +47,7 @@ class EvaluatorResultSummary(models.Model):
     inconsistency_start = models.DateField(null=True)
     inconsistency_end = models.DateField(null=True)
     evaluator_version = models.CharField(max_length=200, blank=True)
+    sample_ids = models.JSONField(encoder=DjangoJSONEncoder, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -55,6 +57,38 @@ class EvaluatorResultSummary(models.Model):
         csv_header = list(self.evaluator.result_summary_fields())
         csv_header.insert(0, 'event_name')
         return csv_header
+
+    def sample_of_results(self, sample_size: int = settings.M2_RESULT_SAMPLE_SIZE) -> list[int]:
+        """
+        Return a list of IDs of AccountActivity records that are hits
+        for this evaluator.
+        If this eval has more than sample_size hits, the list is a
+        RANDOM sample of this eval's hits. Otherwise, return a list
+        of all hits.
+        """
+        data = self.evaluatorresult_set
+
+        if not data.exists():
+            return []
+        if self.hits <= sample_size:
+            small_aa_set = data.values_list('source_record_id')
+            return [val[0] for val in small_aa_set]
+        else:
+            # Since all hits for an eval are added to the EvaluatorResults table
+            # in one transaction and the ID column is auto-generated, we can
+            # assume the ID values will be sequential. In that case, we can select
+            # the sample as numbers from the numeric range of IDs, which is
+            # computationally easier than selecting records from the table.
+            import random
+
+            first_id = data.order_by("id").first().id
+            last_id = data.order_by("-id").first().id
+            random_ids = random.sample(range(first_id, last_id + 1), sample_size)
+
+            random_aa_set = data.filter(id__in=random_ids) \
+                .values_list('source_record_id')
+
+            return [val[0] for val in random_aa_set]
 
 
 class EvaluatorResult(models.Model):
