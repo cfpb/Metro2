@@ -76,19 +76,19 @@ class UploadUtilsTestCase(TestCase):
         expected = {
             'hits': [
                 {'id': 1, 'activity_date': datetime.date(2022, 5, 30),
-                 'cons_acct_num': '', 'amt_past_due': 0,
+                 'cons_acct_num': '41', 'amt_past_due': 0,
                  'account_holder__ecoa': "AB",
                  'doai': datetime.date(2022, 5, 1)},
                 {'id': 2, 'activity_date': datetime.date(2022, 5, 30),
-                 'cons_acct_num': '', 'amt_past_due': 0,
+                 'cons_acct_num': '42', 'amt_past_due': 0,
                  'account_holder__ecoa': "AC",
                  'doai': datetime.date(2022, 5, 1)},
                 {'id': 3, 'activity_date': datetime.date(2022, 5, 30),
-                 'cons_acct_num': '', 'amt_past_due': 0,
+                 'cons_acct_num': '43', 'amt_past_due': 0,
                  'account_holder__ecoa': "",
                  'doai': datetime.date(2022, 5, 1)},
                 {'id': 4, 'activity_date': datetime.date(2022, 5, 30),
-                 'cons_acct_num': '', 'amt_past_due': 0,
+                 'cons_acct_num': '44', 'amt_past_due': 0,
                  'account_holder__ecoa': "AE",
                  'doai': datetime.date(2022, 5, 1)}
             ]
