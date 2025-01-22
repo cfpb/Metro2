@@ -62,12 +62,13 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
     """
     class Meta:
         fields = [
-            'id', 'description', 'long_description', 'fields_used',
+            'id', 'category', 'description', 'long_description', 'fields_used',
             'fields_display', 'crrg_reference','potential_harm','rationale',
             'alternate_explanation'
         ]
 
     id = serializers.CharField()
+    category = serializers.CharField(required=False, allow_blank=True)
     description = serializers.CharField(required=False, allow_blank=True)
     long_description = serializers.CharField(required=False, allow_blank=True)
     fields_used = serializers.JSONField(required=False)
@@ -82,6 +83,7 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         # don't update instance.id
+        instance.category = validated_data.get('category', instance.description)
         instance.description = validated_data.get('description', instance.description)
         instance.long_description = validated_data.get('long_description', instance.long_description)
         instance.fields_used = validated_data.get('fields_used', instance.fields_used)

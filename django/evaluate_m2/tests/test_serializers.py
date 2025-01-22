@@ -70,6 +70,7 @@ class EvalSerializerTestCase(TestCase):
 
         self.e1 = EvaluatorMetadata(
             id="Betsy-1",
+            category="paid/not paid",
             description="desc 1",
             long_description=self.multi_line_text,
             fields_used=["account_holder__cons_info_ind", "dolp", "id_num"],
@@ -79,6 +80,7 @@ class EvalSerializerTestCase(TestCase):
 
         self.e1_json = {
             'id': 'Betsy-1',
+            'category': 'paid/not paid',
             'description': 'desc 1',
             'long_description': self.multi_line_text,
             'fields_used': e1_expected_fields_used,
@@ -112,6 +114,7 @@ class EvalSerializerTestCase(TestCase):
         )
         e2_json = {
             'id': 'TEST-11',
+            'category': '',
             'description': '',
             'long_description': '',
             'fields_used': e2_expected_fields,
@@ -132,6 +135,7 @@ class EvalSerializerTestCase(TestCase):
         self.assertTrue(from_json.is_valid())
         record = from_json.save()
         self.assertEqual(record.id, "BETSY-NEW")
+        self.assertEqual(record.category, 'paid/not paid')
         self.assertEqual(record.description, self.e1_json['description'])
         self.assertEqual(record.fields_used, ['account_holder__cons_info_ind', 'dolp', 'id_num'])
         self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind'])
