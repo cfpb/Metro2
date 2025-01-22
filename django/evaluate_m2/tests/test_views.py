@@ -19,6 +19,7 @@ class EvaluateViewsTestCase(TestCase):
     def setUp(self) -> None:
         self.stat_dofd_1 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-1',
+            category='DOFD',
             description='description of Status-DOFD-1',
             long_description='',
             fields_used=['placeholder', 'dofd'],
@@ -44,6 +45,7 @@ class EvaluateViewsTestCase(TestCase):
         )
         self.stat_dofd_6 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-6',
+            category='account terms',
             description= 'description for a fourth status-dofd eval',
             long_description='',
             fields_used= ['smpa'],
