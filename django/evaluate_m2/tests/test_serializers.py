@@ -11,56 +11,25 @@ from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
 
 
-shared_initial_values = """
-Identifying information
-DB record id
-activity date
-consumer account number
-"""
-
-e1_expected_fields_used = shared_initial_values + """
-Fields used for evaluator
+e1_fields_used = """
 consumer information indicator
 date of last payment
 ID number
+"""
 
-Helpful fields that are also displayed currently
+e1_fields_display = """
 special comment code
 date of first delinquency
 L1 change indicator
 """
 
-e2_expected_fields = shared_initial_values + """
-Fields used for evaluator
+e2_fields_used = """
 wrong
 misspelled
+"""
 
-Helpful fields that are also displayed currently
+e2_fields_display = """
 other
-"""
-
-# Import should be case insensitive
-e3_case_insensitive = shared_initial_values + """
-Fields USED for EvAlUaToR
-consumer information indicator
-date of last payment
-id number
-
-Helpful FIELDS that ARE ALSO DISPLAYED CURRENTLY
-special comment CODE
-date of FIRST delinquency
-L1 change indicator
-ECOA
-"""
-
-e4_invalid_input = shared_initial_values + """
-Fields used for evaluator
-date of last payment
-bogus name
-
-Helpful fields that are also displayed currently
-K2 purchased - sold indicator
-something misspelled
 """
 
 class EvalSerializerTestCase(TestCase):
@@ -83,23 +52,14 @@ class EvalSerializerTestCase(TestCase):
             'category': 'paid/not paid',
             'description': 'desc 1',
             'long_description': self.multi_line_text,
-            'fields_used': e1_expected_fields_used,
+            'fields_used': e1_fields_used.strip(),
+            'fields_display': e1_fields_display.strip(),
             'crrg_reference': 'PDF page 3',
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': '',
         }
 
-        self.e3_json = {
-            'id': 'Test-19',
-            'description': 'desc 1',
-            'long_description': self.multi_line_text,
-            'fields_used': e3_case_insensitive,
-            'crrg_reference': 'PDF page 3',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': '',
-        }
 
     #### Tests for exporting EvaluatorMetadata records
     def test_export_to_json(self):
@@ -117,7 +77,8 @@ class EvalSerializerTestCase(TestCase):
             'category': '',
             'description': '',
             'long_description': '',
-            'fields_used': e2_expected_fields,
+            'fields_used': e2_fields_used.strip(),
+            'fields_display': e2_fields_display.strip(),
             'crrg_reference': '',
             'potential_harm': '',
             'rationale': '',
@@ -141,7 +102,32 @@ class EvalSerializerTestCase(TestCase):
         self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind'])
 
     def test_import_from_json_case_insensitive(self):
-        from_json = EvaluatorMetadataSerializer(data=self.e3_json)
+        fields_used = "\r\n".join([
+            "cONsumer information indicator",
+            "date of last payment",
+            "id number",
+        ])
+
+        fields_display = "\r\n".join([
+            "special comment CODE",
+            "date of FIRST delinquency",
+            "L1 change indicator",
+            "ECoa",
+        ])
+
+        eval_json = {
+            'id': 'Test-19',
+            'description': 'desc 1',
+            'long_description': self.multi_line_text,
+            'fields_used': fields_used,
+            'fields_display': fields_display,
+            'crrg_reference': 'PDF page 3',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': '',
+        }
+
+        from_json = EvaluatorMetadataSerializer(data=eval_json)
         self.assertTrue(from_json.is_valid())
         record = from_json.save()
         self.assertEqual(record.id, "Test-19")
@@ -151,11 +137,18 @@ class EvalSerializerTestCase(TestCase):
                                                  'account_holder__ecoa'])
 
     def test_import_fails_when_field_names_incorrect(self):
+        fields = "\r\n".join([
+            "date of last payment",
+            "bogus name",
+            "K2 purchased - sold indicator",
+            "something misspelled",
+        ])
         e4_json = {
             'id': 'TEST-99',
             'description': '',
             'long_description': '',
-            'fields_used': e4_invalid_input,
+            'fields_used': fields,
+            'fields_display': '',
         }
         result = EvaluatorMetadataSerializer(data=e4_json)
         self.assertFalse(result.is_valid())
