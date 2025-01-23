@@ -323,7 +323,7 @@ class EvaluateViewsTestCase(TestCase):
         self.assertEqual(response.json(), expected)
 
     ########################################
-    # Tests for Events view API endpoint (landing page)
+    # Tests for Events view API endpoint (all evals with hits for an event)
     def test_events_view(self):
         self.create_activity_data(create_zero_hit=True)
         expected = {
@@ -341,6 +341,7 @@ class EvaluateViewsTestCase(TestCase):
                 'inconsistency_start': '2023-12-31',
                 'inconsistency_end': '2023-12-31',
                 'id': 'Status-DOFD-1',
+                'category': 'DOFD',
                 'description': 'description of Status-DOFD-1', 'long_description': '',
                 'fields_used': ['acct_stat', 'dofd'],
                 'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa',],
@@ -352,6 +353,7 @@ class EvaluateViewsTestCase(TestCase):
                 'inconsistency_start': '2023-12-31',
                 'inconsistency_end': '2023-12-31',
                 'id': 'Status-DOFD-4',
+                'category': '',
                 'description': 'description for a third status-dofd eval',
                 'long_description': '',
                 'fields_used': ['smpa'],
@@ -364,6 +366,7 @@ class EvaluateViewsTestCase(TestCase):
                 'inconsistency_start': '2023-12-31',
                 'inconsistency_end': '2023-12-31',
                 'id': 'Status-DOFD-6',
+                'category': 'account terms',
                 'description': 'description for a fourth status-dofd eval', 'long_description': '',
                 'fields_used': ['smpa'],
                 'fields_display': ['orig_chg_off_amt', 'terms_freq'],

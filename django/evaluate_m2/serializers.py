@@ -17,6 +17,7 @@ from evaluate_m2.metadata_utils import (
 
 class EventsViewSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField(read_only=True)
+    category = serializers.SerializerMethodField(read_only=True)
     description = serializers.SerializerMethodField(read_only=True)
     long_description = serializers.SerializerMethodField(read_only=True)
     fields_used = serializers.SerializerMethodField(read_only=True)
@@ -29,7 +30,8 @@ class EventsViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = EvaluatorResultSummary
         fields = ['hits', 'accounts_affected', 'inconsistency_start',
-                  'inconsistency_end', 'id', 'description', 'long_description',
+                  'inconsistency_end', 'id', 'category',
+                  'description', 'long_description',
                   'fields_used', 'fields_display', 'crrg_reference',
                   'potential_harm','rationale', 'alternate_explanation']
 
@@ -39,6 +41,8 @@ class EventsViewSerializer(serializers.ModelSerializer):
         return obj.evaluator.description
     def get_long_description(self, obj: EvaluatorResultSummary):
         return obj.evaluator.long_description
+    def get_category(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.category
     def get_fields_used(self, obj: EvaluatorResultSummary):
         return obj.evaluator.fields_used
     def get_fields_display(self, obj: EvaluatorResultSummary):

@@ -173,6 +173,7 @@ class EventsViewSerializerTestCase(TestCase):
         # Create an EvaluatorMetadata record
         self.eval = EvaluatorMetadata.objects.create(
             id='Status-DOFD-1',
+            category='closed/not closed',
             description='description of Status-DOFD-1',
             long_description='',
             fields_used=['placeholder', 'date of first delinquency'],
@@ -200,6 +201,7 @@ class EventsViewSerializerTestCase(TestCase):
         self.json_representation = {
             'hits': 2, 'accounts_affected': 1, 'inconsistency_start':date(2021, 1, 1),
             'inconsistency_end': date(2021, 2, 1), 'id': 'Status-DOFD-1',
+            'category': 'closed/not closed',
             'description': 'description of Status-DOFD-1', 'long_description': '',
             'fields_used': ['account status', 'date of first delinquency'],
             'fields_display': ['amount past due', 'compliance condition code',
