@@ -5,16 +5,9 @@
 code_to_plain_field_map = {
     # code : plain language
 
-    # Account Holder fields
-    "account_holder__cons_acct_num": "consumer account number",
-    "account_holder__ecoa": "ecoa",
-    "account_holder__cons_info_ind": "consumer information indicator",
-    "account_holder__cons_info_ind_assoc": "consumer information indicators for associated consumers",
-    "account_holder__ecoa_assoc": "ECOA for associated consumers",
-    "account_holder__first_name": "first name",
-    "account_holder__surname": "surname",
-
     # Account Activity fields
+    "id": "DB record ID",
+    "cons_acct_num": "consumer account number",
     "activity_date": "activity date",
     "port_type": "portfolio type",
     "acct_type": "account type",
@@ -38,6 +31,14 @@ code_to_plain_field_map = {
     "date_closed": "date closed",
     "dolp": "date of last payment",
     "id_num": "ID number",
+
+    # Account Holder fields
+    "account_holder__ecoa": "ecoa",
+    "account_holder__cons_info_ind": "consumer information indicator",
+    "account_holder__cons_info_ind_assoc": "consumer information indicators for associated consumers",
+    "account_holder__ecoa_assoc": "ECOA for associated consumers",
+    "account_holder__first_name": "first name",
+    "account_holder__surname": "surname",
 
     # K segments
     "k2__purch_sold_ind": "K2 purchased - sold indicator",
