@@ -101,20 +101,16 @@ class EvaluateViewsTestCase(TestCase):
             event=self.event, evaluator=self.stat_dofd_1, hits=2, accounts_affected=1,
             inconsistency_start=acct_date, inconsistency_end=acct_date)
         EvaluatorResult.objects.create(result_summary=eval_rs, date=date(2021, 1, 1),
-            source_record= acct_actvities[0], acct_num='0032', field_values={
-                'record': 1, 'acct_type': 'y'
-            })
+            source_record= acct_actvities[0], acct_num='0032')
         EvaluatorResult.objects.create(result_summary=eval_rs, date=date(2021, 1, 1),
-            source_record= acct_actvities[1], acct_num='0033', field_values={
-                'record': 2, 'acct_type': 'n'
-            })
+            source_record= acct_actvities[1], acct_num='0033')
 
         # Result records for Status-DOFD-4
         eval_rs2 = EvaluatorResultSummary.objects.create(
             event=self.event, evaluator=self.stat_dofd_4, hits=1, accounts_affected=1,
             inconsistency_start=acct_date, inconsistency_end=acct_date)
         EvaluatorResult.objects.create(result_summary=eval_rs2, date=date(2021, 1, 1),
-            source_record= acct_actvities[0], acct_num='0032', field_values={})
+            source_record= acct_actvities[0], acct_num='0032')
 
         # EvaluatorResultSummary for Status-DOFD-6
         self.eval_rs3 = EvaluatorResultSummary.objects.create(
@@ -194,8 +190,7 @@ class EvaluateViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # the response should return a hits field with a list of EvaluatorResult
-        # field_values
+        # the response should return a hits field with a list of EvaluatorResult records
         # There should be two hits. Each one should have a set of keys that matches
         # the fields in evaluator.result_summary_fields
         hits = response.json()['hits']
@@ -210,7 +205,6 @@ class EvaluateViewsTestCase(TestCase):
             record = acct_record(self.data_file, activity)
             EvaluatorResult.objects.create(
                 result_summary=self.eval_rs3, date=date(2021, 1, 1),
-                field_values={'record': index, 'acct_type':'y'},
                 source_record=record, acct_num='0032')
         self.eval_rs3.sample_ids = [1,3,5,7,9]
         self.eval_rs3.save()

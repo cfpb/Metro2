@@ -36,8 +36,7 @@ class EvaluatorResultSummaryAdmin(admin.ModelAdmin):
         return False
 
 class EvaluatorResultAdmin(admin.ModelAdmin):
-    list_display = ['result_summary', 'date', 'field_values',
-                    'source_record', 'acct_num']
+    list_display = ['result_summary', 'date', 'source_record', 'acct_num']
 
     def has_add_permission(self, request, obj=None):
         return False

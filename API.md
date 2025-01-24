@@ -68,7 +68,13 @@ hyundai2024,1331,2019-01-31,20121205047544,,0,13,1,,M,0,2019-01-26,0,,0
 
 `/api/events/{event_id}/evaluator/{evaluator_id}/`
 
-GET - returns a JSON with a `hits` field composed of a list that contains one object per EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose ID matches `evaluator_id`) combo. The keys in each object would be the list of fields saved in field_values for that EvaluatorResult.
+GET - returns a JSON with a `hits` field composed of a list that contains one object per
+EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose ID matches
+`evaluator_id`) combo.
+
+The keys in each EvaluatorResult object are the list of fields returned by the `result_summary_fields`
+method on the EvaluatorMetadata object. (i.e. the list of fields specified in the `fields_used` column
+of the SSoTS, plus a few defaults)
 
 **Example response:**
 ```JSON

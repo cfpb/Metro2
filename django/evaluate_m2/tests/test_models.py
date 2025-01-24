@@ -44,11 +44,6 @@ class ResultSampleTestCase(TestCase):
 
 class EvaluateModelsTestCase(TestCase):
     def test_eval_res_create_csv_header(self):
-        field_values_json = {
-            'field1': 'value1',
-            'field2': 'value2',
-            'field3': 'value3',
-        }
         eval = EvaluatorMetadata(
             id="event_name",
             fields_used=['field1', 'field2', 'field3'],
@@ -59,10 +54,7 @@ class EvaluateModelsTestCase(TestCase):
             evaluator = eval,
             hits = 1
         )
-        eval_res = EvaluatorResult(
-            result_summary = eval_rs1,
-            field_values = field_values_json,
-        )
+        EvaluatorResult(result_summary=eval_rs1)
         expected = ['event_name', 'id', 'activity_date',
             'cons_acct_num', 'field1', 'field2', 'field3']
 
