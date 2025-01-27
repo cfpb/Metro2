@@ -3,16 +3,20 @@ from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary, Evalua
 
 # Register your models here.
 class EvaluatorMetadataAdmin(admin.ModelAdmin):
-    readonly_fields = ['id', 'fields_used', 'fields_display', 'long_description']
-    fields = ['id', 'fields_used', 'fields_display',
-            'description', 'long_description',
-            'crrg_reference', 'potential_harm',
-            'rationale', 'alternate_explanation']
-    list_display = [
-        'id', 'description', 'long_description',
-        'fields_used', 'fields_display',
+    readonly_fields = [
+        'id', 'category', 'fields_used', 'fields_display',
+        'long_description',
+    ]
+    fields = [
+        'id', 'category', 'fields_used', 'fields_display',
+        'description', 'long_description',
         'crrg_reference', 'potential_harm',
-        'rationale', 'alternate_explanation']
+        'rationale', 'alternate_explanation',
+    ]
+    list_display = [
+        'id', 'category', 'description', 'long_description',
+        'fields_used', 'fields_display',
+    ]
 
     def has_add_permission(self, request, obj=None):
         return False

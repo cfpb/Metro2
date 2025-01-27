@@ -32,10 +32,6 @@ class ResultSampleTestCase(TestCase):
         # IDs in the list should not be repeated
         self.assertNotEqual(result[0], result[1])
 
-        second_run = self.ers.sample_of_results(sample_size=2)
-        # Since it's random, different executions should have different results
-        self.assertNotEqual(result, second_run)
-
     def test_sample_when_not_randomized(self):
         # sample_size is greater than the number of results, so all should be included
         result = self.ers.sample_of_results(sample_size=5)

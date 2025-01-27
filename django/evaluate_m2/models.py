@@ -13,6 +13,7 @@ class EvaluatorMetadata(models.Model):
     # Use the identifier as the primary key instead of an auto_numbered ID.
     # id values may not be blank and must be unique
     id = models.CharField(max_length=200, primary_key=True)
+    category = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)  # short plain language description
     long_description = models.TextField(blank=True)
     fields_used = JSONField(encoder=DjangoJSONEncoder, null=True)

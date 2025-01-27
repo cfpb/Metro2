@@ -17,6 +17,7 @@ from evaluate_m2.metadata_utils import (
 
 class EventsViewSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField(read_only=True)
+    category = serializers.SerializerMethodField(read_only=True)
     description = serializers.SerializerMethodField(read_only=True)
     long_description = serializers.SerializerMethodField(read_only=True)
     fields_used = serializers.SerializerMethodField(read_only=True)
@@ -29,7 +30,8 @@ class EventsViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = EvaluatorResultSummary
         fields = ['hits', 'accounts_affected', 'inconsistency_start',
-                  'inconsistency_end', 'id', 'description', 'long_description',
+                  'inconsistency_end', 'id', 'category',
+                  'description', 'long_description',
                   'fields_used', 'fields_display', 'crrg_reference',
                   'potential_harm','rationale', 'alternate_explanation']
 
@@ -39,6 +41,8 @@ class EventsViewSerializer(serializers.ModelSerializer):
         return obj.evaluator.description
     def get_long_description(self, obj: EvaluatorResultSummary):
         return obj.evaluator.long_description
+    def get_category(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.category
     def get_fields_used(self, obj: EvaluatorResultSummary):
         return obj.evaluator.fields_used
     def get_fields_display(self, obj: EvaluatorResultSummary):
@@ -62,12 +66,13 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
     """
     class Meta:
         fields = [
-            'id', 'description', 'long_description', 'fields_used',
+            'id', 'category', 'description', 'long_description', 'fields_used',
             'fields_display', 'crrg_reference','potential_harm','rationale',
             'alternate_explanation'
         ]
 
     id = serializers.CharField()
+    category = serializers.CharField(required=False, allow_blank=True)
     description = serializers.CharField(required=False, allow_blank=True)
     long_description = serializers.CharField(required=False, allow_blank=True)
     fields_used = serializers.JSONField(required=False)
@@ -82,6 +87,7 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         # don't update instance.id
+        instance.category = validated_data.get('category', instance.description)
         instance.description = validated_data.get('description', instance.description)
         instance.long_description = validated_data.get('long_description', instance.long_description)
         instance.fields_used = validated_data.get('fields_used', instance.fields_used)
