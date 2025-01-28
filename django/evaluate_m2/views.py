@@ -7,10 +7,10 @@ from datetime import date
 from django.conf import settings
 from django.http import Http404, HttpResponse, JsonResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
-from django.core.exceptions import FieldError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
 
 from django_application.s3_utils import s3_session
 from evaluate_m2.views_utils import (
@@ -19,9 +19,12 @@ from evaluate_m2.views_utils import (
 )
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
+from evaluate_m2.pagination import EvaluatorResultsPaginator
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
-    EventsViewSerializer)
+    EventsViewSerializer,
+    EvaluatorResultAccountActivitySerializer
+)
 from evaluate_m2 import upload_utils
 from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
@@ -83,41 +86,6 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
-@api_view()
-def evaluator_results_view(request, event_id, evaluator_id):
-    logger = logging.getLogger('views.evaluator_results_view')
-    try:
-        event = Metro2Event.objects.get(id=event_id)
-        evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
-        eval_result_summary = EvaluatorResultSummary.objects.get(
-            event=event, evaluator=evaluator)
-
-        if not has_permissions_for_request(request, event):
-            return HttpResponse('Unauthorized', status=401)
-
-        if settings.S3_ENABLED:
-            return fetch_json_results_from_s3(request, event_id, evaluator_id)
-
-        # TODO: fall back on generating the response if the fetch from S3 fails
-        else:
-            records = event.get_all_account_activity()
-            sample_json = upload_utils.generate_json_sample(eval_result_summary, records)
-            return JsonResponse(sample_json)
-
-    except (
-        Metro2Event.DoesNotExist,
-        EvaluatorMetadata.DoesNotExist,
-        EvaluatorResultSummary.DoesNotExist
-    ) as e:
-        error = get_evaluate_m2_not_found_exception(
-            str(e), event_id, evaluator_id, request.path)
-        logger.error(error['message'])
-        return Response(error, status=status.HTTP_404_NOT_FOUND)
-    except FieldError as e:
-        # TODO: update the metadata importer to ensure that
-        # result_summary_fields are always valid AccountActivity field names
-        err = f"Metadata for {evaluator.id} has incorrect field name: {e}"
-        return Response(err, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(('GET',))
 def account_summary_view(request, event_id, account_number):
@@ -252,3 +220,94 @@ def fetch_json_results_from_s3(request, event_id, evaluator_id):
             e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
             logger.error(error['message'])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+
+class EvaluatorResultsView(generics.ListAPIView):
+    pagination_class = EvaluatorResultsPaginator
+
+    def get_result_summary(self):
+        # Get the EvaluatorResultSummary object for this event_id and
+        # evaluator_id. These are queried directly so we can validate that
+        # they exist and error appropriately if they do not.
+        event_id = self.kwargs["event_id"]
+        evaluator_id = self.kwargs["evaluator_id"]
+        event = Metro2Event.objects.get(id=event_id)
+        evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
+        result_summary = EvaluatorResultSummary.objects.get(
+            event=event, evaluator=evaluator)
+        return result_summary
+
+    def get_queryset(self):
+        # Get all EvaluatorResult objects for this event_id and evaluator_id
+        event_id = self.kwargs["event_id"]
+        evaluator_id = self.kwargs["evaluator_id"]
+
+        # TODO: Or do we just include records for which there were results?
+        queryset = EvaluatorResult.objects.filter(
+            result_summary__event__id=event_id,
+            result_summary__evaluator__id=evaluator_id,
+        ).select_related(
+            "source_record"
+        ).order_by("source_record__activity_date")
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        # Override the default `get()` so we can error appropriately if
+        # the event_id or evaluator_id are invalid.
+        try:
+            return super().get(request, *args, **kwargs)
+        except (
+                Metro2Event.DoesNotExist,
+                EvaluatorMetadata.DoesNotExist,
+                EvaluatorResultSummary.DoesNotExist
+            ) as e:
+            logger = logging.getLogger('views.download_evaluator_results_csv')
+            error = get_evaluate_m2_not_found_exception(
+                str(e),
+                self.kwargs["event_id"],
+                self.kwargs["evaluator_id"],
+                request.path
+            )
+            logger.error(error['message'])
+            return Response(error, status=status.HTTP_404_NOT_FOUND)
+
+    def list(self, request, *args, **kwargs):
+        result_summary = self.get_result_summary()
+        event = result_summary.event
+        evaluator = result_summary.evaluator
+
+        # TODO: replace using DRF permissions/check_permissions()
+        if not has_permissions_for_request(request, event):
+            return HttpResponse('Unauthorized', status=401)
+
+        view_param = self.request.query_params.get("view", "sample")
+
+        # If we're asked for a sample and S3 is enabled, quickly return
+        # the results from there.
+        if settings.S3_ENABLED and view_param == "sample":
+            return fetch_json_results_from_s3(request, event.id, evaluator.id)
+
+        # Get the result set
+        results = self.get_queryset()
+
+        # If we're asked for a sample, filter the result set by sample_ids
+        if view_param == "sample":
+            sample_ids = result_summary.sample_ids
+
+            if sample_ids and (len(sample_ids) > 0):
+                results = results.filter(source_record__id__in=sample_ids)
+            else:
+                # Select a random set of sample length from the queryset
+                results = results.order_by("?")[:settings.M2_RESULT_SAMPLE_SIZE]
+
+        # Regardless, paginate the results.
+        # Pagination size should be the same as the sample size, so the
+        # sample view will be exactly one page long.
+        page = self.paginate_queryset(results)
+        paged_records = [result.source_record for result in page]
+        serializer = EvaluatorResultAccountActivitySerializer(
+            paged_records,
+            evaluator=evaluator,
+            many=True,
+        )
+        return self.get_paginated_response(serializer.data)
