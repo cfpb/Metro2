@@ -5,7 +5,8 @@ from rest_framework.renderers import JSONRenderer
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
-    EventsViewSerializer
+    EventsViewSerializer,
+    EvaluatorResultAccountActivitySerializer
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
@@ -216,3 +217,97 @@ class EventsViewSerializerTestCase(TestCase):
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render([self.json_representation])
         self.assertEqual(json_output, expected)
+
+
+class EvaluatorResultAccountActivitySerializerTestCase(TestCase):
+    def setUp(self):
+        self.evaluator = EvaluatorMetadata.objects.create(
+            id="my-eval-3",
+            fields_used=["amt_past_due", "account_holder__ecoa"],
+            fields_display=["doai"],
+        )
+
+        # Create the results and records
+        event = Metro2Event.objects.create(name="AnEvent")
+        data_file = M2DataFile.objects.create(event=event)
+
+        self.record1 = acct_record(data_file, {"id": 1, "cons_acct_num": "41", "ecoa": "AB"})
+        self.record2 = acct_record(data_file, {"id": 2, "cons_acct_num": "42", "ecoa": "AC"})
+        self.record3 = acct_record(data_file, {"id": 3, "cons_acct_num": "43", "ecoa": ""})
+        self.record4 = acct_record(data_file, {"id": 4, "cons_acct_num": "44", "ecoa": "AE"})
+
+        results_summary = EvaluatorResultSummary.objects.create(
+            event=event,
+            evaluator=self.evaluator,
+            hits=4
+        )
+        EvaluatorResult.objects.create(
+            date=self.record1.activity_date,
+            result_summary=results_summary,
+            source_record=self.record1,
+        )
+        EvaluatorResult.objects.create(
+            date=self.record2.activity_date,
+            result_summary=results_summary,
+            source_record=self.record2
+        )
+        EvaluatorResult.objects.create(
+            date=self.record3.activity_date,
+            result_summary=results_summary,
+            source_record=self.record3
+        )
+        EvaluatorResult.objects.create(
+            date=self.record4.activity_date,
+            result_summary=results_summary,
+            source_record=self.record4
+        )
+
+    def test_get_flat_related_fields(self):
+        serializer = EvaluatorResultAccountActivitySerializer(
+            self.record1,
+            evaluator=self.evaluator,
+        )
+
+        related_fields = serializer.get_flat_related_fields()
+
+        # Make sure we have fields from AccountHolder
+        self.assertTrue(
+            any(key.startswith("account_holder") for key in related_fields)
+        )
+
+        # Make sure that models we *don't* want aren't included,
+        # like EvaluatorResult
+        self.assertFalse(
+            any(key.startswith("evaluatorresult") for key in related_fields)
+        )
+
+    def test_serialize_single(self):
+        serializer = EvaluatorResultAccountActivitySerializer(
+            self.record1,
+            evaluator=self.evaluator,
+        )
+        result_data = serializer.data
+        # The record only has the number of fields in the
+        # evaluator.result_summary_fields()
+        self.assertEqual(
+            len(result_data),
+            len(self.evaluator.result_summary_fields())
+        )
+
+    def test_serialize_multiple(self):
+        serializer = EvaluatorResultAccountActivitySerializer(
+            [self.record1, self.record2, self.record3, self.record4],
+            evaluator=self.evaluator,
+            many=True,
+        )
+        result_data = serializer.data
+        # There are four serialized records
+        self.assertEqual(len(result_data), 4)
+
+        first_result = result_data[0]
+        # The records only have the number of fields in the
+        # evaluator.result_summary_fields()
+        self.assertEqual(
+            len(first_result),
+            len(self.evaluator.result_summary_fields())
+        )
