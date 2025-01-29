@@ -125,6 +125,25 @@ class EvaluateViewsTestCase(TestCase):
                 event=self.event, evaluator=self.stat_dofd_2, hits=0, accounts_affected=0,
                 inconsistency_start=acct_date, inconsistency_end=acct_date)
 
+    ########################################
+    # Tests for Eval Metadata download
+    def test_download_eval_metadata(self):
+        response = self.client.get('/api/all-evaluator-metadata/')
+
+        # the response should be a CSV
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'text/csv')
+        self.assertIn('filename=evaluator-metadata',
+            response.headers['Content-Disposition'])
+
+        # the CSV should contain info about the evals
+        csv_content = response.content.decode('utf-8')
+        for item in EvaluatorMetadataSerializer(self.stat_dofd_1).data:
+            self.assertIn(item, csv_content)
+        for item in EvaluatorMetadataSerializer(self.stat_dofd_4).data:
+            self.assertIn(item, csv_content)
+        for item in EvaluatorMetadataSerializer(self.stat_dofd_6).data:
+            self.assertIn(item, csv_content)
 
     ########################################
     # Tests for Eval Results CSV download
