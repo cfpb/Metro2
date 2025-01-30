@@ -42,6 +42,6 @@ class Command(BaseCommand):
         # Delete the file
         datafile.delete()
 
-        self.stdout.write(
+        logger.xxx(
             self.style.SUCCESS(f"Finished deleting `{file_name}` for event: {event.name}.")
         )

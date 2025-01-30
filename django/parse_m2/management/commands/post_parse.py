@@ -1,3 +1,5 @@
+import logging
+
 from django.core.management.base import BaseCommand, CommandError
 from parse_m2.initiate_post_parsing import post_parse
 from parse_m2.models import Metro2Event
@@ -19,6 +21,7 @@ class Command(BaseCommand):
         argparser.add_argument("-e", "--event_id", nargs="?", required=True, help=event_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.post_parse')
         event_id = options["event_id"]
 
         # Fetch the Metro2Event
@@ -28,19 +31,19 @@ class Command(BaseCommand):
             # If the event doesn't exist, exit
             raise CommandError(f"No event found with id {event_id}. Exiting.")
 
-        self.stdout.write(f"Beginning post-parse process for event: {event.name}.")
+        logger.info(f"Beginning post-parse process for event: {event.name}.")
         post_parse(event)
 
-        self.stdout.write(f"Done. Generating report...")
+        logger.info(f"Done. Generating report...")
 
         record_set = event.get_all_account_activity()
 
         total_updated = record_set.filter(previous_values_id__isnull=False).count()
-        self.stdout.write(f"Records with a previous record associated: {total_updated}")
+        logger.info(f"Records with a previous record associated: {total_updated}")
 
         total_not_updated = record_set.filter(previous_values_id__isnull=True).count()
-        self.stdout.write(f"Records with NO previous record associated: {total_not_updated}")
+        logger.info(f"Records with NO previous record associated: {total_not_updated}")
 
-        self.stdout.write(
+        logger.info(
             self.style.SUCCESS(f"Finished post-parse for event ID: {event_id}.")
         )

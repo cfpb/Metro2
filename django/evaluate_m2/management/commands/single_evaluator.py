@@ -1,3 +1,5 @@
+import logging
+
 from django.core.management.base import BaseCommand, CommandError
 from evaluate_m2.models import EvaluatorResultSummary, EvaluatorMetadata
 from evaluate_m2.evaluate import Evaluate
@@ -21,6 +23,7 @@ class Command(BaseCommand):
         argparser.add_argument("-n", "--eval_name", nargs="?", required=False, help=name_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.single_evaluator')
         event_id = options["event_id"]
         eval_name = options["eval_name"]
 
@@ -46,14 +49,14 @@ class Command(BaseCommand):
         evaluator.evaluators = {eval_name: func}  # Set that eval as the only one to run
 
         # Delete results of previous evaluator run
-        self.stdout.write(f"Checking if EvaluatorResultSummary records exist for event ID: {event_id}.")
+        logger.info(f"Checking if EvaluatorResultSummary records exist for event ID: {event_id}.")
         eval_results = EvaluatorResultSummary.objects.filter(event=event, evaluator__id=eval_name)
         if eval_results.exists():
-            self.stdout.write(f"Deleting results from previous run of this evaluator.")
+            logger.info(f"Deleting results from previous run of this evaluator.")
             eval_results.delete()
 
-        self.stdout.write(f"Beginning to run {eval_name}...")
+        logger.info(f"Beginning to run {eval_name}...")
         evaluator.run_evaluators(event)
-        self.stdout.write(
+        logger.info(
             self.style.SUCCESS(f"Finished running evaluator {eval_name} for event ID: {event_id} and saving results.")
         )

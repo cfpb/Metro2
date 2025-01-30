@@ -44,7 +44,7 @@ class Evaluate():
         Given an event, run all evaluators on the Account Activity associated
         to the event and save the results to the database.
         """
-        logger = logging.getLogger('evaluate.run_evaluators')  # noqa: F841
+        logger = logging.getLogger('evaluate.run_evaluators')
 
         record_set = event.get_all_account_activity()
         # run evaluators only if there are records in the record_set
