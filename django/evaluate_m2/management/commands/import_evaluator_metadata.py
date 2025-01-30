@@ -1,4 +1,6 @@
 import csv
+import logging
+
 from django.core.management.base import BaseCommand
 from evaluate_m2.models import EvaluatorMetadata
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
@@ -24,6 +26,8 @@ class Command(BaseCommand):
         argparser.add_argument("-f", "--file_path", nargs="?", required=False, help=dir_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.import_evaluator_metadata')
+
         file_path = options["file_path"]
 
         if not file_path:
@@ -45,7 +49,7 @@ class Command(BaseCommand):
                         from_json.save()
                         updated += 1
                     else:
-                        self.stdout.write(f"Error prevented updating {id}: {from_json.errors}")
+                        logger.warning(f"Error prevented updating {id}: {from_json.errors}")
                         skipped += 1
                 except EvaluatorMetadata.DoesNotExist:
                     from_json = EvaluatorMetadataSerializer(data=row)
@@ -53,9 +57,9 @@ class Command(BaseCommand):
                         from_json.save()
                         new += 1
                     else:
-                        self.stdout.write(f"Error prevented creating {id}: {from_json.errors}")
+                        logger.warning(f"Error prevented creating {id}: {from_json.errors}")
                         skipped += 1
 
-        self.stdout.write(f"Read all {rows_count} rows of the CSV.")
-        self.stdout.write(f"Created {new} and updated {updated} existing evaluators. Skipped {skipped}.")
-        self.stdout.write(f"{EvaluatorMetadata.objects.count()} total evaluators now exist.")
+        logger.info(f"Read all {rows_count} rows of the CSV.")
+        logger.info(f"Created {new} and updated {updated} existing evaluators. Skipped {skipped}.")
+        logger.info(f"{EvaluatorMetadata.objects.count()} total evaluators now exist.")

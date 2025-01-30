@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from evaluate_m2.evaluate import evaluator
@@ -24,6 +26,7 @@ class Command(BaseCommand):
         argparser.add_argument("-e", "--event_id", nargs="?", required=True, help=event_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.parse_evaluate')
         event_id = options["event_id"]
 
         # Fetch the Metro2Event
@@ -36,34 +39,34 @@ class Command(BaseCommand):
         # Delete results of previous parse
         parsed_files = M2DataFile.objects.filter(event=event)
         if parsed_files.exists():
-            self.stdout.write(f"Deleting {parsed_files.count()} existing M2DataFile records for this event.")
+            logger.info(f"Deleting {parsed_files.count()} existing M2DataFile records for this event.")
             parsed_files.delete()
         else:
-            self.stdout.write("No existing parsed files.")
+            logger.info("No existing parsed files.")
 
         # Delete results of previous evaluator run
         eval_results = EvaluatorResultSummary.objects.filter(event=event)
         if eval_results.exists():
-            self.stdout.write(f"Deleting results of {eval_results.count()} evaluators from previous run of this event.")
+            logger.info(f"Deleting results of {eval_results.count()} evaluators from previous run of this event.")
             eval_results.delete()
         else:
-            self.stdout.write("No existing evaluator results.")
+            logger.info("No existing evaluator results.")
 
         # Parse the data
-        self.stdout.write(f"Parsing files from {event.directory} directory...")
+        logger.info(f"Parsing files from {event.directory} directory...")
         if settings.SSO_ENABLED:
             parse_files_from_s3_bucket(event)
         else:
             parse_files_from_local_filesystem(event)
 
-        self.stdout.write(
+        logger.info(
             self.style.SUCCESS(f"Finished parsing data for event: {event.name}.")
         )
-        self.stdout.write(f"Beginning post parsing process for event: {event.name}.")
+        logger.info(f"Beginning post parsing process for event: {event.name}.")
         post_parse(event)
         # Run the evaluators
-        self.stdout.write(f"Beginning evaluators for event: {event.name}...")
+        logger.info(f"Beginning evaluators for event: {event.name}...")
         evaluator.run_evaluators(event)
-        self.stdout.write(
+        logger.info(
             self.style.SUCCESS(f"Finished running evaluators for event ID: {event_id} and saving results.")
         )

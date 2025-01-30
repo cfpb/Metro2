@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
@@ -21,6 +23,7 @@ class Command(BaseCommand):
         argparser.add_argument("-e", "--event_id", nargs="?", required=True, help=event_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.parse')
         event_id = options["event_id"]
 
         # Fetch the Metro2Event
@@ -31,12 +34,12 @@ class Command(BaseCommand):
             raise CommandError(f"No event found with id {event_id}. Exiting.")
 
         # Parse the data
-        self.stdout.write(f"Parsing files from {event.directory} directory...")
+        logger.info(f"Parsing files from {event.directory} directory...")
         if settings.S3_ENABLED:
             parse_files_from_s3_bucket(event, skip_existing=True)
         else:
             parse_files_from_local_filesystem(event, skip_existing=True)
 
-        self.stdout.write(
+        logger.info(
             self.style.SUCCESS(f"Finished parsing data for event: {event.name}.")
         )

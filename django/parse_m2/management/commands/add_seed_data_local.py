@@ -1,3 +1,5 @@
+import logging
+
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
@@ -28,30 +30,31 @@ class Command(BaseCommand):
         argparser.add_argument("-d", "--data_directory", nargs="?", required=False, help=dir_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.single_evaluator')
         event_name = options["event_name"]
         data_directory = options["data_directory"]
 
         if not data_directory:
-            self.stdout.write(f"Using default file location for Metro2 files: `{self.default_location}`.")
+            logger.info(f"Using default file location for Metro2 files: `{self.default_location}`.")
             data_directory = self.default_location
 
         if not Metro2Event.objects.filter(name=event_name).exists():
-            self.stdout.write(f"Event Record does not exist for event name: {event_name}.")
+            logger.info(f"Event Record does not exist for event name: {event_name}.")
 
             # Create a new Metro2Event. All records parsed will be associated with this Event.
             event = Metro2Event(name=event_name, directory=data_directory)
             event.save()
-            self.stdout.write( f"Created an event record with name {event_name}. ID: {event.id}")
+            logger.info( f"Created an event record with name {event_name}. ID: {event.id}")
 
-            self.stdout.write(f"Parsing files from local filesystem in `{data_directory}` directory.")
+            logger.info(f"Parsing files from local filesystem in `{data_directory}` directory.")
             parse_files_from_local_filesystem(event)
 
-            self.stdout.write(f"Beginning post parsing process for event: {event.name}.")
+            logger.info(f"Beginning post parsing process for event: {event.name}.")
             post_parse(event)
-            self.stdout.write(f"Beginning evaluators for event: {event.name}.")
+            logger.info(f"Beginning evaluators for event: {event.name}.")
             evaluator.run_evaluators(event)
-            self.stdout.write(
+            logger.info(
                 self.style.SUCCESS(f"Finished running evaluators and saving results."))
 
         else:
-            self.stdout.write(f"An event record already exists for event name: {event_name}. No changes will be made.")
+            logger.info(f"An event record already exists for event name: {event_name}. No changes will be made.")

@@ -1,3 +1,5 @@
+import logging
+
 from parse_m2.models import Metro2Event
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
@@ -11,6 +13,7 @@ class Command(BaseCommand):
         parser.add_argument('--user', help="Username of user to add to the event")
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.s3_connection_test')
         username_input = options['user']
         event_name = options['event']
 
@@ -25,4 +28,4 @@ class Command(BaseCommand):
         # Add the user to the event
         evt.members.add(usr)
 
-        self.stdout.write(self.style.SUCCESS(f"User {username_input} is now a member of event {event_name}"))
+        logger.info(self.style.SUCCESS(f"User {username_input} is now a member of event {event_name}"))

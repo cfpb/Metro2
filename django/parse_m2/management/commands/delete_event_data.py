@@ -1,3 +1,5 @@
+import logging
+
 from django.core.management.base import BaseCommand, CommandError
 from parse_m2.models import Metro2Event, M2DataFile
 from evaluate_m2.models import EvaluatorResultSummary
@@ -18,6 +20,7 @@ class Command(BaseCommand):
         argparser.add_argument("-e", "--event_id", nargs="?", required=True, help=event_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.delete_event_data')
         event_id = options["event_id"]
 
         # Fetch the Metro2Event
@@ -28,22 +31,22 @@ class Command(BaseCommand):
             raise CommandError(f"No event found with id {event_id}. Exiting.")
 
         # Delete results of previous evaluator run
-        self.stdout.write(f"Checking if EvaluatorResultSummary records exist for event ID: {event_id}.")
+        logger.info(f"Checking if EvaluatorResultSummary records exist for event ID: {event_id}.")
         eval_results = EvaluatorResultSummary.objects.filter(event=event)
         if eval_results.exists():
-            self.stdout.write(f"Deleting results of {eval_results.count()} evaluators from previous run of this event.")
+            logger.info(f"Deleting results of {eval_results.count()} evaluators from previous run of this event.")
             eval_results.delete()
 
         # Delete results of previous parse
-        self.stdout.write(f"Checking if M2DataFile records exist for event ID: {event_id}.")
+        logger.info(f"Checking if M2DataFile records exist for event ID: {event_id}.")
         parsed_files = M2DataFile.objects.filter(event=event)
         if parsed_files.exists():
             # Remove all "previous values" associations, since they prevent deleting files
             event.get_all_account_activity().update(previous_values_id=None)
 
-            self.stdout.write(f"Deleting {parsed_files.count()} existing files.")
+            logger.info(f"Deleting {parsed_files.count()} existing files.")
             parsed_files.delete()
 
-        self.stdout.write(
+        logger.info(
             self.style.SUCCESS(f"Finished deleting data for event: {event.name}.")
         )

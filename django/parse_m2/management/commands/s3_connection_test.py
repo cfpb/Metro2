@@ -1,3 +1,5 @@
+import logging
+
 from django.core.management.base import BaseCommand
 from parse_m2.initiate_parsing_s3 import s3_bucket_files
 from django.conf import settings
@@ -17,20 +19,21 @@ class Command(BaseCommand):
         argparser.add_argument("-d", "--s3_directory", nargs="?", required=False, help=dir_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.s3_connection_test')
         s3_directory = options["s3_directory"]
         if not s3_directory:
             s3_directory = 'test-tiny'
 
         bucket_name = settings.S3_BUCKET_NAME
-        self.stdout.write(f"Using S3 bucket defined in settings file: {bucket_name}")
+        logger.info(f"Using S3 bucket defined in settings file: {bucket_name}")
 
-        self.stdout.write(f"Finding all files in S3 bucket with prefix: {s3_directory}")
+        logger.info(f"Finding all files in S3 bucket with prefix: {s3_directory}")
         count = 0
         for file in s3_bucket_files(s3_directory):
-            self.stdout.write(f" * {file.key}")
+            logger.info(f" * {file.key}")
             count += 1
 
-        self.stdout.write(f"Total files found: {count}")
-        self.stdout.write(
+        logger.info(f"Total files found: {count}")
+        logger.info(
             self.style.SUCCESS("Successfully connected to the S3 bucket.")
         )

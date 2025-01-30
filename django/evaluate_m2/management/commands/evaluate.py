@@ -1,4 +1,5 @@
-from django.core.exceptions import ObjectDoesNotExist
+import logging
+
 from django.core.management.base import BaseCommand, CommandError
 from evaluate_m2.models import EvaluatorResultSummary
 from evaluate_m2.evaluate import evaluator
@@ -26,6 +27,7 @@ class Command(BaseCommand):
         argparser.add_argument("-e", "--event_id", nargs="?", required=True, help=event_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.evaluate')
         event_id = options["event_id"]
 
         # Fetch the Metro2Event
@@ -36,14 +38,14 @@ class Command(BaseCommand):
             raise CommandError(f"No event found with id {event_id}. Exiting.")
 
         # Delete results of previous evaluator run
-        self.stdout.write(f"Checking if EvaluatorResultSummary records exist for event ID: {event_id}.")
+        logger.info(f"Checking if EvaluatorResultSummary records exist for event ID: {event_id}.")
         eval_results = EvaluatorResultSummary.objects.filter(event=event)
         if eval_results.exists():
-            self.stdout.write(f"Deleting results of {eval_results.count()} evaluators from previous run of this event.")
+            logger.info(f"Deleting results of {eval_results.count()} evaluators from previous run of this event.")
             eval_results.delete()
 
-        self.stdout.write(f"Beginning evaluators for event: {event.name}...")
+        logger.info(f"Beginning evaluators for event: {event.name}...")
         evaluator.run_evaluators(event)
-        self.stdout.write(
+        logger.info(
             self.style.SUCCESS(f"Finished running evaluators for event ID: {event_id} and saving results.")
         )
