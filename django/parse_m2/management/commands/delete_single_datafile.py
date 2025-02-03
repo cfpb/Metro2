@@ -1,3 +1,5 @@
+import logging
+
 from django.core.management.base import BaseCommand, CommandError
 from parse_m2.models import Metro2Event, M2DataFile
 
@@ -22,6 +24,7 @@ class Command(BaseCommand):
         argparser.add_argument("-f", "--file_name", nargs="?", required=True, help=filename_help)
 
     def handle(self, *args, **options):
+        logger = logging.getLogger('commands.delete_single_datafile')
         event_id = options["event_id"]
         file_name = options["file_name"]
 
@@ -42,6 +45,6 @@ class Command(BaseCommand):
         # Delete the file
         datafile.delete()
 
-        logger.xxx(
+        logger.info(
             self.style.SUCCESS(f"Finished deleting `{file_name}` for event: {event.name}.")
         )
