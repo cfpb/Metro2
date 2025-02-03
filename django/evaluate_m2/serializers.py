@@ -10,9 +10,8 @@ from .models import (
 from evaluate_m2.metadata_utils import (
     code_to_plain_field_map,
     plain_to_code_field_map,
-    format_fields_used_for_csv,
-    parse_fields_display_from_csv,
-    parse_fields_used_from_csv
+    format_fields_for_csv,
+    parse_fields_from_csv
 )
 
 class EventsViewSerializer(serializers.ModelSerializer):
@@ -112,10 +111,9 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         fields_display = [code_to_plain_field_map.get(k, k) for k in json['fields_display']]
 
         # Then override fields_used with the newline-delimited string version
-        json['fields_used'] = format_fields_used_for_csv(fields_used, fields_display)
+        json['fields_used'] = format_fields_for_csv(fields_used)
+        json['fields_display'] = format_fields_for_csv(fields_display)
 
-        # Remove fields_display, since that isn't a separate column in the csv
-        json.pop('fields_display')
         return json
 
     def to_internal_value(self, data):
@@ -126,11 +124,10 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         # First, get the default values
         vals = super().to_internal_value(data)
 
-        # from the `fields_used` column in the spreadsheet, get the
-        # fields_used and fields_display values from the newline-delimited string
-        source_fields_used = vals['fields_used']
-        vals['fields_used'] = parse_fields_used_from_csv(source_fields_used)
-        vals['fields_display'] = parse_fields_display_from_csv(source_fields_used)
+        # get the fields_used and fields_display values from the
+        # newline-delimited string columns of the SSoTS
+        vals['fields_used'] = parse_fields_from_csv(vals['fields_used'])
+        vals['fields_display'] = parse_fields_from_csv(vals['fields_display'])
 
         # Then translate the fields from plain language to code
         vals['fields_used'] = [plain_to_code_field_map.get(k, k) \
