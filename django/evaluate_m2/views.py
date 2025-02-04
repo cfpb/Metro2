@@ -23,7 +23,6 @@ from evaluate_m2.pagination import EvaluatorResultsPaginator
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
     EventsViewSerializer,
-    EvaluatorResultAccountActivitySerializer
 )
 from evaluate_m2 import upload_utils
 from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
@@ -305,9 +304,9 @@ class EvaluatorResultsView(generics.ListAPIView):
         # sample view will be exactly one page long.
         page = self.paginate_queryset(results)
         paged_records = [result.source_record for result in page]
-        serializer = EvaluatorResultAccountActivitySerializer(
+        serializer = AccountActivitySerializer(
             paged_records,
-            evaluator=evaluator,
+            include_fields=evaluator.result_summary_fields(),
             many=True,
         )
         return self.get_paginated_response(serializer.data)

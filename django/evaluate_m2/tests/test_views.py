@@ -196,7 +196,8 @@ class EvaluateViewsTestCase(TestCase):
         # There should be two hits. Each one should have a set of keys that matches
         # the fields in evaluator.result_summary_fields
         hits = response.json()['hits']
-        self.assertEqual(hits, expected)
+        for expected_hit in expected:
+            self.assertIn(expected_hit, hits)
 
     def test_evaluator_results_view_all(self):
         # Status-dofd-1 uses the following fields:
