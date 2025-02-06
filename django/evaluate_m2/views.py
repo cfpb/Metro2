@@ -241,7 +241,6 @@ class EvaluatorResultsView(generics.ListAPIView):
         event_id = self.kwargs["event_id"]
         evaluator_id = self.kwargs["evaluator_id"]
 
-        # TODO: Or do we just include records for which there were results?
         queryset = EvaluatorResult.objects.filter(
             result_summary__event__id=event_id,
             result_summary__evaluator__id=evaluator_id,
