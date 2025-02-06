@@ -3,6 +3,11 @@ from django.conf import settings
 from django_application.file_utils import get_file_contents
 
 
+def s3_bucket_files(bucket_directory: str):
+    bucket_name = settings.S3_BUCKET_NAME
+    bucket = s3_resource().Bucket(bucket_name)
+    return bucket.objects.filter(Prefix=bucket_directory)
+
 def s3_resource():
     """
     Return a resource for use in uploading or downloading files to/from S3.

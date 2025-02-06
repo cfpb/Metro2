@@ -1,13 +1,12 @@
 import zipfile
 import io
 import logging
-from django.conf import settings
 
-from django_application.s3_utils import s3_resource
+from django_application.s3_utils import s3_bucket_files
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
 from parse_m2.initiate_parsing_utils import (
-    data_file, zip_file, get_extension, log_invalid_file_extension,
+    data_file, zip_file, log_invalid_file_extension,
     parse_file_from_zip, parsed_file_exists
 )
 
@@ -42,11 +41,6 @@ def parse_s3_file(file, event: Metro2Event, skip_existing: bool):
     logger.debug(f"Successfully opened file: {full_name}. Now parsing...")
     parser.parse_file_contents(fstream, file.size)
     logger.info(f'File {full_name} written to database.')
-
-def s3_bucket_files(bucket_directory: str):
-    bucket_name = settings.S3_BUCKET_NAME
-    bucket = s3_resource().Bucket(bucket_name)
-    return bucket.objects.filter(Prefix=bucket_directory)
 
 def parse_zip_file_contents_S3(zip_obj, event: Metro2Event, zipfile_name: str, skip_existing: bool):
     # TODO: If the files are large (>2GB), this method of streaming
