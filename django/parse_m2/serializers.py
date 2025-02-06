@@ -5,8 +5,6 @@ from .models import AccountActivity, AccountHolder, Metro2Event
 
 class AccountActivitySerializer(serializers.ModelSerializer):
     inconsistencies = serializers.SerializerMethodField(read_only=True)
-    account_holder__activity_date = serializers.SerializerMethodField()
-    account_holder__cons_acct_num = serializers.SerializerMethodField()
     account_holder__ecoa_assoc = serializers.SerializerMethodField()
     account_holder__surname = serializers.SerializerMethodField()
     account_holder__first_name = serializers.SerializerMethodField()
@@ -112,68 +110,63 @@ class AccountActivitySerializer(serializers.ModelSerializer):
         eval_ids = obj.evaluatorresult_set.values_list('result_summary__evaluator__id')
         return [x[0] for x in eval_ids]
 
-    def get_account_holder__activity_date(self, obj):
-            return obj.account_holder.activity_date
-
-    def get_account_holder__cons_acct_num(self, obj):
-            return obj.account_holder.cons_acct_num
 
     def get_account_holder__ecoa_assoc(self, obj):
-            return obj.account_holder.ecoa_assoc
+        return obj.account_holder.ecoa_assoc
 
     def get_account_holder__surname(self, obj):
-            return obj.account_holder.surname
+        return obj.account_holder.surname
 
     def get_account_holder__first_name(self, obj):
-            return obj.account_holder.first_name
+        return obj.account_holder.first_name
 
     def get_account_holder__middle_name(self, obj):
-            return obj.account_holder.middle_name
+        return obj.account_holder.middle_name
 
     def get_account_holder__gen_code(self, obj):
-            return obj.account_holder.gen_code
+        return obj.account_holder.gen_code
 
     def get_account_holder__ssn(self, obj):
-            return obj.account_holder.ssn
+        return obj.account_holder.ssn
 
     def get_account_holder__dob(self, obj):
-            return obj.account_holder.dob
+        return obj.account_holder.dob
 
     def get_account_holder__phone_num(self, obj):
-            return obj.account_holder.phone_num
+        return obj.account_holder.phone_num
 
     def get_account_holder__ecoa(self, obj):
-            return obj.account_holder.ecoa
+        return obj.account_holder.ecoa
 
     def get_account_holder__cons_info_ind(self, obj):
-            return obj.account_holder.cons_info_ind
+        return obj.account_holder.cons_info_ind
 
     def get_account_holder__cons_info_ind_assoc(self, obj):
-            return obj.account_holder.cons_info_ind_assoc
+        return obj.account_holder.cons_info_ind_assoc
 
     def get_account_holder__country_cd(self, obj):
-            return obj.account_holder.country_cd
+        return obj.account_holder.country_cd
 
     def get_account_holder__addr_line_1(self, obj):
-            return obj.account_holder.addr_line_1
+        return obj.account_holder.addr_line_1
 
     def get_account_holder__addr_line_2(self, obj):
-            return obj.account_holder.addr_line_2
+        return obj.account_holder.addr_line_2
 
     def get_account_holder__city(self, obj):
-            return obj.account_holder.city
+        return obj.account_holder.city
 
     def get_account_holder__state(self, obj):
-            return obj.account_holder.state
+        return obj.account_holder.state
 
     def get_account_holder__zip(self, obj):
-            return obj.account_holder.zip
+        return obj.account_holder.zip
 
     def get_account_holder__addr_ind(self, obj):
-            return obj.account_holder.addr_ind
+        return obj.account_holder.addr_ind
 
     def get_account_holder__res_cd(self, obj):
-            return obj.account_holder.res_cd
+        return obj.account_holder.res_cd
 
     def get_k1__orig_creditor_name(self, obj):
         if hasattr(obj, "k1"):
