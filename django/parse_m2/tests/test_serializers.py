@@ -99,9 +99,18 @@ class AccountActivitySerializerTestCase(TestCase):
     def test_account_activity_serializer_many_true(self):
         activity_records = [self.acct_activity]
         serializer = AccountActivitySerializer(activity_records, many=True)
-        json_output = JSONRenderer().render(serializer.data)
-        expected = JSONRenderer().render([self.json_representation])
-        self.assertEqual(json_output, expected)
+        self.assertEqual(serializer.data, [self.json_representation])
+
+    def test_account_activity_limited_fields(self):
+        include_fields = ["id", "acct_type"]
+        serializer = AccountActivitySerializer(
+            self.acct_activity, include_fields=include_fields
+        )
+        self.assertEqual(
+            serializer.data,
+            {k: v for k, v in self.json_representation.items() if k in include_fields},
+        )
+
 
 class AccountHolderSerializerTestCase(TestCase):
     def setUp(self) -> None:

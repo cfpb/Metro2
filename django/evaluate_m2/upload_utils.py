@@ -75,6 +75,9 @@ def stream_sample_results_json_to_s3(result_summary: EvaluatorResultSummary, rec
         json.dump(response, jsonFile, cls=DjangoJSONEncoder)
     logger.debug(f"Completed saving JSON file")
 
+# TODO: Combine this with and/or use the
+# EvaluatorResultAccountActivitySerializer for serializing the resulting
+# records.
 def generate_json_sample(result_summary: EvaluatorResultSummary, record_set):
     """
     Generate the JSON of evaluator results that is sent to the front-end

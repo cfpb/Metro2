@@ -66,11 +66,16 @@ hyundai2024,1331,2019-01-31,20121205047544,,0,13,1,,M,0,2019-01-26,0,,0
 
 ### Evaluator results view
 
-`/api/events/{event_id}/evaluator/{evaluator_id}/`
+`/api/events/{event_id}/evaluator/{evaluator_id}/?view={sample, all}&page={x}`
 
 GET - returns a JSON with a `hits` field composed of a list that contains one object per
 EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose ID matches
-`evaluator_id`) combo.
+`evaluator_id`) combo, and a `count` field that lists the count of results when paginating.
+
+It takes a parameter, `view` parameter which can be either `sample` or `all`.
+If `sample` is given then a sampling of the results that is one page long is returned.
+If `all` is given, then the first page of results is returned unless `page` is given
+with a page number.
 
 The keys in each EvaluatorResult object are the list of fields returned by the `result_summary_fields`
 method on the EvaluatorMetadata object. (i.e. the list of fields specified in the `fields_used` column
@@ -79,6 +84,7 @@ of the SSoTS, plus a few defaults)
 **Example response:**
 ```JSON
 {
+    "count": 1234,
     "hits": [
         {
             "id": 1026,

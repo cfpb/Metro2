@@ -1,10 +1,7 @@
-from collections import Counter
-from functools import reduce
 from rest_framework import serializers
 
 from .models import (
     EvaluatorMetadata,
-    EvaluatorResult,
     EvaluatorResultSummary
 )
 from evaluate_m2.metadata_utils import (
@@ -13,6 +10,7 @@ from evaluate_m2.metadata_utils import (
     format_fields_for_csv,
     parse_fields_from_csv
 )
+
 
 class EventsViewSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField(read_only=True)

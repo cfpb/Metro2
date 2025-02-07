@@ -196,6 +196,36 @@ class EvaluateViewsTestCase(TestCase):
         # There should be two hits. Each one should have a set of keys that matches
         # the fields in evaluator.result_summary_fields
         hits = response.json()['hits']
+        for expected_hit in expected:
+            self.assertIn(expected_hit, hits)
+
+    def test_evaluator_results_view_all(self):
+        # Status-dofd-1 uses the following fields:
+        #     acct_stat, dofd, amt_past_due, compl_cond_cd, smpa
+        # along with the fields that are always returned:
+        #     id, activity_date, cons_acct_num
+        expected = [{
+            'id': 32, 'activity_date': '2023-12-31', 'cons_acct_num': '0032',
+            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
+            'compl_cond_cd': '', 'smpa': 0
+        }, {
+            'id': 33, 'activity_date': '2023-12-31', 'cons_acct_num': '0033',
+            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
+            'compl_cond_cd': '', 'smpa': 0
+        },]
+
+        self.create_activity_data()
+        response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/?view=all')
+
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        # the response should return a hits field with a list of EvaluatorResult
+        # field_values
+        # There should be two hits. Each one should have a set of keys that matches
+        # the fields in evaluator.result_summary_fields
+        hits = response.json()['hits']
         self.assertEqual(hits, expected)
 
     def test_evaluator_results_view_max_20_results(self):
