@@ -10,6 +10,11 @@ class UnreadableFileException(Exception):
 class UnreadableLineException(Exception):
     pass
 
+trailer_format = r'.{4}TRAILER$'
+header_format = r'.{4}HEADER$'
+
+def is_header_line(line) -> bool:
+    return re.match(header_format, line[:10])
 
 def cast_to_type(input: str, type_str: str):
     """

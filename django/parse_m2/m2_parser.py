@@ -17,8 +17,6 @@ class M2FileParser():
     parser_version = "1.6"
 
     chunk_size = 2000  # TODO: determine a good number for this
-    header_format = r'.{4}HEADER$'
-    trailer_format = r'.{4}TRAILER$'
     any_non_whitespace = r'\S'
 
     def __init__(self, event: Metro2Event, filepath: str) -> None:
@@ -59,11 +57,8 @@ class M2FileParser():
             # if the header couldn't be parsed, don't try to parse the rest of the file
             raise parse_utils.UnreadableFileException(error_message)
 
-    def is_header_line(self, line) -> bool:
-        return re.match(self.header_format, line[:10])
-
     def handle_first_line_and_return_activity_date(self, first_line:str):
-        if self.is_header_line(first_line):
+        if parse_utils.is_header_line(first_line):
             # If it's a header, get the activity date
             return self.get_activity_date_from_header(first_line)
         else:
@@ -219,7 +214,7 @@ class M2FileParser():
             return parsed
 
         except parse_utils.UnreadableLineException as e:
-            if re.match(self.trailer_format, line[:11]):
+            if re.match(parse_utils.trailer_format, line[:11]):
                 # If the line is a trailer, ignore it
                 return
             else:
