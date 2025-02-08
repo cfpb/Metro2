@@ -22,6 +22,7 @@ describe('<EventList />', () => {
   it('renders an event list', async () => {
     renderWithProviders(<EventList heading='Test events' events={events} />)
     const eventHeading = await screen.findByTestId('event-heading')
+
     const eventItems = await screen.findAllByTestId('event-item')
     expect(eventHeading).toHaveTextContent('Test events')
     expect(eventItems).toHaveLength(2)

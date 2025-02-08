@@ -71,15 +71,15 @@ export default function AccountPage(): ReactElement {
       />
       <Summary accountData={accountData} eventData={eventData} />
 
-      <div className='content-row'>
-        <div className='download-row'>
-          <AccountDownloader
-            rows={rows}
-            fields={fields}
-            accountId={accountData.cons_acct_num}
-            eventData={eventData}
-          />
-        </div>
+      <div className='row row__download u-mt0 u-mb0'>
+        <AccountDownloader
+          rows={rows}
+          fields={fields}
+          accountId={accountData.cons_acct_num}
+          eventData={eventData}
+        />
+      </div>
+      <div className='row row__content'>
         <Table rows={rows} columnDefinitions={colDefs} />
       </div>
     </>

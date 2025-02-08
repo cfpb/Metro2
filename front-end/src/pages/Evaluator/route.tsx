@@ -1,17 +1,15 @@
-import type { UseQueryOptions } from '@tanstack/react-query'
-import { queryOptions } from '@tanstack/react-query'
-import { createRoute, defer, notFound } from '@tanstack/react-router'
+import { createRoute, notFound } from '@tanstack/react-router'
+import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
 import { userQueryOptions } from 'models/User'
-import type { AccountRecord } from 'utils/constants'
-import {
-  fetchData,
-  getEvaluatorDataFromEvent,
-  prepareAccountRecordData
-} from 'utils/utils'
+import { getEvaluatorDataFromEvent } from 'utils/utils'
+import type { z } from 'zod'
 import type Event from '../Event/Event'
 import { eventQueryOptions, eventRoute } from '../Event/route'
 import type EvaluatorMetadata from './Evaluator'
 import EvaluatorPage from './EvaluatorPage'
+import { evaluatorSearchSchema } from './EvaluatorUtils'
+
+// import { ZodEffects, ZodObject, ZodDefault, ZodPipeline, ZodType, ZodTypeDef, ZodCatch, ZodEnum, ZodTypeAny } from 'zod'
 
 export async function getEvaluator(
   eventData: Promise<Event>,
@@ -19,7 +17,6 @@ export async function getEvaluator(
 ): Promise<EvaluatorMetadata> {
   try {
     const data = await eventData
-    // const evaluator = data.evaluators.find(result => result.id === evaluatorId)
     const evaluator = getEvaluatorDataFromEvent(data, evaluatorId)
     if (evaluator) return evaluator
     // eslint-disable-next-line @typescript-eslint/no-throw-literal
@@ -33,41 +30,27 @@ export async function getEvaluator(
   }
 }
 
-export const fetchEvaluatorHits = async (
-  eventId: string,
-  evaluatorId: string
-): Promise<AccountRecord[]> => {
-  const url = `/api/events/${eventId}/evaluator/${evaluatorId}/`
-  const data: { hits: AccountRecord[] } = await fetchData(url, 'hits')
-  return prepareAccountRecordData(data.hits)
-}
-
-export const hitsQueryOptions = (
-  eventId: string,
-  evaluatorId: string
-): UseQueryOptions<AccountRecord[], Error, unknown, string[]> =>
-  queryOptions({
-    queryKey: ['event', eventId, 'evaluator', evaluatorId],
-    queryFn: async () => fetchEvaluatorHits(eventId, evaluatorId),
-    staleTime: 0
-  })
-
 const evaluatorRoute = createRoute({
   path: '/evaluators/$evaluatorId',
   getParentRoute: () => eventRoute,
+  shouldReload: false,
   component: EvaluatorPage,
+  // validateSearch: (
+  //   input: SearchSchemaInput & z.input<typeof evaluatorSearchSchema>
+  // ) => evaluatorSearchSchema.parse(input),
+  // validateSearch: zodValidator(evaluatorSearchSchema),
+  validateSearch: input =>
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    evaluatorSearchSchema.parse(input) as z.input<typeof evaluatorSearchSchema>,
   loader: async ({ context: { queryClient }, params: { eventId, evaluatorId } }) => {
     const userData = queryClient.ensureQueryData(userQueryOptions())
     const eventData = queryClient.ensureQueryData(eventQueryOptions(eventId))
     const evaluatorMetadata = getEvaluator(eventData, evaluatorId)
-    const evaluatorHits = queryClient.ensureQueryData(
-      hitsQueryOptions(eventId, evaluatorId)
-    )
+    void queryClient.ensureQueryData(evaluatorHitsQueryOptions(eventId, evaluatorId))
     return {
       userData: await userData,
       eventData: await eventData,
-      evaluatorMetadata: await evaluatorMetadata,
-      evaluatorHits: defer(evaluatorHits)
+      evaluatorMetadata: await evaluatorMetadata
     }
   }
 })

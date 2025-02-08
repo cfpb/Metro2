@@ -187,6 +187,7 @@ export const evaluatorSegmentMap = new Map([
   ['balance', 'Current balance'],
   ['ccc', 'Compliance condition code'],
   ['dateclosed', 'Date closed'],
+  ['dtcl', 'Date closed'],
   ['dateopen', 'Date open'],
   ['deferred', 'Deferred'],
   ['doai', 'Date of account information'],

@@ -41,10 +41,7 @@ describe('Event page', () => {
     table.verifyHeaders(expectedHeaders)
   })
   it('Should show correct number of evaluators', () => {
-    table.getBodyRows().should(
-      'have.length',
-      eventData.evaluators.length
-    )
+    table.getBodyRows().should('have.length', eventData.evaluators.length)
   })
   it('Should show correct evaluator value per row', () => {
     const fields = ['id', 'description', 'categories', 'hits', 'accounts_affected']

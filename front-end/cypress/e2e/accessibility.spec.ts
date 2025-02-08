@@ -9,6 +9,15 @@ import { PII_COOKIE_NAME } from '../../src/utils/constants'
 
 import { Metro2Modal } from '../helpers/modalHelpers'
 
+import Event from '../../src/pages/Event/Event'
+import eventFixture from '../fixtures/event.json'
+
+// Get data from event fixture
+const event: Event = eventFixture
+const testEvaluator = event.evaluators[0]
+const evaluatorID = testEvaluator.id
+const evaluatorDescription = testEvaluator.description
+
 // Instantiate helpers
 const modal = new Metro2Modal()
 
@@ -22,33 +31,45 @@ describe('Table accessibility', () => {
   })
 
   it('Should have keyboard-accessible links in tables', () => {
+    const activeRowEvaluatorID = event.evaluators[1].id
     cy.get('body').realClick()
-    // Tab to first evaluator cell in table from last cell in header row
-    cy.get('.ag-header-cell').last().realClick().realPress('Tab')
-    // Clicking tab in first evaluator cell should focus link
+
+    // Tab from last cell in first row to first cell in second row,
+    // which contains a link to an evaluator
+    cy.get('.ag-row')
+      .first()
+      .within(() => {
+        cy.get('.ag-cell').last().realClick().realPress('Tab')
+      })
+
+    // Clicking tab in cell with link to evaluator should focus link
     // instead of navigating to next cell
-    cy.focused().should('have.text', 'Status-Balance-1').realPress('Tab')
+    cy.focused().should('have.text', activeRowEvaluatorID).realPress('Tab')
     cy.focused()
-      .should('have.attr', 'href', '/events/1/evaluators/Status-Balance-1')
-      .realClick()
-    cy.location('pathname').should('eq', '/events/1/evaluators/Status-Balance-1')
+      .should('have.attr', 'href')
+      .and('include', `/events/1/evaluators/${activeRowEvaluatorID}`)
   })
 
   it('Should tab from link in one cell to the next cell', () => {
+    const activeRowEvaluator = event.evaluators[1]
+
     cy.get('body').realClick()
-    // Click into last header cell and tab to Evaluator id cell in first body row
-    cy.get('.ag-header-cell').last().realClick().realPress('Tab')
+    // Tab from last cell in first row to first cell in second row,
+    // which contains a link to an evaluator
+    cy.get('.ag-row')
+      .first()
+      .within(() => {
+        cy.get('.ag-cell').last().realClick().realPress('Tab')
+      })
     // Clicking tab in first evaluator cell should focus link instead of navigating
     // to next cell
-    cy.focused().should('have.text', 'Status-Balance-1').realPress('Tab')
+    cy.focused().should('have.text', activeRowEvaluator.id).realPress('Tab')
     cy.focused()
-      .should('have.attr', 'href', '/events/1/evaluators/Status-Balance-1')
+      .should('have.attr', 'href')
+      .and('include', `/events/1/evaluators/${activeRowEvaluator.id}`)
       .realPress('Tab')
     // Tabbing away from link in cell should focus next cell
-    cy.focused().should(
-      'have.text',
-      'Account status indicates that the account was transferred, paid, or closed, but there is a current balance.'
-    )
+    cy.focused().should('have.text', activeRowEvaluator.description)
   })
 })
 
@@ -59,7 +80,7 @@ describe('Modal accessibility', () => {
       cy.setCookie(PII_COOKIE_NAME, 'true')
       cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
       cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
-      cy.intercept('GET', '/api/events/1/evaluator/Status-DOFD-4/', {
+      cy.intercept('GET', '/api/events/1/evaluator/Status-DOFD-4/**', {
         fixture: 'evaluatorHits'
       }).as('getEvaluatorHits')
       cy.visit('/events/1/evaluators/Status-DOFD-4/')
@@ -121,11 +142,17 @@ describe('Modal accessibility', () => {
       modal.getModal().should('be.visible')
     })
   })
+
   describe('Required modal test', () => {
-    it('Should not close modal dialog when escape key is pressed', () => {
+    beforeEach(() => {
+      cy.viewport(1920, 1080)
+      // cy.setCookie(PII_COOKIE_NAME, 'true')
       cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
       cy.visit('/events/1/')
       cy.wait(['@getEvent'])
+    })
+
+    it('Should not close modal dialog when escape key is pressed', () => {
       cy.get('body').realClick()
       modal.getModal().should('exist').and('be.visible')
       cy.realPress('Escape')

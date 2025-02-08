@@ -12,7 +12,6 @@ export const columnTypes = {
   formattedNumber: {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
-    headerClass: 'ag-right-aligned-header',
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     valueFormatter: ({ value }: ValueFormatterParams): string => formatNumber(value)
   },
@@ -27,10 +26,8 @@ export const columnTypes = {
   currency: {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
-    headerClass: 'ag-right-aligned-header',
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    valueFormatter: ({ value }: ValueFormatterParams): string => formatUSD(value),
-    minWidth: 130
+    valueFormatter: ({ value }: ValueFormatterParams): string => formatUSD(value)
   }
 }
 
@@ -38,9 +35,9 @@ export const columnDefaults = {
   sortable: true,
   wrapHeaderText: true,
   autoHeaderHeight: true,
-  // TODO: set widths on each col type
   minWidth: 150,
-  suppressKeyboardEvent
+  suppressKeyboardEvent,
+  unSortIcon: true
 }
 
 export const gridOptionDefaults = {

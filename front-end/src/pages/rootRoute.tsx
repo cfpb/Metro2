@@ -12,19 +12,23 @@ interface RouterContext {
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: (): ReactElement => (
     <Suspense fallback={<LoadingOrError />}>
-      <header className='content-row m2-nav'>
+      <header className='row row__content m2-nav'>
         <div className='navbar'>
           <h1 className='h4'>
             <Link to='/'>Metro2 Evaluator Tool</Link>
           </h1>
           <div className='nav-items'>
             <div className='links'>
-             {<Link to='/guide' className='nav-item'>User guide</Link>}
+              <Link to='/guide' className='nav-item'>
+                User guide
+              </Link>
             </div>
           </div>
         </div>
       </header>
-      <Outlet />
+      <div className='loader_wrapper'>
+        <Outlet />
+      </div>
       {/* <TanStackRouterDevtools /> */}
     </Suspense>
   )

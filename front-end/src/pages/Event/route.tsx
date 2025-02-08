@@ -27,7 +27,7 @@ export const fetchEvent = async (eventId: string): Promise<Event> => {
 
 export const eventQueryOptions = (
   eventId: string
-): UseQueryOptions<Event, Error, unknown, string[]> =>
+): UseQueryOptions<Event, Error, Event, string[]> =>
   queryOptions({
     queryKey: ['events', eventId],
     queryFn: async () => fetchEvent(eventId)
