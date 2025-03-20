@@ -22,11 +22,28 @@ body,
 
 // global layout pattern
 // provides left / right padding and flex layout for the loader
-.content-row {
-  padding: unit((@grid_gutter-width / 2 / @base-font-size-px), em)
+.row {
+  margin: unit((@grid_gutter-width / 2 / @base-font-size-px), em)
     unit((@grid_gutter-width / @base-font-size-px), em);
   display: flex;
+}
+
+.row__content {
   flex-direction: column;
+}
+
+.row__download {
+  align-items: end;
+  justify-content: end;
+  margin-bottom: unit((@grid_gutter-width / 2 / @base-font-size-px), em);
+
+  h4 {
+    margin-bottom: 0;
+  }
+
+  .downloader {
+    margin-left: auto;
+  }
 }
 
 // remove extra padding from nav header and align nav-items
@@ -45,13 +62,14 @@ body,
 // Metro 2 header is a link but doesn't need link styling
 header h1 {
   font-size: 1.25rem !important;
+
   a {
     color: black !important;
   }
 }
 
 // Styles for summary content on evaluator and account pages
-.summary-row {
+.row__summary {
   margin-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
 
   h2 {
@@ -62,18 +80,6 @@ header h1 {
   ol,
   ul {
     margin-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
-  }
-}
-
-// styles for download button rows
-.download-row {
-  display: flex;
-  // justify-content: space-between;
-  align-items: end;
-  margin-bottom: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
-
-  .downloader {
-    margin-left: auto;
   }
 }
 
@@ -110,4 +116,61 @@ header h1 {
 
 .u-block {
   display: block;
+}
+
+.results__all {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background-color: @gray-10;
+
+  .results_sidebar {
+    width: 25%;
+    max-width: 500px;
+    max-height: 95vh;
+
+    legend {
+      display: block;
+      padding: unit((@grid_gutter-width / @base-font-size-px), em)
+        unit((@grid_gutter-width / @base-font-size-px), em) 0;
+    }
+
+    .filters-container {
+      max-height: calc(95vh - 6em);
+      overflow-y: scroll;
+
+      &_inner {
+        padding: 0 unit((@grid_gutter-width / @base-font-size-px), em)
+          unit((@grid_gutter-width / @base-font-size-px), em);
+      }
+    }
+  }
+
+  .results_table {
+    flex: 1;
+    margin-top: -5px;
+    background-color: @white;
+  }
+}
+
+.o-expandable-group__filters {
+  .o-expandable_header,
+  .o-expandable_content {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+.loader {
+  min-height: 90vh;
+}
+
+.filter-section {
+  max-height: 100vh;
+  height: 100%;
+
+  .wrapper {
+    height: 100%;
+    overflow-y: scroll;
+  }
 }

@@ -93,13 +93,12 @@ export const fetchData = async <TData>(
     // If unsuccessful, throw an error with the response
     // status (404, 500, etc) as its message.
 
+    const response = await fetch(url)
     if (delay) {
       // Temporary hack to show loading view
       // eslint-disable-next-line no-promise-executor-return
       await new Promise(r => setTimeout(r, delay))
     }
-
-    const response = await fetch(url)
     if (response.ok) return (await response.json()) as TData
     throw new Error(String(response.status))
   } catch (error) {
@@ -170,37 +169,6 @@ export const downloadFileFromURL = (url: string): void => {
   link.click()
 }
 
-// export const writeURLToFile = async (
-//   fileName: string,
-//   url: string
-// ): Promise<void> => {
-//   const handle = await showSaveFilePicker({
-//     suggestedName: fileName,
-//     // @ts-expect-error Typescript doesn't handle File System API well
-//     startIn: 'documents',
-//     types: [
-//       {
-//         description: 'CSVs',
-//         accept: {
-//           'text/csv': ['.csv']
-//         }
-//       }
-//     ]
-//   })
-//   // Create a FileSystemWritableFileStream to write to.
-//   const writable = await handle.createWritable()
-
-//   try {
-//     const response = await fetch(url)
-//     // Stream the response into the file.
-//     // pipeTo() closes the destination pipe by default, no need to close it.
-//     if (response.ok) return await response.body?.pipeTo(writable)
-//     throw new Error(String(response.status))
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-
 // Given a cookie name, value, and expire time (in days), sets a cookie.
 // Expire time defaults to 1 day.
 // TODO: consider whether to use cookieStore API (not supported in Safari)
@@ -236,3 +204,36 @@ export const getEvaluatorDataFromEvent = (
   evaluatorId: string
 ): EvaluatorMetadata | undefined =>
   data.evaluators.find((item: EvaluatorMetadata) => item.id === evaluatorId)
+
+/**
+ * Stringifies values without quotation marks or encoding
+ * @param {number | object | string} value - A value to stringify
+ * @returns {string} A string
+ */
+export function customStringify(value: number | object | string): string {
+  if (typeof value === 'string') return value
+  if (typeof value === 'number') return String(value)
+  if (typeof value === 'object') return JSON.stringify(value).replaceAll('"', '')
+  return ''
+}
+
+/**
+ * Generates a human-readable query string from a search object
+ * without encoding
+ * @param {object} search - Search object
+ * @returns {string} A query string or empty string
+ */
+export function stringifySearchParams(search: object | null | undefined): string {
+  if (typeof search !== 'object' || search === null) return ''
+  // Sort the items so they'll be in consistent order for react query
+  const searchItems = Object.keys(search).sort()
+  const searchParams = []
+  for (const key of searchItems) {
+    const value = search[key as keyof typeof search]
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (value !== null && value !== '') {
+      searchParams.push(`${key}=${customStringify(value)}`)
+    }
+  }
+  return searchParams.length > 0 ? `?${searchParams.join('&')}` : ''
+}

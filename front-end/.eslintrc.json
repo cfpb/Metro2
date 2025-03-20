@@ -5,7 +5,16 @@
     "node": true,
     "es2021": true
   },
-  "parser": "@typescript-eslint/parser",
+
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "project": ["tsconfig.json", "tsconfig.node.json"]
+  },
+  "ignorePatterns": [
+    "vite.config.ts",
+    "vitest.config.ts",
+    "src/components/Table/suppressKeyboardEvents.tsx"
+  ],
   "plugins": ["react-prefer-function-component"],
   "extends": [
     "eslint:all",

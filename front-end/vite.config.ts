@@ -18,6 +18,12 @@ export default defineConfig(({ mode }) => ({
       '100': true,
       reporter: ['text', 'lcov'],
       reportsDirectory: 'coverage'
+    },
+    onConsoleLog(log: string, type: 'stderr' | 'stdout'): false | void {
+      console.log('log in test:', log)
+      if (log === 'message from third party library' && type === 'stdout') {
+        return false
+      }
     }
   },
   plugins: [tsconfigPaths(), react(), ...(mode === 'test' ? [] : [eslintPlugin()])],

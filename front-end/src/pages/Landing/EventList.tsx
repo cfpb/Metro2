@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import type { EventMetadata } from 'pages/Event/Event'
 import type { ReactElement } from 'react'
-import { formatDate } from 'utils/formatters'
+import { formatDateRange } from 'utils/formatters'
 
 import './EventList.less'
 
@@ -15,7 +15,7 @@ export default function EventList({
   events
 }: EventListProperties): ReactElement {
   return (
-    <div className='content-row block u-mt15'>
+    <div className='row row__content block u-mt15'>
       {heading ? (
         <h2 className='h5' data-testid='event-heading'>
           {heading}
@@ -33,8 +33,12 @@ export default function EventList({
               : null}
           </h3>
           <h4 data-testid='event-date-range'>
-            Data from: {formatDate(event.date_range_start, true)} -{' '}
-            {formatDate(event.date_range_end, true)}
+            Data from:{' '}
+            {formatDateRange(
+              event.date_range_start,
+              event.date_range_end,
+              'abbreviatedText'
+            )}
           </h4>
           <p>
             <Link

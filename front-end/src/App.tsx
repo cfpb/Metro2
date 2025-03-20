@@ -6,6 +6,7 @@ import Loader from 'components/Loader/Loader'
 import WarningModal from 'components/Modals/WarningModal'
 import { PageHeader } from 'design-system-react'
 import type { ReactElement } from 'react'
+import { stringifySearchParams } from 'utils/utils'
 import './App.less'
 import routeTree from './router'
 
@@ -28,7 +29,9 @@ const router = createRouter({
   defaultPendingMs: 0,
   defaultPendingComponent: Loader,
   defaultErrorComponent: ErrorComponent,
-  defaultNotFoundComponent: NotFound
+  defaultNotFoundComponent: NotFound,
+  stringifySearch: stringifySearchParams,
+  getScrollRestorationKey: location => location.pathname
 })
 
 // Register the router instance for type safety

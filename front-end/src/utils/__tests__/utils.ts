@@ -1,5 +1,5 @@
 import { M2_FIELD_LOOKUPS } from 'utils/annotationLookups'
-import { addPHP1, annotateAccountRecords } from '../utils'
+import { addPHP1, annotateAccountRecords, stringifySearchParams } from '../utils'
 
 import {
   formatDate,
@@ -118,14 +118,22 @@ describe('formatUSD', () => {
 })
 
 describe('formatDate', () => {
-  it('returns a formatted string when passed a date string', () => {
-    expect(formatDate('2024-01-23')).toEqual('01/23/24')
-    expect(formatDate('2023-11-03')).toEqual('11/03/23')
+  // text: January 2024
+  // abbreviatedText: Jan 2024
+  // default: 01/04/24
+  it('returns a text formatted date when passed a date string and format type', () => {
+    expect(formatDate('2024-01-23', 'text')).toEqual('January 2024')
+    expect(formatDate('2023-11-03', 'text')).toEqual('November 2023')
   })
 
-  it('returns a shorthand date when passed a date string and flag', () => {
-    expect(formatDate('2024-01-23', true)).toEqual('Jan 2024')
-    expect(formatDate('2023-11-03', true)).toEqual('Nov 2023')
+  it('returns an abbreviated text date when passed a date string and format type', () => {
+    expect(formatDate('2024-01-23', 'abbreviatedText')).toEqual('Jan 2024')
+    expect(formatDate('2023-11-03', 'abbreviatedText')).toEqual('Nov 2023')
+  })
+
+  it('returns a default formatted date when passed a date string', () => {
+    expect(formatDate('2024-01-23')).toEqual('01/23/24')
+    expect(formatDate('2023-11-03')).toEqual('11/03/23')
   })
 
   it('returns empty string when passed a non-date-string value', () => {
@@ -184,5 +192,34 @@ describe('getM2Definition', () => {
         expect(definition).toEqual(lookup[value as keyof typeof lookup])
       }
     }
+  })
+})
+
+describe('stringifySearchParams', () => {
+  it('returns empty string for empty or null objects', () => {
+    expect(stringifySearchParams({})).toEqual('')
+    expect(stringifySearchParams(null)).toEqual('')
+  })
+
+  it('removes blank params', () => {
+    expect(stringifySearchParams({ test: '' })).toEqual('')
+  })
+
+  it('handles numbers and strings', () => {
+    const obj = {
+      third: 'three',
+      first: 'one',
+      second: '2'
+    }
+    expect(stringifySearchParams(obj)).toEqual('?first=one&second=2&third=three')
+  })
+
+  it('sorts params', () => {
+    const obj = {
+      third: 'three',
+      first: 'one',
+      second: 'two'
+    }
+    expect(stringifySearchParams(obj)).toEqual('?first=one&second=two&third=three')
   })
 })

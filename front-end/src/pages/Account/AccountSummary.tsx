@@ -71,7 +71,7 @@ export default function AccountSummary({
   )
 
   return (
-    <div className='content-row summary-row'>
+    <div className='row row__content row__summary'>
       <div className='content-l'>
         <div className='content-l_col content-l_col-1-3' data-testid='details'>
           <h2>Account Details</h2>
@@ -90,6 +90,10 @@ export default function AccountSummary({
                     params={{
                       eventId: String(eventData.id),
                       evaluatorId: inconsistency
+                    }}
+                    search={{
+                      page: 1,
+                      view: 'sample'
                     }}>
                     {inconsistency}
                   </Link>

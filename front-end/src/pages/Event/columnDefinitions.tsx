@@ -19,7 +19,8 @@ const getColumnDefinitions = (eventId: string): ColDef<EvaluatorMetadata>[] => [
     }): ReactElement => (
       <Link
         to='/events/$eventId/evaluators/$evaluatorId'
-        params={{ evaluatorId: data.id, eventId }}>
+        params={{ evaluatorId: data.id, eventId }}
+        search={{ page: 1, view: 'sample' }}>
         {value}
       </Link>
     )

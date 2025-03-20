@@ -140,11 +140,11 @@ describe(
         })
     })
     it('Should close the modal when the cancel button is clicked', () => {
-      modal.getModal().should('not.exist')
+      modal.getModal().should('not.be.visible')
       modal.openModal('Download account data')
       modal.getModal().should('be.visible')
       modal.closeModal()
-      modal.getModal().should('not.exist')
+      modal.getModal().should('not.be.visible')
     })
     it('Should not allow downloading unless privacy notice is accepted', () => {
       modal.openModal('Download account data')

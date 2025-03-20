@@ -6,7 +6,7 @@ interface ModalProperties {
   open: boolean
   children?: ReactNode
   interactionRequired?: boolean
-  onClose: () => void
+  onClose?: () => void
 }
 
 export function Modal({
@@ -30,7 +30,7 @@ export function Modal({
     if (interactionRequired) {
       e.preventDefault()
     } else {
-      onClose()
+      onClose?.()
     }
   }
 

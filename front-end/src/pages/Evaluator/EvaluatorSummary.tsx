@@ -4,11 +4,12 @@ import type User from 'models/User'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import {
-  formatDate,
+  formatDateRange,
   formatLongDescription,
   formatNumber
 } from '../../utils/formatters'
 import type EvaluatorMetadata from './Evaluator'
+import { explanatoryFields, sortExplanatoryFields } from './EvaluatorUtils'
 
 interface EvaluatorSummaryProperties {
   metadata: EvaluatorMetadata
@@ -18,33 +19,6 @@ interface EvaluatorSummaryProperties {
 
 const adminUrlPrefix = import.meta.env.DEV ? 'http://localhost:8000' : ''
 
-const explanatoryFields = new Map([
-  ['rationale', 'Rationale'],
-  ['potential_harm', 'Potential harm'],
-  ['crrg_reference', 'CRRG reference'],
-  ['alternate_explanation', 'Alternate explanation']
-])
-
-// An evaluator's metadata contains four fields that are
-// displayed in the 'How to evaluate these results' expandable.
-// Most of the fields won't be populated at first, so we
-// sort the fields into two lists, populated and empty, and
-// display each set separately in the expandable.
-const sortExplanatoryFields = (
-  metadata: EvaluatorMetadata
-): [string[], string[]] => {
-  const populatedFields: string[] = []
-  const emptyFields: string[] = []
-  for (const [field] of explanatoryFields.entries()) {
-    if (metadata[field as keyof EvaluatorMetadata]) {
-      populatedFields.push(field)
-    } else {
-      emptyFields.push(field)
-    }
-  }
-  return [populatedFields, emptyFields]
-}
-
 export default function EvaluatorSummary({
   metadata,
   user,
@@ -53,21 +27,14 @@ export default function EvaluatorSummary({
   const summaryItems = [
     {
       term: 'Data from',
-      definition:
-        event.date_range_start && event.date_range_end
-          ? `${formatDate(event.date_range_start)} - ${formatDate(
-              event.date_range_end
-            )}`
-          : ''
+      definition: formatDateRange(event.date_range_start, event.date_range_end)
     },
     {
       term: 'Duration of inconsistency',
-      definition:
-        metadata.inconsistency_start && metadata.inconsistency_end
-          ? `${formatDate(metadata.inconsistency_start)} - ${formatDate(
-              metadata.inconsistency_end
-            )}`
-          : ''
+      definition: formatDateRange(
+        metadata.inconsistency_start,
+        metadata.inconsistency_end
+      )
     },
     {
       term: 'Total inconsistencies',
@@ -86,7 +53,7 @@ export default function EvaluatorSummary({
   const [populatedFields, emptyFields] = sortExplanatoryFields(metadata)
 
   return (
-    <div className='content-row summary-row'>
+    <div className='row row__content row__summary' data-testid='evaluator-summary'>
       <div className='content-l'>
         <div className='content-l_col content-l_col-1-3'>
           <h3 className='h2'>Details</h3>
