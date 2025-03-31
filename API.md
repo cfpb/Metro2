@@ -66,7 +66,7 @@ hyundai2024,1331,2019-01-31,20121205047544,,0,13,1,,M,0,2019-01-26,0,,0
 
 ### Evaluator results view
 
-`/api/events/{event_id}/evaluator/{evaluator_id}/?view={sample, all}&page={x}`
+`/api/events/{event_id}/evaluator/{evaluator_id}/?view={sample, all}&page={x}&{additional field filters}`
 
 GET - returns a JSON with a `hits` field composed of a list that contains one object per
 EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose ID matches
@@ -76,6 +76,41 @@ It takes a parameter, `view` parameter which can be either `sample` or `all`.
 If `sample` is given then a sampling of the results that is one page long is returned.
 If `all` is given, then the first page of results is returned unless `page` is given
 with a page number.
+
+The following additional field filters can be added to the end of the query string, with
+either a single value to match exactly or a comma-separated list of values to match exactly.
+The special value `blank` represents an empty string to filter.
+
+For example, the value of `acct_type` to filter for might be given in the query string as
+`?acct_stat=11&view=all` or as `?acct_stat=11,13,61,62&view=all`.
+
+- `acct_type`
+- `acct_stat`
+- `compl_cond_cd`
+- `php`
+- `pmt_rating`
+- `spc_com_cd`
+- `terms_freq`
+- `account_holder__cons_info_ind`
+- `account_holder__cons_info_ind_assoc`
+- `l1__change_ind`
+
+The following field filters can be added as either a boolean `true` or `false`.
+
+For example, the value of `dofd` to filter for might be given in the query string as
+`?dofd=true&view=all` or as `?dofd=false&view=all`.
+
+- `dofd`
+- `date_closed`
+
+The following field filters accept value ranges.
+
+For example, the range of of values of `amt_past_due` to filter for might be given
+in the query string as `?amt_past_due_max=500&amt_past_due_min=400&view=all`.
+
+- `amt_past_due` as `amt_past_due_max`/`amt_past_due_min`
+- `current_bal` as `current_bal_max`/`current_bal_min`
+- `smpa` as `smpa_max`/`smpa_min`
 
 The keys in each EvaluatorResult object are the list of fields returned by the `result_summary_fields`
 method on the EvaluatorMetadata object. (i.e. the list of fields specified in the `fields_used` column
