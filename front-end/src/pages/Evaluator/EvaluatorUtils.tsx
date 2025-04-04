@@ -51,22 +51,44 @@ export const getResultsMessage = (
   } ${itemCount} out of ${resultsCount} results`
 }
 
-export const getFieldsToDisplay = (
+/**
+ * getTableFields()
+ *
+ * Generate list of fields that will appear as columns in the table for this evaluator's
+ * results.
+ *
+ * The results table for each evaluator shows a custom subset of M2 fields that are useful
+ * for understanding the scenario the specific evaluator is targeting.
+ *
+ * The list of fields displayed in the table is created by combining two lists from the evaluator's metadata
+ * (fields_used--fields that are actually checked by the evaluator, & fields_display--other helpful fields)
+ * with some default fields that are shown for each evaluator.
+ *
+ * We also check to see whether PHP is one of the fields for display in this table
+ * and, if so, add a PHP1 column next to PHP. (We use the first character of the 24 character
+ * payment history profile field in evaluators, but php1 values are separated out
+ * on the front end and not returned from the API.)
+ *
+ * TODO: PHP1 should be handled by the back end / API / appear in metadata fields_used lists
+ * TODO: PHP / PHP1 will soon be one of the fields that's shown for all evaluators
+ *       Will it be included in the metadata for each eval, or added here like 'activity_date'?
+ *
+ * @param {array} fields_used - list of fields used by this eval
+ * @param {array} fields_display - list of fields that are also relevant to this eval
+ * @returns {array} Returns a list of fields that will be columns in the results table
+ */
+
+export const getTableFields = (
   fields_used: string[],
   fields_display: string[]
 ): string[] => {
-  // Create list by combining fields_used and fields_display, each sorted alphabetically,
-  // with constant values consumer account number and activity date added at beginning
   const fields = [
     'cons_acct_num',
     'activity_date',
     ...fields_used.sort(),
     ...fields_display.sort()
   ]
-  // If php is present, add php1 right after it so they'll be adjacent columns.
-  // php1 does not appear in fields metadata lists
-  // & the values are not in the data returned by the API --
-  // they are generated on the front end when hits data is fetched
+
   const phpIndex = fields.indexOf('php')
   if (phpIndex > -1) fields.splice(phpIndex + 1, 0, 'php1')
 
@@ -76,8 +98,15 @@ export const getFieldsToDisplay = (
 export const evaluatorSearchSchema = z
   .object({
     view: fallback(z.enum(['all', 'sample']), 'sample').default('sample'),
-    page: fallback(z.number().gt(0), 1).default(1)
+    page: fallback(z.number().gt(0), 1).default(1),
+    amt_past_due_min: z.number().optional(),
+    amt_past_due_max: z.number().optional(),
+    current_bal_min: z.number().optional(),
+    current_bal_max: z.number().optional()
   })
   .transform((params): object =>
     params.view === 'sample' ? { ...params, page: 1 } : { ...params }
   )
+
+// eslint-disable-next-line @typescript-eslint/no-type-alias
+export type EvaluatorSearch = z.infer<typeof evaluatorSearchSchema>
