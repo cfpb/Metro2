@@ -7,14 +7,12 @@ import type { ReactElement } from 'react'
 import { useEffect } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import type EvaluatorMetadata from './Evaluator'
+import { getPageCount, getResultsMessage, getTableFields } from './EvaluatorUtils'
+import EvaluatorFilterSidebar from './filters/FilterSidebar'
+
 import EvaluatorDownloader from './EvaluatorDownloader'
 import EvaluatorResultsPagination from './EvaluatorResultsPagination'
 import EvaluatorTable from './EvaluatorTable'
-import {
-  getFieldsToDisplay,
-  getPageCount,
-  getResultsMessage
-} from './EvaluatorUtils'
 
 interface EvaluatorTableData {
   evaluatorMetadata: EvaluatorMetadata
@@ -26,16 +24,9 @@ export default function EvaluatorResults({
   eventData
 }: EvaluatorTableData): ReactElement {
   const navigate = useNavigate()
-  const query = useSearch({
-    // from: '/events/$eventId/evaluators/$evaluatorId' as const
-    strict: false
-  })
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
+  const query = useSearch({ strict: false })
   const { page, view } = query
-  // const page: number = typeof query.page === 'number' ? query.page : 1
-  // // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  // const view =
-  //   query.view === 'all' || query.view === 'sample' ? query.view : 'sample'
 
   // Fetch data from server
   const { data, isFetching } = useQuery<
@@ -48,7 +39,7 @@ export default function EvaluatorResults({
   const rows = data ?? []
 
   // Get list of fields to display for this evaluator
-  const fields = getFieldsToDisplay(
+  const fields = getTableFields(
     evaluatorMetadata.fields_used ?? [],
     evaluatorMetadata.fields_display ?? []
   )
@@ -62,7 +53,7 @@ export default function EvaluatorResults({
     if (typeof page === 'number' && (page > pageCount || page <= 0)) {
       void navigate({
         to: '.',
-        search: prev => ({ ...prev, page: 1 })
+        search: (prev: Record<string, unknown>) => ({ ...prev, page: 1 })
       })
     }
   })
@@ -85,6 +76,9 @@ export default function EvaluatorResults({
         </div>
         <div className='row row__content '>
           <div className={`results results__${view} u-mb30`}>
+            <div className='results_sidebar'>
+              {view === 'all' ? <EvaluatorFilterSidebar /> : null}
+            </div>
             <div className='results_table'>
               <EvaluatorTable data={rows} fields={fields} eventData={eventData} />
               {view === 'all' ? (

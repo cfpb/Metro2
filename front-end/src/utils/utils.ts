@@ -1,7 +1,7 @@
 import { notFound } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
-import type EvaluatorMetadata from 'pages/Evaluator/Evaluator'
 import type Event from 'pages/Event/Event'
+import type EvaluatorMetadata from 'types/Evaluator'
 import type { AccountRecord } from './constants'
 import { M2_FIELD_NAMES, PII_COOKIE_NAME } from './constants'
 
@@ -20,7 +20,7 @@ export const annotateAccountRecords = (records: AccountRecord[]): AccountRecord[
         ? val.map((item: number | string): number | string | null | undefined =>
             annotateValue(field, item)
           )
-        : annotateValue(field, val)
+        : annotateValue(field, val ?? '')
     }
     return obj
   })
@@ -56,8 +56,10 @@ export const prepareAccountRecordData = (
 
 // Given a string and a lookup map, returns either the string's value in the lookup
 // or, if the string is not found in the lookup, a capitalized version of the string
-export const getHeaderName = (field: string, lookup: Map<string, string>): string =>
-  lookup.get(field) ?? capitalized(field)
+export const getHeaderName = (
+  field: string,
+  lookup: Map<string, string> = M2_FIELD_NAMES
+): string => lookup.get(field) ?? capitalized(field)
 
 // Given a list of M2 fields and an object of field-specific col def props,
 // generate an array of AgGrid column definition objects
@@ -73,7 +75,7 @@ export const generateColumnDefinitions = (
 ): ColDef[] =>
   fields.map(field => ({
     field,
-    headerName: getHeaderName(field, M2_FIELD_NAMES),
+    headerName: getHeaderName(field),
     ...colDefProps[field]
   }))
 
@@ -213,6 +215,7 @@ export const getEvaluatorDataFromEvent = (
 export function customStringify(value: number | object | string): string {
   if (typeof value === 'string') return value
   if (typeof value === 'number') return String(value)
+  if (Array.isArray(value)) return value.sort((a, b) => a - b).join(',')
   if (typeof value === 'object') return JSON.stringify(value).replaceAll('"', '')
   return ''
 }
@@ -223,6 +226,7 @@ export function customStringify(value: number | object | string): string {
  * @param {object} search - Search object
  * @returns {string} A query string or empty string
  */
+
 export function stringifySearchParams(search: object | null | undefined): string {
   if (typeof search !== 'object' || search === null) return ''
   // Sort the items so they'll be in consistent order for react query
