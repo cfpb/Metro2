@@ -66,7 +66,7 @@ hyundai2024,1331,2019-01-31,20121205047544,,0,13,1,,M,0,2019-01-26,0,,0
 
 ### Evaluator results view
 
-`/api/events/{event_id}/evaluator/{evaluator_id}/?view={sample, all}&page={x}&{additional field filters}`
+`/api/events/{event_id}/evaluator/{evaluator_id}/?view={sample, all}&page={x}&page_size={y}&{additional field filters}`
 
 GET - returns a JSON with a `hits` field composed of a list that contains one object per
 EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose ID matches
@@ -75,7 +75,8 @@ EvaluatorResult for a single event (with the id `event_id`) and evaluator (whose
 It takes a parameter, `view` parameter which can be either `sample` or `all`.
 If `sample` is given then a sampling of the results that is one page long is returned.
 If `all` is given, then the first page of results is returned unless `page` is given
-with a page number.
+with a page number. If `page_size` is given it will set the number of results per page,
+otherwise the number of results per page will be the default sample size.
 
 The following additional field filters can be added to the end of the query string, with
 either a single value to match exactly or a comma-separated list of values to match exactly.
