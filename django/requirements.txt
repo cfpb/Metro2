@@ -1,14 +1,14 @@
-APScheduler==3.10.4
-asgiref==3.7.2
-coverage==7.4.0
+APScheduler==3.11.0
+asgiref==3.8.1
+coverage==7.8.0
 Django==4.2.20
 psycopg2-binary==2.9.10
-ruff==0.1.11
-boto3==1.35.76
-djangorestframework==3.15.2
-django-auth-adfs==1.14.0
-django-filter==24.3
-gunicorn==22.0.0
-whitenoise==6.6.0
-smart-open[s3]==7.0.5
-urllib3==2.2.3  # not required directly by Metro2; but pinned to avoid CVEs
+ruff==0.11.4
+boto3==1.37.29
+djangorestframework==3.16.0
+django-auth-adfs==1.15.0
+django-filter==25.1
+gunicorn==23.0.0
+whitenoise==6.9.0
+smart-open[s3]==7.1.0
+urllib3==2.3.0  # not required directly by Metro2; but pinned to avoid CVEs
