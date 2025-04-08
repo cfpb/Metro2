@@ -1,7 +1,7 @@
 APScheduler==3.10.4
 asgiref==3.7.2
 coverage==7.4.0
-Django==4.2.17
+Django==4.2.20
 psycopg2-binary==2.9.10
 ruff==0.1.11
 boto3==1.35.76
