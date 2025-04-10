@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
+import django_filters.rest_framework
 
 from django_application.s3_utils import s3_session
 from evaluate_m2.views_utils import (
@@ -27,6 +28,8 @@ from evaluate_m2.serializers import (
 from evaluate_m2 import upload_utils
 from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
+
+from evaluate_m2.filters import EvaluatorResultFilterSet
 
 
 @api_view(('GET',))
@@ -223,6 +226,10 @@ def fetch_json_results_from_s3(request, event_id, evaluator_id):
 
 class EvaluatorResultsView(generics.ListAPIView):
     pagination_class = EvaluatorResultsPaginator
+    filter_backends = [
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    filterset_class = EvaluatorResultFilterSet
 
     def get_result_summary(self):
         # Get the EvaluatorResultSummary object for this event_id and
@@ -247,6 +254,7 @@ class EvaluatorResultsView(generics.ListAPIView):
         ).select_related(
             "source_record"
         ).order_by("source_record__activity_date")
+
         return queryset
 
     def get(self, request, *args, **kwargs):
@@ -285,23 +293,22 @@ class EvaluatorResultsView(generics.ListAPIView):
         if settings.S3_ENABLED and view_param == "sample":
             return fetch_json_results_from_s3(request, event.id, evaluator.id)
 
-        # Get the result set
-        results = self.get_queryset()
+        # Get the result set, performing any filtering as needed
+        queryset = self.filter_queryset(self.get_queryset())
 
         # If we're asked for a sample, filter the result set by sample_ids
         if view_param == "sample":
             sample_ids = result_summary.sample_ids
-
             if sample_ids and (len(sample_ids) > 0):
-                results = results.filter(source_record__id__in=sample_ids)
+                queryset = queryset.filter(source_record__id__in=sample_ids)
             else:
-                # Select a random set of sample length from the queryset
-                results = results.order_by("?")[:settings.M2_RESULT_SAMPLE_SIZE]
+                # OR select a random set of sample length from the queryset
+                queryset = queryset.order_by("?")[:settings.M2_RESULT_SAMPLE_SIZE]
 
         # Regardless, paginate the results.
         # Pagination size should be the same as the sample size, so the
         # sample view will be exactly one page long.
-        page = self.paginate_queryset(results)
+        page = self.paginate_queryset(queryset)
         paged_records = [result.source_record for result in page]
         serializer = AccountActivitySerializer(
             paged_records,
