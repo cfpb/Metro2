@@ -1,6 +1,7 @@
 import { createRoute, notFound } from '@tanstack/react-router'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
 import { userQueryOptions } from 'models/User'
+import type Event from 'pages/Event/Event'
 import { getEvaluatorDataFromEvent } from 'utils/utils'
 import type { z } from 'zod'
 import { eventQueryOptions, eventRoute } from '../Event/route'

@@ -10,23 +10,24 @@ import {
 
 export interface EvaluatorHits {
   hits: AccountRecord[]
+  count: number
 }
 
 export const fetchEvaluatorHits = async (
   eventId: string,
   evaluatorId: string,
   searchParams: string
-): Promise<AccountRecord[]> => {
+): Promise<EvaluatorHits> => {
   const url = `/api/events/${eventId}/evaluator/${evaluatorId}/${searchParams}`
-  const data: EvaluatorHits = await fetchData(url, 'hits', 500)
-  return prepareAccountRecordData(data.hits)
+  const data: EvaluatorHits = await fetchData(url, 'hits')
+  return { count: data.count, hits: prepareAccountRecordData(data.hits) }
 }
 
 export const evaluatorHitsQueryOptions = (
   eventId: string,
   evaluatorId: string,
   query: object = {}
-): UseQueryOptions<AccountRecord[], Error, AccountRecord[], string[]> => {
+): UseQueryOptions<EvaluatorHits, Error, EvaluatorHits, string[]> => {
   const searchParams = stringifySearchParams(query)
   const key = ['event', eventId, 'evaluator', evaluatorId, 'query', searchParams]
   return queryOptions({

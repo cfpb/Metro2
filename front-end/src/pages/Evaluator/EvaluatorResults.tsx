@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import Loader from 'components/Loader/Loader'
+import type { EvaluatorHits } from 'models/EvaluatorHits'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { useEffect } from 'react'
-import type { AccountRecord } from 'utils/constants'
 import type EvaluatorMetadata from './Evaluator'
 import { getPageCount, getResultsMessage, getTableFields } from './EvaluatorUtils'
 import EvaluatorFilterSidebar from './filters/FilterSidebar'
@@ -27,16 +27,19 @@ export default function EvaluatorResults({
 
   const query = useSearch({ strict: false })
   const { page, view } = query
+  const isFiltered = Object.keys(query).some(
+    key => !['page', 'view', 'page_size'].includes(key)
+  )
 
   // Fetch data from server
   const { data, isFetching } = useQuery<
-    AccountRecord[],
+    EvaluatorHits,
     Error,
-    AccountRecord[],
+    EvaluatorHits,
     string[]
   >(evaluatorHitsQueryOptions(String(eventData.id), evaluatorMetadata.id, query))
 
-  const rows = data ?? []
+  const rows = data?.hits ?? []
 
   // Get list of fields to display for this evaluator
   const fields = getTableFields(
@@ -44,8 +47,9 @@ export default function EvaluatorResults({
     evaluatorMetadata.fields_display ?? []
   )
 
-  const hitsCount = evaluatorMetadata.hits
-  const pageCount = Math.ceil(hitsCount / 20)
+  const totalHits = evaluatorMetadata.hits
+  const currentHits = data?.count ?? 0
+  const pageCount = getPageCount(currentHits)
 
   // TODO: think about whether this is needed / when it should happen
   // should this be handled by the API?
@@ -64,8 +68,15 @@ export default function EvaluatorResults({
       <div className='evaluator-hits-row'>
         <div className='row row__download '>
           <div data-testid='results-message'>
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
-            <h4>{getResultsMessage(hitsCount, rows.length, view, page)}</h4>
+            <h4>
+              {getResultsMessage(
+                currentHits,
+                totalHits,
+                rows.length,
+                view,
+                isFiltered
+              )}
+            </h4>
           </div>
           <EvaluatorDownloader
             rows={rows}
@@ -83,10 +94,7 @@ export default function EvaluatorResults({
               <EvaluatorTable data={rows} fields={fields} eventData={eventData} />
               {view === 'all' ? (
                 <div className=''>
-                  <EvaluatorResultsPagination
-                    pageCount={getPageCount(hitsCount)}
-                    page={page}
-                  />
+                  <EvaluatorResultsPagination pageCount={pageCount} page={page} />
                 </div>
               ) : null}
             </div>
