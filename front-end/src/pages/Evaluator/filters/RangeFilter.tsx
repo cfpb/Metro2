@@ -3,11 +3,25 @@ import Accordion from 'components/Accordion/Accordion'
 import RangeFilter from 'components/Filters/RangeFilter/RangeFilter'
 import type { ReactElement } from 'react'
 import { getHeaderName } from 'utils/utils'
-import type { EvaluatorSearch } from '../utils/searchSchema'
+import type { EvaluatorSearch } from '../EvaluatorUtils'
 
 interface RangeFilterData {
-  field: keyof EvaluatorSearch
+  field: 'amt_past_due' | 'current_bal'
 }
+
+/**
+ * EvaluatorRangeFilter
+ *
+ * Manages filtering by min and max value for a Metro 2 dollar amount field.
+ *
+ *   1. Retrieves min and max values for the field from the query string.
+ *   2. Outputs an accordion containing range filter for the field.
+ *      Accordion will be open if min or max value exists in query string.
+ *   3. When min or max value is updated, calls navigate with new value.
+ *
+ * @param {string} field - name of a Metro 2 dollar amount field
+ *
+ */
 
 export default function EvaluatorRangeFilter({
   field
@@ -16,8 +30,13 @@ export default function EvaluatorRangeFilter({
 
   const [min, max] = useSearch({
     strict: false,
-    select: (search): number[] => [search[`${field}_min`], search[`${field}_max`]]
+    select: (search): (number | undefined)[] => [
+      search[`${field}_min`],
+      search[`${field}_max`]
+    ]
   })
+
+  const filtered = min !== undefined || max !== undefined
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = event.currentTarget
@@ -26,18 +45,18 @@ export default function EvaluatorRangeFilter({
       to: '.',
       search: prev => {
         const params = { ...prev }
-        if (value === null || value === undefined || value === '') {
-          delete params[name]
+        const num = Number(value)
+        if (value === '' || typeof num !== 'number') {
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+          delete params[name as keyof EvaluatorSearch]
         } else {
-          params[name] = Number(value)
+          ;(params[name as keyof EvaluatorSearch] as number) = num
         }
 
         return params
       }
     })
   }
-
-  const filtered = min !== undefined || max !== undefined
 
   return (
     <Accordion header={getHeaderName(field)} openOnLoad={filtered}>

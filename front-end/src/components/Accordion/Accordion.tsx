@@ -4,15 +4,11 @@ import { useState } from 'react'
 import { Icon } from 'design-system-react'
 import './Accordion.less'
 
-// TODO
-// Consider whether there's a non-interactive use case for ReactNode header content
-// where the full header could be the expandable target
-
 export interface AccordionProperties {
-  header: ReactNode | string
+  header: ReactNode
   children: ReactNode
   className?: string
-  inAccordionGroup?: boolean
+  // inAccordionGroup?: boolean
   openOnLoad?: boolean
   isPadded?: boolean
   hasBorder?: boolean
@@ -22,7 +18,7 @@ export interface AccordionProperties {
 export default function Accordion({
   header,
   children,
-  inAccordionGroup = false,
+  // inAccordionGroup = false,
   openOnLoad = false,
   className = '',
   isPadded = true,
