@@ -9,11 +9,12 @@ export default function EvaluatorResultsToggle(): ReactElement {
   })
   const navigate = useNavigate()
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     void navigate({
       resetScroll: false,
       to: '.',
-      search: prev => ({ ...prev, view: e.target.value as 'all' | 'sample' })
+      search: prev =>
+        event.target.value === 'all' ? { ...prev, view: 'all' } : { view: 'sample' }
     })
   }
 
