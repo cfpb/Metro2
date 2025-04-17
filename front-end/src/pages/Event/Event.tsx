@@ -1,4 +1,4 @@
-import type EvaluatorMetadata from '../Evaluator/Evaluator'
+import type EvaluatorMetadata from 'types/Evaluator'
 
 export interface EventMetadata {
   id: number

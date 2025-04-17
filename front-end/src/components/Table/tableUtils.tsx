@@ -45,5 +45,8 @@ export const gridOptionDefaults = {
   ensureDomOrder: true,
   skipHeaderOnAutoSize: true,
   suppressColumnVirtualisation: true,
-  suppressRowVirtualisation: true
+  suppressRowVirtualisation: true,
+  showNoRowsOverlay: true,
+  alwaysShowHorizontalScroll: true,
+  suppressRowTransform: true
 }

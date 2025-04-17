@@ -1,6 +1,6 @@
 import type { ColDef } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
-import type { ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import './Table.less'
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
@@ -36,12 +36,14 @@ interface TableProperties<T> {
   columnDefinitions: ColDef[]
   height?: 'fixed' | 'full'
   resizableColumns?: boolean
+  NoResultsMessage?: ReactNode
 }
 export default function Table<T extends object>({
   height = 'fixed',
   resizableColumns = true,
   rows,
-  columnDefinitions
+  columnDefinitions,
+  NoResultsMessage
 }: TableProperties<T>): ReactElement {
   // store row data in state
   const [rowData, setRowData] = useState(rows)
@@ -55,7 +57,9 @@ export default function Table<T extends object>({
 
   return (
     <div
-      className={`ag-theme-alpine data-grid-container data-grid-container--${tableHeight}-height`}
+      className={`ag-theme-alpine data-grid-container data-grid-container--${tableHeight}-height ${
+        NoResultsMessage ? 'data-grid-container--message' : ''
+      }`}
       data-testid='data-grid-container'>
       <AgGridReact
         rowData={rowData}
@@ -64,6 +68,7 @@ export default function Table<T extends object>({
         domLayout={tableHeight === 'fixed' ? 'normal' : 'autoHeight'}
         autoSizeStrategy={resizableColumns ? { type: 'fitCellContents' } : undefined}
         columnTypes={columnTypes}
+        noRowsOverlayComponent={NoResultsMessage ?? undefined}
         {...gridOptionDefaults}
       />
     </div>

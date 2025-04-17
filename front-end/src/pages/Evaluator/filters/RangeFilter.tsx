@@ -3,7 +3,7 @@ import Accordion from 'components/Accordion/Accordion'
 import RangeFilter from 'components/Filters/RangeFilter/RangeFilter'
 import type { ReactElement } from 'react'
 import { getHeaderName } from 'utils/utils'
-import type { EvaluatorSearch } from '../EvaluatorUtils'
+import type { EvaluatorSearch } from '../utils/searchSchema'
 
 interface RangeFilterData {
   field: 'amt_past_due' | 'current_bal'
