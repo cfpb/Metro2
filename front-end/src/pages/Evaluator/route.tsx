@@ -1,15 +1,13 @@
 import { createRoute, notFound } from '@tanstack/react-router'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
 import { userQueryOptions } from 'models/User'
+import type Event from 'pages/Event/Event'
 import { getEvaluatorDataFromEvent } from 'utils/utils'
 import type { z } from 'zod'
-import type Event from '../Event/Event'
 import { eventQueryOptions, eventRoute } from '../Event/route'
 import type EvaluatorMetadata from './Evaluator'
 import EvaluatorPage from './EvaluatorPage'
 import { evaluatorSearchSchema } from './EvaluatorUtils'
-
-// import { ZodEffects, ZodObject, ZodDefault, ZodPipeline, ZodType, ZodTypeDef, ZodCatch, ZodEnum, ZodTypeAny } from 'zod'
 
 export async function getEvaluator(
   eventData: Promise<Event>,
@@ -35,12 +33,7 @@ const evaluatorRoute = createRoute({
   getParentRoute: () => eventRoute,
   shouldReload: false,
   component: EvaluatorPage,
-  // validateSearch: (
-  //   input: SearchSchemaInput & z.input<typeof evaluatorSearchSchema>
-  // ) => evaluatorSearchSchema.parse(input),
-  // validateSearch: zodValidator(evaluatorSearchSchema),
   validateSearch: input =>
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     evaluatorSearchSchema.parse(input) as z.input<typeof evaluatorSearchSchema>,
   loader: async ({ context: { queryClient }, params: { eventId, evaluatorId } }) => {
     const userData = queryClient.ensureQueryData(userQueryOptions())

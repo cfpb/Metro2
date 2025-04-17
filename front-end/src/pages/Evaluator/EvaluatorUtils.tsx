@@ -2,7 +2,66 @@ import { fallback } from '@tanstack/router-zod-adapter'
 import { z } from 'zod'
 import type EvaluatorMetadata from './Evaluator'
 
-export const ITEMS_PER_PAGE = 20
+import { formatNumber } from 'utils/formatters'
+
+export const ITEMS_PER_PAGE = 200
+
+/**
+ * getPageCount()
+ *
+ * Divides results count by number of items displayed per page
+ * to get number of pages in the current set of evaluator results.
+ *
+ * @param {number} resultsCount - the total number of results
+ * @returns {number} The number of pages in the results
+ * @example resultsCount: 2100
+ *          returns: 11
+ */
+
+export const getPageCount = (resultsCount: number): number =>
+  resultsCount === 0 ? 0 : Math.ceil(resultsCount / ITEMS_PER_PAGE)
+
+/**
+ * getResultsMessage()
+ *
+ * Returns a results message for 4 different scenarios:
+ *     1. Sample view when there are more than 20 total hits:
+ *           Showing representative sample of 20 out of {total} results
+ *     2. Sample view when there are fewer than 20 total hits:
+ *           Showing {total} out of {total} results
+ *     3. All results view with no filters:
+ *           Showing {total} results
+ *     4. All results view with filters applied:
+ *           Showing {x} matches out of {total} results
+ *
+ * @param {number} currentHitsCount - hits count for current request to evaluator
+ *                                    results endpoint
+ * @param {number} totalResultsCount - total hits on evaluator for this event
+ * @param {number} rowsCount - number of rows returned from evaluator results endpoint
+ * @param {string} view - whether sample or all results are being displayed
+ * @param {boolean} isFiltered - whether data filters were included
+ *                               in this request to evaluator results endpoint
+ * @returns {string} - a results count message
+ */
+
+export const getResultsMessage = (
+  currentHitsCount: number,
+  totalResultsCount: number,
+  rowsCount: number,
+  view: 'all' | 'sample' | undefined = 'sample',
+  isFiltered?: boolean
+): string => {
+  if (view === 'sample')
+    return `Showing ${
+      totalResultsCount > 20 ? 'representative sample of' : ''
+    } ${rowsCount} out of ${formatNumber(totalResultsCount)} results`
+
+  return isFiltered
+    ? `Showing ${formatNumber(currentHitsCount)} matches out of ${formatNumber(
+        totalResultsCount
+      )} total results`
+    : `Showing ${formatNumber(totalResultsCount)} results`
+}
 
 export const explanatoryFields = new Map([
   ['rationale', 'Rationale'],
@@ -11,11 +70,26 @@ export const explanatoryFields = new Map([
   ['alternate_explanation', 'Alternate explanation']
 ])
 
-// An evaluator's metadata contains four fields that are
-// displayed in the 'How to evaluate these results' expandable.
-// Most of the fields won't be populated at first, so we
-// sort the fields into two lists, populated and empty, and
-// display the two sets separately.
+/**
+ * sortExplanatoryFields()
+ *
+ * An evaluator's metadata contains four fields that are displayed
+ * in the 'How to evaluate these results' section of the evaluator page.
+ * Most of the fields won't have content at first, so we separate the
+ * fields into two arrays based on whether they're populated and display
+ * the lists separately.
+ *
+ * @param {array} metadata - an object containing metadata about an evaluator
+ * @returns {array} Returns an array containing two lists:
+ *                    1. the explanatory fields that have values in the metadata
+ *                    2. the explanatory fields that don't have values in the metadata
+ * @example metadata = {rationale: '', potential_harm: 'Lorem ipsum', alternate_explanation: 'Lorem ipsum'}
+ *          returns: [
+ *                    ['potential_harm', 'alternate_explanation'],
+ *                    ['rationale', 'crrg_reference']
+ *                   ]
+ */
+
 export const sortExplanatoryFields = (
   metadata: EvaluatorMetadata
 ): [string[], string[]] => {
@@ -31,42 +105,48 @@ export const sortExplanatoryFields = (
   return [populatedFields, emptyFields]
 }
 
-export const getPageCount = (resultsCount: number): number =>
-  Math.ceil(resultsCount / ITEMS_PER_PAGE)
+/**
+ * getTableFields()
+ *
+ * Generate list of fields that will appear as columns in the table for this evaluator's
+ * results.
+ *
+ * The results table for each evaluator shows a custom subset of M2 fields that are useful
+ * for understanding the scenario the specific evaluator is targeting.
+ *
+ * The list of fields displayed in the table is created by combining two lists from the evaluator's metadata
+ * (fields_used--fields that are actually checked by the evaluator, & fields_display--other helpful fields)
+ * with some default fields that are shown for each evaluator.
+ *
+ * We also check to see whether PHP is one of the fields for display in this table
+ * and, if so, add a PHP1 column next to PHP. (We use the first character of the 24 character
+ * payment history profile field in evaluators, but php1 values are separated out
+ * on the front end and not returned from the API.)
+ *
+ * TODO: PHP1 should be handled by the back end / API / appear in metadata fields_used lists
+ * TODO: PHP / PHP1 will soon be one of the fields that's shown for all evaluators
+ *       Will it be included in the metadata for each eval, or added here like 'activity_date'?
+ *
+ * @param {array} fields_used - list of fields used by this eval
+ * @param {array} fields_display - list of fields that are also relevant to this eval
+ * @returns {array} Returns a list of fields that will be columns in the results table
+ * @example fields_used = ['current_bal', 'amt_past_due']
+ *          fields_display = ['dofd', 'php', 'acct_stat']
+ *          returns: ['cons_acct_num', 'activity_date', 'amt_past_due', 'current_bal',
+ *                    'acct_stat', 'dofd', 'php', 'php1']
+ */
 
-export const getResultsMessage = (
-  resultsCount: number,
-  itemCount: number,
-  view: 'all' | 'sample' | undefined = 'sample',
-  page: number | undefined = 1
-): string => {
-  if (view === 'all') {
-    const start = (page - 1) * ITEMS_PER_PAGE + 1
-    const end =
-      page * ITEMS_PER_PAGE > resultsCount ? resultsCount : page * ITEMS_PER_PAGE
-    return `Showing ${start}-${end} of ${resultsCount} results`
-  }
-  return `Showing ${
-    resultsCount > 20 ? 'representative sample of' : ''
-  } ${itemCount} out of ${resultsCount} results`
-}
-
-export const getFieldsToDisplay = (
+export const getTableFields = (
   fields_used: string[],
   fields_display: string[]
 ): string[] => {
-  // Create list by combining fields_used and fields_display, each sorted alphabetically,
-  // with constant values consumer account number and activity date added at beginning
   const fields = [
     'cons_acct_num',
     'activity_date',
     ...fields_used.sort(),
     ...fields_display.sort()
   ]
-  // If php is present, add php1 right after it so they'll be adjacent columns.
-  // php1 does not appear in fields metadata lists
-  // & the values are not in the data returned by the API --
-  // they are generated on the front end when hits data is fetched
+
   const phpIndex = fields.indexOf('php')
   if (phpIndex > -1) fields.splice(phpIndex + 1, 0, 'php1')
 
@@ -76,8 +156,16 @@ export const getFieldsToDisplay = (
 export const evaluatorSearchSchema = z
   .object({
     view: fallback(z.enum(['all', 'sample']), 'sample').default('sample'),
-    page: fallback(z.number().gt(0), 1).default(1)
+    page: fallback(z.number().gt(0), 1).default(1),
+    amt_past_due_min: z.number().optional(),
+    amt_past_due_max: z.number().optional(),
+    current_bal_min: z.number().optional(),
+    current_bal_max: z.number().optional(),
+    page_size: fallback(z.number().gt(0), ITEMS_PER_PAGE).default(ITEMS_PER_PAGE)
   })
   .transform((params): object =>
     params.view === 'sample' ? { ...params, page: 1 } : { ...params }
   )
+
+// eslint-disable-next-line @typescript-eslint/no-type-alias
+export type EvaluatorSearch = z.infer<typeof evaluatorSearchSchema>
