@@ -1,18 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
-import { useNavigate, useSearch } from '@tanstack/react-router'
+import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import Loader from 'components/Loader/Loader'
 import type { EvaluatorHits } from 'models/EvaluatorHits'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { useEffect } from 'react'
-import type EvaluatorMetadata from './Evaluator'
-import { getPageCount, getResultsMessage, getTableFields } from './EvaluatorUtils'
-import EvaluatorFilterSidebar from './filters/FilterSidebar'
-
+import type EvaluatorMetadata from 'types/Evaluator'
 import EvaluatorDownloader from './EvaluatorDownloader'
 import EvaluatorResultsPagination from './EvaluatorResultsPagination'
 import EvaluatorTable from './EvaluatorTable'
+import { getPageCount, getResultsMessage, getTableFields } from './EvaluatorUtils'
+import EvaluatorFilterSidebar from './filters/FilterSidebar'
 
 interface EvaluatorTableData {
   evaluatorMetadata: EvaluatorMetadata
@@ -27,6 +26,7 @@ export default function EvaluatorResults({
 
   const query = useSearch({ strict: false })
   const { page, view } = query
+
   const isFiltered = Object.keys(query).some(
     key => !['page', 'view', 'page_size'].includes(key)
   )
@@ -67,7 +67,8 @@ export default function EvaluatorResults({
       {isFetching ? <Loader message='Your data is loading' /> : null}
       <div className='evaluator-hits-row'>
         <div className='row row__download '>
-          <div data-testid='results-message'>
+          <div className='results-message' data-testid='results-message'>
+            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
             <h4>
               {getResultsMessage(
                 currentHits,
@@ -77,6 +78,21 @@ export default function EvaluatorResults({
                 isFiltered
               )}
             </h4>
+            {isFiltered ? (
+              <p>
+                <Link
+                  to='.'
+                  resetScroll={false}
+                  search={(prev): object => ({
+                    page: 1,
+                    page_size: prev.page_size,
+                    view: 'all'
+                  })}
+                  style={{ pointerEvents: 'auto' }}>
+                  Clear all filters
+                </Link>
+              </p>
+            ) : null}
           </div>
           <EvaluatorDownloader
             rows={rows}
@@ -87,14 +103,25 @@ export default function EvaluatorResults({
         </div>
         <div className='row row__content '>
           <div className={`results results__${view} u-mb30`}>
-            <div className='results_sidebar'>
+            <div className='results_sidebar sidebar'>
               {view === 'all' ? <EvaluatorFilterSidebar /> : null}
             </div>
             <div className='results_table'>
-              <EvaluatorTable data={rows} fields={fields} eventData={eventData} />
+              <EvaluatorTable
+                data={rows}
+                fields={fields}
+                eventData={eventData}
+                isFiltered={isFiltered}
+                query={query}
+                evaluator={evaluatorMetadata.id}
+                isFetching={isFetching}
+              />
               {view === 'all' ? (
                 <div className=''>
-                  <EvaluatorResultsPagination pageCount={pageCount} page={page} />
+                  <EvaluatorResultsPagination
+                    pageCount={pageCount}
+                    page={currentHits === 0 ? 0 : page}
+                  />
                 </div>
               ) : null}
             </div>

@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community'
 import type { ReactElement } from 'react'
-import type EvaluatorMetadata from '../Evaluator/Evaluator'
+import type EvaluatorMetadata from 'types/Evaluator'
 
 const getColumnDefinitions = (eventId: string): ColDef<EvaluatorMetadata>[] => [
   {

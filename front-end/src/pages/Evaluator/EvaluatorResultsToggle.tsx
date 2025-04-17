@@ -19,13 +19,13 @@ export default function EvaluatorResultsToggle(): ReactElement {
   }
 
   return (
-    <div className='row row__content'>
+    <div className='row row__content block block__sub'>
       <fieldset className='o-form_fieldset' data-testid='results-view-toggle'>
-        <legend className='h4'>Show</legend>
+        <legend className='h4'>Options</legend>
         <RadioButton
           id='sample'
           name='evaluator-results-toggle'
-          label='Representative sample'
+          label='View representative sample'
           labelClassName=''
           labelInline
           checked={view !== 'all'}
@@ -36,7 +36,7 @@ export default function EvaluatorResultsToggle(): ReactElement {
         <RadioButton
           id='all'
           name='evaluator-results-toggle'
-          label='All results'
+          label='View and filter all results'
           labelClassName=''
           labelInline
           checked={view === 'all'}

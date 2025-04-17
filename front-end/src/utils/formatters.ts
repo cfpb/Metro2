@@ -22,8 +22,8 @@ export const getM2Definition = (
 // If no definition is available, returns the original value
 export const annotateValue = (
   field: string,
-  val: number | string | null | undefined
-): number | string | null | undefined => {
+  val: number | string
+): number | string => {
   const annotation = getM2Definition(field, val)
   return annotation ? `${val} (${annotation})` : val
 }

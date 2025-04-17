@@ -1,26 +1,30 @@
-// Many Metro2 fields contain coded data that needs to be translated
-// into a more human-readable format for display in the Metro2 tool.
-// The following lookups map a field's possible codes to the definitions
-// of the codes provided in the Credit Reporting Resource Guide.
+/**
+ * Many Metro2 fields contain coded values that need to be translated
+ * into a more human-readable format for display in the Metro2 tool.
+ *
+ * The following lookups map a field's possible coded values to the
+ * definitions provided in the Credit Reporting Resource Guide.
+ *
+ */
 
 export const ACCOUNT_STATUS_LOOKUP = {
-  '05': 'Account transferred',
-  '11': 'Current account (0-29 days past the due date)',
+  '05': 'Transferred',
+  '11': '0-29 days past the due date (current account)',
   '13': 'Paid or closed account/zero balance',
-  '61': 'Account paid in full, was a voluntary surrender',
-  '62': 'Account paid in full, was a collection account',
-  '63': 'Account paid in full, was a repossession',
-  '64': 'Account paid in full, was a charge-off',
-  '65': 'Account paid in full. A foreclosure was started.',
-  '71': 'Account 30-59 days past the due date',
-  '78': 'Account 60-89 days past the due date',
-  '80': 'Account 90-119 days past the due date',
-  '82': 'Account 120-149 days past the due date',
-  '83': 'Account 150-179 days past the due date',
-  '84': 'Account 180 days or more past the due date',
+  '61': 'Paid in full, was a voluntary surrender',
+  '62': 'Paid in full, was a collection account',
+  '63': 'Paid in full, was a repossession',
+  '64': 'Paid in full, was a charge-off',
+  '65': 'Paid in full. A foreclosure was started.',
+  '71': '30-59 days past the due date',
+  '78': '60-89 days past the due date',
+  '80': '90-119 days past the due date',
+  '82': '120-149 days past the due date',
+  '83': '150-179 days past the due date',
+  '84': '180 days or more past the due date',
   '88': 'Claim filed with government for insured portion of balance on a defaulted loan',
   '89': 'Deed received in lieu of foreclosure on a defaulted mortgage; there may be a balance due',
-  '93': 'Account assigned to internal or external collections',
+  '93': 'Assigned to internal or external collections',
   '94': 'Foreclosure completed; there may be a balance due',
   '95': 'Voluntary surrender; there may be a balance due',
   '96': 'Merchandise was repossessed; there may be a balance due',
@@ -36,7 +40,7 @@ const L1_CHANGE_INDICATOR_LOOKUP = {
 }
 
 export const PAYMENT_RATING_LOOKUP = {
-  '0': 'Current account (0–29 days past the due date)',
+  '0': '0–29 days past the due date (current account)',
   '1': '30-59 days past the due date',
   '2': '60-89 days past the due date',
   '3': '90-119 days past the due date',
@@ -122,15 +126,15 @@ export const SPECIAL_COMMENT_CODE_LOOKUP = {
 
 export const COMPLIANCE_CONDTION_CODE_LOOKUP = {
   XA: 'Account closed at consumer’s request',
-  XB: 'Account information has been disputed by the consumer directly to the data furnisher under the Fair Credit Reporting Act (FCRA); the data furnisher is conducting its investigation.',
-  XC: 'FCRA direct dispute investigation completed — consumer disagrees with the results of the data furnisher’s investigation.',
-  XD: 'Account closed at consumer’s request; and account information disputed by the consumer directly to the data furnisher under the FCRA; the data furnisher is conducting its investigation.',
-  XE: 'Account closed at consumer’s request; and data furnisher has completed its investigation; consumer disagrees with the results of the investigation. ',
-  XF: 'Account in dispute under Fair Credit Billing Act (FCBA); the data furnisher is conducting its investigation.',
-  XG: 'FCBA dispute investigation completed — consumer disagrees with the results of the data furnisher’s investigation.',
-  XH: 'Account previously in dispute; the data furnisher has completed its investigation.',
-  XJ: 'Account closed at consumer’s request; and account information disputed by the consumer under FCBA; the data furnisher is conducting its investigation.',
-  XR: 'Removes the most recently reported Compliance Condition Code'
+  XB: 'Data furnisher conducting investigation after consumer disputed account information under FCRA',
+  XC: 'FCRA dispute investigation completed; consumer disagrees',
+  XD: 'Account closed at consumer’s request; data furnisher conducting investigation after consumer disputed account information under FCRA',
+  XE: 'Account closed at consumer’s request; data furnisher completed its investigation; consumer disagrees with results ',
+  XF: 'Data furnisher conducting investigation after consumer disputed account information under FCBA',
+  XG: 'FCBA dispute investigation completed; consumer disagrees',
+  XH: 'Account previously in dispute; investigation completed',
+  XJ: 'Account closed at consumer’s request; data furnisher conducting investigation after consumer disputed account information under FCBA',
+  XR: 'Removes most recently reported code'
 }
 
 export const K2_PURCHASED_SOLD_INDICATOR_LOOKUP = {
@@ -226,7 +230,7 @@ export const ACCOUNT_TYPE_LOOKUP = {
 }
 
 export const TERMS_FREQUENCY_LOOKUP = {
-  D: 'Deferred (Refer to Note)',
+  D: 'Deferred',
   P: 'Single Payment Loan',
   W: 'Weekly',
   B: 'Biweekly',

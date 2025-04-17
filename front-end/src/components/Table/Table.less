@@ -41,6 +41,10 @@
     font-size: unit((13px / @base-font-size-px), em);
   }
 
+  &.data-grid-container--message .ag-center-cols-viewport {
+    min-height: 500px;
+  }
+
   // make the row borders take up full width even if row content
   // doesn't extend to end of row
   .ag-center-cols-container {
@@ -50,7 +54,8 @@
   // no minimum height on this container means no gap between bottom row
   // and bottom border when there are only a couple of rows in the table
   .ag-center-cols-viewport {
-    min-height: unset !important;
+    // min-height: unset !important;
+    // TODO: set a min height only when in no results state ==> zero rows and not fetching
   }
 
   // prevents doubling of row border with border of container
@@ -85,7 +90,7 @@
   // with a max of 900px (~20 rows)
   &--fixed-height {
     height: 90vh;
-    max-height: 900px;
+    max-height: 1100px;
     margin-bottom: 3vh;
   }
 }

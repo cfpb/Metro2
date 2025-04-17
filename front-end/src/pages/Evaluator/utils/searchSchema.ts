@@ -11,10 +11,17 @@ import { ITEMS_PER_PAGE } from '../EvaluatorUtils'
  * Tanstack router to remove the parameter
  * from the query string if its value is invalid.
  */
-export const minMaxParser = fallback(
+export const minMaxValidator = fallback(
   z.union([z.number(), z.enum([''])]).optional(),
   ''
 )
+
+export const BooleanStringValidator = z
+  .union([
+    z.boolean().transform(val => val.toString()),
+    z.enum(['any', 'true', 'false'])
+  ])
+  .optional()
 
 export const validateFieldValues = (
   val: unknown,
@@ -28,7 +35,7 @@ export const validateFieldValues = (
     .map(String)
 }
 
-export const listValueParser = (
+export const listValueValidator = (
   field: keyof typeof M2_FIELD_LOOKUPS
 ): z.ZodOptional<z.ZodEffects<z.ZodAny, string[], unknown>> =>
   z
@@ -40,21 +47,23 @@ export const schema = z.object({
   view: fallback(z.enum(['all', 'sample']), 'sample'),
   page: fallback(z.number().gt(0), 1),
   page_size: fallback(z.number().gt(0), ITEMS_PER_PAGE),
-  amt_past_due_min: minMaxParser,
-  amt_past_due_max: minMaxParser,
-  current_bal_min: minMaxParser,
-  current_bal_max: minMaxParser,
-  acct_stat: listValueParser('acct_stat'),
-  compl_cond_cd: listValueParser('compl_cond_cd'),
-  php1: listValueParser('php1'),
-  pmt_rating: listValueParser('pmt_rating'),
-  spc_com_cd: listValueParser('spc_com_cd'),
-  terms_freq: listValueParser('terms_freq'),
-  l1__change_ind: listValueParser('l1__change_ind'),
-  account_holder__cons_info_ind: listValueParser('account_holder__cons_info_ind'),
-  account_holder__cons_info_ind_assoc: listValueParser(
+  amt_past_due_min: minMaxValidator,
+  amt_past_due_max: minMaxValidator,
+  current_bal_min: minMaxValidator,
+  current_bal_max: minMaxValidator,
+  acct_stat: listValueValidator('acct_stat'),
+  compl_cond_cd: listValueValidator('compl_cond_cd'),
+  php1: listValueValidator('php1'),
+  pmt_rating: listValueValidator('pmt_rating'),
+  spc_com_cd: listValueValidator('spc_com_cd'),
+  terms_freq: listValueValidator('terms_freq'),
+  l1__change_ind: listValueValidator('l1__change_ind'),
+  account_holder__cons_info_ind: listValueValidator('account_holder__cons_info_ind'),
+  account_holder__cons_info_ind_assoc: listValueValidator(
     'account_holder__cons_info_ind_assoc'
-  )
+  ),
+  dofd: BooleanStringValidator,
+  date_closed: BooleanStringValidator
 })
 
 export const evaluatorSearchSchema = schema.transform((params): object =>

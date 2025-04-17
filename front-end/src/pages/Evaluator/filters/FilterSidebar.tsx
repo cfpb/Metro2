@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react'
-import type { EvaluatorSearch } from '../EvaluatorUtils'
+import type { EvaluatorSearch } from '../utils/searchSchema'
+import EvaluatorBooleanFilter from './BooleanFilter'
 import EvaluatorCheckboxGroup from './CheckboxGroup'
 import EvaluatorRangeFilter from './RangeFilter'
 
@@ -28,6 +29,19 @@ export default function EvaluatorFilterSidebar(): ReactElement {
             key={field}
           />
         ))}
+        <div className='block block__sub'>
+          <h2 className='h3'>Filter by dates</h2>
+          <EvaluatorBooleanFilter
+            field={'dofd' as keyof EvaluatorSearch}
+            header='Date of first delinquency (DOFD)'
+            checkboxLabel='DOFD'
+          />
+          <EvaluatorBooleanFilter
+            field={'date_closed' as keyof EvaluatorSearch}
+            header='Date closed'
+            checkboxLabel='date closed'
+          />
+        </div>
         <div className='block block__sub'>
           <h2 className='h3'>Filter by amounts</h2>
           {['amt_past_due', 'current_bal'].map(field => (

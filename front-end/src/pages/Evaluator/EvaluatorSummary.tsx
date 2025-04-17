@@ -3,12 +3,12 @@ import DefinitionList from 'components/DefinitionList/DefinitionList'
 import type User from 'models/User'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
+import type EvaluatorMetadata from 'types/Evaluator'
 import {
   formatDateRange,
   formatLongDescription,
   formatNumber
 } from '../../utils/formatters'
-import type EvaluatorMetadata from './Evaluator'
 import { explanatoryFields, sortExplanatoryFields } from './EvaluatorUtils'
 
 interface EvaluatorSummaryProperties {

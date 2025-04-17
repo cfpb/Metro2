@@ -18,7 +18,7 @@ export default function EvaluatorResultsPagination({
     void navigate({
       resetScroll: false,
       to: '.',
-      search: prev => ({ ...prev, page: pageNum })
+      search: (prev: Record<string, unknown>) => ({ ...prev, page: pageNum })
     })
   }
 
@@ -27,7 +27,7 @@ export default function EvaluatorResultsPagination({
     void navigate({
       resetScroll: false,
       to: '.',
-      search: prev => ({
+      search: (prev: Record<string, unknown>) => ({
         ...prev,
         page: (typeof prev.page === 'number' ? prev.page : 1) + 1
       })
@@ -40,7 +40,10 @@ export default function EvaluatorResultsPagination({
       resetScroll: false,
 
       to: '.',
-      search: prev => ({ ...prev, page: (prev.page ?? 1) - 1 })
+      search: (prev: Record<string, unknown>) => ({
+        ...prev,
+        page: (typeof prev.page === 'number' ? prev.page : 1) - 1
+      })
     })
   }
 
