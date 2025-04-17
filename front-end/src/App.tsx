@@ -1,12 +1,16 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { RouterProvider, createRouter } from '@tanstack/react-router'
+import {
+  RouterProvider,
+  createRouter,
+  parseSearchWith
+} from '@tanstack/react-router'
 import ErrorComponent from 'components/Errors/ErrorComponent'
 import NotFound from 'components/Errors/NotFound'
 import Loader from 'components/Loader/Loader'
 import WarningModal from 'components/Modals/WarningModal'
 import { PageHeader } from 'design-system-react'
 import type { ReactElement } from 'react'
-import { stringifySearchParams } from 'utils/utils'
+import { customParser, stringifySearchParams } from 'utils/utils'
 import './App.less'
 import routeTree from './router'
 
@@ -31,6 +35,7 @@ const router = createRouter({
   defaultErrorComponent: ErrorComponent,
   defaultNotFoundComponent: NotFound,
   stringifySearch: stringifySearchParams,
+  parseSearch: parseSearchWith(customParser),
   getScrollRestorationKey: location => location.pathname
 })
 

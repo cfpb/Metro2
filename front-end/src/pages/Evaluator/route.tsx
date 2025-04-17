@@ -2,12 +2,12 @@ import { createRoute, notFound } from '@tanstack/react-router'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
 import { userQueryOptions } from 'models/User'
 import type Event from 'pages/Event/Event'
+import type EvaluatorMetadata from 'types/Evaluator'
 import { getEvaluatorDataFromEvent } from 'utils/utils'
 import type { z } from 'zod'
 import { eventQueryOptions, eventRoute } from '../Event/route'
-import type EvaluatorMetadata from './Evaluator'
 import EvaluatorPage from './EvaluatorPage'
-import { evaluatorSearchSchema } from './EvaluatorUtils'
+import { evaluatorSearchSchema } from './utils/searchSchema'
 
 export async function getEvaluator(
   eventData: Promise<Event>,

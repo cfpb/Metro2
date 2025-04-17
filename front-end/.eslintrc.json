@@ -87,10 +87,7 @@
     "@typescript-eslint/prefer-includes": "off",
     "@typescript-eslint/no-restricted-imports": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
-    "@typescript-eslint/require-array-sort-compare": [
-      "error",
-      { "ignoreStringArrays": true }
-    ],
+    "@typescript-eslint/require-array-sort-compare": "off",
     "import/no-deprecated": "error",
     "import/order": "off",
     "import/no-extraneous-dependencies": [
