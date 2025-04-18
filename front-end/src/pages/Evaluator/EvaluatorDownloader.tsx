@@ -1,4 +1,5 @@
 import DownloadModal from 'components/Modals/DownloadModal'
+import CopyUrl from 'components/CopyUrl'
 import { Button, RadioButton } from 'design-system-react'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
@@ -78,6 +79,7 @@ export default function EvaluatorDownloader({
 
   return (
     <div className='downloader'>
+      <CopyUrl />
       <Button
         appearance='primary'
         label='Download evaluator results'
