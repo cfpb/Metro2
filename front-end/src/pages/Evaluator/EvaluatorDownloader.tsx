@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import DownloadModal from 'components/Modals/DownloadModal'
+import CopyUrl from 'components/CopyUrl'
 import { Button, RadioButton } from 'design-system-react'
 import type { EvaluatorHits } from 'models/EvaluatorHits'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
@@ -126,6 +127,7 @@ export default function EvaluatorDownloader({
 
   return (
     <div className='downloader'>
+      <CopyUrl />
       <Button
         appearance='primary'
         label='Save results'

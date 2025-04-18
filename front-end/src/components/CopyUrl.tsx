@@ -6,8 +6,7 @@ interface CopyUrlInterface {
       url: string
     }
 
-export default function CopyUrl({
-  url}: CopyUrlInterface): ReactElement {
+export default function CopyUrl({}: CopyUrlInterface): ReactElement {
   // const [copySuccess, setCopySuccess] = useState('Copy URL');
   const [labelText, setLabelText] = useState(window.location.href);
 
