@@ -99,6 +99,11 @@ export default function EvaluatorResults({
             fields={fields}
             eventData={eventData}
             evaluatorId={evaluatorMetadata.id}
+            isFiltered={isFiltered}
+            view={view ?? 'sample'}
+            totalHits={totalHits}
+            currentHits={currentHits}
+            query={query}
           />
         </div>
         <div className='row row__content '>
