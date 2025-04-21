@@ -40,12 +40,18 @@ export default function EvaluatorDownloader({
    * currently shown in the table, we set up a request for *all* the results
    * for the current search params -- but cap it at 1 million because that's the
    * max number of rows Excel can display.
+   *
    */
   const { data, refetch } = useQuery<EvaluatorHits, Error, EvaluatorHits, string[]>(
-    evaluatorHitsQueryOptions(String(eventData.id), evaluatorId, {
-      ...query,
-      page_size: currentHits > 1_000_000 ? 1_000_000 : currentHits
-    })
+    evaluatorHitsQueryOptions(
+      String(eventData.id),
+      evaluatorId,
+      {
+        ...query,
+        page_size: currentHits > 1_000_000 ? 1_000_000 : currentHits
+      },
+      { enabled: false }
+    )
   )
 
   const onClose = (): void => {
@@ -78,9 +84,10 @@ export default function EvaluatorDownloader({
       } else {
         // For all other cases, the results to download are already
         // displayed in the table, so prep that data for download
+
         // TODO: if there are fewer than 20 results for this evaluator,
         // downloading with results toggle set to 'sample' will give you a front-end
-        // generated file with annotations and downloading from the 'all'
+        // generated file with annotations but downloading from the 'all'
         // view will get you the pre-generated results file without annotations.
         // Maybe there should only be a single all results view when there's no sample?
         csv = generateDownloadData<AccountRecord>(fields, rows, M2_FIELD_NAMES)
@@ -110,7 +117,7 @@ export default function EvaluatorDownloader({
       labelClassName=''
       labelInline
       isLarge
-      checked
+      defaultChecked
     />
   )
 

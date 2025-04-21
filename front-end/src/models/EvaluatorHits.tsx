@@ -26,7 +26,8 @@ export const fetchEvaluatorHits = async (
 export const evaluatorHitsQueryOptions = (
   eventId: string,
   evaluatorId: string,
-  query: object = {}
+  query: object = {},
+  additionalParams: object = {}
 ): UseQueryOptions<EvaluatorHits, Error, EvaluatorHits, string[]> => {
   const searchParams = stringifySearchParams(query)
   const key = ['event', eventId, 'evaluator', evaluatorId, 'query', searchParams]
@@ -34,6 +35,7 @@ export const evaluatorHitsQueryOptions = (
     queryKey: key,
     queryFn: async () => fetchEvaluatorHits(eventId, evaluatorId, searchParams),
     staleTime: 60 * 1000,
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
+    ...additionalParams
   })
 }
