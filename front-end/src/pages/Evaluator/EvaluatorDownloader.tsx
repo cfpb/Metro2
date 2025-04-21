@@ -100,7 +100,7 @@ export default function EvaluatorDownloader({
   if (view === 'sample' && totalHits > 20)
     resultsMessage = 'a representative sample of results for this evaluator'
   if (view === 'all' && isFiltered)
-    resultsMessage = 'all results for the applied filters'
+    resultsMessage = 'results for the currently applied filters'
 
   const header = (
     <RadioButton
