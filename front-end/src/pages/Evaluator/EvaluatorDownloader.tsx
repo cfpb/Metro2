@@ -41,6 +41,9 @@ export default function EvaluatorDownloader({
    * for the current search params -- but cap it at 1 million because that's the
    * max number of rows Excel can display.
    *
+   * Use {enabled: false} option to prevent immediate request for this data.
+   * We'll call refetch to initiate the actual fetch if / when the user
+   * opts to download filtered results.
    */
   const { data, refetch } = useQuery<EvaluatorHits, Error, EvaluatorHits, string[]>(
     evaluatorHitsQueryOptions(
