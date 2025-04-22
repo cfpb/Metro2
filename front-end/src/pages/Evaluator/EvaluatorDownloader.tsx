@@ -78,10 +78,10 @@ export default function EvaluatorDownloader({
       // If you've applied filters and aren't viewing all the filtered results,
       // get the rest of the filtered results and prep them for download
       if (view === 'all' && isFiltered && currentHits > rows.length) {
-        await refetch()
+        const result = await refetch()
         csv = generateDownloadData<AccountRecord>(
           fields,
-          data?.hits ?? [],
+          result.data?.hits ?? [],
           M2_FIELD_NAMES
         )
       } else {
