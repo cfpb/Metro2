@@ -1,6 +1,6 @@
 import { Button } from 'design-system-react'
-import type EvaluatorMetadata from 'pages/Evaluator/Evaluator'
 import type { ReactElement } from 'react'
+import type EvaluatorMetadata from 'types/Evaluator'
 import { downloadData, generateDownloadData } from 'utils/utils'
 
 interface EventDownloaderProperties {

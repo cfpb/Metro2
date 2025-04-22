@@ -1,6 +1,4 @@
-import { fallback } from '@tanstack/router-zod-adapter'
-import { z } from 'zod'
-import type EvaluatorMetadata from './Evaluator'
+import type EvaluatorMetadata from 'types/Evaluator'
 
 import { formatNumber } from 'utils/formatters'
 
@@ -152,20 +150,3 @@ export const getTableFields = (
 
   return fields
 }
-
-export const evaluatorSearchSchema = z
-  .object({
-    view: fallback(z.enum(['all', 'sample']), 'sample').default('sample'),
-    page: fallback(z.number().gt(0), 1).default(1),
-    amt_past_due_min: z.number().optional(),
-    amt_past_due_max: z.number().optional(),
-    current_bal_min: z.number().optional(),
-    current_bal_max: z.number().optional(),
-    page_size: fallback(z.number().gt(0), ITEMS_PER_PAGE).default(ITEMS_PER_PAGE)
-  })
-  .transform((params): object =>
-    params.view === 'sample' ? { ...params, page: 1 } : { ...params }
-  )
-
-// eslint-disable-next-line @typescript-eslint/no-type-alias
-export type EvaluatorSearch = z.infer<typeof evaluatorSearchSchema>

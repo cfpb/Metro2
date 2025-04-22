@@ -1,0 +1,32 @@
+.o-expandable.nested {
+  .a-label__heading {
+    position: relative;
+    top: 0.25em;
+  }
+
+  .o-expandable {
+    &_header,
+    &_content {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    &_inner {
+      > .nested {
+        margin-left: 1.75rem;
+      }
+
+      > .o-expandable:first-child {
+        margin-top: -1rem;
+      }
+
+      > .o-expandable:last-child {
+        margin-bottom: -1rem;
+      }
+
+      .m-form-field__checkbox + .o-expandable {
+        margin-top: 0.75rem;
+      }
+    }
+  }
+}

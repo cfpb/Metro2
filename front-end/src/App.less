@@ -70,7 +70,7 @@ header h1 {
 
 // Styles for summary content on evaluator and account pages
 .row__summary {
-  margin-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
+  margin-top: unit((@grid_gutter-width / 2 / @base-font-size-px), em);
 
   h2 {
     font-size: 1.5rem;
@@ -145,6 +145,15 @@ header h1 {
   }
 }
 
+.results-message {
+  display: flex;
+  gap: 1em;
+}
+
 .loader {
   min-height: 90vh;
+}
+
+.no-results-message h3 {
+  font-weight: 500;
 }

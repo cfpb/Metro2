@@ -241,3 +241,28 @@ export function stringifySearchParams(search: object | null | undefined): string
   }
   return searchParams.length > 0 ? `?${searchParams.join('&')}` : ''
 }
+
+/**
+ *  Implements a custom parser to be used by tanstack router
+ *  for parsing query strings instead of its default, JSON.parse().
+ *
+ *  Custom handling added in this parser:
+ *    - Comma-separated lists of values are split into arrays.
+ *      This allows us to serialize arrays with comma separation when
+ *      generating query strings (eg, "acct_stat=11,13,61") and then
+ *      turn them back into arrays when the query string is parsed.
+ *
+ * @param {string} search - The value of a query string key / value pair.
+ *                          Only values that are strings are passed to this parser.
+ *                          eg: Where query string = acct_stat=1,2,3&page=1,
+ *                              '1,2,3' would be passed to this parser but 1 would not.
+ * @returns {unknown} Returns an array if the search string contains a comma.
+ *                    Otherwise, the output of JSON.parse()
+ * @example
+ * // Example input: '1,2,3'
+ * // Expected output: ['1', '2', '3']
+ */
+export const customParser = (search: string): unknown => {
+  if (search.includes(',')) return search.split(',')
+  return JSON.parse(search)
+}
