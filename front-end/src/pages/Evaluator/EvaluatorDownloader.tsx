@@ -127,7 +127,7 @@ export default function EvaluatorDownloader({
 
   return (
     <div className='downloader'>
-      <CopyUrl />
+      <CopyUrl url="" />
       <Button
         appearance='primary'
         label='Save results'
