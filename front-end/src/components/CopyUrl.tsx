@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { ReactElement } from 'react'
 import { Button, TextInput } from 'design-system-react'
 
-interface Properties {
+interface CopyUrlInterface {
       url: string
     }
 
-export default function CopyUrl() {
-  const [copySuccess, setCopySuccess] = useState('Copy URL');
+export default function CopyUrl({
+  url}: CopyUrlInterface): ReactElement {
+  // const [copySuccess, setCopySuccess] = useState('Copy URL');
   const [labelText, setLabelText] = useState(window.location.href);
 
-  const copyToClipboard = async () => {
+  const onClickCopyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      setCopySuccess('URL Copied!');
+      // setCopySuccess('URL Copied!');
       setLabelText('URL Copied!')
-    } catch (err) {
-      setCopySuccess('Failed to copy URL');
+    } catch {
+      // setCopySuccess('Failed to copy URL');
     }
   };
   return(
@@ -33,9 +35,9 @@ export default function CopyUrl() {
         <div className="o-form__input-w-btn_btn-container">
             <Button
             appearance="primary"
-            label={copySuccess}
+            label="Copy URL" // or use {copySuccess}  
             size='default'
-            onClick={copyToClipboard}
+            onClick={onClickCopyToClipboard}
             />
         </div>
     </div>
