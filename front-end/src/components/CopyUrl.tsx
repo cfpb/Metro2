@@ -21,7 +21,7 @@ export default function CopyUrl({
     }
   };
   return(
-    <div className="o-form__input-w-btn">
+    <div className="o-form__input-w-btn o-form_fieldset">
         <div className="o-form__input-w-btn_input-container">
             <div className="m-btn-inside-input">
             <TextInput
