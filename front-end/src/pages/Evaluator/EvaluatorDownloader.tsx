@@ -134,7 +134,7 @@ export default function EvaluatorDownloader({
           label="Create a .csv containing all of this evaluator's results"
           labelClassName=''
           labelInline
-          inputRef={allResults}
+          // inputRef={allResults}
           isLarge
         />
       </fieldset>
