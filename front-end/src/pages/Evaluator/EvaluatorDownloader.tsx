@@ -114,20 +114,40 @@ export default function EvaluatorDownloader({
     resultsMessage = 'results for the currently applied filters'
 
   const header = (
-    <RadioButton
-      id='all'
-      name='evaluator-download'
-      label={`Download a csv containing ${resultsMessage}`}
-      labelClassName=''
-      labelInline
-      isLarge
-      defaultChecked
-    />
+    <>
+      <fieldset className='o-form_fieldset block block__sub'>
+        <legend className='h4'>Choose .csv options:</legend>
+        <RadioButton
+          id='sample'
+          name='evaluator-download'
+          label={`Create a .csv with only the ${rows.length} result${
+            rows.length > 1 ? 's' : ''
+          } in the table`}
+          labelClassName=''
+          labelInline
+          defaultChecked
+          isLarge
+        />
+        <RadioButton
+          id='all'
+          name='evaluator-download'
+          label="Create a .csv containing all of this evaluator's results"
+          labelClassName=''
+          labelInline
+          inputRef={allResults}
+          isLarge
+        />
+      </fieldset>
+      
+      <fieldset className='o-form_fieldset block block__sub'>
+        <legend className='h4'>Save a link to these results</legend>
+        <CopyUrl url=""/>
+      </fieldset>
+    </>
   )
 
   return (
     <div className='downloader'>
-      <CopyUrl url="" />
       <Button
         appearance='primary'
         label='Save results'
