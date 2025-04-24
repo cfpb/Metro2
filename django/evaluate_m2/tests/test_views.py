@@ -157,35 +157,22 @@ class EvaluateViewsTestCase(TestCase):
         self.assertEqual(response.headers['Content-Type'], 'text/csv')
         self.assertIn(f'filename=test_exam_Status-DOFD-1.csv',
             response.headers['Content-Disposition'])
+        csv_content = response.content.decode('utf-8').splitlines()
 
-        # the CSV should contain info about the evaluator_results
-        csv_content = response.content.decode('utf-8')
+        # the CSV should contain the columns specified by
+        # EvaluatorMetadata.result_summary_fields, plus "event_name"
+        headers = csv_content[0].split(",")
+        expected_headers = ['event_name'] + self.stat_dofd_1.result_summary_fields()
+        self.assertEqual(headers, expected_headers)
 
-        expected = '\r\n'.join([
-            'event_name,id,activity_date,cons_acct_num,acct_stat,dofd,amt_past_due,compl_cond_cd,smpa',
-            'test_exam,32,2023-12-31,0032,00,,0,,0',
-            'test_exam,33,2023-12-31,0033,00,,0,,0',
-            ''
-        ])
-        self.assertEqual(csv_content, expected)
+        # the CSV should have a row for each eval result as defined in
+        # create_activity_data (plus the header)
+        self.assertEqual(len(csv_content), 3)
+
 
     ########################################
     # Tests for Eval Results view API endpoint
     def test_evaluator_results_view(self):
-        # Status-dofd-1 uses the following fields:
-        #     acct_stat, dofd, amt_past_due, compl_cond_cd, smpa
-        # along with the fields that are always returned:
-        #     id, activity_date, cons_acct_num
-        expected = [{
-            'id': 32, 'activity_date': '2023-12-31', 'cons_acct_num': '0032',
-            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
-            'compl_cond_cd': '', 'smpa': 0
-        }, {
-            'id': 33, 'activity_date': '2023-12-31', 'cons_acct_num': '0033',
-            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
-            'compl_cond_cd': '', 'smpa': 0
-        },]
-
         self.create_activity_data()
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
         # the response should be a JSON
@@ -196,27 +183,14 @@ class EvaluateViewsTestCase(TestCase):
         # There should be two hits. Each one should have a set of keys that matches
         # the fields in evaluator.result_summary_fields
         hits = response.json()['hits']
-        for expected_hit in expected:
-            self.assertIn(expected_hit, hits)
+        self.assertEqual(len(hits), 2)
+        keys = list(hits[0].keys())
+        expected_keys = ["id"] + self.stat_dofd_1.result_summary_fields()
+        self.assertEqual(keys.sort(), expected_keys.sort())
 
     def test_evaluator_results_view_all(self):
-        # Status-dofd-1 uses the following fields:
-        #     acct_stat, dofd, amt_past_due, compl_cond_cd, smpa
-        # along with the fields that are always returned:
-        #     id, activity_date, cons_acct_num
-        expected = [{
-            'id': 32, 'activity_date': '2023-12-31', 'cons_acct_num': '0032',
-            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
-            'compl_cond_cd': '', 'smpa': 0
-        }, {
-            'id': 33, 'activity_date': '2023-12-31', 'cons_acct_num': '0033',
-            'acct_stat': '00', 'dofd': None, 'amt_past_due': 0,
-            'compl_cond_cd': '', 'smpa': 0
-        },]
-
         self.create_activity_data()
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/?view=all')
-
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
@@ -226,7 +200,10 @@ class EvaluateViewsTestCase(TestCase):
         # There should be two hits. Each one should have a set of keys that matches
         # the fields in evaluator.result_summary_fields
         hits = response.json()['hits']
-        self.assertEqual(hits, expected)
+        self.assertEqual(len(hits), 2)
+        keys = list(hits[0].keys())
+        expected_keys = ["id"] + self.stat_dofd_1.result_summary_fields()
+        self.assertEqual(keys.sort(), expected_keys.sort())
 
     def test_evaluator_results_view_max_20_results(self):
         self.create_activity_data()

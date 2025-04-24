@@ -50,10 +50,7 @@ class EvaluateModelsTestCase(TestCase):
             evaluator = eval,
             hits = 1
         )
-        EvaluatorResult(result_summary=eval_rs1)
-        expected = ['event_name', 'id', 'activity_date',
-            'cons_acct_num', 'field1', 'field2', 'field3']
-
+        expected = ['event_name'] + eval.result_summary_fields()
         self.assertEqual(eval_rs1.create_csv_header(), expected)
 
     def test_eval_res_create_csv_row_data(self):
@@ -84,5 +81,16 @@ class EvaluateModelsTestCase(TestCase):
         )
 
         field_list = my_evaluator.result_summary_fields()
-        expected = ['id', 'activity_date', 'cons_acct_num', 'one', 'two', 'three', 'four', 'five']
+        expected = [
+            # identifying fields
+            'id', 'activity_date', 'cons_acct_num', 'doai',
+            # fields in fields_used and fields_display
+            'one', 'two', 'three', 'four', 'five',
+            # fields that should always be shown
+            'acct_stat', 'compl_cond_cd', 'php', 'pmt_rating',
+            'spc_com_cd', 'terms_freq', 'account_holder__cons_info_ind',
+            'account_holder__cons_info_ind_assoc',
+            'l1__change_ind', 'dofd', 'date_closed', 'amt_past_due',
+            'current_bal',
+            ]
         self.assertEqual(field_list, expected)

@@ -25,17 +25,52 @@ class EvaluatorMetadata(models.Model):
 
     func: any
 
+    # Fields that should always be present in the evaluator results view
+    identifying_fields = [
+        'id',
+        'activity_date',
+        'cons_acct_num',
+        'doai',
+    ]
+
+    filterable_fields = [
+        'acct_stat',
+        'compl_cond_cd',
+        'php',
+        'pmt_rating',
+        'spc_com_cd',
+        'terms_freq',
+        'account_holder__cons_info_ind',
+        'account_holder__cons_info_ind_assoc',
+        'l1__change_ind',
+        'dofd',
+        'date_closed',
+        'amt_past_due',
+        'current_bal',
+    ]
+
     def __str__(self) -> str:
         return self.id
 
     def result_summary_fields(self) -> list[str]:
         """
-        Return the list of AccountActivity fields (and fields on
-        related records) that should be shown in the evaluator result
-        view API endpoint.
+        Return the list of AccountActivity fields (and fields on related
+        records) that should be shown in the evaluator result view API
+        endpoint.
+
+        Fields are listed in the following order (but with duplicates removed):
+        - identifying fields (consistent for every evaluator)
+        - fields_used and fields_display (evaluator-dependent)
+        - filterable fields (consistent for every evaluator)
         """
-        defaults = ['id', 'activity_date', 'cons_acct_num']
-        return defaults + self.fields_used + self.fields_display
+        fieldset = self.identifying_fields + \
+            self.fields_used + \
+            self.fields_display + \
+            self.filterable_fields
+
+        dups_removed = [*dict.fromkeys(fieldset)]
+        return dups_removed
+
 
 
 class EvaluatorResultSummary(models.Model):
