@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import DownloadModal from 'components/Modals/DownloadModal'
+import CopyUrl from 'components/CopyUrl'
 import { Button, RadioButton } from 'design-system-react'
 import type { EvaluatorHits } from 'models/EvaluatorHits'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
@@ -113,15 +114,13 @@ export default function EvaluatorDownloader({
     resultsMessage = 'results for the currently applied filters'
 
   const header = (
-    <RadioButton
-      id='all'
-      name='evaluator-download'
-      label={`Download a csv containing ${resultsMessage}`}
-      labelClassName=''
-      labelInline
-      isLarge
-      defaultChecked
-    />
+    <>      
+      <fieldset className='o-form_fieldset block block__sub'>
+        <legend className='h4'>Save a link to these results</legend>
+        <CopyUrl url=""/>
+      </fieldset>
+      <legend className='h4'>Download {resultsMessage}</legend>
+    </>
   )
 
   return (
