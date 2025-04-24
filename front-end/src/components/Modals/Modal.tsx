@@ -1,3 +1,4 @@
+import { Button } from 'design-system-react'
 import type { ReactElement, ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 import './Modal.less'
@@ -52,6 +53,20 @@ export function Modal({
   return (
     <dialog className='modal' ref={dialogRef}>
       <div className='modal-wrapper'>
+        {interactionRequired ? (
+          ''
+        ) : (
+          <div className='u-right'>
+            <Button
+              appearance='primary'
+              asLink
+              label='Close'
+              className='a-btn a-btn__link'
+              onClick={onClose}
+              size='default'
+            />
+          </div>
+        )}
         <div className='modal-contents'>
           <div>{children}</div>
         </div>
