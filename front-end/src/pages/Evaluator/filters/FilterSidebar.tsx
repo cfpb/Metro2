@@ -8,11 +8,11 @@ export default function EvaluatorFilterSidebar(): ReactElement {
   return (
     <fieldset className='o-form_fieldset' data-testid='evaluator-filter-sidebar'>
       <div className='block block__sub block__flush-top'>
+        <h2 className='h3'>Filter results by account details</h2>
         <p>
           Filters are under development. Some options may not be relevant for this
           evaluator.
         </p>
-        <h2 className='h3'>Filter results by account details</h2>
         {[
           'acct_stat',
           'compl_cond_cd',
