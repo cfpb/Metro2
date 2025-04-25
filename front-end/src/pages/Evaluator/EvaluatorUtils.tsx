@@ -1,5 +1,5 @@
 import type EvaluatorMetadata from 'types/Evaluator'
-
+import { M2_FIELD_NAMES } from 'utils/constants'
 import { formatNumber } from 'utils/formatters'
 
 export const ITEMS_PER_PAGE = 200
@@ -116,37 +116,48 @@ export const sortExplanatoryFields = (
  * (fields_used--fields that are actually checked by the evaluator, & fields_display--other helpful fields)
  * with some default fields that are shown for each evaluator.
  *
- * We also check to see whether PHP is one of the fields for display in this table
- * and, if so, add a PHP1 column next to PHP. (We use the first character of the 24 character
- * payment history profile field in evaluators, but php1 values are separated out
- * on the front end and not returned from the API.)
- *
- * TODO: PHP1 should be handled by the back end / API / appear in metadata fields_used lists
- * TODO: PHP / PHP1 will soon be one of the fields that's shown for all evaluators
- *       Will it be included in the metadata for each eval, or added here like 'activity_date'?
+ * Then we sort the list of fields by the order of the keys in M2_FIELD_NAMES to match
+ * the order of the fields in the M2 data, and add a field for the first character of PHP
+ * (one of the default fields) directly after the index of PHP.
+ * (We use the first character of the 24 character payment history profile field in evaluators,
+ * but php1 values are separated out on the front end and not returned from the API.)
  *
  * @param {array} fields_used - list of fields used by this eval
  * @param {array} fields_display - list of fields that are also relevant to this eval
  * @returns {array} Returns a list of fields that will be columns in the results table
- * @example fields_used = ['current_bal', 'amt_past_due']
- *          fields_display = ['dofd', 'php', 'acct_stat']
- *          returns: ['cons_acct_num', 'activity_date', 'amt_past_due', 'current_bal',
- *                    'acct_stat', 'dofd', 'php', 'php1']
  */
+
+const defaultFields = [
+  // 'id',
+  'cons_acct_num',
+  'activity_date',
+  'doai',
+  'acct_stat',
+  'compl_cond_cd',
+  'php',
+  'pmt_rating',
+  'spc_com_cd',
+  'terms_freq',
+  'dofd',
+  'date_closed',
+  'amt_past_due',
+  'current_bal',
+  'account_holder__cons_info_ind',
+  'account_holder__cons_info_ind_assoc',
+  'l1__change_ind'
+]
 
 export const getTableFields = (
   fields_used: string[],
   fields_display: string[]
 ): string[] => {
-  const fields = [
-    'cons_acct_num',
-    'activity_date',
-    ...fields_used.sort(),
-    ...fields_display.sort()
+  const order = [...M2_FIELD_NAMES.keys()]
+  const tableFields = [
+    ...new Set([...fields_used, ...fields_display, ...defaultFields])
   ]
-
-  const phpIndex = fields.indexOf('php')
-  if (phpIndex > -1) fields.splice(phpIndex + 1, 0, 'php1')
-
-  return fields
+  const sortedFields = tableFields.sort((a, b) =>
+    order.indexOf(a) > order.indexOf(b) ? 1 : -1
+  )
+  sortedFields.splice(sortedFields.indexOf('php') + 1, 0, 'php1')
+  return sortedFields
 }
