@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import DownloadModal from 'components/Modals/DownloadModal'
 import CopyUrl from 'components/CopyUrl'
-import { Button, RadioButton } from 'design-system-react'
+import DownloadModal from 'components/Modals/DownloadModal'
+import { Button } from 'design-system-react'
 import type { EvaluatorHits } from 'models/EvaluatorHits'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
 import type Event from 'pages/Event/Event'
@@ -114,10 +114,10 @@ export default function EvaluatorDownloader({
     resultsMessage = 'results for the currently applied filters'
 
   const header = (
-    <>      
+    <>
       <fieldset className='o-form_fieldset block block__sub'>
         <legend className='h4'>Save a link to these results</legend>
-        <CopyUrl url=""/>
+        <CopyUrl url='' />
       </fieldset>
       <legend className='h4'>Download {resultsMessage}</legend>
     </>

@@ -103,6 +103,27 @@ export const sortExplanatoryFields = (
   return [populatedFields, emptyFields]
 }
 
+const defaultFields = [
+  // 'id',
+  'doai',
+  'acct_stat',
+  'compl_cond_cd',
+  'php',
+  'pmt_rating',
+  'spc_com_cd',
+  'terms_freq',
+  'dofd',
+  'date_closed',
+  'amt_past_due',
+  'current_bal',
+  'account_holder__cons_info_ind',
+  'account_holder__cons_info_ind_assoc',
+  'l1__change_ind'
+]
+
+const matchListOrder = (list: string[], order: string[]): string[] =>
+  list.sort((a, b) => (order.indexOf(a) > order.indexOf(b) ? 1 : -1))
+
 /**
  * getTableFields()
  *
@@ -127,37 +148,24 @@ export const sortExplanatoryFields = (
  * @returns {array} Returns a list of fields that will be columns in the results table
  */
 
-const defaultFields = [
-  // 'id',
-  'cons_acct_num',
-  'activity_date',
-  'doai',
-  'acct_stat',
-  'compl_cond_cd',
-  'php',
-  'pmt_rating',
-  'spc_com_cd',
-  'terms_freq',
-  'dofd',
-  'date_closed',
-  'amt_past_due',
-  'current_bal',
-  'account_holder__cons_info_ind',
-  'account_holder__cons_info_ind_assoc',
-  'l1__change_ind'
-]
-
 export const getTableFields = (
   fields_used: string[],
   fields_display: string[]
 ): string[] => {
   const order = [...M2_FIELD_NAMES.keys()]
-  const tableFields = [
-    ...new Set([...fields_used, ...fields_display, ...defaultFields])
-  ]
-  const sortedFields = tableFields.sort((a, b) =>
-    order.indexOf(a) > order.indexOf(b) ? 1 : -1
+  const fieldsUsed = matchListOrder(fields_used, order)
+  const additionalFields = matchListOrder(
+    [...fields_display, ...defaultFields],
+    order
   )
-  sortedFields.splice(sortedFields.indexOf('php') + 1, 0, 'php1')
-  return sortedFields
+  const tableFields = [
+    ...new Set([
+      'cons_acct_num',
+      'activity_date',
+      ...fieldsUsed,
+      ...additionalFields
+    ])
+  ]
+  tableFields.splice(tableFields.indexOf('php') + 1, 0, 'php1')
+  return tableFields
 }
