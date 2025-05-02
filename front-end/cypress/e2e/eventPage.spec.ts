@@ -44,7 +44,7 @@ describe('Event page', () => {
     table.getBodyRows().should('have.length', eventData.evaluators.length)
   })
   it('Should show correct evaluator value per row', () => {
-    const fields = ['id', 'description', 'categories', 'hits', 'accounts_affected']
+    const fields = ['id', 'description', 'category', 'hits', 'accounts_affected']
     table.verifyAccountTableBodyContent(
       table.getBodyRows(),
       fields,
