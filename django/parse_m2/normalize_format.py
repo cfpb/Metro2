@@ -3,11 +3,10 @@ import io
 from smart_open import open
 from django.conf import settings
 
-from parse_m2.parse_utils import decode_if_needed, is_header_line, get_next_line
+from parse_m2.parse_utils import is_header_line, get_next_line
 from django_application.s3_utils import s3_bucket_files, s3_session
 
 
-# todo: check that s3 is enabled in settings?
 def update_S3_directory_files_format(source_directory: str, destination_dir: str):
     if not settings.S3_ENABLED:
         print("sorry, s3 must be enabled for this to work")
@@ -45,8 +44,10 @@ def upload_modified_s3_file(source_fstream, destination: str, transport_params: 
         # Then handle all of the remaining rows of the file. All remaining rows
         # should be base+extra segments (a.k.a normal rows), and safe to modify.
         # (Except the final row, which should be a trailer, which the parser ignores)
-        for l in source_fstream:
-            line = decode_if_needed(l)
+        while True:
+            line = get_next_line(source_fstream)
+            if len(line) == 0:
+                break  # if the file has ended, exit
             line = modify_individual_line(line)
             dest_file.write(line)
 

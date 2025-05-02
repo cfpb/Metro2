@@ -1,6 +1,6 @@
 from django.test import TestCase, override_settings
 
-from parse_m2.normalize_format import update_files_format, get_filename
+from parse_m2.normalize_format import update_S3_directory_files_format, get_filename
 
 class TestFormatNormalization(TestCase):
     # Test for adjusting each line of a Metro2 file to correct format errors
@@ -19,4 +19,4 @@ class TestS3FormatNormalization(TestCase):
         test_dir = 'test-tiny'
         destination_dir = 'tmp-normalized-result'
 
-        update_files_format(test_dir, destination_dir)
+        update_S3_directory_files_format(test_dir, destination_dir)
