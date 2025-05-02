@@ -72,7 +72,7 @@ describe('annotateAccountRecords', () => {
         cons_acct_num: '123456789',
         inconsistencies: ['Bankruptcy-DOFD-4', 'Status-DOFD-1'],
         activity_date: '2018-10-31',
-        acct_stat: '11 (Current account (0-29 days past the due date))',
+        acct_stat: '11 (0-29 days past the due date (current account))',
         amt_past_due: 100,
         current_bal: 100,
         orig_chg_off_amt: 0,
