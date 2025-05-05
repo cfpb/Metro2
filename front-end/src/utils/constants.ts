@@ -173,38 +173,3 @@ export const COL_DEF_CONSTANTS = {
   previous_values__current_bal: { type: 'currency' },
   previous_values__orig_chg_off_amt: { type: 'currency' }
 }
-
-// Lookup to use evaluator id segments as initial categorization
-export const evaluatorSegmentMap = new Map([
-  ['status', 'Account status'],
-  ['type', 'Account type'],
-  ['paymentamount', 'Actual payment amount'],
-  ['apd', 'Amount past due'],
-  ['balloon', 'Balloon payment amount'],
-  ['bankruptcy', 'Bankruptcy'],
-  ['chargeoff', 'Original charge-off amount'],
-  ['creditlimit', 'Credit limit'],
-  ['balance', 'Current balance'],
-  ['ccc', 'Compliance condition code'],
-  ['dateclosed', 'Date closed'],
-  ['dtcl', 'Date closed'],
-  ['dateopen', 'Date open'],
-  ['deferred', 'Deferred'],
-  ['doai', 'Date of account information'],
-  ['dofd', 'Date of first delinquency'],
-  ['dolp', 'Date of last payment'],
-  ['ecoa', 'ECOA (equal credit opportunity act)'],
-  ['hcola', 'HCOLA (highest credit or original loan amount)'],
-  ['id', 'Account ID number'],
-  ['j1j2', 'J1 or J2 associated consumer'],
-  ['number', 'Account number'],
-  ['purchasedsold', 'K2 purchased-sold indicator'],
-  ['php', 'Payment history profile'],
-  ['rating', 'Payment rating'],
-  ['portfolio', 'Portfolio type'],
-  ['prog', 'Progression'],
-  ['smpa', 'Scheduled monthly payment amount'],
-  ['scc', 'Special comment code'],
-  ['termsduration', 'Terms duration'],
-  ['accountchange', 'L1 change indicator']
-])

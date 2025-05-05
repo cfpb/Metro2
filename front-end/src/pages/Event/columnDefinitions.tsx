@@ -33,16 +33,9 @@ const getColumnDefinitions = (eventId: string): ColDef<EvaluatorMetadata>[] => [
   },
   {
     field: 'category',
-    headerName: 'Categories',
+    headerName: 'Category',
     type: 'wrappableText',
-    flex: 1,
-    cellRenderer: ({ value }: { value: string[] }): ReactElement => (
-      <>
-        {value.map(item => (
-          <div key={item}>{item}</div>
-        ))}
-      </>
-    )
+    flex: 1
   },
   {
     field: 'hits',
