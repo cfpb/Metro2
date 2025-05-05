@@ -1,6 +1,10 @@
-from django.test import TestCase, override_settings
+import os
+import io
 
-from parse_m2.normalize_format import update_S3_directory_files_format, get_filename
+from django.test import TestCase
+
+from parse_m2.normalize_format import *
+
 
 class TestFormatNormalization(TestCase):
     # Test for adjusting each line of a Metro2 file to correct format errors
@@ -9,14 +13,21 @@ class TestFormatNormalization(TestCase):
         result = get_filename("Supervision/event_directory/my_filename.TXT")
         self.assertEqual(result, "my_filename.TXT")
 
-@override_settings(S3_ENABLED=True)
-class TestS3FormatNormalization(TestCase):
-    # Test for creating modified versions of files by streaming them
-    # from S3 and uploading new versions to a separate directory
-    # Before running, make sure S3 env vars are in place (see settings/local.py)
+    def test_modify_single_line(self):
+        str = "123456789"
+        result = modify_individual_line(str)
+        self.assertEqual(result, "....123456789")
 
-    def test_directory_s3(self):
-        test_dir = 'test-tiny'
-        destination_dir = 'tmp-normalized-result'
+    def test_normalize_file_format(self):
+        sample_files_dir = os.path.join('parse_m2', 'tests','sample_files',)
+        input_file = os.path.join(sample_files_dir, 'm2_file_small.txt')
 
-        update_S3_directory_files_format(test_dir, destination_dir)
+        expected_output = os.path.join(sample_files_dir, 'test_normalize_format',
+                                   'small_after_normalization.txt')
+
+        with open(input_file, 'r') as input:
+            with open(expected_output, 'r') as expected:
+                with io.StringIO() as output:
+                    normalize_file_format(input, output)
+                    output.seek(0)
+                    self.assertEqual(output.read(), expected.read())
