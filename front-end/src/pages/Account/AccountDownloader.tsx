@@ -155,7 +155,7 @@ export default function AccountDownloader({
         open={isOpen}
         onClose={onClose}
         onDownload={onDownload}
-        header={header}
+        content={header}
         title='Download account data'
       />
     </div>

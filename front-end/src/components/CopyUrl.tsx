@@ -1,44 +1,33 @@
-import { useState } from 'react';
+import { Button } from 'design-system-react'
 import type { ReactElement } from 'react'
-import { Button, TextInput } from 'design-system-react'
+import { useState } from 'react'
 
-interface CopyUrlInterface {
-      url: string
-    }
+export default function CopyUrl(): ReactElement {
+  const [copySuccess, setCopySuccess] = useState('Copy URL')
 
-export default function CopyUrl({}: CopyUrlInterface): ReactElement {
-  // const [copySuccess, setCopySuccess] = useState('Copy URL');
-  const [labelText, setLabelText] = useState(window.location.href);
-
-  const onClickCopyToClipboard = async () => {
+  const onClick = async (): Promise<void> => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
-      // setCopySuccess('URL Copied!');
-      setLabelText('URL Copied!')
+      await navigator.clipboard.writeText(window.location.href)
+      setCopySuccess('URL Copied!')
+      setTimeout(() => {
+        setCopySuccess('Copy URL')
+      }, 2000)
     } catch {
-      // setCopySuccess('Failed to copy URL');
+      setCopySuccess('Failed to copy URL')
+      setTimeout(() => {
+        setCopySuccess('Copy URL')
+      }, 2000)
     }
-  };
-  return(
-    <div className="o-form__input-w-btn o-form_fieldset">
-        <div className="o-form__input-w-btn_input-container">
-            <div className="m-btn-inside-input">
-            <TextInput
-                id="CopyURLText"
-                name=""
-                type="text"
-                value={labelText}
-            />
-            </div>
-        </div>
-        <div className="o-form__input-w-btn_btn-container">
-            <Button
-            appearance="primary"
-            label="Copy URL" // or use {copySuccess}  
-            size='default'
-            onClick={onClickCopyToClipboard}
-            />
-        </div>
+  }
+
+  return (
+    <div>
+      <Button
+        appearance='primary'
+        label={copySuccess}
+        size='default'
+        onClick={onClick}
+      />
     </div>
-    )
+  )
 }

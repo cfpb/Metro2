@@ -9,6 +9,7 @@ import type { ReactElement } from 'react'
 import { useState } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import { M2_FIELD_NAMES } from 'utils/constants'
+import { formatNumber } from 'utils/formatters'
 import { downloadData, downloadFileFromURL, generateDownloadData } from 'utils/utils'
 
 interface EvaluatorDownloadInterface {
@@ -42,11 +43,11 @@ export default function EvaluatorDownloader({
    * for the current search params -- but cap it at 1 million because that's the
    * max number of rows Excel can display.
    *
-   * Use {enabled: false} option to prevent immediate request for this data.
+   * We set the enabled option to false to prevent immediate request for this data.
    * We'll call refetch to initiate the actual fetch if / when the user
    * opts to download filtered results.
    */
-  const { data, refetch } = useQuery<EvaluatorHits, Error, EvaluatorHits, string[]>(
+  const { refetch } = useQuery<EvaluatorHits, Error, EvaluatorHits, string[]>(
     evaluatorHitsQueryOptions(
       String(eventData.id),
       evaluatorId,
@@ -68,17 +69,20 @@ export default function EvaluatorDownloader({
 
   const onDownload = async (): Promise<void> => {
     if (view === 'all' && !isFiltered) {
-      // If you're viewing all results and haven't applied filters,
-      // download the pre-generated full results file
+      /**
+       * If you're viewing all results and haven't applied filters,
+       * download the pre-generated full results file
+       */
       const url = `/api/events/${eventData.id}/evaluator/${evaluatorId}/csv/`
       downloadFileFromURL(url)
       setIsOpen(false)
     } else {
-      const ext = view === 'all' ? 'filtered' : 'sample'
       let csv
-      // If you've applied filters and aren't viewing all the filtered results,
-      // get the rest of the filtered results and prep them for download
       if (view === 'all' && isFiltered && currentHits > rows.length) {
+        /**
+         * If you've applied filters and aren't viewing all the filtered results,
+         *  get the rest of the filtered results and prep them for download
+         */
         const result = await refetch()
         csv = generateDownloadData<AccountRecord>(
           fields,
@@ -86,19 +90,26 @@ export default function EvaluatorDownloader({
           M2_FIELD_NAMES
         )
       } else {
-        // For all other cases, the results to download are already
-        // displayed in the table, so prep that data for download
+        /**
+        *  For all other cases, the results to download are already
+        *  displayed in the table, so prep that data for download
 
-        // TODO: if there are fewer than 20 results for this evaluator,
-        // downloading with results toggle set to 'sample' will give you a front-end
-        // generated file with annotations but downloading from the 'all'
-        // view will get you the pre-generated results file without annotations.
-        // Maybe there should only be a single all results view when there's no sample?
+        *  TODO: if there are fewer than 20 results for this evaluator,
+        *  downloading with results toggle set to 'sample' will give you a front-end
+        *  generated file with annotations but downloading from the 'all'
+        *  view will get you the pre-generated results file without annotations.
+        *  Maybe there should only be a single all results view when there's no sample?
+        */
         csv = generateDownloadData<AccountRecord>(fields, rows, M2_FIELD_NAMES)
       }
       // Try downloading the data
       try {
-        await downloadData(csv, `${eventData.name}_${evaluatorId}_${ext}`)
+        await downloadData(
+          csv,
+          `${eventData.name}_${evaluatorId}_${
+            view === 'all' ? 'filtered' : 'sample'
+          }`
+        )
         setIsOpen(false)
       } catch {
         // TODO determine if we need to handle errors
@@ -107,20 +118,27 @@ export default function EvaluatorDownloader({
     }
   }
 
-  let resultsMessage = 'all results for this evaluator'
-  if (view === 'sample' && totalHits > 20)
-    resultsMessage = 'a representative sample of results for this evaluator'
-  if (view === 'all' && isFiltered)
-    resultsMessage = 'results for the currently applied filters'
+  let resultsMessage
+  let buttonText
+  if (view === 'sample' && totalHits > 20) {
+    resultsMessage = 'Download representative sample of results'
+    buttonText = 'Download 20 sample results'
+  } else {
+    resultsMessage = `Download ${
+      view === 'all' && isFiltered ? 'filtered' : 'all'
+    } results`
+    buttonText = `Download ${formatNumber(currentHits)} results`
+  }
 
-  const header = (
-    <>
-      <fieldset className='o-form_fieldset block block__sub'>
-        <legend className='h4'>Save a link to these results</legend>
-        <CopyUrl url='' />
-      </fieldset>
-      <legend className='h4'>Download {resultsMessage}</legend>
-    </>
+  const content = (
+    <fieldset className='o-form_fieldset block block__sub'>
+      <legend className='h4'>Save a link for later</legend>
+      <p>
+        Copy the link to this evaluator’s results. Any filters you’ve applied will be
+        included.
+      </p>
+      <CopyUrl />
+    </fieldset>
   )
 
   return (
@@ -136,8 +154,10 @@ export default function EvaluatorDownloader({
         open={isOpen}
         onClose={onClose}
         onDownload={onDownload}
-        header={header}
+        content={content}
         title='Save results'
+        privacyAuthorizationHeader={resultsMessage}
+        buttonText={buttonText}
       />
     </div>
   )
