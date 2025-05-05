@@ -45,8 +45,8 @@ export default function EvaluatorSummary({
       definition: formatNumber(metadata.accounts_affected)
     },
     {
-      term: 'Categories',
-      definition: metadata.category ? metadata.category.join(', ') : null
+      term: 'Category',
+      definition: metadata.category
     }
   ]
 
