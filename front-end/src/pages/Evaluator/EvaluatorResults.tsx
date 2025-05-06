@@ -25,7 +25,7 @@ export default function EvaluatorResults({
   const navigate = useNavigate()
 
   const query = useSearch({ strict: false })
-  const { page, view } = query
+  const { page, view, page_size } = query
 
   const isFiltered = Object.keys(query).some(
     key => !['page', 'view', 'page_size'].includes(key)
@@ -49,7 +49,7 @@ export default function EvaluatorResults({
 
   const totalHits = evaluatorMetadata.hits
   const currentHits = data?.count ?? 0
-  const pageCount = getPageCount(currentHits)
+  const pageCount = getPageCount(currentHits, page_size)
 
   // TODO: think about whether this is needed / when it should happen
   // should this be handled by the API?
