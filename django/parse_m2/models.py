@@ -115,6 +115,7 @@ class AccountActivity(models.Model):
     acct_stat = models.CharField(max_length=200)
     pmt_rating = models.CharField(max_length=200)
     php = models.CharField(max_length=200)
+    php1 = models.CharField(max_length=1)
     spc_com_cd = models.CharField(max_length=200)
     compl_cond_cd = models.CharField(max_length=200)
     current_bal = models.IntegerField()
@@ -128,6 +129,10 @@ class AccountActivity(models.Model):
 
     @classmethod
     def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date):
+        # Construct the php1 field from php
+        php = get_field_value(fields.base_fields, "php", base_seg)
+        php1 = php[0] if php else ""
+
         return cls(
             data_file = m2_data_file,
             event = m2_data_file.event,
@@ -144,10 +149,11 @@ class AccountActivity(models.Model):
             terms_dur = get_field_value(fields.base_fields, "terms_dur", base_seg),
             terms_freq = get_field_value(fields.base_fields, "terms_freq", base_seg),
             smpa = get_field_value(fields.base_fields, "smpa", base_seg),
-            actual_pmt_amt  = get_field_value(fields.base_fields, "actual_pmt_amt", base_seg),
+            actual_pmt_amt = get_field_value(fields.base_fields, "actual_pmt_amt", base_seg),
             acct_stat = get_field_value(fields.base_fields, "acct_stat", base_seg),
             pmt_rating = get_field_value(fields.base_fields, "pmt_rating", base_seg),
-            php  = get_field_value(fields.base_fields, "php", base_seg),
+            php = php,
+            php1 = php1,
             spc_com_cd = get_field_value(fields.base_fields, "spc_com_cd", base_seg),
             compl_cond_cd = get_field_value(fields.base_fields, "compl_cond_cd", base_seg),
             current_bal = get_field_value(fields.base_fields, "current_bal", base_seg),
@@ -159,6 +165,11 @@ class AccountActivity(models.Model):
             dolp = get_field_value(fields.base_fields, "dolp", base_seg),
             int_type_ind = get_field_value(fields.base_fields, "int_type_ind", base_seg),
         )
+
+    def save(self, *args, **kwargs):
+        if not self.php1:
+            self.php1 = self.php[0] if self.php else ""
+        super().save(*args, **kwargs)
 
 
 class AccountHolder(models.Model):

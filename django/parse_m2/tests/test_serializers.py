@@ -70,6 +70,7 @@ class AccountActivitySerializerTestCase(TestCase):
             "acct_stat": "acct_stat",
             "pmt_rating": "pmt_rating",
             "php": "php",
+            "php1": "p",
             "spc_com_cd": "spc_com_cd",
             "compl_cond_cd": "compl_cond_cd",
             "current_bal": 12345,

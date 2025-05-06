@@ -89,6 +89,7 @@ For example, the value of `acct_type` to filter for might be given in the query 
 - `acct_stat`
 - `compl_cond_cd`
 - `php`
+- `php1`
 - `pmt_rating`
 - `spc_com_cd`
 - `terms_freq`
@@ -180,6 +181,7 @@ GET - returns a JSON with three fields -`cons_acct_num`,`inconsistencies`, and `
             "acct_stat": "",
             "pmt_rating": "",
             "php": "",
+            "php1": "",
             "spc_com_cd": "",
             "compl_cond_cd": "",
             "current_bal": "",

@@ -62,7 +62,7 @@ class EvaluateViewsTestCase(TestCase):
                  'acct_type': '', 'date_open': '2018-02-28', 'credit_limit': 0,
                  'hcola': 0, 'id_num': '', 'terms_dur': '00', 'terms_freq': '00',
                  'smpa': 0, 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0',
-                 'php': '', 'spc_com_cd': '', 'compl_cond_cd': '', 'current_bal': 0,
+                 'php': '', 'php1': '', 'spc_com_cd': '', 'compl_cond_cd': '', 'current_bal': 0,
                  'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2022-05-01',
                  'dofd': None, 'date_closed': None, 'dolp': None,
                  'int_type_ind': '', 'account_holder__cons_info_ind': cons_info_ind,
