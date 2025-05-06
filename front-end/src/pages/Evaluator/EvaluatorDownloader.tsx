@@ -68,9 +68,11 @@ export default function EvaluatorDownloader({
   }
 
   const onDownload = async (): Promise<void> => {
-    if (view === 'all' && !isFiltered) {
+    if (!isFiltered && (view === 'all' || totalHits <= 20)) {
       /**
-       * If you're viewing all results and haven't applied filters,
+       * If you're viewing all the results (either because you're on the
+       * all results view and no filters were applied or because you're on the
+       * sample view but there are too few results for there to be a sample),
        * download the pre-generated full results file
        */
       const url = `/api/events/${eventData.id}/evaluator/${evaluatorId}/csv/`
@@ -78,10 +80,10 @@ export default function EvaluatorDownloader({
       setIsOpen(false)
     } else {
       let csv
-      if (view === 'all' && isFiltered && currentHits > rows.length) {
+      if (view === 'all' && currentHits > rows.length) {
         /**
-         * If you've applied filters and aren't viewing all the filtered results,
-         *  get the rest of the filtered results and prep them for download
+         * You've applied filters and aren't viewing all the filtered results,
+         * so we get the rest of the filtered results and prep them for download
          */
         const result = await refetch()
         csv = generateDownloadData<AccountRecord>(
@@ -91,15 +93,9 @@ export default function EvaluatorDownloader({
         )
       } else {
         /**
-        *  For all other cases, the results to download are already
-        *  displayed in the table, so prep that data for download
-
-        *  TODO: if there are fewer than 20 results for this evaluator,
-        *  downloading with results toggle set to 'sample' will give you a front-end
-        *  generated file with annotations but downloading from the 'all'
-        *  view will get you the pre-generated results file without annotations.
-        *  Maybe there should only be a single all results view when there's no sample?
-        */
+         *  For all other cases, the results to download are already
+         *  displayed in the table, so prep that data for download
+         */
         csv = generateDownloadData<AccountRecord>(fields, rows, M2_FIELD_NAMES)
       }
       // Try downloading the data
