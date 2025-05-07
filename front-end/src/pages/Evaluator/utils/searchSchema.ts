@@ -43,7 +43,7 @@ export const listValueValidator = (
     .transform(val => validateFieldValues(val, field))
     .optional()
 
-export const schema = z.object({
+export const evaluatorSchema = z.object({
   view: fallback(z.enum(['all', 'sample']), 'sample'),
   page: fallback(z.number().gt(0), 1),
   page_size: fallback(z.number().gt(0), ITEMS_PER_PAGE),
@@ -66,9 +66,14 @@ export const schema = z.object({
   date_closed: BooleanStringValidator
 })
 
-export const evaluatorSearchSchema = schema.transform((params): object =>
+export const evaluatorSearchSchema = evaluatorSchema.transform((params): object =>
   params.view === 'sample' ? { ...params, page: 1 } : { ...params }
 )
+
+// List of filters that can be applied to evaluator results
+export const filterableFields = evaluatorSchema
+  .keyof()
+  .options.filter(key => !['page', 'view', 'page_size'].includes(key))
 
 // eslint-disable-next-line @typescript-eslint/no-type-alias
 export type EvaluatorSearch = z.infer<typeof evaluatorSearchSchema>

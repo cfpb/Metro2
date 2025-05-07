@@ -12,6 +12,7 @@ import EvaluatorResultsPagination from './EvaluatorResultsPagination'
 import EvaluatorTable from './EvaluatorTable'
 import { getPageCount, getResultsMessage, getTableFields } from './EvaluatorUtils'
 import EvaluatorFilterSidebar from './filters/FilterSidebar'
+import { filterableFields } from './utils/searchSchema'
 
 interface EvaluatorTableData {
   evaluatorMetadata: EvaluatorMetadata
@@ -27,9 +28,8 @@ export default function EvaluatorResults({
   const query = useSearch({ strict: false })
   const { page, view } = query
 
-  const isFiltered = Object.keys(query).some(
-    key => !['page', 'view', 'page_size'].includes(key)
-  )
+  // Check if the search params include any of the filterable fields
+  const isFiltered = Object.keys(query).some(key => filterableFields.includes(key))
 
   // Fetch data from server
   const { data, isFetching } = useQuery<
