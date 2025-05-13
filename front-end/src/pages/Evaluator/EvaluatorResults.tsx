@@ -68,7 +68,7 @@ export default function EvaluatorResults({
       {isFetching ? <Loader message='Your data is loading' /> : null}
       <div className='evaluator-hits-row'>
         <div className='row row__content '>
-          <div className='results-container'>
+          <div className={`results-container results-container__${view}`}>
             <div className='row row__download '>
               <div className='results-message' data-testid='results-message'>
                 {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
@@ -106,7 +106,7 @@ export default function EvaluatorResults({
                 query={query}
               />
             </div>
-            <div className={`results results__${view}`}>
+            <div className='results'>
               <div className='results_sidebar sidebar'>
                 {view === 'all' ? <EvaluatorFilterSidebar /> : null}
               </div>

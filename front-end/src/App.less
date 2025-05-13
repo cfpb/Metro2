@@ -123,41 +123,46 @@ header h1 {
 
   .row__download {
     margin: 0;
-    padding: 0.75em 1em 0.75em 1.5em;
+    padding: 0.75em 1em 0.75em 1em;
     background-color: @gray-5;
   }
   // max-height: 95vh;
 }
 
-.results__all {
-  display: flex;
-  width: 100%;
-  // max-height: 92vh; // toggle off for full height sidebar
-
-  .results_sidebar {
-    background-color: @gray-5;
-    flex: 1;
-    width: 33%;
-    max-width: 450px;
-    // overflow-y: scroll; // toggle off for full height sidebar
-    padding: 0.75em 1em 1em 1.5em;
-    // padding-right: 2em;
-
-    .h3 {
-      font-weight: 500;
-      font-size: 1.275em;
-    }
+.results-container__all {
+  .row__download {
+    padding-left: 1.5em;
   }
+  .results {
+    display: flex;
+    width: 100%;
+    // max-height: 92vh; // toggle off for full height sidebar
 
-  .results_table {
-    background-color: @white;
-    flex: 1;
-    // display: flex;
-    // flex-direction: column;
-    height: 100%;
+    .results_sidebar {
+      background-color: @gray-5;
+      flex: 1;
+      width: 33%;
+      max-width: 450px;
+      // overflow-y: scroll; // toggle off for full height sidebar
+      padding: 0.75em 1em 1em 1.5em;
+      // padding-right: 2em;
 
-    .results_pagination {
-      margin-top: 0.5em;
+      .h3 {
+        font-weight: 500;
+        font-size: 1.275em;
+      }
+    }
+
+    .results_table {
+      background-color: @white;
+      flex: 1;
+      // display: flex;
+      // flex-direction: column;
+      height: 100%;
+
+      .results_pagination {
+        margin-top: 0.5em;
+      }
     }
   }
 }
