@@ -21,7 +21,6 @@ export default function EvaluatorResultsToggle(): ReactElement {
   return (
     <div className='row row__content block block__sub'>
       <fieldset className='o-form_fieldset' data-testid='results-view-toggle'>
-        <legend className='h4'>Options</legend>
         <RadioButton
           id='sample'
           name='evaluator-results-toggle'

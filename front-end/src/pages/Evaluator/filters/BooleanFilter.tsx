@@ -16,14 +16,9 @@ export default function EvaluatorBooleanFilter({
 }: EvaluatorBooleanFilterData): ReactElement {
   const navigate = useNavigate()
 
-  // const queryStringValue = useSearch({
-  //   strict: false,
-  //   select: (search): boolean | 'any' | undefined => (search?[field])
-  // })
-
   const queryStringValue = useSearch({
     strict: false,
-    select: (search): boolean | 'true' | 'false' | 'any' | undefined => search[field]
+    select: (search): boolean | 'any' | 'false' | 'true' | undefined => search[field]
   })
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -57,7 +52,9 @@ export default function EvaluatorBooleanFilter({
   }
 
   return (
-    <Accordion header={header} openOnLoad={queryStringValue !== undefined}>
+    <Accordion
+      header={<span>{header}</span>}
+      openOnLoad={queryStringValue !== undefined}>
       <BooleanFilter
         id={field}
         selected={queryStringValue}

@@ -2,7 +2,7 @@ import type EvaluatorMetadata from 'types/Evaluator'
 import { M2_FIELD_NAMES } from 'utils/constants'
 import { formatNumber } from 'utils/formatters'
 
-export const ITEMS_PER_PAGE = 200
+export const ITEMS_PER_PAGE = 20
 
 /**
  * getPageCount()
@@ -30,18 +30,18 @@ export const getPageCount = (
  *
  * Returns a results message for 4 different scenarios:
  *     1. Sample view when there are more than 20 total hits:
- *           Showing representative sample of 20 out of {total} results
+ *           Showing 20 sample results
  *     2. Sample view when there are fewer than 20 total hits:
- *           Showing {total} out of {total} results
- *     3. All results view with no filters:
  *           Showing {total} results
+ *     3. All results view with no filters:
+ *           Showing {x} - {y} of {total} results
  *     4. All results view with filters applied:
- *           Showing {x} matches out of {total} results
+ *           Showing {x} - {y} of {total} filtered results
  *
  * @param {number} currentHitsCount - hits count for current request to evaluator
  *                                    results endpoint
  * @param {number} totalResultsCount - total hits on evaluator for this event
- * @param {number} rowsCount - number of rows returned from evaluator results endpoint
+ * @param {number} page - current page
  * @param {string} view - whether sample or all results are being displayed
  * @param {boolean} isFiltered - whether data filters were included
  *                               in this request to evaluator results endpoint
@@ -51,20 +51,26 @@ export const getPageCount = (
 export const getResultsMessage = (
   currentHitsCount: number,
   totalResultsCount: number,
-  rowsCount: number,
+  page: number | undefined = 1,
   view: 'all' | 'sample' | undefined = 'sample',
   isFiltered?: boolean
 ): string => {
-  if (view === 'sample')
-    return `Showing ${
-      totalResultsCount > 20 ? 'representative sample of' : ''
-    } ${rowsCount} out of ${formatNumber(totalResultsCount)} results`
+  if (view === 'sample' && totalResultsCount > 20) {
+    return 'Showing 20 sample results'
+  }
 
-  return isFiltered
-    ? `Showing ${formatNumber(currentHitsCount)} matches out of ${formatNumber(
-        totalResultsCount
-      )} total results`
-    : `Showing ${formatNumber(totalResultsCount)} results`
+  if (isFiltered && currentHitsCount === 0) {
+    return 'Showing 0 results'
+  }
+
+  const start = (page - 1) * ITEMS_PER_PAGE + 1
+  const end =
+    page * ITEMS_PER_PAGE > currentHitsCount
+      ? currentHitsCount
+      : page * ITEMS_PER_PAGE
+  return `Showing ${formatNumber(start)} - ${formatNumber(end)} of ${formatNumber(
+    currentHitsCount
+  )} ${isFiltered ? 'filtered' : ''} results`
 }
 
 export const explanatoryFields = new Map([
