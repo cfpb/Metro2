@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import Loader from 'components/Loader/Loader'
+import { Icon } from 'design-system-react'
 import type { EvaluatorHits } from 'models/EvaluatorHits'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
 import type Event from 'pages/Event/Event'
@@ -77,6 +78,7 @@ export default function EvaluatorResults({
                 {isFiltered ? (
                   <p>
                     <Link
+                      className='a-btn a-btn__link a-btn__warning'
                       to='.'
                       resetScroll={false}
                       search={(prev): object => ({
@@ -84,7 +86,9 @@ export default function EvaluatorResults({
                         page_size: prev.page_size,
                         view: 'all'
                       })}
+                      activeOptions={{ exact: true }}
                       style={{ pointerEvents: 'auto' }}>
+                      <Icon name='error' />
                       Clear all filters
                     </Link>
                   </p>
