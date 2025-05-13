@@ -1,6 +1,5 @@
 import type EvaluatorMetadata from 'types/Evaluator'
 import { M2_FIELD_NAMES } from 'utils/constants'
-import { formatNumber } from 'utils/formatters'
 
 export const ITEMS_PER_PAGE = 20
 
@@ -23,54 +22,6 @@ export const getPageCount = (
 ): number => {
   if (page_size > resultsCount) return 1
   return resultsCount === 0 ? 0 : Math.ceil(resultsCount / page_size)
-}
-
-/**
- * getResultsMessage()
- *
- * Returns a results message for 4 different scenarios:
- *     1. Sample view when there are more than 20 total hits:
- *           Showing 20 sample results
- *     2. Sample view when there are fewer than 20 total hits:
- *           Showing {total} results
- *     3. All results view with no filters:
- *           Showing {x} - {y} of {total} results
- *     4. All results view with filters applied:
- *           Showing {x} - {y} of {total} filtered results
- *
- * @param {number} currentHitsCount - hits count for current request to evaluator
- *                                    results endpoint
- * @param {number} totalResultsCount - total hits on evaluator for this event
- * @param {number} page - current page
- * @param {string} view - whether sample or all results are being displayed
- * @param {boolean} isFiltered - whether data filters were included
- *                               in this request to evaluator results endpoint
- * @returns {string} - a results count message
- */
-
-export const getResultsMessage = (
-  currentHitsCount: number,
-  totalResultsCount: number,
-  page: number | undefined = 1,
-  view: 'all' | 'sample' | undefined = 'sample',
-  isFiltered?: boolean
-): string => {
-  if (view === 'sample' && totalResultsCount > 20) {
-    return 'Showing 20 sample results'
-  }
-
-  if (isFiltered && currentHitsCount === 0) {
-    return 'Showing 0 results'
-  }
-
-  const start = (page - 1) * ITEMS_PER_PAGE + 1
-  const end =
-    page * ITEMS_PER_PAGE > currentHitsCount
-      ? currentHitsCount
-      : page * ITEMS_PER_PAGE
-  return `Showing ${formatNumber(start)} - ${formatNumber(end)} of ${formatNumber(
-    currentHitsCount
-  )} ${isFiltered ? 'filtered' : ''} results`
 }
 
 export const explanatoryFields = new Map([

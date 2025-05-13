@@ -9,13 +9,14 @@ import type { ReactElement } from 'react'
 import { useEffect } from 'react'
 import type EvaluatorMetadata from 'types/Evaluator'
 import EvaluatorDownloader from './EvaluatorDownloader'
+import EvaluatorResultsMessage from './EvaluatorResultsMessage'
 import EvaluatorResultsPagination from './EvaluatorResultsPagination'
 import EvaluatorTable from './EvaluatorTable'
-import { getPageCount, getResultsMessage, getTableFields } from './EvaluatorUtils'
+import { getPageCount, getTableFields } from './EvaluatorUtils'
 import EvaluatorFilterSidebar from './filters/FilterSidebar'
 import { filterableFields } from './utils/searchSchema'
 
-interface EvaluatorTableData {
+interface EvaluatorResultsData {
   evaluatorMetadata: EvaluatorMetadata
   eventData: Event
 }
@@ -23,10 +24,11 @@ interface EvaluatorTableData {
 export default function EvaluatorResults({
   evaluatorMetadata,
   eventData
-}: EvaluatorTableData): ReactElement {
+}: EvaluatorResultsData): ReactElement {
   const navigate = useNavigate()
 
   const query = useSearch({ strict: false })
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const { page, view, page_size } = query
 
   // Check if the search params include any of the filterable fields
@@ -72,9 +74,14 @@ export default function EvaluatorResults({
             <div className='row row__download '>
               <div className='results-message' data-testid='results-message'>
                 {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
-                <h4>
-                  {getResultsMessage(currentHits, totalHits, page, view, isFiltered)}
-                </h4>
+                <EvaluatorResultsMessage
+                  page={page}
+                  view={view}
+                  pageSize={page_size}
+                  isFiltered={isFiltered}
+                  currentHitsCount={currentHits}
+                  totalResultsCount={totalHits}
+                />
                 {isFiltered ? (
                   <p>
                     <Link
