@@ -1,5 +1,5 @@
-import { useNavigate, useSearch } from '@tanstack/react-router'
-import { RadioButton } from 'design-system-react'
+import { useNavigate, useSearch, Link } from '@tanstack/react-router'
+// import { RadioButton } from 'design-system-react'
 import type { ReactElement } from 'react'
 
 export default function EvaluatorResultsToggle(): ReactElement {
@@ -19,32 +19,32 @@ export default function EvaluatorResultsToggle(): ReactElement {
   }
 
   return (
-    <div className='row row__content block block__sub'>
-      <fieldset className='o-form_fieldset' data-testid='results-view-toggle'>
-        <legend className='h4'>Options</legend>
-        <RadioButton
-          id='sample'
-          name='evaluator-results-toggle'
-          label='View representative sample'
-          labelClassName=''
-          labelInline
-          checked={view !== 'all'}
-          onChange={onChange}
-          value='sample'
-          data-testid='sample-results-button'
-        />
-        <RadioButton
-          id='all'
-          name='evaluator-results-toggle'
-          label='View and filter all results'
-          labelClassName=''
-          labelInline
-          checked={view === 'all'}
-          onChange={onChange}
-          value='all'
-          data-testid='all-results-button'
-        />
-      </fieldset>
+    <div className='tabbed_navigation'>
+      <div className='row row__content'>
+        <fieldset className='o-form_fieldset' data-testid='results-view-toggle'>
+        <Link
+          // resetScroll={false}
+          resetScroll={false}
+          to='.'
+          search={prev => ({ ...prev, view: 'all' })}
+          className='tab'
+          >
+          All results
+        </Link>
+         
+        <Link
+          resetScroll={false}
+          to='.'
+          search={prev => ({ ...prev, view: 'sample' })}
+          className='tab'
+      
+          // classes from CCDB / Complaint Explorer, set active class if activeTab prop === 'sample'
+          // aria attributes from CCDB / Complaint Explorer
+          >
+          Sample
+        </Link>
+        </fieldset>
+      </div>
     </div>
   )
 }

@@ -39,6 +39,7 @@ body,
 
   h4 {
     margin-bottom: 0;
+    margin-left: .5rem;
   }
 
   .downloader {
@@ -157,3 +158,67 @@ header h1 {
 .no-results-message h3 {
   font-weight: 500;
 }
+
+.evaluator-hits-row {
+  .row__download {
+    border-top: 1px solid #c3c4c4;
+    padding-top: 1rem;
+    background: 	#f7f8f9;
+  }
+}
+
+.tabbed_navigation {
+  color: #181d1f;
+  margin-top: 2rem;
+
+    fieldset {display: inline-flex;}
+
+    > .row {
+      margin-bottom: 0;
+    }
+  
+    .tab {
+      padding: 1rem 2rem .8rem;
+
+      // font-size: math.div(19px, $base-font-size-px) + em;
+      font-weight: 500;
+
+      &.active {
+        border: 1px solid #c3c4c4;
+        border-bottom: none;
+        color: #000;
+        background: #f7f8f9;
+        pointer-events: none;
+        position: relative;
+      }
+
+      &:not(.active) {
+        color: #0050b4;
+        background: 	#fff;
+        border: none;
+
+        &:hover {
+          color: 002d72;
+        }
+
+        &:focus {
+          color: #002d72;
+        }
+
+        &::after {
+          content: '';
+          border-top: solid 1px #5a5d61;
+          display: block;
+        }
+      }
+    }
+  }
+
+  .evaluator-hits-row{
+    > .row {
+      margin-top: 0;
+      margin-bottom: 0;
+      padding-bottom: .5rem;
+      background: #f7f8f9;
+    }
+  }
