@@ -1,6 +1,5 @@
 import type { ReactElement } from 'react'
 import { formatNumber } from 'utils/formatters'
-import { ITEMS_PER_PAGE } from './EvaluatorUtils'
 
 /**
  * EvaluatorResultsMessage
@@ -29,18 +28,18 @@ import { ITEMS_PER_PAGE } from './EvaluatorUtils'
 interface EvaluatorResultsMessageProps {
   currentHitsCount: number
   totalResultsCount: number
-  page?: number
-  pageSize?: number
-  view?: 'all' | 'sample'
+  page: number
+  pageSize: number
+  view: 'all' | 'sample'
   isFiltered: boolean
 }
 
 export default function EvaluatorResultsMessage({
   currentHitsCount,
   totalResultsCount,
-  page = 1,
-  pageSize = ITEMS_PER_PAGE,
-  view = 'sample',
+  page,
+  pageSize,
+  view,
   isFiltered
 }: EvaluatorResultsMessageProps): ReactElement {
   let message = ''
@@ -50,12 +49,12 @@ export default function EvaluatorResultsMessage({
   } else if (isFiltered && currentHitsCount === 0) {
     message = 'Showing 0 results'
   } else {
-    const start = (page - 1) * pageSize + 1
-    const end =
-      page * pageSize > currentHitsCount ? currentHitsCount : page * pageSize
-    message = `Showing ${formatNumber(start)} - ${formatNumber(
-      end
-    )} of ${formatNumber(currentHitsCount)} ${isFiltered ? 'filtered' : ''} results`
+    const start = formatNumber((page - 1) * pageSize + 1)
+    const end = formatNumber(Math.min(page * pageSize, currentHitsCount))
+    const total = formatNumber(currentHitsCount)
+    message = `Showing ${start} - ${end} of ${total} ${
+      isFiltered ? 'filtered' : ''
+    } results`
   }
 
   return <h4>{message}</h4>

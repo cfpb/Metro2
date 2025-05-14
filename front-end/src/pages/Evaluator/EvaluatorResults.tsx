@@ -12,7 +12,7 @@ import EvaluatorDownloader from './EvaluatorDownloader'
 import EvaluatorResultsMessage from './EvaluatorResultsMessage'
 import EvaluatorResultsPagination from './EvaluatorResultsPagination'
 import EvaluatorTable from './EvaluatorTable'
-import { getPageCount, getTableFields } from './EvaluatorUtils'
+import { ITEMS_PER_PAGE, getPageCount, getTableFields } from './EvaluatorUtils'
 import EvaluatorFilterSidebar from './filters/FilterSidebar'
 import { filterableFields } from './utils/searchSchema'
 
@@ -75,9 +75,9 @@ export default function EvaluatorResults({
               <div className='results-message' data-testid='results-message'>
                 {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
                 <EvaluatorResultsMessage
-                  page={page}
-                  view={view}
-                  pageSize={page_size}
+                  page={page ?? 1}
+                  view={view ?? 'sample'}
+                  pageSize={page_size ?? ITEMS_PER_PAGE}
                   isFiltered={isFiltered}
                   currentHitsCount={currentHits}
                   totalResultsCount={totalHits}
