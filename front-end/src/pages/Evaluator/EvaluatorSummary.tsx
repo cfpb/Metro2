@@ -61,56 +61,58 @@ export default function EvaluatorSummary({
         </div>
         <div className='content-l_col content-l_col-2-3'>
           <h3 className='h2'>Description</h3>
-          <p>{metadata.description}</p>
-          <Accordion header='Criteria evaluated'>
-            <div
-              className='long-description'
-              dangerouslySetInnerHTML={{
-                __html: formatLongDescription(metadata.long_description)
-              }}
-            />
-          </Accordion>
+          <p className='evaluator-description'>{metadata.description}</p>
+          <div className='evaluator-metadata'>
+            <Accordion header='Criteria evaluated'>
+              <div
+                className='long-description'
+                dangerouslySetInnerHTML={{
+                  __html: formatLongDescription(metadata.long_description)
+                }}
+              />
+            </Accordion>
 
-          <Accordion header='How to evaluate these results'>
-            {populatedFields.length > 0
-              ? populatedFields.map(field => (
-                  <div key={field} className='u-mb15'>
-                    <b>{explanatoryFields.get(field)}: </b>
-                    <span>{metadata[field as keyof typeof metadata]}</span>
-                  </div>
-                ))
-              : ''}
-            {emptyFields.length > 0 ? (
-              <div className='u-mb15'>
-                <p>
-                  <b>Help make this tool more useful:</b> Your experience and
-                  knowledge about specific evaluators can help others.
-                  {user.is_admin ? (
-                    <span>
-                      {' '}
-                      As a Metro2 admin, you can{' '}
-                      <a
-                        href={`${adminUrlPrefix}/admin/evaluate_m2/evaluatormetadata/${metadata.id}/change/`}
-                        target='_blank'
-                        rel='noreferrer'>
-                        add information directly to this evaluator.
-                      </a>
-                    </span>
-                  ) : (
-                    <span />
-                  )}{' '}
-                  Consider adding:
-                </p>
-                <ul>
-                  {emptyFields.map(field => (
-                    <li key={field}>{explanatoryFields.get(field)}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              ''
-            )}
-          </Accordion>
+            <Accordion header='How to evaluate these results'>
+              {populatedFields.length > 0
+                ? populatedFields.map(field => (
+                    <div key={field} className='u-mb15'>
+                      <b>{explanatoryFields.get(field)}: </b>
+                      <span>{metadata[field as keyof typeof metadata]}</span>
+                    </div>
+                  ))
+                : ''}
+              {emptyFields.length > 0 ? (
+                <div className='u-mb15'>
+                  <p>
+                    <b>Help make this tool more useful:</b> Your experience and
+                    knowledge about specific evaluators can help others.
+                    {user.is_admin ? (
+                      <span>
+                        {' '}
+                        As a Metro2 admin, you can{' '}
+                        <a
+                          href={`${adminUrlPrefix}/admin/evaluate_m2/evaluatormetadata/${metadata.id}/change/`}
+                          target='_blank'
+                          rel='noreferrer'>
+                          add information directly to this evaluator.
+                        </a>
+                      </span>
+                    ) : (
+                      <span />
+                    )}{' '}
+                    Consider adding:
+                  </p>
+                  <ul>
+                    {emptyFields.map(field => (
+                      <li key={field}>{explanatoryFields.get(field)}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                ''
+              )}
+            </Accordion>
+          </div>
         </div>
       </div>
     </div>
