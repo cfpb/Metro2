@@ -6,8 +6,9 @@ from parse_m2.models import Metro2Event, M2DataFile
 
 class Command(BaseCommand):
     """
-    Run this command by running the following:
-    > python manage.py delete_event_data -e [event_id]
+    Run this command in one of the following ways:
+    > python manage.py delete_single_datafile -e [event_id] -f [file_name]
+    > python manage.py delete_single_datafile -e [event_id] -i [file_id]
     """
     help = "Delete one Metro2 data file, by filename, for a specific event record. " + \
             "Do this when the parser failed or errored on a single file and you " + \
@@ -21,12 +22,17 @@ class Command(BaseCommand):
         argparser.add_argument("-e", "--event_id", nargs="?", required=True, help=event_help)
 
         filename_help = "The file_name value of the file to delete"
-        argparser.add_argument("-f", "--file_name", nargs="?", required=True, help=filename_help)
+        argparser.add_argument("-f", "--file_name", nargs="?", required=False, help=filename_help)
+
+        file_id_help = "The ID of the file to delete"
+        argparser.add_argument("-i", "--file_id", nargs="?", required=False, help=file_id_help)
+
 
     def handle(self, *args, **options):
         logger = logging.getLogger('commands.delete_single_datafile')
         event_id = options["event_id"]
         file_name = options["file_name"]
+        file_id = options["file_id"]
 
         # Fetch the Metro2Event
         try:
@@ -37,10 +43,16 @@ class Command(BaseCommand):
 
         # Fetch the M2DataFile record
         try:
-            datafile = M2DataFile.objects.get(event=event, file_name=file_name)
+            if file_id:
+                logger.info(f"Searching for file with file_id {file_id} for event {event.id}...")
+                datafile =  M2DataFile.objects.get(event=event, id=file_id)
+            elif file_name:
+                logger.info(f"Searching for file with file_name {file_name} for event {event.id}...")
+                datafile =  M2DataFile.objects.get(event=event, file_name=file_name)
+            else:
+                raise CommandError("Either file name or file ID must be provided. Exiting.")
         except M2DataFile.DoesNotExist:
-            # If the file doesn't exist, exit
-            raise CommandError(f"No file found with name `{file_name}` for event id {event_id}. Exiting.")
+            raise CommandError(f"No such file found. Exiting.")
 
         # Delete the file
         datafile.delete()
