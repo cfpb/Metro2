@@ -3,12 +3,15 @@ import type { EvaluatorSearch } from '../utils/searchSchema'
 import EvaluatorBooleanFilter from './BooleanFilter'
 import EvaluatorCheckboxGroup from './CheckboxGroup'
 import EvaluatorRangeFilter from './RangeFilter'
+import './filterSidebar.less'
 
 export default function EvaluatorFilterSidebar(): ReactElement {
   return (
-    <fieldset className='o-form_fieldset' data-testid='evaluator-filter-sidebar'>
+    <fieldset
+      className='o-form_fieldset filter-sidebar'
+      data-testid='evaluator-filter-sidebar'>
       <div className='block block__sub block__flush-top'>
-        <h2 className='h3'>Filter results by account details</h2>
+        <h2 className='h3'>Account details</h2>
         <p>
           Filters are under development. Some options may not be relevant for this
           evaluator.
@@ -30,7 +33,7 @@ export default function EvaluatorFilterSidebar(): ReactElement {
           />
         ))}
         <div className='block block__sub'>
-          <h2 className='h3'>Filter by dates</h2>
+          <h2 className='h3'>Dates</h2>
           <EvaluatorBooleanFilter
             field={'dofd' as keyof EvaluatorSearch}
             header='Date of first delinquency (DOFD)'
@@ -43,7 +46,7 @@ export default function EvaluatorFilterSidebar(): ReactElement {
           />
         </div>
         <div className='block block__sub'>
-          <h2 className='h3'>Filter by amounts</h2>
+          <h2 className='h3'>Amounts</h2>
           {['amt_past_due', 'current_bal'].map(field => (
             <EvaluatorRangeFilter
               key={field}

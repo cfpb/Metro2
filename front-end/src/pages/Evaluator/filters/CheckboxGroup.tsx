@@ -169,8 +169,8 @@ export default function EvaluatorCheckboxGroup({
         const params = { ...prev }
         if (vals.length > 0) {
           params[field] = [...new Set(vals)].sort()
-        } else {
-          if (field in params) delete params[field]
+        } else if (field in params) {
+          delete params[field]
         }
         return params
       }

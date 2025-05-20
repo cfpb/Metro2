@@ -1,6 +1,6 @@
 import Accordion from 'components/Accordion/Accordion'
 import type { ChangeEvent, ReactElement } from 'react'
-import IndeterminateCheckbox from '../IndeterminateCheckbox/IndeterminateCheckbox'
+import { IndeterminateCheckbox } from '../IndeterminateCheckbox/IndeterminateCheckbox'
 import './NestedCheckboxGroup.less'
 
 /**
@@ -49,7 +49,7 @@ export interface CheckboxItem {
 interface NestedCheckboxGroupProperties {
   items: CheckboxItem[]
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  topLevel?: boolean
+  level?: number
 }
 
 export const getCheckedDescendants = (
@@ -70,7 +70,7 @@ export const getCheckedDescendants = (
 export default function NestedCheckboxGroup({
   items,
   onChange,
-  topLevel = true
+  level = 1
 }: NestedCheckboxGroupProperties): ReactElement {
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
     onChange?.(event)
@@ -80,25 +80,27 @@ export default function NestedCheckboxGroup({
       {items.map(item => {
         const checkedDescendants = getCheckedDescendants(item)
         const allChecked = checkedDescendants.every(Boolean)
+        const someChecked = checkedDescendants.includes(true)
         return item.children && item.children.length > 0 ? (
           <Accordion
-            className='nested'
+            className={`nested nested_level-${level}`}
             hasBackground={false}
             key={item.key}
+            openOnLoad={level === 1 && someChecked}
             header={
               <IndeterminateCheckbox
                 onChange={onChangeHandler}
                 id={String(item.key)}
                 label={item.name}
                 checked={allChecked}
-                labelInline={!topLevel}
-                isIndeterminate={!allChecked && checkedDescendants.includes(true)}
+                // labelInline={level !== 1}
+                isIndeterminate={!allChecked && someChecked}
               />
             }>
             <NestedCheckboxGroup
               items={item.children}
               onChange={onChangeHandler}
-              topLevel={false}
+              level={level + 1}
             />
           </Accordion>
         ) : (
