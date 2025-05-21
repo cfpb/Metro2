@@ -1,5 +1,5 @@
 import { Link, Outlet } from '@tanstack/react-router'
-import { Heading, Layout, List, ListItem } from 'design-system-react'
+import { Heading, Layout, List, ListItem, Paragraph } from 'design-system-react'
 import type { ReactElement } from 'react'
 import './GuidePage.less'
 
@@ -27,7 +27,7 @@ export default function GuidePage(): ReactElement {
     <Layout.Main layout='1-3'>
       <Layout.Wrapper>
         <Layout.Sidebar id='sidebar'>
-          <Heading type='4'>Table of contents</Heading>
+          <Paragraph isLead>User guide</Paragraph>
           <div>
             <List isUnstyled>
             {menuItems.map(item => (
