@@ -1,48 +1,52 @@
 import { Link, Outlet } from '@tanstack/react-router'
-import { Divider, Heading, Layout } from 'design-system-react'
+import { Heading, Layout, List, ListItem } from 'design-system-react'
 import type { ReactElement } from 'react'
 import './GuidePage.less'
 
 export default function GuidePage(): ReactElement {
   const menuItems = [
-    { name: '1. Metro2 evaluator tool overview', path: '/guide/' },
-    { name: '2. Explore the Metro2 UI', path: '/guide/explore' },
+    { name: '1. Overview of Metro2 Evaluator Tool', path: '/guide/' },
+    { name: '2. Explore the Metro2 Interface', path: '/guide/explore' },
     {
-      name: '3. Contributing to an evaluator’s metadata',
+      name: "3. Use Metro2's Advanced Table Features",
+      path: '/guide/table'
+    },
+    {
+      name: '4. Contributing to an Evaluator’s Metadata',
       path: '/guide/contribute'
     },
     {
-      name: '4. Help us improve the Metro2 evaluator tool for you',
+      name: '5. Help Us Improve the Metro2 Evaluator Tool',
       path: '/guide/help-us'
     },
-    { name: '5. Metro 2 administrator features', path: '/guide/m2admin' }
+    { name: '6. Metro2 Administrator Features', path: '/guide/m2admin' }
   ]
 
+  
   return (
     <Layout.Main layout='1-3'>
       <Layout.Wrapper>
         <Layout.Sidebar id='sidebar'>
           <Heading type='4'>Table of contents</Heading>
           <div>
+            <List isUnstyled>
             {menuItems.map(item => (
-              <Link
+                <ListItem>
+                <Link
                 key={item.name}
                 to={item.path}
+                className='o-secondary-nav__link o-secondary-nav__link--parent'
                 activeOptions={{ exact: true }}
-                activeProps={{ className: 'hover' }}>
+                activeProps={{ className: 'o-secondary-nav__link--current' }}>
                 {item.name}
-              </Link>
+                </Link>
+                </ListItem>
             ))}
+            </List>
           </div>
         </Layout.Sidebar>
         <Layout.Content>
           <div className='content-pad'>
-            <Heading type='2' className='h1'>
-              User guide for Metro 2
-            </Heading>
-
-            <Divider />
-
             <Outlet />
           </div>
         </Layout.Content>

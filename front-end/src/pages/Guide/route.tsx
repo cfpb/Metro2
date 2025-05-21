@@ -6,6 +6,7 @@ import Explore from './Explore'
 import GuidePage from './GuidePage'
 import HelpUs from './HelpUs'
 import Overview from './Overview'
+import Table from './Table'
 
 export const guideRoute = createRoute({
   path: '/guide',
@@ -23,6 +24,12 @@ export const exploreRoute = createRoute({
   path: '/explore',
   getParentRoute: () => guideRoute,
   component: Explore
+})
+
+export const tableRoute = createRoute({
+  path: '/table',
+  getParentRoute: () => guideRoute,
+  component: Table
 })
 
 export const contributeRoute = createRoute({

@@ -3,6 +3,10 @@
 #main {
   border-top: 1px solid #b4b5b6;
 
+  .content-pad {
+    margin-left: .5rem;
+  }
+
   .content_wrapper {
     margin: 0 auto;
     padding: 0;
@@ -14,6 +18,22 @@
     height: 100%;
     border-width: 0;
     border-left: 1px solid #b4b5b6;
+
+    p {
+      max-width: inherit;
+    }
+
+    .features {
+      border: 1px solid #5a5d61;
+      margin-bottom: 1rem;
+
+      td {
+        border: 1px solid #d2d3d5;
+        width: 33%;
+        text-align: left;
+        vertical-align: top;
+      }
+    }
 
     &::after {
       border-left: none;
@@ -35,9 +55,13 @@
   }
 }
 
+.hightlight {
+  background: #e7e8e9;
+}
+
 #sidebar {
   width: 100%;
-  max-width: 280px;
+  max-width: 300px;
   border-width: 0;
   padding: 1rem 2rem 0 4rem;
   position: static;
@@ -46,15 +70,23 @@
     margin-bottom: 1rem;
   }
 
-  a {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
-  }
+  li > a {
+      display: flex;
+      flex-direction: column;
+      border-bottom: none;
+      padding-top: .625em;
+      padding-bottom: .625em;
+      padding-left: .9375em;
+      color: #0072ce;
+      border-left: 3px solid transparent;
 
-  a[data-status='active'] {
-    color: #000;
-    font-weight: bold;
+    &[data-status='active'] {
+      border-left: 3px solid #000;
+    }
+
+    &:hover {
+      border-left: 3px solid #20aa3f;
+    }
   }
 }
 
