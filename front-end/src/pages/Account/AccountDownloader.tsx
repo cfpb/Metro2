@@ -12,7 +12,7 @@ import type { ReactElement } from 'react'
 import { useRef, useState } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import { M2_FIELD_NAMES } from 'utils/constants'
-import { getHeaderName } from 'utils/utils'
+import { downloadData, getHeaderName } from 'utils/utils'
 
 interface AccountDownloadInterface {
   rows: AccountRecord[]
@@ -86,24 +86,12 @@ export default function AccountDownloader({
 
     const buffer = await workbook.xlsx.writeBuffer()
     try {
-      const handle = await showSaveFilePicker({
-        suggestedName: `${eventData.name}_${accountId}.xlsx`,
-        // @ts-expect-error Typescript doesn't handle File System API well
-        startIn: 'downloads',
-        types: [
-          {
-            description: 'Excel',
-            accept: {
-              'text/xlsx': ['.xlsx']
-            }
-          }
-        ]
-      })
-      const writable = await handle.createWritable()
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      await writable.write(buffer)
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      writable.close()
+      downloadData(
+        buffer as Buffer,
+        `${eventData.name}_${accountId}.xlsx`,
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      )
+
       setIsOpen(false)
     } catch {
       // TODO determine if we need to handle errors

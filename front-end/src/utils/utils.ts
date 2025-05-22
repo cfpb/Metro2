@@ -122,7 +122,6 @@ export const generateDownloadData = <T>(
   records: T[],
   headerMap: Map<string, string>
 ): string => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const csvHeader = fields.map(field => getHeaderName(field, headerMap)).join(',')
   const csvBody = records
     .map(record =>
@@ -139,30 +138,19 @@ export const generateDownloadData = <T>(
   return [csvHeader, csvBody].join('\n')
 }
 
-// Takes a comma-formatted CSV string and a suggested file name,
-// opens a file picker prompting the user to download the
-// CSV to the documents directory with the suggested name,
-// and writes the file to the user's system if they select save
-export const downloadData = async (
-  csvString: string,
-  fileName: string
-): Promise<void> => {
-  const handle = await showSaveFilePicker({
-    suggestedName: fileName,
-    // @ts-expect-error Typescript doesn't handle File System API well
-    startIn: 'downloads',
-    types: [
-      {
-        description: 'CSVs',
-        accept: {
-          'text/csv': ['.csv']
-        }
-      }
-    ]
-  })
-  const writable = await handle.createWritable()
-  await writable.write(csvString)
-  return writable.close()
+// Download a file
+export const downloadData = (
+  file: Buffer | string,
+  fileName: string,
+  fileType = 'data:text/csv'
+): void => {
+  const blob = new Blob([file], { type: fileType })
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = fileName
+  link.click()
+  window.URL.revokeObjectURL(url)
 }
 
 export const downloadFileFromURL = (url: string): void => {
