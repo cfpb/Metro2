@@ -20,7 +20,7 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
           <div className='nav-items'>
             <div className='links'>
               <Link to='/guide' className='nav-item'>
-                User guide
+                Need help? See the user guide
               </Link>
             </div>
           </div>

@@ -32,7 +32,7 @@ export default function EventDownloader({
     <div className='downloader'>
       <Button
         appearance='primary'
-        label='Download summary'
+        label='Save summary'
         iconRight='download'
         onClick={onClick}
         size='default'
