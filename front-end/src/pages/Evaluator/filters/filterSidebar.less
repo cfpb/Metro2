@@ -1,0 +1,43 @@
+@import url('./src/index.less');
+
+.filter-sidebar {
+  // show lines between checkboxes in sidebar filters
+  .m-form-field__checkbox + .m-form-field__checkbox {
+    border-top: 1px solid @gray-40;
+    padding-top: 0.75em;
+  }
+
+  .m-form-field__checkbox.nested {
+    padding: 1em;
+    margin-top: -1em;
+    margin-bottom: -1em;
+  }
+
+  .o-expandable.nested_level-2 {
+    .o-expandable_content {
+      background-color: @gray-10;
+      margin-left: 2.5em;
+
+      .nested {
+        padding-left: 0;
+        margin-left: 0.5em;
+      }
+    }
+  }
+
+  // all top-level sidebar expandables should get blue background / white text,
+  // but level 2 nested expandables should not
+  .o-expandable__open:not(.nested_level-2) > .o-expandable_header,
+  .o-expandable:not(.nested_level-2) > .o-expandable_header:hover {
+    background-color: @navy-90;
+    color: @white;
+
+    .o-expandable_cue-text {
+      &::after {
+        border-bottom-color: @white;
+        border-top-color: @white;
+      }
+      color: @white;
+    }
+  }
+}

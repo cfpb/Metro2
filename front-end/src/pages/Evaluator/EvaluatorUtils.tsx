@@ -1,8 +1,7 @@
 import type EvaluatorMetadata from 'types/Evaluator'
 import { M2_FIELD_NAMES } from 'utils/constants'
-import { formatNumber } from 'utils/formatters'
 
-export const ITEMS_PER_PAGE = 200
+export const ITEMS_PER_PAGE = 20
 
 /**
  * getPageCount()
@@ -23,48 +22,6 @@ export const getPageCount = (
 ): number => {
   if (page_size > resultsCount) return 1
   return resultsCount === 0 ? 0 : Math.ceil(resultsCount / page_size)
-}
-
-/**
- * getResultsMessage()
- *
- * Returns a results message for 4 different scenarios:
- *     1. Sample view when there are more than 20 total hits:
- *           Showing representative sample of 20 out of {total} results
- *     2. Sample view when there are fewer than 20 total hits:
- *           Showing {total} out of {total} results
- *     3. All results view with no filters:
- *           Showing {total} results
- *     4. All results view with filters applied:
- *           Showing {x} matches out of {total} results
- *
- * @param {number} currentHitsCount - hits count for current request to evaluator
- *                                    results endpoint
- * @param {number} totalResultsCount - total hits on evaluator for this event
- * @param {number} rowsCount - number of rows returned from evaluator results endpoint
- * @param {string} view - whether sample or all results are being displayed
- * @param {boolean} isFiltered - whether data filters were included
- *                               in this request to evaluator results endpoint
- * @returns {string} - a results count message
- */
-
-export const getResultsMessage = (
-  currentHitsCount: number,
-  totalResultsCount: number,
-  rowsCount: number,
-  view: 'all' | 'sample' | undefined = 'sample',
-  isFiltered?: boolean
-): string => {
-  if (view === 'sample')
-    return `Showing ${
-      totalResultsCount > 20 ? 'representative sample of' : ''
-    } ${rowsCount} out of ${formatNumber(totalResultsCount)} results`
-
-  return isFiltered
-    ? `Showing ${formatNumber(currentHitsCount)} matches out of ${formatNumber(
-        totalResultsCount
-      )} total results`
-    : `Showing ${formatNumber(totalResultsCount)} results`
 }
 
 export const explanatoryFields = new Map([

@@ -38,6 +38,19 @@ export default function Accordion({
     setIsExpanded(!isExpanded)
   }
 
+  const expandableLink = (
+    <span className='o-expandable_link'>
+      <span
+        className={`o-expandable_cue o-expandable_cue__${
+          isExpanded ? 'close' : 'open'
+        }`}>
+        <span className='o-expandable_cue-text'>
+          <Icon name={isExpanded ? 'up' : 'down'} alt={isExpanded ? 'up' : 'down'} />
+        </span>
+      </span>
+    </span>
+  )
+
   return (
     <div
       className={expandableClasses.join(' ')}
@@ -51,17 +64,7 @@ export default function Accordion({
           title={header}
           onClick={onClick}>
           <h3 className='h4 o-expandable_label'>{header}</h3>
-          <span className='o-expandable_link'>
-            {isExpanded ? (
-              <span className='o-expandable_cue o-expandable_cue__close'>
-                <Icon name='up' alt='up' />
-              </span>
-            ) : (
-              <span className='o-expandable_cue o-expandable_cue__open'>
-                <Icon name='down' alt='down' />
-              </span>
-            )}
-          </span>
+          {expandableLink}
         </button>
       ) : (
         <div
@@ -69,19 +72,7 @@ export default function Accordion({
           aria-expanded={isExpanded}>
           {header}
           <button type='button' className='o-expandable_target' onClick={onClick}>
-            <span className='o-expandable_link'>
-              {isExpanded ? (
-                <span className='o-expandable_cue o-expandable_cue__close'>
-                  {/* <span className='o-expandable_cue-text'>Hide</span> */}
-                  <Icon name='up' alt='minus-round' />
-                </span>
-              ) : (
-                <span className='o-expandable_cue o-expandable_cue__open'>
-                  {/* <span className='o-expandable_cue-text'>Show</span> */}
-                  <Icon name='down' alt='plus-round' />
-                </span>
-              )}
-            </span>
+            {expandableLink}
           </button>
         </div>
       )}
