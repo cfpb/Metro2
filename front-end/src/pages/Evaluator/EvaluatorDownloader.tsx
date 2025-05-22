@@ -100,12 +100,13 @@ export default function EvaluatorDownloader({
       }
       // Try downloading the data
       try {
-        await downloadData(
+        downloadData(
           csv,
           `${eventData.name}_${evaluatorId}_${
             view === 'all' ? 'filtered' : 'sample'
-          }`
+          }.csv`
         )
+
         setIsOpen(false)
       } catch {
         // TODO determine if we need to handle errors
