@@ -68,6 +68,7 @@ class AccountActivitySerializer(serializers.ModelSerializer):
             "acct_stat",
             "pmt_rating",
             "php",
+            "php1",
             "spc_com_cd",
             "compl_cond_cd",
             "current_bal",
@@ -109,7 +110,6 @@ class AccountActivitySerializer(serializers.ModelSerializer):
     def get_inconsistencies(self, obj):
         eval_ids = obj.evaluatorresult_set.values_list('result_summary__evaluator__id')
         return [x[0] for x in eval_ids]
-
 
     def get_account_holder__ecoa_assoc(self, obj):
         return obj.account_holder.ecoa_assoc

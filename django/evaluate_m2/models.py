@@ -37,6 +37,7 @@ class EvaluatorMetadata(models.Model):
         'acct_stat',
         'compl_cond_cd',
         'php',
+        'php1',
         'pmt_rating',
         'spc_com_cd',
         'terms_freq',

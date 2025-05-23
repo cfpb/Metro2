@@ -38,6 +38,7 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     )
     compl_cond_cd = AnyCharFilter(field_name="source_record__compl_cond_cd")
     php = AnyCharFilter(field_name="source_record__php")
+    php1 = AnyCharFilter(field_name="source_record__php1")
     pmt_rating = AnyCharFilter(field_name="source_record__pmt_rating")
     spc_com_cd = AnyCharFilter(field_name="source_record__spc_com_cd")
     terms_freq = AnyCharFilter(field_name="source_record__terms_freq")
