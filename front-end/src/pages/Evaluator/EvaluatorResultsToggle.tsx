@@ -1,6 +1,6 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { RadioButton } from 'design-system-react'
-import type { ReactElement } from 'react'
+import { Icon, Link, LinkText } from 'design-system-react'
+import type { MouseEvent, ReactElement } from 'react'
 
 export default function EvaluatorResultsToggle(): ReactElement {
   const view: unknown = useSearch({
@@ -9,41 +9,45 @@ export default function EvaluatorResultsToggle(): ReactElement {
   })
   const navigate = useNavigate()
 
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const onClick = (event: MouseEvent<HTMLButtonElement>): void => {
     void navigate({
       resetScroll: false,
       to: '.',
       search: prev =>
-        event.target.value === 'all' ? { ...prev, view: 'all' } : { view: 'sample' }
+        event.currentTarget.id === 'all-tab'
+          ? { ...prev, view: 'all' }
+          : { view: 'sample' }
     })
   }
 
   return (
-    <div className='row row__content block block__sub'>
-      <fieldset className='o-form_fieldset' data-testid='results-view-toggle'>
-        <RadioButton
-          id='sample'
-          name='evaluator-results-toggle'
-          label='View representative sample'
-          labelClassName=''
-          labelInline
-          checked={view !== 'all'}
-          onChange={onChange}
-          value='sample'
-          data-testid='sample-results-button'
-        />
-        <RadioButton
-          id='all'
-          name='evaluator-results-toggle'
-          label='View and filter all results'
-          labelClassName=''
-          labelInline
-          checked={view === 'all'}
-          onChange={onChange}
-          value='all'
-          data-testid='all-results-button'
-        />
-      </fieldset>
+    <div className='tabbed_navigation'>
+      <div className='row row__content'>
+        <fieldset className='o-form_fieldset' data-testid='results-view-toggle'>
+          <button
+            type='button'
+            id='all-tab'
+            onClick={onClick}
+            className={`tab ${view === 'all' ? 'active' : ''}`}>
+            <Icon name='filter' />
+            <span className='link-text'>All results</span>
+          </button>
+          <button
+            type='button'
+            id='sample-tab'
+            onClick={onClick}
+            className={`tab ${view === 'sample' ? 'active' : ''}`}>
+            <Icon name='search' />
+            <span className='link-text'>Sample</span>
+          </button>
+          <Link href='../../../guide/table' className='table_guide'>
+            <LinkText>
+              See advanced table features
+           </LinkText>
+          </Link>
+        </fieldset>
+      </div>
+
     </div>
   )
 }

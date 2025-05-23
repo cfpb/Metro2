@@ -134,7 +134,7 @@ export default function AccountDownloader({
     <div className='downloader'>
       <Button
         appearance='primary'
-        label='Download account data'
+        label='Save account data'
         iconRight='download'
         onClick={onClick}
         size='default'
