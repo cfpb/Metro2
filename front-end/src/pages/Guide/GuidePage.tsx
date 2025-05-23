@@ -5,21 +5,21 @@ import './GuidePage.less'
 
 export default function GuidePage(): ReactElement {
   const menuItems = [
-    { name: '1. Overview of Metro2 Evaluator Tool', path: '/guide/' },
-    { name: '2. Explore the Metro2 Interface', path: '/guide/explore' },
+    { name: '1. Overview of Metro2 evaluator tool', path: '/guide/' },
+    { name: '2. Explore the Metro2 interface', path: '/guide/explore' },
     {
-      name: "3. Use Metro2's Advanced Table Features",
+      name: "3. Use Metro2's advanced table features",
       path: '/guide/table'
     },
     {
-      name: '4. Contributing to an Evaluator’s Metadata',
+      name: '4. Contributing to an evaluator’s metadata',
       path: '/guide/contribute'
     },
     {
-      name: '5. Help Us Improve the Metro2 Evaluator Tool',
+      name: '5. Help us improve the Metro2 evaluator tool',
       path: '/guide/help-us'
     },
-    { name: '6. Metro2 Administrator Features', path: '/guide/m2admin' }
+    { name: '6. Metro2 administrator features', path: '/guide/m2admin' }
   ]
 
   

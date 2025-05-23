@@ -65,16 +65,13 @@ export default function Features(): ReactElement {
                       </p>
                       <List>
                       <ListItem>
-                        When other columns are pinned, drag the column to the existing
-                        pinned area.
+                        When no columns are pinned, drag the column you want to pin to the left or right edge of the grid and wait for approximately one second. The grid will then create a pinned area and place the column into it.
                       </ListItem>
                       <ListItem>
-                        When no columns are pinned, drag the column to the edge of the
-                        grid and wait for approximately one second.
+                        When columns are already pinned, simply drag any additional columns you want to pin into the existing pinned area. 
                       </ListItem>
                       <ListItem>
-                        The grid will then assume you want to pin and create a pinned
-                        area and place the column into it.
+                        To unpin columns, simply drag them away from the pinned area. 
                       </ListItem>
                       </List>
                     </div>,
@@ -85,7 +82,7 @@ export default function Features(): ReactElement {
                     'Click in an open space in the column header and drag to move a column to a new position.',
                     <div>
                       <p>
-                          When focused on a colunm header, you can use <span className='hightlight'>[Shift]</span> + <span className='hightlight'>[←]</span> or <span className='hightlight'>[Shift]</span> + <span className='hightlight'>[→]</span> to move the column to a new position.
+                          When focused on a columm header, you can use <span className='hightlight'>[Shift]</span> + <span className='hightlight'>[←]</span> or <span className='hightlight'>[Shift]</span> + <span className='hightlight'>[→]</span> to move the column to a new position.
                       </p>
                     </div>
                   ],   
@@ -102,13 +99,13 @@ export default function Features(): ReactElement {
                 'Sort',
                 'Click on a column header to sort the column.',
                 <div>
-                  <p>When the focus is on the cloumn header, you can hit <span className='hightlight'>[Enter]</span> (or <span className='hightlight'>[Return]</span> on a Mac) to sort.
+                  <p>When the focus is on the column header, you can hit <span className='hightlight'>[Enter]</span> (or <span className='hightlight'>[Return]</span> on a Mac) to sort.
                   </p>
                 </div>
               ],
               [
                 'Sort multiple columns',
-                <div>It's also possible to sort by multiple columns. This lets you first sort by ine column 
+                <div>It's also possible to sort by multiple columns. This lets you first sort by one column 
                   (the primary sort) and then sort within those groups by another column (the secondary sort) 
                   and so on. To sort an additional column, hold <span className='hightlight'>[Shift]</span> while 
                   you click the column header.
