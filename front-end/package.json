@@ -28,7 +28,8 @@
     "@tanstack/router-devtools": "^1.17.4",
     "@tanstack/router-zod-adapter": "^1.81.5",
     "@tanstack/zod-adapter": "^1.99.9",
-    "ag-grid-react": "^31.1.1",
+    "ag-grid-community": "^33.3.0",
+    "ag-grid-react": "^33.3.0",
     "cypress-real-events": "^1.13.0",
     "design-system-react": "https://github.com/cfpb/design-system-react.git",
     "exceljs": "^4.4.0",
@@ -83,7 +84,7 @@
     "stylelint-config-recommended-less": "1.0.4",
     "stylelint-config-standard": "33.0.0",
     "typescript": "5.0.4",
-    "vite": "^5.2.8",
+    "vite": "^6.3.5",
     "vite-tsconfig-paths": "4.2.0",
     "vitest": "0.31.1",
     "whatwg-fetch": "3.6.2"
