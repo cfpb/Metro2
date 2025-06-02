@@ -42,10 +42,13 @@ export default function EvaluatorBooleanFilter({
       search: (prev: Record<string, unknown>) => {
         const params = { ...prev }
         if (currentValue === undefined) {
-          if (params[field]) delete params[field]
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+          if (field in params) delete params[field]
         } else {
           params[field] = currentValue
         }
+        // reset page to 1
+        params.page = 1
         return params
       }
     })
