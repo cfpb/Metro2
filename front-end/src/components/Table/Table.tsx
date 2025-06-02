@@ -1,7 +1,7 @@
 import type { ColDef } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
-import type { ReactElement, ReactNode } from 'react'
+import type { ComponentType, ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import './Table.less'
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
@@ -40,7 +40,7 @@ interface TableProperties<T> {
   columnDefinitions: ColDef[]
   height?: 'fixed' | 'full'
   resizableColumns?: boolean
-  NoResultsMessage?: ReactNode
+  NoResultsMessage?: ComponentType
 }
 export default function Table<T extends object>({
   height = 'fixed',
@@ -75,6 +75,7 @@ export default function Table<T extends object>({
         noRowsOverlayComponent={NoResultsMessage}
         // Update to use new Ag-Grid theming approach
         theme='legacy'
+        reactiveCustomComponents
         {...gridOptionDefaults}
       />
     </div>
