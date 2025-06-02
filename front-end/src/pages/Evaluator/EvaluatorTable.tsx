@@ -48,6 +48,7 @@ export default function EvaluatorTable({
       rows={data}
       columnDefinitions={columnDefinitions}
       NoResultsMessage={NoResultsMessage}
+      isLoading={isFetching}
     />
   )
 }

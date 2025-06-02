@@ -41,13 +41,15 @@ interface TableProperties<T> {
   height?: 'fixed' | 'full'
   resizableColumns?: boolean
   NoResultsMessage?: ComponentType
+  isLoading?: boolean
 }
 export default function Table<T extends object>({
   height = 'fixed',
   resizableColumns = true,
   rows,
   columnDefinitions,
-  NoResultsMessage
+  NoResultsMessage,
+  isLoading = false
 }: TableProperties<T>): ReactElement {
   // store row data in state
   const [rowData, setRowData] = useState(rows)
@@ -76,6 +78,7 @@ export default function Table<T extends object>({
         // Update to use new Ag-Grid theming approach
         theme='legacy'
         reactiveCustomComponents
+        loading={isLoading}
         {...gridOptionDefaults}
       />
     </div>
