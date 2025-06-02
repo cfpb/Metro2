@@ -19,7 +19,7 @@ export const fetchEvaluatorHits = async (
   searchParams: string
 ): Promise<EvaluatorHits> => {
   const url = `/api/events/${eventId}/evaluator/${evaluatorId}/${searchParams}`
-  const data: EvaluatorHits = await fetchData(url, 'hits', 7777)
+  const data: EvaluatorHits = await fetchData(url, 'hits')
   return { count: data.count, hits: prepareAccountRecordData(data.hits) }
 }
 
