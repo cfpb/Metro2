@@ -52,7 +52,8 @@ export default function EvaluatorRangeFilter({
         } else {
           ;(params[name as keyof EvaluatorSearch] as number) = num
         }
-
+        // reset page to 1
+        params.page = 1
         return params
       }
     })

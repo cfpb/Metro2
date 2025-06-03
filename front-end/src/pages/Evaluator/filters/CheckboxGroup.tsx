@@ -170,8 +170,11 @@ export default function EvaluatorCheckboxGroup({
         if (vals.length > 0) {
           params[field] = [...new Set(vals)].sort()
         } else if (field in params) {
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete params[field]
         }
+        // reset page to 1
+        params.page = 1
         return params
       }
     })
