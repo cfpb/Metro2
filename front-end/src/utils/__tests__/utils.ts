@@ -1,5 +1,5 @@
 import { M2_FIELD_LOOKUPS } from 'utils/annotationLookups'
-import { addPHP1, annotateAccountRecords, stringifySearchParams } from '../utils'
+import { annotateAccountRecords, stringifySearchParams } from '../utils'
 
 import {
   formatDate,
@@ -10,43 +10,6 @@ import {
 } from 'utils/formatters'
 
 const UNDEFINED = undefined
-
-describe('addPHP1', () => {
-  it('adds a php1 character if php present', () => {
-    const records = [
-      {
-        cons_acct_num: '123456789',
-        php: '111110010010000000000DDD'
-      },
-      {
-        cons_acct_num: '987654321',
-        php: '011100000000000000000DDD'
-      }
-    ]
-
-    // when the first record includes php, php1 should be generated
-    // for each record
-    const preparedData = addPHP1(records)
-    expect('php1' in preparedData[0]).toBe(true)
-    expect('php1' in preparedData[1]).toBe(true)
-
-    // the php1 value should match the first character of php
-    expect(preparedData[0].php1).toEqual('1')
-    expect(preparedData[1].php1).toEqual('0')
-  })
-
-  it('only adds php1 if php present in first record', () => {
-    const records = [
-      {
-        cons_acct_num: '12345'
-      }
-    ]
-    const preparedData = addPHP1(records)
-
-    // records without php values should not get a php1
-    expect('php1' in preparedData[0]).toBe(false)
-  })
-})
 
 describe('annotateAccountRecords', () => {
   it('annotates fields with coded values, including arrays', () => {

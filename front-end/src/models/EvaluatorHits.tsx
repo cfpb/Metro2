@@ -3,8 +3,8 @@ import { keepPreviousData, queryOptions } from '@tanstack/react-query'
 
 import type { AccountRecord } from 'utils/constants'
 import {
+  annotateAccountRecords,
   fetchData,
-  prepareAccountRecordData,
   stringifySearchParams
 } from 'utils/utils'
 
@@ -20,7 +20,7 @@ export const fetchEvaluatorHits = async (
 ): Promise<EvaluatorHits> => {
   const url = `/api/events/${eventId}/evaluator/${evaluatorId}/${searchParams}`
   const data: EvaluatorHits = await fetchData(url, 'hits')
-  return { count: data.count, hits: prepareAccountRecordData(data.hits) }
+  return { count: data.count, hits: annotateAccountRecords(data.hits) }
 }
 
 export const evaluatorHitsQueryOptions = (

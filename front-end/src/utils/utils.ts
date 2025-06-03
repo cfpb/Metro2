@@ -25,35 +25,6 @@ export const annotateAccountRecords = (records: AccountRecord[]): AccountRecord[
     return obj
   })
 
-// If the first record has a php value, add php1 to the records
-export const addPHP1 = (records: AccountRecord[]): AccountRecord[] => {
-  if (records.length <= 0 || !('php' in records[0])) return records
-  return records.map(
-    (record: AccountRecord): AccountRecord => ({
-      ...record,
-      php1: record.php?.charAt(0)
-    })
-  )
-}
-
-/**
- * Given an array of M2 account records, makes some updates for display in tables:
- *   1. if records include 'php' value, add 'php1' field containing first character of php
- *   2. add descriptive annotations to records for fields with coded values
- * Returns updated records
- */
-export const prepareAccountRecordData = (
-  records: AccountRecord[]
-): AccountRecord[] => {
-  // If the first record has a php value, add php1 to the records
-  // if ('php' in records[0]) {
-  //   for (const record of records) record.php1 = record.php?.charAt(0)
-  // }
-  const updatedRecords = addPHP1(records)
-  // annotate coded record values
-  return annotateAccountRecords(updatedRecords)
-}
-
 // Given a string and a lookup map, returns either the string's value in the lookup
 // or, if the string is not found in the lookup, a capitalized version of the string
 export const getHeaderName = (

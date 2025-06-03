@@ -1,7 +1,7 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { queryOptions } from '@tanstack/react-query'
 import { createRoute } from '@tanstack/react-router'
-import { fetchData, prepareAccountRecordData } from 'utils/utils'
+import { annotateAccountRecords, fetchData } from 'utils/utils'
 import { eventRoute } from '../Event/route'
 import type Account from './Account'
 import AccountPage from './AccountPage'
@@ -12,7 +12,7 @@ export const fetchAccount = async (
 ): Promise<Account> => {
   const url = `/api/events/${eventId}/account/${accountId}/`
   const data = await fetchData<Account>(url, 'account')
-  data.account_activity = prepareAccountRecordData(data.account_activity)
+  data.account_activity = annotateAccountRecords(data.account_activity)
   return data
 }
 
