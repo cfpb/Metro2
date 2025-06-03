@@ -122,9 +122,6 @@ export default function EvaluatorResults({
                   data={rows}
                   fields={fields}
                   eventData={eventData}
-                  isFiltered={isFiltered}
-                  query={query}
-                  evaluator={evaluatorMetadata.id}
                   isFetching={isFetching}
                 />
                 {view === 'all' && currentHits > 0 ? (

@@ -60,7 +60,12 @@ export default function EvaluatorRangeFilter({
 
   return (
     <Accordion header={<span>{getHeaderName(field)}</span>} openOnLoad={filtered}>
-      <RangeFilter id={field} min={min} max={max} onChange={onChange} />
+      <RangeFilter
+        id={field}
+        initialMin={min}
+        initialMax={max}
+        onChange={onChange}
+      />
     </Accordion>
   )
 }

@@ -13,9 +13,6 @@ interface EvaluatorTableData {
   eventData: Event
   data: AccountRecord[]
   fields: string[]
-  isFiltered: boolean
-  query: object
-  evaluator: string
   isFetching: boolean
 }
 
@@ -39,12 +36,8 @@ export default function EvaluatorTable({
   eventData,
   data,
   fields,
-  isFiltered = false,
-  query = {},
-  evaluator,
   isFetching
 }: EvaluatorTableData): ReactElement {
-  const NoResults = !isFetching && data.length === 0 ? NoResultsMessage : undefined
   const columnDefinitions = useMemo(
     () => getEvaluatorColDefs(fields, String(eventData.id)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,7 +47,8 @@ export default function EvaluatorTable({
     <Table
       rows={data}
       columnDefinitions={columnDefinitions}
-      NoResultsMessage={NoResults}
+      NoResultsMessage={NoResultsMessage}
+      isLoading={isFetching}
     />
   )
 }
