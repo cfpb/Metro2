@@ -146,3 +146,9 @@ LOGGING = {
 
 if len(sys.argv) > 1 and sys.argv[1] == 'test':
     logging.disable(logging.CRITICAL)
+
+
+# A dictionary like {"Evaluator-ID": "import_path.evaluator_callable"}
+METRO2_EVALUATORS = {
+    # **removed**
+}
