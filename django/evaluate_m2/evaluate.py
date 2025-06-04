@@ -1,27 +1,14 @@
 import logging
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db import connection
+from django.utils.module_loading import import_string
 
 from evaluate_m2.evaluate_utils import  create_eval_insert_query
 from evaluate_m2.upload_utils import stream_results_files_to_s3
 
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
-from evaluate_m2.m2_evaluators.account_change_evals import evaluators as acct_change_evals
-from evaluate_m2.m2_evaluators.balance_evals import evaluators as balance_evals
-from evaluate_m2.m2_evaluators.balloon_evals import evaluators as balloon_evals
-from evaluate_m2.m2_evaluators.bankruptcy_evals import evaluators as bankruptcy_evals
-from evaluate_m2.m2_evaluators.ccc_evals import evaluators as ccc_evals
-from evaluate_m2.m2_evaluators.deferred_evals import evaluators as deferred_evals
-from evaluate_m2.m2_evaluators.doai_evals import evaluators as doai_evals
-from evaluate_m2.m2_evaluators.dtcl_evals import evaluators as dtcl_evals
-from evaluate_m2.m2_evaluators.ecoa_evals import evaluators as ecoa_evals
-from evaluate_m2.m2_evaluators.php_evals import evaluators as php_evals
-from evaluate_m2.m2_evaluators.prog_evals import evaluators as prog_evals
-from evaluate_m2.m2_evaluators.rating_evals import evaluators as rating_evals
-from evaluate_m2.m2_evaluators.scc_evals import evaluators as scc_evals
-from evaluate_m2.m2_evaluators.status_evals import evaluators as status_evals
-from evaluate_m2.m2_evaluators.type_evals import evaluators as type_evals
 
 from parse_m2.models import Metro2Event
 
@@ -32,11 +19,21 @@ class Evaluate():
     evaluator_version = "1.3"
 
     def __init__(self):
-        self.evaluators = acct_change_evals |  balance_evals | balloon_evals | \
-                          bankruptcy_evals | ccc_evals | deferred_evals | \
-                          doai_evals | dtcl_evals | ecoa_evals | php_evals | \
-                          prog_evals | rating_evals | scc_evals | status_evals | \
-                          type_evals
+        self.load_evaluators()
+
+    def load_evaluators(self):
+        evaluators_dict = getattr(settings, "METRO2_EVALUATORS", {})
+        self.evaluators = {}
+        for eval_id, eval_import_str in evaluators_dict.items():
+            try:
+                eval_callable = import_string(eval_import_str)
+            except ImportError:
+                raise ImproperlyConfigured(
+                    f"Unable to import {eval_import_str} for evaluator "
+                    f"{eval_id}. Are you sure the package and evaluator "
+                    "callable exist?"
+                )
+            self.evaluators[eval_id] = eval_callable
 
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):

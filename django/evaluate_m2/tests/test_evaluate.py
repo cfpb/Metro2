@@ -1,7 +1,8 @@
-from django.test import TestCase
+from django.core.exceptions import ImproperlyConfigured
+from django.test import TestCase, override_settings
 
 from datetime import date
-from evaluate_m2.evaluate import evaluator
+from evaluate_m2.evaluate import Evaluate, evaluator
 from evaluate_m2.m2_evaluators.status_evals import (
     eval_status_dofd_1_func,
     eval_status_dofd_2_func)
@@ -19,6 +20,7 @@ def sample_eval_never_hits(record_set):
 def sample_erroring_eval(record_set):
     return EvaluatorMetadata.objects.filter(rationale='thing')
 
+
 class EvaluateTestCase(TestCase):
     def setUp(self):
         # Create the parent records for the AccountActivity data
@@ -30,6 +32,37 @@ class EvaluateTestCase(TestCase):
         acct_record(self.data_file, {'id': 45, 'cons_acct_num': '1045'})
         acct_record(self.data_file, {'id': 46, 'cons_acct_num': '1046'})
         acct_record(self.data_file, {'id': 47, 'cons_acct_num': '1047'})
+
+    @override_settings(METRO2_EVALUATORS={
+        "Sample-1": "evaluate_m2.tests.test_evaluate.sample_eval_always_hits",
+        "Sample-2": "evaluate_m2.tests.test_evaluate.sample_eval_never_hits",
+        "Sample-err": "evaluate_m2.tests.test_evaluate.sample_erroring_eval",
+    })
+    def test_load_evaluators(self):
+        # Ensure we get a mapping of id to actual function from load_evaluators
+        test_evaluator = Evaluate()
+        self.assertEqual(
+            test_evaluator.evaluators,
+            {
+                "Sample-1": sample_eval_always_hits,
+                "Sample-2": sample_eval_never_hits,
+                "Sample-err": sample_erroring_eval,
+            }
+        )
+
+    @override_settings(METRO2_EVALUATORS={
+        "NonExistent-1": "foo.bar.my_eval",
+    })
+    def test_load_evaluators_bad_import(self):
+        # Ensure a bad import raises a configuration error
+        with self.assertRaises(ImproperlyConfigured):
+            test_evaluator = Evaluate()
+
+    @override_settings(METRO2_EVALUATORS={})
+    def test_load_evaluators_no_evaluators(self):
+        # Ensure an empty set of evaluators is just empty
+        test_evaluator = Evaluate()
+        self.assertEqual(test_evaluator.evaluators, {})
 
     def test_run_evaluators_no_evals(self):
         # set empty evaluators list (should not run any evaluators)
