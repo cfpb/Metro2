@@ -26,6 +26,7 @@ export default function CopyUrl(): ReactElement {
         appearance='primary'
         label={copySuccess}
         size='default'
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={onClick}
       />
     </div>

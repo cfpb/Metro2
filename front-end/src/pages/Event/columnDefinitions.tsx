@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community'
+import { ITEMS_PER_PAGE } from 'pages/Evaluator/EvaluatorUtils'
 import type { ReactElement } from 'react'
 import type EvaluatorMetadata from 'types/Evaluator'
 
@@ -20,7 +21,7 @@ const getColumnDefinitions = (eventId: string): ColDef<EvaluatorMetadata>[] => [
       <Link
         to='/events/$eventId/evaluators/$evaluatorId'
         params={{ evaluatorId: data.id, eventId }}
-        search={{ page: 1, view: 'sample' }}>
+        search={{ page: 1, view: 'sample', page_size: ITEMS_PER_PAGE }}>
         {value}
       </Link>
     )

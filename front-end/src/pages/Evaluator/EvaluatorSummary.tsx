@@ -1,4 +1,5 @@
 import Accordion from 'components/Accordion/Accordion'
+import type { Definition } from 'components/DefinitionList/DefinitionList'
 import DefinitionList from 'components/DefinitionList/DefinitionList'
 import type User from 'models/User'
 import type Event from 'pages/Event/Event'
@@ -57,7 +58,7 @@ export default function EvaluatorSummary({
       <div className='content-l'>
         <div className='content-l_col content-l_col-1-3'>
           <h3 className='h2'>Details</h3>
-          <DefinitionList items={summaryItems} />
+          <DefinitionList items={summaryItems as Definition[]} />
         </div>
         <div className='content-l_col content-l_col-2-3'>
           <h3 className='h2'>Description</h3>

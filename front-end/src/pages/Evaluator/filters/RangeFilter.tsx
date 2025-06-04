@@ -27,12 +27,14 @@ export default function EvaluatorRangeFilter({
   field
 }: RangeFilterData): ReactElement {
   const navigate = useNavigate()
+  const minFieldName = `${field}_min`
+  const maxFieldName = `${field}_max`
 
   const [min, max] = useSearch({
     strict: false,
-    select: (search): (number | undefined)[] => [
-      search[`${field}_min`],
-      search[`${field}_max`]
+    select: (search): (number | '' | undefined)[] => [
+      search[minFieldName as keyof EvaluatorSearch],
+      search[maxFieldName as keyof EvaluatorSearch]
     ]
   })
 

@@ -71,7 +71,7 @@ export const evaluatorSearchSchema = evaluatorSchema.transform((params): object 
 )
 
 // List of filters that can be applied to evaluator results
-export const filterableFields = evaluatorSchema
+export const filterableFields: string[] = evaluatorSchema
   .keyof()
   .options.filter(key => !['page', 'view', 'page_size'].includes(key))
 

@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import { COL_DEF_CONSTANTS } from 'utils/constants'
 import { generateColumnDefinitions } from 'utils/utils'
-import NoResultsMessage from './NoResultsMessage'
+import NoResultsMessage from '../NoResultsMessage'
 
 interface EvaluatorTableData {
   eventData: Event
@@ -38,6 +38,7 @@ export default function EvaluatorTable({
   fields,
   isFetching
 }: EvaluatorTableData): ReactElement {
+  const NoResults = !isFetching && data.length === 0 ? NoResultsMessage : undefined
   const columnDefinitions = useMemo(
     () => getEvaluatorColDefs(fields, String(eventData.id)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,8 +48,7 @@ export default function EvaluatorTable({
     <Table
       rows={data}
       columnDefinitions={columnDefinitions}
-      NoResultsMessage={NoResultsMessage}
-      isLoading={isFetching}
+      NoResultsMessage={NoResults}
     />
   )
 }

@@ -10,6 +10,13 @@ interface RangeFilterData {
   initialMax?: number | string
 }
 
+const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+  if (event.key === 'Enter') {
+    const target = event.target as HTMLInputElement
+    target.blur()
+  }
+}
+
 export default function RangeFilter({
   id,
   initialMin,
@@ -27,13 +34,6 @@ export default function RangeFilter({
 
   const onBlur = (event: React.ChangeEvent<HTMLInputElement>): void => {
     onChange(event)
-  }
-
-  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key === 'Enter') {
-      const target = event.target as HTMLInputElement
-      target.blur()
-    }
   }
 
   return (
