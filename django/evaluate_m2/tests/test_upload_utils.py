@@ -41,11 +41,11 @@ class UploadUtilsTestCase(TestCase):
             result = f.read().splitlines()
 
         expected = [
-            'event_name,id,activity_date,cons_acct_num,doai,amt_past_due,account_holder__ecoa,acct_stat,compl_cond_cd,php,pmt_rating,spc_com_cd,terms_freq,account_holder__cons_info_ind,account_holder__cons_info_ind_assoc,l1__change_ind,dofd,date_closed,current_bal',
-            'MyEVENT,1,2022-05-30,41,2022-05-01,0,AB,,,,,,00,,,,,,0',
-            'MyEVENT,2,2022-05-30,42,2022-05-01,0,AC,,,,,,00,,,,,,0',
-            'MyEVENT,3,2022-05-30,43,2022-05-01,0,,,,,,,00,,,,,,0',
-            'MyEVENT,4,2022-05-30,44,2022-05-01,0,AE,,,,,,00,,,,,,0'
+            'event_name,id,activity_date,cons_acct_num,doai,amt_past_due,account_holder__ecoa,acct_stat,compl_cond_cd,php,php1,pmt_rating,spc_com_cd,terms_freq,account_holder__cons_info_ind,account_holder__cons_info_ind_assoc,l1__change_ind,dofd,date_closed,current_bal',
+            'MyEVENT,1,2022-05-30,41,2022-05-01,0,AB,,,,,,,00,,,,,,0',
+            'MyEVENT,2,2022-05-30,42,2022-05-01,0,AC,,,,,,,00,,,,,,0',
+            'MyEVENT,3,2022-05-30,43,2022-05-01,0,,,,,,,,00,,,,,,0',
+            'MyEVENT,4,2022-05-30,44,2022-05-01,0,AE,,,,,,,00,,,,,,0'
         ]
         self.assertEqual(expected, result)
 
@@ -55,8 +55,8 @@ class UploadUtilsTestCase(TestCase):
         self.ers.sample_ids=[2, 4]
         expected = {
             'hits': [
-                {'id': 2, 'activity_date': datetime.date(2022, 5, 30), 'cons_acct_num': '42', 'doai': datetime.date(2022, 5, 1), 'amt_past_due': 0, 'account_holder__ecoa': 'AC', 'acct_stat': '', 'compl_cond_cd': '', 'php': '', 'pmt_rating': '', 'spc_com_cd': '', 'terms_freq': '00', 'account_holder__cons_info_ind': '', 'account_holder__cons_info_ind_assoc': None, 'l1__change_ind': None, 'dofd': None, 'date_closed': None, 'current_bal': 0},
-                {'id': 4, 'activity_date': datetime.date(2022, 5, 30), 'cons_acct_num': '44', 'doai': datetime.date(2022, 5, 1), 'amt_past_due': 0, 'account_holder__ecoa': 'AE', 'acct_stat': '', 'compl_cond_cd': '', 'php': '', 'pmt_rating': '', 'spc_com_cd': '', 'terms_freq': '00', 'account_holder__cons_info_ind': '', 'account_holder__cons_info_ind_assoc': None, 'l1__change_ind': None, 'dofd': None, 'date_closed': None, 'current_bal': 0}
+                {'id': 2, 'activity_date': datetime.date(2022, 5, 30), 'cons_acct_num': '42', 'doai': datetime.date(2022, 5, 1), 'amt_past_due': 0, 'account_holder__ecoa': 'AC', 'acct_stat': '', 'compl_cond_cd': '', 'php': '', 'php1': '','pmt_rating': '', 'spc_com_cd': '', 'terms_freq': '00', 'account_holder__cons_info_ind': '', 'account_holder__cons_info_ind_assoc': None, 'l1__change_ind': None, 'dofd': None, 'date_closed': None, 'current_bal': 0},
+                {'id': 4, 'activity_date': datetime.date(2022, 5, 30), 'cons_acct_num': '44', 'doai': datetime.date(2022, 5, 1), 'amt_past_due': 0, 'account_holder__ecoa': 'AE', 'acct_stat': '', 'compl_cond_cd': '', 'php': '', 'php1': '','pmt_rating': '', 'spc_com_cd': '', 'terms_freq': '00', 'account_holder__cons_info_ind': '', 'account_holder__cons_info_ind_assoc': None, 'l1__change_ind': None, 'dofd': None, 'date_closed': None, 'current_bal': 0}
             ]
         }
         result = generate_json_sample(self.ers, AccountActivity.objects)

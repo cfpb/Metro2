@@ -87,7 +87,7 @@ class EvaluateModelsTestCase(TestCase):
             # fields in fields_used and fields_display
             'one', 'two', 'three', 'four', 'five',
             # fields that should always be shown
-            'acct_stat', 'compl_cond_cd', 'php', 'pmt_rating',
+            'acct_stat', 'compl_cond_cd', 'php', 'php1', 'pmt_rating',
             'spc_com_cd', 'terms_freq', 'account_holder__cons_info_ind',
             'account_holder__cons_info_ind_assoc',
             'l1__change_ind', 'dofd', 'date_closed', 'amt_past_due',
