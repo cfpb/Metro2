@@ -1,5 +1,4 @@
 # Overview
-
 CFPB’s Metro2 Evaluator Tool (M2) evaluates Metro2 data for inaccuracies which may prove harmful to consumers’ credit.
 
 The application has a Django back-end which connects to a Postgres database. The back end fetches Metro2 data files from an S3 bucket, parses the relevant data into the database, and runs evaluators on the data. The back end also handles authorization for users and provides API endpoints to expose the evaluated data to the front end. The front-end provides a React-based interface for authenticated and authorized users and allows them to interact with the data.
@@ -40,7 +39,6 @@ To see the full list of available management commands, run `python manage.py hel
 In local environments, use the command line to run these commands.
 
 # Handling evaluator metadata
-
 Each evaluator has several metadata fields associated with it, such as name, short description, long description, fields used, rationale, and more.
 We seed the database with initial metadata about each evaluator, then allow users to modify some of the fields.
 
@@ -72,7 +70,6 @@ How to export the evaluator metadata:
 # Testing
 
 ## Running tests and checking coverage
-
 **For the Django code:**
 
 1. Connect to the Django container: while the docker-compose setup is running, `docker-compose exec django sh`
