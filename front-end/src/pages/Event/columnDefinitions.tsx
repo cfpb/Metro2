@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community'
-import { ITEMS_PER_PAGE } from 'pages/Evaluator/EvaluatorUtils'
+import ITEMS_PER_PAGE from 'pages/Evaluator/utils/constants'
 import type { ReactElement } from 'react'
 import type EvaluatorMetadata from 'types/Evaluator'
 

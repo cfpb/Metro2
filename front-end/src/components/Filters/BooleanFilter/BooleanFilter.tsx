@@ -20,14 +20,14 @@ export default function BooleanFilter({
   return (
     <div>
       <Checkbox
-        id={`${id}_boolean_filter_false`}
+        id={`${id}_false`}
         checked={selected === 'false' || selected === false || selected === 'any'}
         name='false'
         label={label_0 ?? 'No value'}
         onChange={onChange}
       />
       <Checkbox
-        id={`${id}_boolean_filter_true`}
+        id={`${id}_true`}
         checked={selected === 'true' || selected === true || selected === 'any'}
         name='true'
         label={label_1 ?? 'Has value'}

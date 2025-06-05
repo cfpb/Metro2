@@ -12,13 +12,10 @@
     "strict": true,
     "target": "ESNext",
     "types": ["cypress", "@testing-library/cypress"],
-    "baseUrl": "../src"
+    "baseUrl": "../src",
+    "paths": {
+      "@src/*": ["*"]
+    }
   },
   "include": ["."]
 }
-// "compilerOptions": {
-//   "baseUrl": "../src", // Set the base directory for resolving modules
-//   "paths": {
-//     "@/*": ["*"] // Define aliases here
-//   }
-// },

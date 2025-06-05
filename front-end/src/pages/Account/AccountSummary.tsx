@@ -7,7 +7,7 @@ import type { AccountRecord } from 'utils/constants'
 import { M2_FIELD_NAMES } from 'utils/constants'
 import { formatDate, getM2Definition } from 'utils/formatters'
 
-import { ITEMS_PER_PAGE } from 'pages/Evaluator/EvaluatorUtils'
+import ITEMS_PER_PAGE from 'pages/Evaluator/utils/constants'
 import { getEvaluatorDataFromEvent, getHeaderName } from 'utils/utils'
 import type Account from './Account'
 import AccountContactInformation from './AccountContactInformation'

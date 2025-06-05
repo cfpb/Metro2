@@ -4,17 +4,20 @@ import Loader from 'components/Loader/Loader'
 import { Icon } from 'design-system-react'
 import type { EvaluatorHits } from 'models/EvaluatorHits'
 import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
+import ITEMS_PER_PAGE from 'pages/Evaluator/utils/constants'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import { useEffect } from 'react'
 import type EvaluatorMetadata from 'types/Evaluator'
-import { ITEMS_PER_PAGE, getPageCount, getTableFields } from '../EvaluatorUtils'
-import EvaluatorFilterSidebar from '../filters/FilterSidebar'
+import EvaluatorFilterSidebar from '../filters/FilterSidebar/FilterSidebar'
+import getPageCount from '../utils/getPageCount'
+import getTableFields from '../utils/getTableFields'
 import { filterableFields } from '../utils/searchSchema'
-import EvaluatorDownloader from './EvaluatorDownloader'
-import EvaluatorResultsMessage from './EvaluatorResultsMessage'
-import EvaluatorResultsPagination from './EvaluatorResultsPagination'
-import EvaluatorTable from './EvaluatorTable'
+import EvaluatorDownloader from './Downloader'
+import EvaluatorResultsMessage from './ResultsMessage'
+import EvaluatorResultsPagination from './ResultsPagination'
+import EvaluatorResultsToggle from './ResultsToggle'
+import EvaluatorTable from './Table'
 
 interface EvaluatorResultsData {
   evaluatorMetadata: EvaluatorMetadata
@@ -66,77 +69,80 @@ export default function EvaluatorResults({
   })
 
   return (
-    <div className='loader_wrapper'>
-      {isFetching ? <Loader message='Your data is loading' /> : null}
-      <div className='evaluator-hits-row'>
-        <div className='row row__content '>
-          <div className={`results-container results-container__${view}`}>
-            <div className='row row__download '>
-              <div className='results-message' data-testid='results-message'>
-                {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
-                <EvaluatorResultsMessage
-                  page={page ?? 1}
-                  view={view ?? 'sample'}
-                  pageSize={page_size ?? ITEMS_PER_PAGE}
-                  isFiltered={isFiltered}
-                  currentHitsCount={currentHits}
-                  totalResultsCount={totalHits}
-                />
-                {isFiltered ? (
-                  <p>
-                    <Link
-                      className='a-btn a-btn__link a-btn__warning'
-                      to='.'
-                      resetScroll={false}
-                      search={(prev): object => ({
-                        page: 1,
-                        page_size: prev.page_size,
-                        view: 'all'
-                      })}
-                      activeOptions={{ exact: true }}
-                      style={{ pointerEvents: 'auto' }}>
-                      <Icon name='error' />
-                      Clear all filters
-                    </Link>
-                  </p>
-                ) : null}
-              </div>
-              <EvaluatorDownloader
-                rows={rows}
-                fields={fields}
-                eventData={eventData}
-                evaluatorId={evaluatorMetadata.id}
-                isFiltered={isFiltered}
-                view={view ?? 'sample'}
-                totalHits={totalHits}
-                currentHits={currentHits}
-                query={query}
-              />
-            </div>
-            <div className='results'>
-              <div className='results_sidebar sidebar'>
-                {view === 'all' ? <EvaluatorFilterSidebar /> : null}
-              </div>
-              <div className='results_table'>
-                <EvaluatorTable
-                  data={rows}
+    <>
+      <EvaluatorResultsToggle />
+      <div className='loader_wrapper'>
+        {isFetching ? <Loader message='Your data is loading' /> : null}
+        <div className='evaluator-hits-row'>
+          <div className='row row__content '>
+            <div className={`results-container results-container__${view}`}>
+              <div className='row row__download '>
+                <div className='results-message' data-testid='results-message'>
+                  {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
+                  <EvaluatorResultsMessage
+                    page={page ?? 1}
+                    view={view ?? 'sample'}
+                    pageSize={page_size ?? ITEMS_PER_PAGE}
+                    isFiltered={isFiltered}
+                    currentHitsCount={currentHits}
+                    totalResultsCount={totalHits}
+                  />
+                  {isFiltered ? (
+                    <p>
+                      <Link
+                        className='a-btn a-btn__link a-btn__warning'
+                        to='.'
+                        resetScroll={false}
+                        search={(prev): object => ({
+                          page: 1,
+                          page_size: prev.page_size,
+                          view: 'all'
+                        })}
+                        activeOptions={{ exact: true }}
+                        style={{ pointerEvents: 'auto' }}>
+                        <Icon name='error' />
+                        Clear all filters
+                      </Link>
+                    </p>
+                  ) : null}
+                </div>
+                <EvaluatorDownloader
+                  rows={rows}
                   fields={fields}
                   eventData={eventData}
-                  isFetching={isFetching}
+                  evaluatorId={evaluatorMetadata.id}
+                  isFiltered={isFiltered}
+                  view={view ?? 'sample'}
+                  totalHits={totalHits}
+                  currentHits={currentHits}
+                  query={query}
                 />
-                {view === 'all' && currentHits > 0 ? (
-                  <div className='results_pagination'>
-                    <EvaluatorResultsPagination
-                      pageCount={pageCount}
-                      page={currentHits === 0 ? 0 : page}
-                    />
-                  </div>
-                ) : null}
+              </div>
+              <div className='results'>
+                <div className='results_sidebar sidebar'>
+                  {view === 'all' ? <EvaluatorFilterSidebar /> : null}
+                </div>
+                <div className='results_table'>
+                  <EvaluatorTable
+                    data={rows}
+                    fields={fields}
+                    eventData={eventData}
+                    isFetching={isFetching}
+                  />
+                  {view === 'all' && currentHits > 0 ? (
+                    <div className='results_pagination'>
+                      <EvaluatorResultsPagination
+                        pageCount={pageCount}
+                        page={currentHits === 0 ? 0 : page}
+                      />
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -1,9 +1,9 @@
 import type { ReactElement } from 'react'
-import type { EvaluatorSearch } from '../utils/searchSchema'
-import EvaluatorBooleanFilter from './BooleanFilter'
-import EvaluatorCheckboxGroup from './CheckboxGroup'
-import EvaluatorRangeFilter from './RangeFilter'
-import './filterSidebar.less'
+import type { EvaluatorSearch } from '../../utils/searchSchema'
+import EvaluatorBooleanFilter from '../BooleanFilter'
+import EvaluatorCheckboxGroup from '../CheckboxGroup'
+import EvaluatorRangeFilter from '../RangeFilter'
+import './FilterSidebar.less'
 
 export default function EvaluatorFilterSidebar(): ReactElement {
   return (

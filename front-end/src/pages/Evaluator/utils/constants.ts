@@ -1,3 +1,6 @@
+const ITEMS_PER_PAGE = 20
+export const adminUrlPrefix = import.meta.env.DEV ? 'http://localhost:8000' : ''
+
 const accountStatusGroups = new Map([
   ['Current', ['11']],
   ['Paid or settled in full', ['13', '61', '62', '63', '64']],
@@ -76,7 +79,7 @@ const termsFrequencyGroups = new Map([
   ]
 ])
 
-export default {
+export const fieldGroups = {
   acct_stat: accountStatusGroups,
   php1: phpCodeGroups,
   pmt_rating: paymentRatingGroups,
@@ -85,3 +88,5 @@ export default {
   terms_freq: termsFrequencyGroups,
   spc_com_cd: specialCommentCodeGroups
 }
+
+export default ITEMS_PER_PAGE

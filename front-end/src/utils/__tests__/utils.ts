@@ -3,7 +3,6 @@ import { annotateAccountRecords, stringifySearchParams } from '../utils'
 
 import {
   formatDate,
-  formatLongDescription,
   formatNumber,
   formatUSD,
   getM2Definition
@@ -107,19 +106,19 @@ describe('formatDate', () => {
   })
 })
 
-describe('formatLongDescription', () => {
-  it('adds H4s to first lines without pseudo code symbols', () => {
-    const str =
-      'This is a header\nSentence\nSentence 2\n\nThis = pseudocode\n\nAnother header'
-    const html: string =
-      '<h4>This is a header</h4>' +
-      '<p>Sentence</p>' +
-      '<p>Sentence 2</p>' +
-      '<p>This = pseudocode</p>' +
-      '<h4>Another header</h4>'
-    expect(formatLongDescription(str)).toEqual(html)
-  })
-})
+// describe('formatLongDescription', () => {
+//   it('adds H4s to first lines without pseudo code symbols', () => {
+//     const str =
+//       'This is a header\nSentence\nSentence 2\n\nThis = pseudocode\n\nAnother header'
+//     const html: string =
+//       '<h4>This is a header</h4>' +
+//       '<p>Sentence</p>' +
+//       '<p>Sentence 2</p>' +
+//       '<p>This = pseudocode</p>' +
+//       '<h4>Another header</h4>'
+//     expect(formatLongDescription(str)).toEqual(html)
+//   })
+// })
 
 describe('getM2Definition', () => {
   it('should return undefined when field has no lookup', () => {

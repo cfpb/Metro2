@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import type { AccountRecord } from 'utils/constants'
 import { COL_DEF_CONSTANTS } from 'utils/constants'
 import { generateColumnDefinitions } from 'utils/utils'
-import NoResultsMessage from '../NoResultsMessage'
+import NoResultsMessage from './NoResultsMessage'
 
 interface EvaluatorTableData {
   eventData: Event

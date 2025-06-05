@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 import { M2_FIELD_LOOKUPS } from 'utils/annotationLookups'
 import { annotateValue } from 'utils/formatters'
 import { getHeaderName } from 'utils/utils'
-import fieldGroups from '../utils/fieldGroups'
+import { fieldGroups } from '../utils/constants'
 import type { EvaluatorSearch } from '../utils/searchSchema'
 
 /**
