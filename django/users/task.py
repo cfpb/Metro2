@@ -1,9 +1,10 @@
 import logging
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import timedelta
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management import call_command
-from datetime import timedelta
 from django.utils import timezone
 
 def disable_non_privileged_inactive_users():
@@ -29,7 +30,8 @@ def clear_expired_sessions():
 
 def start():
         scheduler = BackgroundScheduler()
-        scheduler.add_job(disable_non_privileged_inactive_users, 'interval', days=1)
-        scheduler.add_job(disable_privileged_inactive_users, 'interval', days=1)
+        if settings.SSO_ENABLED:
+            scheduler.add_job(disable_non_privileged_inactive_users, 'interval', days=1)
+            scheduler.add_job(disable_privileged_inactive_users, 'interval', days=1)
         scheduler.add_job(clear_expired_sessions, 'interval', weeks=1)
         scheduler.start()
