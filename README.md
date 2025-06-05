@@ -16,9 +16,7 @@ The application has a Django back-end which connects to a Postgres database. The
 # Running the project locally
 **Docker-compose** is best way to run Metro2 for local development. It allows dynamically reloading code while still providing all parts of the project setup.
 
-Other ways to run the project:
-1. **Helm** is the way the project runs in deployed environments. Use this when you need a production-like setup and you don't need the code to reload when there are local changes. NOTE: This method of running locally is not currently maintained.
-2. It is also possible to run some of the sub-projects **locally**, but this is usually only practical for active development on a specific aspect of the codebase.
+It is also possible to run some of the sub-projects **locally**, but this is usually only practical for active development on a specific aspect of the codebase.
 
 ## Running in docker-compose
 If docker desktop is not already installed, please [download and install it](https://www.docker.com/products/docker-desktop/).
@@ -33,12 +31,7 @@ To connect to a running container, (e.g. to run scripts or tests), `docker-compo
 
 To bring down the created containers when you are done with them, run `docker-compose down`. To also remove volumes at the same time, run `docker-compose down -v`. To remove images in addition to volumes, run `docker-compose down --rmi "all" -v`.
 
-
-## Running in Helm
-See [helm/README.MD](helm/README.md#using-helm-locally) for instructions on running Metro2 locally in Helm.
-
 ## Individual jobs
-
 Both the **Django** and **Front-end** code bases can be run locally. See the README for each subdirectory for instructions.
 
 # Running management commands
