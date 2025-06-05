@@ -46,10 +46,7 @@ We seed the database with initial metadata about each evaluator, then allow user
 
 ## Evaluator CSV format
 When importing and exporting evaluator metadata, we use a CSV with the following columns:
-`id`, `description`, `long_description`, `fields_used`, `crrg_reference`, `potential_harm`, `rationale`, and `alternate_explanation`.
-Column headers in the file should match the column names in this list.
-The `fields_used` column has a specialized format, described [here](https://GHE/Metro2/metro2/blob/08814c11b4d5c7a96cf8efa0f6ac7361b950b740/django/evaluate_m2/metadata_utils.py#L81-L90).
-Fields used and supplementary fields for the evaluator should be separated by newlines, positioned under the headings specified at the link.
+`id`,`category`,`description`,`long_description`,`fields_used`,`fields_display`,`rationale`,`potential_harm`,`alternate_explanation`,`crrg_reference`
 
 The `id` column is what we use to connect the evaluator metadata to the evaluator function, which is defined in code.
 This means that the `id` column needs to exactly match the name of the function in the code.
@@ -62,7 +59,7 @@ How to import the evaluator metadata into the system:
 1. Create a CSV of all known evaluator metadata using the format described above.
 2. Save the CSV to this repo using the following filename: `evaluate_m2/m2_evaluators/eval_metadata.csv`.
 3. Import the metadata by running the following Django management command in the environment where the metadata should be imported: `python manage.py import_evaluator_metadata`.
-    - This command will update any existing records with the new metadata, and create any that don't already exist.
+    - This command will update any existing records with the new metadata and create any that don't already exist. It won't delete existing records that are missing from the csv.
 
 ## Exporting metadata
 Do this when users have made manual updates to the evaluator metadata and you want to propagate those updates to another environment.
