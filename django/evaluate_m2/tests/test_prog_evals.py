@@ -101,8 +101,6 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 42: HIT, 43: HIT, 44: NO-previous_values__l1__change_ind=1,
         # 45: NO-l1__new_id_num != previous_values__l1__new_id_num
 
-        expected = [
-            {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}]
         self.assert_evaluator_correct(self.event, 'PROG-AccountChange-2', self.expected)
 
     def test_eval_prog_account_change_3(self):
@@ -123,8 +121,6 @@ class ProgEvalsTestCase(TestCase, EvaluatorTestHelper):
         # 42: HIT, 43: HIT, 44: NO-previous_values__l1__change_ind=2,
         # 45: NO-previous_values__l1__new_acc_num != account_holder__cons_acct_num
 
-        expected = [
-            {'id': 42, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0032'}]
         self.assert_evaluator_correct(self.event, 'PROG-AccountChange-3', self.expected)
 
     def test_eval_prog_bankruptcy_1(self):

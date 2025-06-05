@@ -10,7 +10,7 @@ from users import task
 
 class TestUsersView(TestCase):
     def setUp(self) -> None:
-        self.priv_user1 = User.objects.create(
+        User.objects.create(
             id=1,
             username="user1",
             email="user1@fake.gov",
@@ -18,7 +18,7 @@ class TestUsersView(TestCase):
             is_active=True,
             is_superuser=True
         )
-        self.non_priv_user2 = User.objects.create(
+        User.objects.create(
             id=2,
             username="user2",
             email="user2@fake.gov",
@@ -26,7 +26,7 @@ class TestUsersView(TestCase):
             is_active=True,
             is_superuser=False
         )
-        self.non_priv_user3 = User.objects.create(
+        User.objects.create(
             id=3,
             username="user3",
             email="user3@fake.gov",
@@ -48,7 +48,7 @@ class TestUsersView(TestCase):
         self.assertEqual(total_deactivated.count(), 2)
 
     def test_disable_privileged_inactive_users(self):
-        user = User.objects.create(
+        User.objects.create(
             id=4,
             username="user4",
             email="user4@fake.gov",

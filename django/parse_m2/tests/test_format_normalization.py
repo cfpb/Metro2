@@ -3,7 +3,11 @@ import io
 
 from django.test import TestCase
 
-from parse_m2.normalize_format import *
+from parse_m2.normalize_format import (
+    get_filename,
+    modify_individual_line,
+    normalize_file_format
+)
 
 
 class TestFormatNormalization(TestCase):
