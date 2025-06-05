@@ -1,8 +1,8 @@
 import { fallback } from '@tanstack/router-zod-adapter'
 import { z } from 'zod'
 
+import ITEMS_PER_PAGE from 'pages/Evaluator/utils/constants'
 import { M2_FIELD_LOOKUPS } from 'utils/annotationLookups'
-import { ITEMS_PER_PAGE } from '../EvaluatorUtils'
 
 /**
  * Validation for an optional number in search params.
@@ -71,7 +71,7 @@ export const evaluatorSearchSchema = evaluatorSchema.transform((params): object 
 )
 
 // List of filters that can be applied to evaluator results
-export const filterableFields = evaluatorSchema
+export const filterableFields: string[] = evaluatorSchema
   .keyof()
   .options.filter(key => !['page', 'view', 'page_size'].includes(key))
 

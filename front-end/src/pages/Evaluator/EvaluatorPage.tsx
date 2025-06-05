@@ -4,9 +4,8 @@ import type User from 'models/User'
 import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
 import type EvaluatorMetadata from 'types/Evaluator'
-import EvaluatorResults from './EvaluatorResults'
-import EvaluatorResultsToggle from './EvaluatorResultsToggle'
-import EvaluatorSummary from './EvaluatorSummary'
+import EvaluatorOverview from './overview/EvaluatorOverview'
+import EvaluatorResults from './results/EvaluatorResults'
 
 interface EvaluatorPageData {
   evaluatorMetadata: EvaluatorMetadata
@@ -32,12 +31,11 @@ export default function EvaluatorPage(): ReactElement {
           }
         ]}
       />
-      <EvaluatorSummary
+      <EvaluatorOverview
         metadata={evaluatorMetadata}
         user={userData}
         event={eventData}
       />
-      <EvaluatorResultsToggle />
       <EvaluatorResults
         evaluatorMetadata={evaluatorMetadata}
         eventData={eventData}

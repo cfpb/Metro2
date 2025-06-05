@@ -105,7 +105,7 @@ export default function NestedCheckboxGroup({
           </Accordion>
         ) : (
           <IndeterminateCheckbox
-            id={item.key}
+            id={String(item.key)}
             key={item.key}
             label={item.name}
             checked={item.checked}
