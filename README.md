@@ -1,33 +1,16 @@
 # Overview
 
-CFPB’s Metro2 Evaluator Tool (M2) evaluates Metro2 data for inaccuracies which may prove harmful to consumers’ credit. CFPB’s Supervision and Enforcement teams will use this tool while conducting cases and exams to find inaccuracies in entity-provided data and assess their potential harm to consumers.
+CFPB’s Metro2 Evaluator Tool (M2) evaluates Metro2 data for inaccuracies which may prove harmful to consumers’ credit.
 
-The application has a Django back-end which connects to a Postgres database. The back end fetches Metro2 data files from an S3 bucket, parses the relevant data into the database, and runs evaluators on the data. The back end also handles authorization for users and provides API endpoints to expose the evaluated data to the front end.
-
-The front-end provides a React-based interface for authenticated and authorized users and allows them to interact with the data.
+The application has a Django back-end which connects to a Postgres database. The back end fetches Metro2 data files from an S3 bucket, parses the relevant data into the database, and runs evaluators on the data. The back end also handles authorization for users and provides API endpoints to expose the evaluated data to the front end. The front-end provides a React-based interface for authenticated and authorized users and allows them to interact with the data.
 
 ## Sections
-- [Deployments](#deployments)
 - [Running the project locally](#running-the-project-locally)
     - [Running in docker-compose](#running-in-docker-compose)
 - [Management commands](#running-management-commands)
-    - [Using Jenkins](#using-jenkins)
 - [Handling evaluator metadata](#handling-evaluator-metadata)
 - [Testing](#testing)
   - [Running tests and checking coverage](#running-tests-and-checking-coverage)
-
-
-# Deployments
-
-Metro2 is deployed to the internal accounts of ALTO's 3 Environments: Dev, Staging, and Prod. See [helm/README.md](helm/README.md) for more information about deployment automations.
-
-## Quick links
-
-| Alto account | Metro2 | Jenkins | Entra | Entra | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Dev-Internal | https://INTERNAL/ | [Jenkins](https://INTERNAL/) (CFPB DEV creds) | N/A (managed by ICAM) | N/A (managed by ICAM) | Users log in with `@cfpa.gov` accounts using CFPB TEST credentials. |
-| Staging-Internal | https://INTERNAL/ | [Jenkins](https://INTERNAL/) (CFPB TEST creds) | [Entra (privileged)](INTERNAL) | [Entra (non-privileged)](INTERNAL) | Users log in with normal ActiveDirectory accounts + PIV PIN |
-| Production-Internal | https://INTERNAL/ | [Jenkins](https://INTERNAL/) (CFPB AD creds) | [Entra (privileged)](INTERNAL) | [Entra (non-privileged)](INTERNAL) | Users log in with normal ActiveDirectory accounts + PIV PIN |
 
 
 # Running the project locally
@@ -62,22 +45,6 @@ Both the **Django** and **Front-end** code bases can be run locally. See the REA
 Django management commands are used for several essential actions in the Metro2 application, including parsing new data, running evaluators, and importing evaluator metadata from CSV.
 To see the full list of available management commands, run `python manage.py help` from the django directory.
 In local environments, use the command line to run these commands.
-
-## Using Jenkins
-In the Alto environments, use the Metro2 Jenkins instances (see [Quick links](#quick-links) above) to run management commands.
-Jenkins jobs run in an ephemeral python pod in the EKS cluster, not in the metro2 pod.
-The Jenkins jobs clone the `main` branch of the Metro2 repo and connect to the S3 and RDS instances in the Alto account.
-
-Jenkins jobs are configured in the [jenkins/](jenkins/) directory of this repo, in the [`main`](https://GHE/Metro2/metro2/tree/main).
-Metro2 Jenkins instances receive customizations that are configured [here](https://GHE/dev-platforms/eks-jenkins/blob/main/overrides/metro2-jobs.yaml), in the `dev-platforms/eks-jenkins` repo, whenever they are deployed.
-
-
-## Maintaining Jenkins
-To re-deploy a Jenkins instance, use the `cfpb-metro2-jenkins` CodeBuild job in the same Alto account as the Jenkins.
-
-**Jenkins to-dos**
-1. Consider updating the Jenkins `seed.groovy` file to clone metro2 code from the `dev`, `staging`, or `production` branch (depending on which Alto account it is running in), rather than the `main` branch.
-
 
 # Handling evaluator metadata
 
