@@ -1,7 +1,7 @@
 import logging
 
 from django.core.management.base import BaseCommand, CommandError
-from evaluate_m2.models import EvaluatorResultSummary, EvaluatorMetadata
+from evaluate_m2.models import EvaluatorResultSummary
 from evaluate_m2.evaluate import Evaluate
 from parse_m2.models import Metro2Event
 
@@ -52,7 +52,7 @@ class Command(BaseCommand):
         logger.info(f"Checking if EvaluatorResultSummary records exist for event ID: {event_id}.")
         eval_results = EvaluatorResultSummary.objects.filter(event=event, evaluator__id=eval_name)
         if eval_results.exists():
-            logger.info(f"Deleting results from previous run of this evaluator.")
+            logger.info("Deleting results from previous run of this evaluator.")
             eval_results.delete()
 
         logger.info(f"Beginning to run {eval_name}...")

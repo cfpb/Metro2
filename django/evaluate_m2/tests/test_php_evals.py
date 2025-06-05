@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import EvaluatorTestHelper, acct_record
-from parse_m2.models import J1, J2, Metro2Event, M2DataFile
+from parse_m2.models import Metro2Event, M2DataFile
 
 class PHPEvalsTestCase(TestCase, EvaluatorTestHelper):
     def setUp(self):

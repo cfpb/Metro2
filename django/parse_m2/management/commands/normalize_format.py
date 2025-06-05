@@ -1,6 +1,6 @@
 import logging
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from parse_m2.normalize_format import update_S3_directory_files_format
 
 
