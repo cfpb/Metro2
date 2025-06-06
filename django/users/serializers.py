@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from parse_m2.models import Metro2Event
 from parse_m2.serializers import Metro2EventSerializer
 
 

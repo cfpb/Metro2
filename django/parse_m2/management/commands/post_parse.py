@@ -34,7 +34,7 @@ class Command(BaseCommand):
         logger.info(f"Beginning post-parse process for event: {event.name}.")
         post_parse(event)
 
-        logger.info(f"Done. Generating report...")
+        logger.info("Done. Generating report...")
 
         record_set = event.get_all_account_activity()
 

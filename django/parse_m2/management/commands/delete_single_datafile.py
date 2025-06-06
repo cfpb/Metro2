@@ -53,7 +53,7 @@ class Command(BaseCommand):
                 datafile =  M2DataFile.objects.get(event=event, id=file_id)
             elif file_name:
                 datafile =  M2DataFile.objects.get(event=event, file_name=file_name)
-        except M2DataFile.DoesNotExist as e :
+        except M2DataFile.DoesNotExist:
             if file_id:
                 msg = f"file ID `{file_id}`"
             else:

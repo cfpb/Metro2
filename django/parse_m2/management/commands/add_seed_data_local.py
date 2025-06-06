@@ -54,7 +54,7 @@ class Command(BaseCommand):
             logger.info(f"Beginning evaluators for event: {event.name}.")
             evaluator.run_evaluators(event)
             logger.info(
-                self.style.SUCCESS(f"Finished running evaluators and saving results."))
+                self.style.SUCCESS("Finished running evaluators and saving results."))
 
         else:
             logger.info(f"An event record already exists for event name: {event_name}. No changes will be made.")

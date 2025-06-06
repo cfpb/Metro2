@@ -184,7 +184,7 @@ class EventsViewSerializerTestCase(TestCase):
         file.save()
         activity = { 'id': 32, 'activity_date': date(2023,11,20),
                     'cons_acct_num': '0032','current_bal':0, 'amt_past_due': 5 }
-        acct_activity = acct_record(file, activity)
+        acct_record(file, activity)
 
         self.eval_rs = EvaluatorResultSummary(
             event=self.event, evaluator=self.eval, hits=2, accounts_affected=1,

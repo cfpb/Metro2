@@ -50,10 +50,10 @@ class Metro2EventAdmin(admin.ModelAdmin):
         other_field = form.base_fields['other_descriptor']
         other_field.label = "Other descriptor (optional)"
         directory_field = form.base_fields['directory']
-        if settings.SSO_ENABLED:
-            help_msg = "The location of the raw data files in the data directory. Starts with Enforcement/ or Supervision/ ."
+        if settings.S3_ENABLED:
+            help_msg = "The location of the raw data files in the data directory."
         else:
-            help_msg = f"The location of the raw data files in the local filesystem (SSO not enabled). If in doubt, use: {settings.LOCAL_EVENT_DATA}."
+            help_msg = f"The location of the raw data files in the local filesystem (S3 not enabled). If in doubt, use: {settings.LOCAL_EVENT_DATA}."
         directory_field.help_text = help_msg
         return form
 

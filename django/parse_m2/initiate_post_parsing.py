@@ -17,7 +17,7 @@ def calculate_date_range(event: Metro2Event):
 def associate_previous_records(event: Metro2Event):
     logger = logging.getLogger('parse_m2.associate_previous_records')
 
-    logger.info(f"First, make sure all previous_values pointers are empty")
+    logger.info("First, make sure all previous_values pointers are empty")
     event.get_all_account_activity().update(previous_values_id=None)
 
     logger.info(f"Beginning to update all records for event: {event.name}")
