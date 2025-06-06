@@ -12,7 +12,8 @@
 !build-utils/**
 !jenkins/
 !jenkins/**
-!.github
+!.github/
+!.github/**
 
 # ...and the following files
 !Dockerfile
