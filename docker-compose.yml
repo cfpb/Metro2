@@ -48,3 +48,4 @@ services:
     command: sh -c "python manage.py migrate  && ./seed-data.sh && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./django:/src/metro2/django
+      - ./local_data:/src/metro2/local_data
