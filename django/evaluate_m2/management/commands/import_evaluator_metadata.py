@@ -17,7 +17,7 @@ class Command(BaseCommand):
             "be updated with new values from the CSV. Otherwise, a new record " + \
             "will be created."
 
-    default_directory = "evaluate_m2/m2_evaluators/eval_metadata.csv"
+    default_directory = "cfpb_evaluators/eval_metadata.csv"
 
     def add_arguments(self, argparser):
         dir_help = "Location of the evaluator metadata file relative to " + \

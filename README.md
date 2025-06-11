@@ -100,7 +100,7 @@ Do this when deploying the project to a new environment to create evaluator meta
 
 How to import the evaluator metadata into the system:
 1. Create a CSV of all known evaluator metadata using the format described above.
-2. Save the CSV to this repo using the following filename: `evaluate_m2/m2_evaluators/eval_metadata.csv`.
+2. Save the CSV to this repo using the following filename: `cfpb_evaluators/eval_metadata.csv`.
 3. Import the metadata by running the following Django management command in the environment where the metadata should be imported: `python manage.py import_evaluator_metadata`.
     - This command will update any existing records with the new metadata, and create any that don't already exist.
 

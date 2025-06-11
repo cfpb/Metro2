@@ -3,7 +3,7 @@ from django.test import TestCase, override_settings
 
 from datetime import date
 from evaluate_m2.evaluate import Evaluate, evaluator
-from evaluate_m2.m2_evaluators.status_evals import (
+from cfpb_evaluators.status_evals import (
     eval_status_dofd_1_func,
     eval_status_dofd_2_func)
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
