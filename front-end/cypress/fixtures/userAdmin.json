@@ -4,12 +4,12 @@
   "assigned_events": [
     {
       "id": 1,
-      "name": "Sample-Dataset-007",
+      "name": "Browser testing event",
       "portfolio": "",
       "eid_or_matter_num": "",
       "other_descriptor": "",
-      "date_range_start": "2018-07-30",
-      "date_range_end": "2018-11-30"
+      "date_range_start": "2020-01-30",
+      "date_range_end": "2020-11-30"
     }
   ]
 }

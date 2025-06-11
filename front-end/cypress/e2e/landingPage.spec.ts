@@ -35,10 +35,13 @@ describe('Landing page', () => {
       .then(events => {
         // Basic event
         cy.wrap(events[0]).within(() => {
-          cy.findByTestId('event-header').should('have.text', 'Sample-Dataset-007')
+          cy.findByTestId('event-header').should(
+            'have.text',
+            'Browser testing event'
+          )
           cy.findByTestId('event-date-range').should(
             'have.text',
-            'Data from: Jul 2018 - Nov 2018'
+            'Data from: Jan 2020 - Nov 2020'
           )
           cy.findByTestId('event-link')
             .should('have.text', 'Open evaluator results')

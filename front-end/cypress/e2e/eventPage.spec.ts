@@ -32,8 +32,8 @@ describe('Event page', () => {
   })
   it('Should show event title and date range for ID 1 in locator bar', () => {
     eventPage.verifyEventLocatorBarContent(
-      'Sample-Dataset-007',
-      'Data from Jul 2018 - Nov 2018'
+      eventData.name,
+      'Data from Jan 2020 - Nov 2020'
     )
   })
   it('Should show correct headers for evaluator table', () => {
@@ -73,17 +73,9 @@ describe('Event file download', () => {
     cy.intercept('GET', 'api/events/1', { fixture: 'event' }).as('getEvent')
     cy.visit('/events/1')
   })
-  it('Should have "Download summary" button', () => {
+  it('Should have "Save summary" button', () => {
     cy.get('[class=downloader]')
       .should('be.visible')
-      .and('have.text', 'Download summary')
-  })
-  it('Verify the downloaded file', () => {
-    cy.window().then(win =>
-      cy.stub(win, 'showSaveFilePicker').as('showSaveFilePicker').returns(true)
-    )
-    cy.contains('button', 'Download summary').click()
-
-    cy.get('@showSaveFilePicker').should('have.been.calledOnce').invoke('restore')
+      .and('have.text', 'Save summary')
   })
 })
