@@ -33,7 +33,6 @@ describe('Table accessibility', () => {
     const evaluatorDescription = testEvaluator.description
 
     cy.get('body').realClick()
-    cy.wait(1111)
     // On the event results page, tabbing from last cell in table header
     // should focus first cell in first table body row,
     // which contains a link to the first evaluator with hits.
