@@ -1,5 +1,5 @@
 import { render, screen, within } from '@testing-library/react'
-import DefinitionList from '../DefinitionList/DefinitionList'
+import DefinitionList from './DefinitionList'
 
 const definitionListData = [
   { term: 'CFPB', definition: 'Consumer Financial Protection Bureau' },

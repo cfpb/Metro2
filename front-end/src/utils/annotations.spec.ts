@@ -1,5 +1,5 @@
-import { M2_FIELD_LOOKUPS } from '../../constants/annotationLookups'
-import { annotateAccountRecords, getM2Definition } from '../annotations'
+import { M2_FIELD_LOOKUPS } from '../constants/annotationLookups'
+import { annotateAccountRecords, getM2Definition } from './annotations'
 
 describe('getM2Definition', () => {
   it('should return undefined when field has no lookup', () => {

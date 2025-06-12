@@ -1,4 +1,4 @@
-import { formatNumber, formatUSD } from 'utils/formatNumbers'
+import { formatNumber, formatUSD } from './formatNumbers'
 
 const UNDEFINED = undefined
 

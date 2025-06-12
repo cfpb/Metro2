@@ -2,8 +2,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import { screen } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
 
-import EvaluatorResultsToggle from 'pages/Evaluator/results/components/ResultsToggle'
-import renderWithProviders from '../../testUtils'
+import renderWithProviders from '../../../../testUtils'
+import EvaluatorResultsToggle from './ResultsToggle'
 
 const mocks = vi.hoisted(() => ({
   useNavigate: vi.fn(),

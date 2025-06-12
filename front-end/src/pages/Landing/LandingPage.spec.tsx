@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
-import LandingPage from 'pages/Landing/LandingPage'
 import renderWithProviders from '../../testUtils'
+import LandingPage from './LandingPage'
 
 describe.skip('<LandingPage />', () => {
   it('renders Landing page', async () => {

@@ -1,4 +1,4 @@
-import { formatDate } from 'utils/formatDates'
+import { formatDate } from './formatDates'
 
 const UNDEFINED = undefined
 

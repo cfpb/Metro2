@@ -1,4 +1,4 @@
-import { stringifySearchParams } from 'utils/customStringify'
+import { stringifySearchParams } from './customStringify'
 
 describe('stringifySearchParams', () => {
   it('returns empty string for empty or null objects', () => {

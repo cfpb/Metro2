@@ -1,4 +1,4 @@
-import capitalized from 'utils/formatStrings'
+import capitalized from './formatStrings'
 
 describe('capitalized', () => {
   it('capitalizes first letter of a string', () => {

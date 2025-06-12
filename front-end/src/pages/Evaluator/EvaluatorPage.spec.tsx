@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
-import EvaluatorPage from 'pages/Evaluator/EvaluatorPage'
 import renderWithProviders from '../../testUtils'
+import EvaluatorPage from './EvaluatorPage'
 
 describe.skip('<EvaluatorPage />', () => {
   it('renders Evaluator page', async () => {
