@@ -43,7 +43,7 @@ export default function EvaluatorResultsMessage({
   isFiltered
 }: EvaluatorResultsMessageProps): ReactElement {
   let message = ''
-
+  console.log(currentHitsCount, totalResultsCount, page, pageSize)
   if (view === 'sample' && totalResultsCount > 20) {
     message = 'Showing 20 sample results'
   } else if (isFiltered && currentHitsCount === 0) {
@@ -52,6 +52,7 @@ export default function EvaluatorResultsMessage({
     const start = formatNumber((page - 1) * pageSize + 1)
     const end = formatNumber(Math.min(page * pageSize, currentHitsCount))
     const total = formatNumber(currentHitsCount)
+    console.log(start, end, total)
     message = `Showing ${start} - ${end} of ${total} ${
       isFiltered ? 'filtered' : ''
     } results`
