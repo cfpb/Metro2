@@ -28,7 +28,7 @@ def stream_full_results_csv_to_s3(result_summary: EvaluatorResultSummary, url: s
 
     with open(url, 'w', transport_params={'client': s3_session()}) as fout:
         generate_full_csv(result_summary, fout)
-    logger.debug(f"Completed saving CSV file")
+    logger.debug("Completed saving CSV file")
 
 def generate_full_csv(result_summary: EvaluatorResultSummary, fout):
     """
@@ -73,7 +73,7 @@ def stream_sample_results_json_to_s3(result_summary: EvaluatorResultSummary, rec
     with open(url, 'w', transport_params={'client': s3_session()}) as jsonFile:
         response = generate_json_sample(result_summary, record_set)
         json.dump(response, jsonFile, cls=DjangoJSONEncoder)
-    logger.debug(f"Completed saving JSON file")
+    logger.debug("Completed saving JSON file")
 
 # TODO: Combine this with and/or use the
 # EvaluatorResultAccountActivitySerializer for serializing the resulting

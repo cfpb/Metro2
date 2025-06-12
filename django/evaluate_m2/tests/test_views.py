@@ -155,7 +155,7 @@ class EvaluateViewsTestCase(TestCase):
         # the response should be a CSV
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'text/csv')
-        self.assertIn(f'filename=test_exam_Status-DOFD-1.csv',
+        self.assertIn('filename=test_exam_Status-DOFD-1.csv',
             response.headers['Content-Disposition'])
         csv_content = response.content.decode('utf-8').splitlines()
 

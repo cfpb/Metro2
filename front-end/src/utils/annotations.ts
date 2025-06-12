@@ -2,6 +2,20 @@ import type AccountRecord from 'types/AccountRecord'
 import { M2_FIELD_LOOKUPS } from '../constants/annotationLookups'
 
 /**
+ * Annotations
+ *
+ * Many Metro 2 fields have pre-determined lists of possible values.
+ * The values are short alphanumeric codes which map to
+ * longer, human-readable definitions (eg, account status 11 means
+ * "0-29 days past the due date (current account)").
+ *
+ * In order to make this information more understandable for users,
+ * we provide the definitions as parenthetical annotations
+ * when we output coded values in the tool.
+ *
+ */
+
+/**
  * getM2Definition()
  *
  * Given a field name and value for a Metro2 field,
@@ -30,7 +44,7 @@ export const getM2Definition = (
  * annotateM2FieldValue()
  *
  * Given a Metro2 field and value, calls getM2Definition to
- * check if there is a human-readable definition for the value.
+ * check if there is a definition for the value.
  * If there is a definition, returns `value (definition)`
  * If no definition is available, returns the original value.
  *

@@ -12,6 +12,8 @@
 !build-utils/**
 !jenkins/
 !jenkins/**
+!.github/
+!.github/**
 
 # ...and the following files
 !Dockerfile
@@ -26,6 +28,10 @@
 !build-images.sh
 !.editorconfig
 !buildspec.yml
+!CODE_OF_CONDUCT.md
+!CONTRIBUTING.md
+!LICENSE
+!TERMS.md
 
 # ... but still ignore compiled files
 *.pyc

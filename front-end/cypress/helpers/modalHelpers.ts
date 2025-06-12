@@ -51,7 +51,7 @@ export class Metro2Modal {
   }
 
   getSaveButton() {
-    return cy.get('button').contains('Save file')
+    return cy.get('button').contains('Download')
   }
 
   verifyPrivacyCheckboxRequired() {
@@ -64,27 +64,5 @@ export class Metro2Modal {
       this.checkPIICheckbox()
       this.getSaveButton().should('not.have.attr', 'disabled')
     })
-  }
-
-  // Ensure that the FileSystemAPI save dialog is launched when the save
-  // button is clicked, with expected parameters of a suggested file name,
-  // a starting directory, and a file type
-  verifyShowSaveFilePicker(
-    suggestedFileName: string,
-    types: { description: string; accept: { [key: string]: string[] } }[]
-  ) {
-    cy.window().then(win =>
-      cy.stub(win, 'showSaveFilePicker').as('showSaveFilePicker').returns(true)
-    )
-    this.checkPIICheckbox()
-    this.getSaveButton().click()
-
-    cy.get('@showSaveFilePicker')
-      .should('have.been.calledOnceWith', {
-        startIn: 'downloads',
-        suggestedName: suggestedFileName,
-        types: types
-      })
-      .invoke('restore')
   }
 }

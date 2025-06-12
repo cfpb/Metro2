@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import JSONField, Q
+from django.db.models import JSONField
 from django.core.management import call_command
 
 from parse_m2.parse_utils import get_field_value

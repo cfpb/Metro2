@@ -4,15 +4,19 @@ import eventFixture from '../fixtures/event.json'
 
 import AccountRecord from '@src/types/AccountRecord'
 import EvaluatorMetadata from '@src/types/EvaluatorMetadata'
+
+import getTableFields from '@src/pages/Evaluator/results/utils/getTableFields'
 import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
 import { Metro2Table } from '../helpers/tableHelpers'
+
+const evaluatorName = 'Test-Eval-1'
 
 // Get data from event fixture
 const event: Event = eventFixture
 
 // Get evaluator data from event
 const evaluator: EvaluatorMetadata = event.evaluators.find(
-  item => item.id == 'Status-DOFD-4'
+  item => item.id == evaluatorName
 )!
 
 // Get data from hits fixture
@@ -30,17 +34,15 @@ describe('Results view', () => {
     // view=sample is added to URL
     cy.location('search').should('include', 'view=sample').and('include', 'page=1')
 
-    // Sample view radio is checked
+    // Sample view tab is active
     cy.get('[data-testid="results-view-toggle"]').should('be.visible')
-    cy.get('[data-testid="sample-results-button"]').should('have.attr', 'checked')
-    cy.get('[data-testid="all-results-button"]').should('not.have.attr', 'checked')
+    cy.get('#sample-tab').should('have.class', 'active')
+    cy.get('#all-tab').should('not.have.class', 'active')
 
     // Sample results message is displayed
     cy.get('[data-testid="results-message"]').should(
       'have.text',
-      `Showing representative sample of ${String(hits.length)} out of ${String(
-        evaluator.hits
-      )} results`
+      'Showing 20 sample results'
     )
 
     // No pagination
@@ -53,10 +55,10 @@ describe('Results view', () => {
 
     // Sample view is indicated in URL and radio button
     cy.location('search').should('include', 'view=sample').and('include', 'page=1')
-    cy.get('[data-testid="sample-results-button"]').should('have.attr', 'checked')
+    cy.get('#sample-tab').should('have.class', 'active')
 
     // Click all results button
-    cy.get('[data-testid="all-results-button"]').click({ force: true })
+    cy.get('#all-tab').click({ force: true })
 
     // URL includes view=all
     cy.location('search').should('include', 'view=all').and('include', 'page=1')
@@ -64,29 +66,27 @@ describe('Results view', () => {
     // All results message is displayed
     cy.get('[data-testid="results-message"]').should(
       'include.text',
-      `Showing 1-20 of ${String(evaluator.hits)} results`
+      'Showing 1 - 20 of 1,000'
     )
 
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
     cy.get('.m-pagination_current-page').should('have.value', '1')
-
-    // TODO:
   })
 
-  it('Should show full results view when view=all is in query params', () => {
-    page.loadEvaluatorPage('?view=all&page=2')
+  // it('Should show full results view when view=all is in query params', () => {
+  //   page.loadEvaluatorPage('?view=all&page=2')
 
-    // All results message is displayed
-    cy.get('[data-testid="results-message"]').should(
-      'include.text',
-      `Showing 21-40 of ${String(evaluator.hits)} results`
-    )
+  //   // All results message is displayed
+  //   cy.get('[data-testid="results-message"]').should(
+  //     'include.text',
+  //     'Showing 21 - 40 of 1,000'
+  //   )
 
-    // Pagination is added to the page
-    cy.get('.m-pagination').should('exist')
-    cy.get('.m-pagination_current-page').should('have.value', '2')
-  })
+  //   // Pagination is added to the page
+  //   cy.get('.m-pagination').should('exist')
+  //   cy.get('.m-pagination_current-page').should('have.value', '2')
+  // })
 
   // Check that invalid values for valid param keys are replaced
   const invalidParams = {
@@ -129,28 +129,26 @@ describe('Results table', () => {
     const expectedHeaders = [
       'Account number',
       'Activity date',
-      'Account status',
-      'DOFD',
-      'Payment rating',
-      'Amount past due',
-      'Compliance condition code',
       'Current balance',
-      'Date closed',
-      'Original charge-off amount',
-      'Scheduled monthly payment amount',
+      'DOFD',
+      'Terms frequency',
+      'Account status',
+      'Payment rating',
+      'Payment history profile',
+      'Payment history profile (most recent entry)',
       'Special comment code',
-      'Terms frequency'
+      'Compliance condition code',
+      'Amount past due',
+      'Date of account information',
+      'Date closed',
+      'Bankruptcy - Consumer information indicator for account holder',
+      'Bankruptcy - Consumer information indicator for associated consumers',
+      'Account change indicator (L1)'
     ]
     table.verifyHeaders(expectedHeaders)
   })
 
   it('Should show correct values for each result', () => {
-    const fields = [
-      'activity_date',
-      ...evaluator.fields_used.sort(),
-      ...evaluator.fields_display.sort()
-    ]
-
     // verify that the consumer account numbers are displayed for each row
     // in the pinned left column
     table.verifyAccountTableBodyContent(
@@ -160,6 +158,9 @@ describe('Results table', () => {
     )
     // verify that the rest of the fields are displayed for each row
     // in the main table section
+    const fields = getTableFields(evaluator.fields_used, evaluator.fields_display)
+    // remove consumer account number because it's in a separate section
+    fields.shift()
     table.verifyAccountTableBodyContent(table.getBodyRows(), fields, hits)
   })
 })

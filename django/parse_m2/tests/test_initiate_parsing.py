@@ -1,5 +1,6 @@
 import os
 from django.test import TestCase
+from unittest.mock import patch
 
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
@@ -52,8 +53,6 @@ class InitiateLocalParsingTestCase(TestCase):
         # the file contained 1997 parseable records
         self.assertEqual(AccountHolder.objects.count(), 1997)
 
-
-from unittest.mock import patch
 
 class InitiateS3ParsingTestCase(TestCase):
     # Test for parsing files from the S3 bucket. Only run when testing manually.

@@ -56,7 +56,7 @@ class EvaluateTestCase(TestCase):
     def test_load_evaluators_bad_import(self):
         # Ensure a bad import raises a configuration error
         with self.assertRaises(ImproperlyConfigured):
-            test_evaluator = Evaluate()
+            Evaluate()
 
     @override_settings(METRO2_EVALUATORS={})
     def test_load_evaluators_no_evaluators(self):

@@ -1,7 +1,7 @@
 from datetime import date
 from django.test import TestCase
 from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import Metro2Event, M2DataFile, AccountActivity, J1, J2
+from parse_m2.models import Metro2Event, M2DataFile, AccountActivity
 
 
 class AccountActivityQuerySetTest(TestCase):
