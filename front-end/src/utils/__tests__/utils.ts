@@ -1,5 +1,5 @@
-import { M2_FIELD_LOOKUPS } from 'utils/annotationLookups'
-import { annotateAccountRecords, stringifySearchParams } from '../utils'
+import { M2_FIELD_LOOKUPS } from 'node:constants/annotationLookups'
+import { annotateAccountRecords, stringifySearchParams } from '../getHeaderName'
 
 import {
   formatDate,

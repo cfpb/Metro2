@@ -1,4 +1,5 @@
-import { PII_COOKIE_NAME } from 'utils/constants'
+import { PII_COOKIE_NAME } from '@src/constants/settings'
+
 export class EvaluatorPage {
   /**
    * Waits for default evaluator page to load with fixture data.

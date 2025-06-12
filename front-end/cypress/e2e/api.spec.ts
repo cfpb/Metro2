@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/prefer-set-has */
-import { M2_FIELD_NAMES } from 'utils/constants'
+import M2_FIELD_NAMES from 'constants/m2FieldNames'
 
 describe('API', () => {
   it('Should return only the expected fields for an account record', () => {

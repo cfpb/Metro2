@@ -1,11 +1,13 @@
 import Accordion from 'components/Accordion/Accordion'
-import type User from 'models/User'
-import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
-import type EvaluatorMetadata from 'types/Evaluator'
-import EvaluatorLongDescription from './LongDescription'
-import EvaluatorMetadataSection from './Metadata'
-import EvaluatorSummary from './Summary'
+import type EvaluatorMetadata from 'types/EvaluatorMetadata'
+import type Event from 'types/Event'
+import type User from 'types/User'
+import EvaluatorLongDescription from './components/LongDescription'
+import EvaluatorMetadataSection from './components/Metadata'
+import EvaluatorSummary from './components/Summary'
+
+import './EvaluatorOverview.less'
 
 interface EvaluatorOverviewProperties {
   metadata: EvaluatorMetadata

@@ -1,5 +1,5 @@
 import { screen, within } from '@testing-library/react'
-import EventList from 'pages/Landing/EventList'
+import EventList from 'pages/Landing/components/EventList/EventList'
 import renderWithProviders from '../../testUtils'
 
 const events = [

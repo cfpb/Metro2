@@ -1,7 +1,7 @@
 /* eslint-disable cypress/require-data-selectors */
 
-import '../../src/pages/Account/Account.tsx'
-import { PII_COOKIE_NAME } from '../../src/utils/constants'
+import { PII_COOKIE_NAME } from '@src/constants/settings.js'
+import '../../src/types/Account.js'
 import accountData from '../fixtures/account.json'
 import { getInputByLabel, Metro2Modal } from '../helpers/modalHelpers'
 import { Metro2Page } from '../helpers/pageHelper'

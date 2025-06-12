@@ -1,23 +1,21 @@
-import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import Loader from 'components/Loader/Loader'
 import { Icon } from 'design-system-react'
-import type { EvaluatorHits } from 'models/EvaluatorHits'
-import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
-import ITEMS_PER_PAGE from 'pages/Evaluator/utils/constants'
-import type Event from 'pages/Event/Event'
+import { useEvaluatorResults } from 'queries/evaluatorHits'
 import type { ReactElement } from 'react'
 import { useEffect } from 'react'
-import type EvaluatorMetadata from 'types/Evaluator'
-import EvaluatorFilterSidebar from '../filters/FilterSidebar/FilterSidebar'
-import getPageCount from '../utils/getPageCount'
-import getTableFields from '../utils/getTableFields'
-import { filterableFields } from '../utils/searchSchema'
-import EvaluatorDownloader from './Downloader'
-import EvaluatorResultsMessage from './ResultsMessage'
-import EvaluatorResultsPagination from './ResultsPagination'
-import EvaluatorResultsToggle from './ResultsToggle'
-import EvaluatorTable from './Table'
+import type EvaluatorMetadata from 'types/EvaluatorMetadata'
+import type Event from 'types/Event'
+import { ITEMS_PER_PAGE } from '../../../constants/settings'
+import EvaluatorFilterSidebar from '../filters/EvaluatorFilterSidebar/FilterSidebar'
+import EvaluatorDownloader from './components/Downloader'
+import EvaluatorResultsMessage from './components/ResultsMessage'
+import EvaluatorResultsPagination from './components/ResultsPagination'
+import EvaluatorResultsTable from './components/ResultsTable'
+import EvaluatorResultsToggle from './components/ResultsToggle'
+import filterableFields from './utils/getFilterableFields'
+import getPageCount from './utils/getPageCount'
+import getTableFields from './utils/getTableFields'
 
 interface EvaluatorResultsData {
   evaluatorMetadata: EvaluatorMetadata
@@ -38,12 +36,11 @@ export default function EvaluatorResults({
   const isFiltered = Object.keys(query).some(key => filterableFields.includes(key))
 
   // Fetch data from server
-  const { data, isFetching } = useQuery<
-    EvaluatorHits,
-    Error,
-    EvaluatorHits,
-    string[]
-  >(evaluatorHitsQueryOptions(String(eventData.id), evaluatorMetadata.id, query))
+  const { data, isFetching } = useEvaluatorResults(
+    eventData.id,
+    evaluatorMetadata.id,
+    query
+  )
 
   const rows = data?.hits ?? []
 
@@ -123,11 +120,10 @@ export default function EvaluatorResults({
                   {view === 'all' ? <EvaluatorFilterSidebar /> : null}
                 </div>
                 <div className='results_table'>
-                  <EvaluatorTable
+                  <EvaluatorResultsTable
                     data={rows}
                     fields={fields}
                     eventData={eventData}
-                    isFetching={isFetching}
                   />
                   {view === 'all' && currentHits > 0 ? (
                     <div className='results_pagination'>

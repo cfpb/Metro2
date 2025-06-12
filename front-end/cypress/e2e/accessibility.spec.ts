@@ -9,7 +9,7 @@ import { PII_COOKIE_NAME } from '../../src/utils/constants'
 
 import { Metro2Modal } from '../helpers/modalHelpers'
 
-import Event from '../../src/pages/Event/Event'
+import Event from '../../src/types/Event'
 import eventFixture from '../fixtures/event.json'
 
 // Get data from event fixture
@@ -25,8 +25,8 @@ describe('Table accessibility', () => {
   beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.setCookie(PII_COOKIE_NAME, 'true')
-    cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
-    cy.visit('/events/1/')
+    cy.intercept('GET', 'api/events/154/', { fixture: 'event' }).as('getEvent')
+    cy.visit('/events/154/')
     cy.wait(['@getEvent'])
   })
 

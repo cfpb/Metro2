@@ -1,9 +1,9 @@
-import EvaluatorMetadata from 'pages/Evaluator/Evaluator'
-import Event from '../../src/pages/Event/Event'
-import { AccountRecord } from '../../src/utils/constants'
+import Event from 'types/Event'
 import hitsFixture from '../fixtures/evaluatorHits.json'
 import eventFixture from '../fixtures/event.json'
 
+import AccountRecord from '@src/types/AccountRecord'
+import EvaluatorMetadata from '@src/types/EvaluatorMetadata'
 import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
 import { Metro2Table } from '../helpers/tableHelpers'
 
