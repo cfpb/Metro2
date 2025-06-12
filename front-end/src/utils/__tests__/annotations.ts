@@ -66,7 +66,7 @@ describe('annotateAccountRecords', () => {
         orig_chg_off_amt: 0,
         dofd: '2018-01-31',
         php: '011110010010000000000DDD',
-        php1: 0,
+        php1: '0',
         account_holder__cons_info_ind_assoc: null,
         terms_freq: 'D',
         spc_com_cd: 'AI'
