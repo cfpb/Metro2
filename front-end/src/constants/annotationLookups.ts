@@ -2,8 +2,8 @@
  * Many Metro2 fields contain coded values that need to be translated
  * into a more human-readable format for display in the Metro2 tool.
  *
- * The following lookups map a field's possible coded values to the
- * definitions provided in the Credit Reporting Resource Guide.
+ * The following lookups map a field's possible coded values to their
+ * definitions.
  *
  */
 

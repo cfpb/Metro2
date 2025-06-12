@@ -1,6 +1,6 @@
 /* eslint-disable cypress/require-data-selectors */
 
-import { PII_COOKIE_NAME } from '@src/constants/settings.js'
+import { PII_COOKIE_NAME } from '@src/constants/settings'
 import accountData from '../fixtures/account.json'
 
 import { getInputByLabel, Metro2Modal } from '../helpers/modalHelpers'

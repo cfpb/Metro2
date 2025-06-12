@@ -5,6 +5,6 @@ import renderWithProviders from '../../testUtils'
 describe.skip('<EvaluatorPage />', () => {
   it('renders Evaluator page', async () => {
     renderWithProviders(<EvaluatorPage />)
-    expect(await screen.findByText('Inconsistency')).toBeVisible()
+    expect(await screen.findByText('Evaluator')).toBeVisible()
   })
 })

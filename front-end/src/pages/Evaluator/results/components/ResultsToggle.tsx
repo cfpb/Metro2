@@ -28,7 +28,8 @@ export default function EvaluatorResultsToggle(): ReactElement {
             type='button'
             id='all-tab'
             onClick={onClick}
-            className={`tab ${view === 'all' ? 'active' : ''}`}>
+            className={`tab ${view === 'all' ? 'active' : ''}`}
+            data-testid='all-results-button'>
             <Icon name='filter' />
             <span className='link-text'>All results</span>
           </button>
@@ -36,7 +37,8 @@ export default function EvaluatorResultsToggle(): ReactElement {
             type='button'
             id='sample-tab'
             onClick={onClick}
-            className={`tab ${view === 'sample' ? 'active' : ''}`}>
+            className={`tab ${view === 'sample' ? 'active' : ''}`}
+            data-testid='sample-results-button'>
             <Icon name='search' />
             <span className='link-text'>Sample</span>
           </button>

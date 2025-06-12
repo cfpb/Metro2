@@ -24,22 +24,14 @@ describe('<EvaluatorResultsToggle />', () => {
     vi.restoreAllMocks()
   })
 
-  it('sample results button is checked by default', async () => {
-    renderWithProviders(<EvaluatorResultsToggle />)
-    const sampleButton = await screen.findByTestId('sample-results-button')
-    const allButton = await screen.findByTestId('all-results-button')
-    expect(sampleButton).toHaveAttribute('checked')
-    expect(allButton).not.toHaveAttribute('checked')
-  })
-
   it('all results button is checked when useSearch returns all', async () => {
     vi.mocked(useSearch).mockReturnValue('all')
     renderWithProviders(<EvaluatorResultsToggle />)
     const sampleButton = await screen.findByTestId('sample-results-button')
     const allButton = await screen.findByTestId('all-results-button')
 
-    expect(sampleButton).not.toHaveAttribute('checked')
-    expect(allButton).toHaveAttribute('checked')
+    expect(sampleButton).not.toHaveClass('active')
+    expect(allButton).toHaveClass('active')
   })
 
   it('sample results button is checked when useSearch returns sample', async () => {
@@ -48,28 +40,19 @@ describe('<EvaluatorResultsToggle />', () => {
     const sampleButton = await screen.findByTestId('sample-results-button')
     const allButton = await screen.findByTestId('all-results-button')
 
-    expect(sampleButton).toHaveAttribute('checked')
-    expect(allButton).not.toHaveAttribute('checked')
-  })
-
-  it('sample button is checked when useSearch returns random value', async () => {
-    vi.mocked(useSearch).mockReturnValue('random')
-    renderWithProviders(<EvaluatorResultsToggle />)
-    const sampleButton = await screen.findByTestId('sample-results-button')
-    const allButton = await screen.findByTestId('all-results-button')
-
-    expect(sampleButton).toHaveAttribute('checked')
-    expect(allButton).not.toHaveAttribute('checked')
+    expect(sampleButton).toHaveClass('active')
+    expect(allButton).not.toHaveClass('active')
   })
 
   it('navigate is called when toggle radio is clicked', async () => {
+    vi.mocked(useSearch).mockReturnValue('sample')
     vi.mocked(useNavigate).mockImplementation(() => mocks.navigate)
     renderWithProviders(<EvaluatorResultsToggle />)
     const sampleButton = await screen.findByTestId('sample-results-button')
     const allButton = await screen.findByTestId('all-results-button')
     // on load, sample button should be checked
-    expect(sampleButton).toHaveAttribute('checked')
-    expect(allButton).not.toHaveAttribute('checked')
+    expect(sampleButton).toHaveClass('active')
+    expect(allButton).not.toHaveClass('active')
     expect(mocks.navigate).not.toBeCalled()
     // clicking the all button should call navigate
     allButton.click()

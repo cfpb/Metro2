@@ -14,3 +14,9 @@ export const currencyFormatter = new Intl.NumberFormat('en-US', {
 export function formatNumber(val: number | string | null | undefined): string {
   return typeof val === 'number' ? numberFormatter.format(val) : ''
 }
+
+// Given a number, returns a USD-formatted string
+// Returns empty string if any other data type is passed in
+export function formatUSD(val: number | string | null | undefined): string {
+  return typeof val === 'number' ? currencyFormatter.format(val) : ''
+}

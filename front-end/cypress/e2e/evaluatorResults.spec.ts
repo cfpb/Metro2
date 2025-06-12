@@ -1,11 +1,10 @@
-import Event from 'types/Event'
+import getTableFields from 'pages/Evaluator/results/utils/getTableFields'
+import type AccountRecord from 'types/AccountRecord'
+import type EvaluatorMetadata from 'types/EvaluatorMetadata'
+import type Event from 'types/Event'
+
 import hitsFixture from '../fixtures/evaluatorHits.json'
 import eventFixture from '../fixtures/event.json'
-
-import AccountRecord from '@src/types/AccountRecord'
-import EvaluatorMetadata from '@src/types/EvaluatorMetadata'
-
-import getTableFields from '@src/pages/Evaluator/results/utils/getTableFields'
 import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
 import { Metro2Table } from '../helpers/tableHelpers'
 

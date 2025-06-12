@@ -5,11 +5,11 @@
 // @ts-nocheck
 import 'cypress-real-events/support'
 
-import { PII_COOKIE_NAME } from '../../src/utils/constants'
+import { PII_COOKIE_NAME } from '@src/constants/settings'
 
 import { Metro2Modal } from '../helpers/modalHelpers'
 
-import Event from '../../src/types/Event'
+import type Event from 'types/Event'
 import eventFixture from '../fixtures/event.json'
 
 // Get data from event fixture
