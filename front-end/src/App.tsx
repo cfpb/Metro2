@@ -10,6 +10,7 @@ import Loader from 'components/Loader/Loader'
 import WarningModal from 'components/Modals/WarningModal'
 import type { ReactElement } from 'react'
 
+import { PageHeader } from 'design-system-react'
 import customParser from 'utils/customParser'
 import { stringifySearchParams } from 'utils/customStringify'
 import './App.less'
@@ -50,6 +51,7 @@ declare module '@tanstack/react-router' {
 export default function App(): ReactElement {
   return (
     <>
+      <PageHeader href='/' />
       <WarningModal />
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
