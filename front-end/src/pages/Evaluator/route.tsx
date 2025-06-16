@@ -1,13 +1,15 @@
 import { createRoute, notFound } from '@tanstack/react-router'
-import { evaluatorHitsQueryOptions } from 'models/EvaluatorHits'
-import { userQueryOptions } from 'models/User'
-import type Event from 'pages/Event/Event'
-import type EvaluatorMetadata from 'types/Evaluator'
-import { getEvaluatorDataFromEvent } from 'utils/utils'
+import type EvaluatorMetadata from 'types/EvaluatorMetadata'
+import type Event from 'types/Event'
+
+import { eventRoute } from 'pages/Event/route'
+import { evaluatorHitsQueryOptions } from 'queries/evaluatorHits'
+import { eventQueryOptions } from 'queries/event'
+import { userQueryOptions } from 'queries/user'
+import getEvaluatorDataFromEvent from 'utils/getEvaluatorFromEvent'
 import type { z } from 'zod'
-import { eventQueryOptions, eventRoute } from '../Event/route'
 import EvaluatorPage from './EvaluatorPage'
-import { evaluatorSearchSchema } from './utils/searchSchema'
+import { evaluatorSearchSchema } from './utils/evaluatorSearchSchema'
 
 export async function getEvaluator(
   eventData: Promise<Event>,
@@ -35,11 +37,13 @@ const evaluatorRoute = createRoute({
   component: EvaluatorPage,
   validateSearch: input =>
     evaluatorSearchSchema.parse(input) as z.input<typeof evaluatorSearchSchema>,
-  loader: async ({ context: { queryClient }, params: { eventId, evaluatorId } }) => {
-    const userData = queryClient.ensureQueryData(userQueryOptions())
-    const eventData = queryClient.ensureQueryData(eventQueryOptions(eventId))
+  loader: async ({ context, params: { eventId, evaluatorId } }) => {
+    const userData = context.queryClient.ensureQueryData(userQueryOptions())
+    const eventData = context.queryClient.ensureQueryData(eventQueryOptions(eventId))
     const evaluatorMetadata = getEvaluator(eventData, evaluatorId)
-    void queryClient.ensureQueryData(evaluatorHitsQueryOptions(eventId, evaluatorId))
+    void context.queryClient.ensureQueryData(
+      evaluatorHitsQueryOptions(eventId, evaluatorId)
+    )
     return {
       userData: await userData,
       eventData: await eventData,

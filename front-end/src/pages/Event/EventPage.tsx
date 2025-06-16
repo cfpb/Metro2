@@ -2,10 +2,10 @@ import { useLoaderData } from '@tanstack/react-router'
 import LocatorBar from 'components/LocatorBar/LocatorBar'
 import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
-import { formatDateRange } from 'utils/formatters'
-import type Event from './Event'
-import EventDownloader from './EventDownloader'
-import getColumnDefinitions from './columnDefinitions'
+import type Event from 'types/Event'
+import { formatDateRange } from 'utils/formatDates'
+import EventDownloader from './components/EventDownloader'
+import getColumnDefinitions from './utils/getColDefs'
 
 export default function EventPage(): ReactElement {
   const eventData: Event = useLoaderData({ from: '/events/$eventId' })

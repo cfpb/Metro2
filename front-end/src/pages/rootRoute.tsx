@@ -1,8 +1,8 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { Link, Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import LoadingOrError from 'components/LoadingOrError/LoadingOrError'
 import type { ReactElement } from 'react'
 import { Suspense } from 'react'
-import LoadingOrError from '../components/LoadingOrError'
 // import { TanStackRouterDevtools } from '@tanstack/router-devtools'
 
 interface RouterContext {

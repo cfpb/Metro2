@@ -1,5 +1,5 @@
 /* eslint-disable cypress/require-data-selectors */
-import { AccountRecord } from 'utils/constants'
+import AccountRecord from '@src/types/AccountRecord'
 import { getDisplayValue } from './displayValueHelper'
 
 export class Metro2Table {

@@ -1,9 +1,9 @@
 import { useLoaderData } from '@tanstack/react-router'
 import LocatorBar from 'components/LocatorBar/LocatorBar'
-import type User from 'models/User'
-import type Event from 'pages/Event/Event'
 import type { ReactElement } from 'react'
-import type EvaluatorMetadata from 'types/Evaluator'
+import type EvaluatorMetadata from 'types/EvaluatorMetadata'
+import type Event from 'types/Event'
+import type User from 'types/User'
 import EvaluatorOverview from './overview/EvaluatorOverview'
 import EvaluatorResults from './results/EvaluatorResults'
 
@@ -14,14 +14,14 @@ interface EvaluatorPageData {
 }
 
 export default function EvaluatorPage(): ReactElement {
-  const { eventData, evaluatorMetadata, userData }: EvaluatorPageData =
+  const { evaluatorMetadata, eventData, userData }: EvaluatorPageData =
     useLoaderData({
       from: '/events/$eventId/evaluators/$evaluatorId'
     })
   return (
     <>
       <LocatorBar
-        eyebrow='Inconsistency'
+        eyebrow='Evaluator'
         heading={evaluatorMetadata.id}
         icon='flag-round'
         breadcrumbs={[

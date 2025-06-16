@@ -1,4 +1,4 @@
-import { PII_COOKIE_NAME } from '../../src/utils/constants'
+import { PII_COOKIE_NAME } from '@src/constants/settings'
 import eventData from '../fixtures/event.json'
 import { Metro2Page } from '../helpers/pageHelper'
 import { Metro2Table } from '../helpers/tableHelpers'

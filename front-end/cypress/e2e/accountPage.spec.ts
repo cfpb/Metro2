@@ -1,12 +1,11 @@
 /* eslint-disable cypress/require-data-selectors */
 
-import { PII_COOKIE_NAME } from 'utils/constants'
-import accountFixture from '../fixtures/account.json'
+import { PII_COOKIE_NAME } from '@src/constants/settings'
+import accountData from '../fixtures/account.json'
+
 import { getInputByLabel, Metro2Modal } from '../helpers/modalHelpers'
 import { Metro2Page } from '../helpers/pageHelper'
 import { Metro2Table } from '../helpers/tableHelpers'
-
-const accountData = accountFixture
 
 // Instantiate helpers
 const table = new Metro2Table()

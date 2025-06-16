@@ -8,9 +8,11 @@ import ErrorComponent from 'components/Errors/ErrorComponent'
 import NotFound from 'components/Errors/NotFound'
 import Loader from 'components/Loader/Loader'
 import WarningModal from 'components/Modals/WarningModal'
-import { PageHeader } from 'design-system-react'
 import type { ReactElement } from 'react'
-import { customParser, stringifySearchParams } from 'utils/utils'
+
+import { PageHeader } from 'design-system-react'
+import customParser from 'utils/customParser'
+import { stringifySearchParams } from 'utils/customStringify'
 import './App.less'
 import routeTree from './router'
 

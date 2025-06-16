@@ -23,8 +23,8 @@
   },
   "dependencies": {
     "@cfpb/cfpb-design-system": "0.26.1",
-    "@tanstack/react-query": "^5.66.0",
-    "@tanstack/react-router": "^1.99.9",
+    "@tanstack/react-query": "^5.80.6",
+    "@tanstack/react-router": "^1.120.20",
     "@tanstack/router-devtools": "^1.17.4",
     "@tanstack/router-zod-adapter": "^1.81.5",
     "@tanstack/zod-adapter": "^1.99.9",
@@ -86,7 +86,7 @@
     "stylelint-config-standard": "33.0.0",
     "typescript": "5.0.4",
     "vite": "^6.3.5",
-    "vite-tsconfig-paths": "4.2.0",
+    "vite-tsconfig-paths": "^5.1.4",
     "vitest": "0.31.1",
     "whatwg-fetch": "3.6.2"
   },

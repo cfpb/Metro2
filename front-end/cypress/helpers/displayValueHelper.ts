@@ -1,12 +1,9 @@
 /* eslint-disable unicorn/prefer-set-has */
-import { M2_FIELD_LOOKUPS } from 'utils/annotationLookups'
-import { COL_DEF_CONSTANTS } from 'utils/constants'
-import {
-  annotateValue,
-  formatDate,
-  formatNumber,
-  formatUSD
-} from '../../src/utils/formatters'
+import { M2_FIELD_LOOKUPS } from 'constants/annotationLookups'
+import COL_DEF_CONSTANTS from 'constants/colDefConstants'
+import { annotateM2FieldValue } from 'utils/annotations'
+import { formatDate } from 'utils/formatDates'
+import { formatNumber, formatUSD } from 'utils/formatNumbers'
 
 // TODO: maybe generate the col definitions from a list of date and currency fields
 // Derive a list of date fields from the account record column definitions
@@ -37,7 +34,7 @@ export const getDisplayValue = (
   console.log(field, value)
   if (currencyFields.includes(field)) return formatUSD(value)
   if (dateFields.includes(field)) return formatDate(value)
-  if (annotatedFields.includes(field)) return annotateValue(field, value)
+  if (annotatedFields.includes(field)) return annotateM2FieldValue(field, value)
   if (['hits', 'accounts_affected'].includes(field)) return formatNumber(value)
   if (Array.isArray(value)) return value.join('')
   return value
