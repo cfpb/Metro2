@@ -32,6 +32,7 @@
 !CONTRIBUTING.md
 !LICENSE
 !TERMS.md
+!Screenshot.png
 
 # ... but still ignore compiled files
 *.pyc
