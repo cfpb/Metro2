@@ -17,7 +17,7 @@
 
 To run successfully, the front end needs access to the API provided by the Django app. There are a couple of ways to accomplish this:
 
-1. The simplest option is to run the full app with docker-compose as described in the main README (`docker-compose build` and `docker-compose up`).
+1. The simplest option is to run the full app with docker-compose as described in the main README (`docker compose build` and `docker compose up`).
 
 2. You can also run the app locally by following the directions to run the Django app in the Django directory's README and then running `yarn install` and `yarn dev` in the `front-end` directory.
 
