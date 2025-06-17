@@ -19,6 +19,8 @@
  * @example
  * // Example input: '1,2,3'
  * // Expected output: ['1', '2', '3']
+ * // Example input, valid JSON: {"key":"value"}
+ * // Expected output: {key: value}
  */
 const customParser = (value: string): unknown => {
   if (value.includes(',')) return value.split(',')

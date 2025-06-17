@@ -34,11 +34,7 @@ export default function EventList({
           </h3>
           <h4 data-testid='event-date-range'>
             Data from:{' '}
-            {formatDateRange(
-              event.date_range_start,
-              event.date_range_end,
-              'abbreviatedText'
-            )}
+            {formatDateRange(event.date_range_start, event.date_range_end, 'text')}
           </h4>
           <p>
             <Link

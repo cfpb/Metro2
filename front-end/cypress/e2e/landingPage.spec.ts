@@ -26,7 +26,10 @@ describe('Landing page', () => {
   })
 
   it('Should show a welcome message including username', () => {
-    page.verifyLocatorBarContent('Welcome, Test user', 'Here is your events list')
+    page.verifyLocatorBarContent(
+      'Welcome, Test user',
+      'Here are your assigned events'
+    )
   })
 
   it('Should show a list of events assigned to user', () => {

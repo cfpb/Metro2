@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import type { ColDef } from 'ag-grid-community'
-import Table from "./Table"
+import Table from './Table'
 
 interface CarManufacturer {
   company: string

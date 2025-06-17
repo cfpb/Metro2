@@ -21,6 +21,9 @@ import './commands'
 
 import { mount } from 'cypress/react18'
 
+// Import app styles
+import '@src/App.less'
+
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
 // Alternatively, can be defined in cypress/support/component.d.ts
