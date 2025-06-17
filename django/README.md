@@ -14,7 +14,7 @@ If not, you can use the instructions under [[How to run locally]] below.
 Running in docker-compose uses the Django settings specified in `django_application/settings/docker-compose.py` and connects to a PostgreSQL database that is managed by docker-compose.
 
 Running the project:
-1. From the Metro2 project root, run `docker-compose build` and `docker-compose up` to get the app running.
+1. From the Metro2 project root, run `docker compose build` and `docker compose up` to get the app running.
 When docker-compose starts the project, it automatically runs the database migrations, so you don't need to do so manually.
 It will also run a script that:
   - Adds Evaluator Metadata to the database if it does not already exist.
@@ -25,7 +25,7 @@ Once it is running, you can see the app running by visiting http://localhost:800
 **Other useful actions in the system while running in docker-compose:**
 
 To run the tests and view coverage:
-1. Enter the Django container: `docker-compose exec django sh`.
+1. Enter the Django container: `docker compose exec django sh`.
 2. Run `coverage run manage.py test` to run the test suite and calculate coverage.
 3. View the coverage report in the container with `coverage report`.
 4. View the coverage report in the browser:
@@ -35,14 +35,14 @@ To run the tests and view coverage:
 Full documentation for the coverage libarary is [here](https://coverage.readthedocs.io/en/7.3.2/).
 
 Use the Django shell to interact with the codebase:
-1. Run `docker-compose exec django sh` to enter the running container
+1. Run `docker compose exec django sh` to enter the running container
 2. Use `python manage.py shell` to start the interactive python console for this project.
 
 [Here's a useful resource](https://studygyaan.com/django/django-shell-tutorial-explore-your-django-project) on how the Django shell can be useful for development.
 
 Use the Django administrator interface:
-1. If you already have a superuser login, skip to step 1. If one is needed, do steps 2 and 3:
-2. Enter the Django container: `docker-compose exec django sh`.
+1. If you already have a superuser login, skip to step 4. If one is needed, do steps 2 and 3:
+2. Enter the Django container: `docker compose exec django sh`.
 3. Run `python manage.py generate_admin_user --username=admin --password=admin` (or you can substitute whatever admin username you want).
 4. Log in to the admin interface at http://localhost:8000/admin/ using the username and password you entered in the previous step.
 
@@ -50,18 +50,18 @@ Run the parser:
 1. Use the administrator view to create an event record.
     - In the `directory` field, enter a file location with Metro2 files, such as `parse_m2/local_data/`.
 2. After saving the event record, take note of the event ID (can be found in the URL).
-3. Enter the Django container: `docker-compose exec django sh`.
+3. Enter the Django container: `docker compose exec django sh`.
 4. Run `python manage.py parse -e [event_id]` to parse the files from the provided directory.
 
 Run the evaluators for an event:
-1. Enter the Django container: `docker-compose exec django sh`.
+1. Enter the Django container: `docker compose exec django sh`.
 2. Run `python manage.py evaluate -e [event_ID]` to run the evaluators on a dataset associated to the provided event.
     - If there are existing evaluator results for this event, the previous results will be deleted before running the evaluator.
     - You can also use `python manage.py evaluate -h` for the help text.
 
 
 To run the lint checks:
-1. Enter the Django container: `docker-compose exec django sh`.
+1. Enter the Django container: `docker compose exec django sh`.
 1. Run `ruff check .`
 
 
