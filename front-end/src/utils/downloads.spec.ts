@@ -39,34 +39,6 @@ describe('generateDownloadData', () => {
     expect(generateDownloadData(fields, data, headerMap)).toEqual(expectedOutput)
   })
 
-  it('adds quotes to strings containing commas', () => {
-    const fields = ['company', 'model', 'description']
-    const headerMap = new Map([['company', 'Company name']])
-    const data = [
-      {
-        company: 'Tucker Corporation',
-        model: 'Tucker 48',
-        description:
-          'The Tucker 48 was an automobile created by Preston Tucker and briefly produced in Chicago, Illinois, in 1948.'
-      },
-      {
-        company: 'Gordon Keeble',
-        model: 'GK1'
-      },
-      {
-        company: 'DeLorean Motor Company',
-        model: 'DMC-12'
-      }
-    ]
-
-    const header = 'Company name,Model,Description'
-    const body =
-      'Tucker Corporation,Tucker 48,"The Tucker 48 was an automobile created by Preston Tucker and briefly produced in Chicago, Illinois, in 1948."\nGordon Keeble,GK1,\nDeLorean Motor Company,DMC-12,'
-    const expectedOutput = [header, body].join('\n')
-
-    expect(generateDownloadData(fields, data, headerMap)).toEqual(expectedOutput)
-  })
-
   it('joins arrays with commas and quotes any strings containing commas', () => {
     const fields = ['company', 'model', 'description', 'features']
     const headerMap = new Map([['company', 'Company name']])
