@@ -15,6 +15,8 @@ import './LocatorBar.less'
  * @param {string} heading - H2-level heading text
  * @param {string} icon - name for a design-system icon
  *                        eg, 'bank' or 'bank-round'
+ *                        Full list here:
+ *                        https://cfpb.github.io/design-system/foundation/iconography
  * @param {string} eyebrow - text for small heading above the H2
  * @param {string} subhead - text for H3 heading below the H2
  * @param {array} breadcrumbs - array of breadcrumb links
