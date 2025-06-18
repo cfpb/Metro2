@@ -107,6 +107,7 @@ describe('annotateAccountRecords', () => {
         spc_com_cd: 'AI (Recalled to active military duty.)'
       }
     ]
+
     expect(annotateAccountRecords(records)).toEqual(annotatedRecords)
   })
 })

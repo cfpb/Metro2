@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
 import renderWithProviders from '../../testUtils'
-import { Breadcrumbs } from "./Breadcrumbs"
+import { Breadcrumbs } from './Breadcrumbs'
 
 describe('<Breadcrumbs />', () => {
   it('displays breadcrumb', async () => {

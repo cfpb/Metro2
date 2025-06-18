@@ -12,7 +12,7 @@ export default function EventPage(): ReactElement {
   const dateRange = formatDateRange(
     eventData.date_range_start,
     eventData.date_range_end,
-    'abbreviatedText'
+    'text'
   )
   return (
     <>

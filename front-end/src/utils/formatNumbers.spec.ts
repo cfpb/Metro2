@@ -12,6 +12,8 @@ describe('formatNumber', () => {
   it('returns empty string when passed non-numeric value', () => {
     expect(formatNumber(null)).toEqual('')
     expect(formatNumber(UNDEFINED)).toEqual('')
+    expect(formatNumber('')).toEqual('')
+    expect(formatNumber('any string')).toEqual('')
   })
 })
 
@@ -27,5 +29,7 @@ describe('formatUSD', () => {
   it('returns empty string when passed non-numeric value', () => {
     expect(formatUSD(null)).toEqual('')
     expect(formatUSD(UNDEFINED)).toEqual('')
+    expect(formatUSD('')).toEqual('')
+    expect(formatUSD('any string')).toEqual('')
   })
 })

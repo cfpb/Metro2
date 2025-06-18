@@ -2304,15 +2304,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/cypress@npm:9.0.0":
-  version: 9.0.0
-  resolution: "@testing-library/cypress@npm:9.0.0"
+"@testing-library/cypress@npm:^10.0.3":
+  version: 10.0.3
+  resolution: "@testing-library/cypress@npm:10.0.3"
   dependencies:
     "@babel/runtime": "npm:^7.14.6"
-    "@testing-library/dom": "npm:^8.1.0"
+    "@testing-library/dom": "npm:^10.1.0"
   peerDependencies:
-    cypress: ^12.0.0
-  checksum: 10/567d914289842f1facaf9e6821cd75b3d22431a2ac7869b23b8ec6097d553b04fa7d900a2b1b73ce8b17f766042fbda6187bf82481e245de8e8480d2209353d0
+    cypress: ^12.0.0 || ^13.0.0 || ^14.0.0
+  checksum: 10/7e7a1f5ba4b93a378a7eda31198cc0d1691bd5a190e50e3f32620e05f3083578f3109e1673d2fd9e750d75cbe52f70c26e06159f48f35973cc3edd859395c353
   languageName: node
   linkType: hard
 
@@ -2332,19 +2332,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^8.1.0":
-  version: 8.20.0
-  resolution: "@testing-library/dom@npm:8.20.0"
+"@testing-library/dom@npm:^10.1.0":
+  version: 10.4.0
+  resolution: "@testing-library/dom@npm:10.4.0"
   dependencies:
     "@babel/code-frame": "npm:^7.10.4"
     "@babel/runtime": "npm:^7.12.5"
     "@types/aria-query": "npm:^5.0.1"
-    aria-query: "npm:^5.0.0"
+    aria-query: "npm:5.3.0"
     chalk: "npm:^4.1.0"
     dom-accessibility-api: "npm:^0.5.9"
-    lz-string: "npm:^1.4.4"
+    lz-string: "npm:^1.5.0"
     pretty-format: "npm:^27.0.2"
-  checksum: 10/07e80e1073a6317b521ff58de0459abf6f641ed9736ab787f7b96997df922664ed26668eb476aae7e756029c5f93b55c53062f19114275b45ea134350ccf3e9f
+  checksum: 10/05825ee9a15b88cbdae12c137db7111c34069ed3c7a1bd03b6696cb1b37b29f6f2d2de581ebf03033e7df1ab7ebf08399310293f440a4845d95c02c0a9ecc899
   languageName: node
   linkType: hard
 
@@ -3358,6 +3358,15 @@ __metadata:
   version: 2.0.1
   resolution: "argparse@npm:2.0.1"
   checksum: 10/18640244e641a417ec75a9bd38b0b2b6b95af5199aa241b131d4b2fb206f334d7ecc600bd194861610a5579084978bfcbb02baa399dbe442d56d0ae5e60dbaef
+  languageName: node
+  linkType: hard
+
+"aria-query@npm:5.3.0":
+  version: 5.3.0
+  resolution: "aria-query@npm:5.3.0"
+  dependencies:
+    dequal: "npm:^2.0.3"
+  checksum: 10/c3e1ed127cc6886fea4732e97dd6d3c3938e64180803acfb9df8955517c4943760746ffaf4020ce8f7ffaa7556a3b5f85c3769a1f5ca74a1288e02d042f9ae4e
   languageName: node
   linkType: hard
 
@@ -4709,6 +4718,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dequal@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "dequal@npm:2.0.3"
+  checksum: 10/6ff05a7561f33603df87c45e389c9ac0a95e3c056be3da1a0c4702149e3a7f6fe5ffbb294478687ba51a9e95f3a60e8b6b9005993acd79c292c7d15f71964b6b
+  languageName: node
+  linkType: hard
+
 "design-system-react@https://github.com/cfpb/design-system-react.git":
   version: 0.0.0
   resolution: "design-system-react@https://github.com/cfpb/design-system-react.git#commit=e3362110c994ac9ca8d53461f706393dd4c6ed10"
@@ -6056,7 +6072,7 @@ display-element-css@cfpb/storybook-addon-display-element-css:
     "@tanstack/router-devtools": "npm:^1.17.4"
     "@tanstack/router-zod-adapter": "npm:^1.81.5"
     "@tanstack/zod-adapter": "npm:^1.99.9"
-    "@testing-library/cypress": "npm:9.0.0"
+    "@testing-library/cypress": "npm:^10.0.3"
     "@testing-library/dom": "npm:9.3.0"
     "@testing-library/jest-dom": "npm:5.16.5"
     "@testing-library/react": "npm:14.0.0"
@@ -8168,7 +8184,7 @@ display-element-css@cfpb/storybook-addon-display-element-css:
   languageName: node
   linkType: hard
 
-"lz-string@npm:^1.4.4, lz-string@npm:^1.5.0":
+"lz-string@npm:^1.5.0":
   version: 1.5.0
   resolution: "lz-string@npm:1.5.0"
   bin:

@@ -6,11 +6,13 @@
  * @param {number | object | string} value - A value to stringify
  * @returns {string} A string
  */
-export function customStringify(value: number | object | string): string {
-  if (typeof value === 'string') return value
+export function customStringify(
+  value: number | object | string | null | undefined
+): string {
+  if (typeof value === 'string') return value.trim()
   if (typeof value === 'number') return String(value)
-  if (Array.isArray(value)) return value.sort((a, b) => a - b).join(',')
-  if (typeof value === 'object') return JSON.stringify(value).replaceAll('"', '')
+  if (Array.isArray(value)) return value.sort().join(',')
+  if (value && typeof value === 'object') return JSON.stringify(value)
   return ''
 }
 
@@ -34,8 +36,9 @@ export function stringifySearchParams(search: object | null | undefined): string
   const searchParams = []
   for (const key of searchItems) {
     const value = search[key as keyof typeof search]
-    if (![null, ''].includes(value)) {
-      searchParams.push(`${key}=${customStringify(value)}`)
+    if (![null, '', undefined].includes(value)) {
+      const stringifiedValue = customStringify(value)
+      if (stringifiedValue !== '') searchParams.push(`${key}=${stringifiedValue}`)
     }
   }
 

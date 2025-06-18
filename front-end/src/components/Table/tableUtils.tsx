@@ -1,6 +1,6 @@
 import type { ValueFormatterParams } from 'ag-grid-community'
-import { formatDate, formatUSD } from 'utils/formatDates'
-import { formatNumber } from 'utils/formatNumbers'
+import { formatDate } from 'utils/formatDates'
+import { formatNumber, formatUSD } from 'utils/formatNumbers'
 import suppressKeyboardEvent from './suppressKeyboardEvents'
 
 export const columnTypes = {
