@@ -30,6 +30,8 @@ export default function ErrorMessage({
           <Link to='/' className='a-btn a-btn__full-on-xs' data-testid='back-button'>
             Back to Metro 2 home page
           </Link>
+
+{/*     Update "mailbox" in ErrorList and NotFound files before enabling the following code for admin contact   
           <CFPBLink
             className='a-btn a-btn__link a-btn__full-on-xs'
             hasIcon
@@ -37,7 +39,7 @@ export default function ErrorMessage({
             data-testid='contact-link'>
             Contact an administrator
             <Icon name='email' />
-          </CFPBLink>
+          </CFPBLink> */}
         </div>
       </div>
     </div>
