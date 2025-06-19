@@ -18,11 +18,12 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
-
-import { mount } from 'cypress/react18'
+import { mount } from 'cypress/react'
+import type { ReactNode } from 'react'
 
 // Import app styles
 import '@src/App.less'
+import { MountWithProviders } from './MountWithProviders'
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -32,11 +33,10 @@ declare global {
   namespace Cypress {
     interface Chainable {
       mount: typeof mount
+      mountWithProviders(component: ReactNode, options?: {}): Chainable<any>
     }
   }
 }
 
 Cypress.Commands.add('mount', mount)
-
-// Example use:
-// cy.mount(<MyComponent />)
+Cypress.Commands.add('mountWithProviders', MountWithProviders)

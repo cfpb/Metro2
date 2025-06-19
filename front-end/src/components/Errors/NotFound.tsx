@@ -12,12 +12,5 @@ export default function NotFound({ data }: NotFoundError): ReactElement {
   const errorType = data?.data in notFoundErrors ? data?.data : 'event'
   const errorObj = notFoundErrors[errorType as keyof typeof notFoundErrors]
 
-  return (
-    <ErrorMessage
-      title={errorObj.title}
-      description={errorObj.description}
-      mailbox='mailbox@example.com'
-      errorType='404'
-    />
-  )
+  return <ErrorMessage title={errorObj.title} description={errorObj.description} />
 }

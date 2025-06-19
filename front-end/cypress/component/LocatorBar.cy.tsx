@@ -1,5 +1,4 @@
 import LocatorBar from '@src/components/LocatorBar/LocatorBar'
-
 describe('LocatorBar.cy.tsx', () => {
   it('displays a single heading', () => {
     cy.mount(<LocatorBar icon='bank-round' heading='Home page' />)
@@ -40,18 +39,17 @@ describe('LocatorBar.cy.tsx', () => {
       .and('have.text', 'Short description of evaluator')
   })
 
-  // TODO: Set up providers for component tests
-  // it('displays breadcrumbs', () => {
-  //   cy.mount(
-  //     <LocatorBar
-  //       icon='bank-round'
-  //       heading='Home page'
-  //       breadcrumbs={[{ href: '/test', text: 'Back to results' }]}
-  //     />
-  //   )
-  //   cy.findByTestId('locator-bar-heading')
-  //     .should('be.visible')
-  //     .and('have.text', 'Home page')
-  //   cy.findByTestId('locator-bar-breadcrumbs').should('be.visible')
-  // })
+  it('displays breadcrumbs', () => {
+    cy.mountWithProviders(
+      <LocatorBar
+        icon='bank-round'
+        heading='Home page'
+        breadcrumbs={[{ href: '/results', text: 'Back to results' }]}
+      />
+    )
+    cy.findByTestId('locator-bar-heading')
+      .should('be.visible')
+      .and('have.text', 'Home page')
+    cy.get('.m-breadcrumbs').should('be.visible')
+  })
 })

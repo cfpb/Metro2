@@ -6,12 +6,5 @@ export default function ErrorComponent({ error }: { error: Error }): ReactElemen
   const errorType = error.message in errors ? error.message : '500'
   const errorObj = errors[errorType as keyof typeof errors]
 
-  return (
-    <ErrorMessage
-      title={errorObj.title}
-      description={errorObj.description}
-      mailbox={errorObj.mailbox}
-      errorType={errorObj.errorType}
-    />
-  )
+  return <ErrorMessage title={errorObj.title} description={errorObj.description} />
 }
