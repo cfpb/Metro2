@@ -19,8 +19,8 @@ import { notFound } from '@tanstack/react-router'
  */
 const fetchData = async <TData>(
   url: string,
-  dataType: string
-  // delay?: number
+  dataType: string,
+  delay?: number
 ): Promise<TData> => {
   try {
     // Fetch data from URL.
@@ -29,10 +29,10 @@ const fetchData = async <TData>(
     // status (404, 500, etc) as its message.
     const response = await fetch(url)
     // Dev hack: uncomment & pass value to delay request & show loading view
-    // if (delay) {
-    //   // eslint-disable-next-line no-promise-executor-return
-    //   await new Promise(r => setTimeout(r, delay))
-    // }
+    if (delay) {
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise(r => setTimeout(r, delay))
+    }
     if (response.ok) return (await response.json()) as TData
     throw new Error(String(response.status))
   } catch (error) {

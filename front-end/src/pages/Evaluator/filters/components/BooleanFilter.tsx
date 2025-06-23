@@ -21,9 +21,14 @@ export default function EvaluatorBooleanFilter({
     select: (search): boolean | 'any' | 'false' | 'true' | undefined => search[field]
   })
 
+  console.log('query string value', queryStringValue)
+
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    console.log('on changed called')
     const { name, checked } = event.currentTarget
     let currentValue: boolean | string | undefined = queryStringValue
+    console.log('starting currentValue', currentValue)
+
     if (checked) {
       if (currentValue === undefined) {
         currentValue = name
@@ -36,11 +41,14 @@ export default function EvaluatorBooleanFilter({
       currentValue = name === 'true' ? 'false' : 'true'
     }
 
+    console.log('ending current value', currentValue)
+
     void navigate({
       resetScroll: false,
       to: '.',
       search: (prev: Record<string, unknown>) => {
         const params = { ...prev }
+        console.log(params)
         if (currentValue === undefined) {
           // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           if (field in params) delete params[field]
@@ -48,7 +56,8 @@ export default function EvaluatorBooleanFilter({
           params[field] = currentValue
         }
         // reset page to 1
-        params.page = 1
+        // params.page = 1
+        console.log(params)
         return params
       }
     })

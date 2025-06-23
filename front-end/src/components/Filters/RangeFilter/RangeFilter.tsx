@@ -1,6 +1,6 @@
 import { Label, TextInput } from 'design-system-react'
 import type { ReactElement } from 'react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './RangeFilter.less'
 
 interface RangeFilterData {
@@ -23,8 +23,12 @@ export default function RangeFilter({
   initialMax,
   onChange
 }: RangeFilterData): ReactElement {
-  const [min, setMin] = useState(initialMin)
-  const [max, setMax] = useState(initialMax)
+  const [min, setMin] = useState(initialMin ?? '')
+  const [max, setMax] = useState(initialMax ?? '')
+  useEffect(() => {
+    setMin(initialMin ?? '')
+    setMax(initialMax ?? '')
+  }, [initialMin, initialMax])
 
   const onMinChange = (event: React.ChangeEvent<HTMLInputElement>): void =>
     setMin(event.target.value)
@@ -44,7 +48,7 @@ export default function RangeFilter({
           name={`${id}_min`}
           id={`${id}_min`}
           type='number'
-          defaultValue={min}
+          value={min}
           onBlur={onBlur}
           onChange={onMinChange}
           onKeyDown={onKeyDown}
@@ -56,7 +60,7 @@ export default function RangeFilter({
           name={`${id}_max`}
           id={`${id}_max`}
           type='number'
-          defaultValue={max}
+          value={max}
           onBlur={onBlur}
           onChange={onMaxChange}
           onKeyDown={onKeyDown}
