@@ -1,7 +1,7 @@
+import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
+import renderWithProviders from '@src/testUtils'
 import { screen, within } from '@testing-library/react'
 import getHeaderName from 'utils/getHeaderName'
-import M2_FIELD_NAMES from '../../../constants/m2FieldNames'
-import renderWithProviders from '../../../testUtils'
 import AccountSummary from './Summary'
 
 const defaultData = {

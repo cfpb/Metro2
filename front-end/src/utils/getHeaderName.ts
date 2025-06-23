@@ -1,4 +1,4 @@
-import M2_FIELD_NAMES from '../constants/m2FieldNames'
+import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 import { titleizeFieldName } from './formatStrings'
 
 /**

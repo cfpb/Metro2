@@ -1,6 +1,6 @@
+import { ITEMS_PER_PAGE } from '@src/constants/settings'
 import { fallback } from '@tanstack/router-zod-adapter'
 import { z } from 'zod'
-import { ITEMS_PER_PAGE } from '../../../constants/settings'
 import BooleanStringValidator from './booleanValidator'
 import { listValueValidator } from './listValidator'
 import minMaxValidator from './minMaxValidator'

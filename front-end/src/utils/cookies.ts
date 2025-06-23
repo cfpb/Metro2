@@ -1,4 +1,4 @@
-import { PII_COOKIE_NAME } from '../constants/settings'
+import { PII_COOKIE_NAME } from '@src/constants/settings'
 
 /**
  * setCookie

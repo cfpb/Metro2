@@ -37,7 +37,7 @@ export class Metro2Page {
   getExpandableByText(text: string) {
     return this.getExpandableTargetByText(text)
       .parents('.o-expandable')
-      .find('.o-expandable_content')
+      .get('.o-expandable_content')
   }
 
   getExpandableTargetByText(text: string) {

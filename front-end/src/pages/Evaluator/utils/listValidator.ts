@@ -1,5 +1,5 @@
+import { M2_FIELD_LOOKUPS } from '@src/constants/annotationLookups'
 import { z } from 'zod'
-import { M2_FIELD_LOOKUPS } from '../../../constants/annotationLookups'
 
 export const validateFieldValues = (
   val: unknown,

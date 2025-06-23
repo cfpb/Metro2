@@ -4,14 +4,14 @@ import DefinitionList from 'components/DefinitionList/DefinitionList'
 import type { ReactElement } from 'react'
 import type Event from 'types/Event'
 
+import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
+import { ITEMS_PER_PAGE } from '@src/constants/settings'
+import type Account from 'types/Account'
 import type AccountRecord from 'types/AccountRecord'
 import { getM2Definition } from 'utils/annotations'
 import { formatDate } from 'utils/formatDates'
 import getEvaluatorDataFromEvent from 'utils/getEvaluatorFromEvent'
 import getHeaderName from 'utils/getHeaderName'
-import M2_FIELD_NAMES from '../../../constants/m2FieldNames'
-import { ITEMS_PER_PAGE } from '../../../constants/settings'
-import type Account from '../../../types/Account'
 import AccountContactInformation from './ContactInformation'
 
 interface AccountSummaryProperties {

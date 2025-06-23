@@ -18,8 +18,12 @@
       "vitest/globals",
       "@types/wicg-file-system-access",
       "cypress"
-    ]
+    ],
+    "paths": {
+      "@src/*": ["*"]
+    }
   },
+
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
