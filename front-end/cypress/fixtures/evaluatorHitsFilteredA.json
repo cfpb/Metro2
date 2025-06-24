@@ -1,0 +1,69 @@
+{
+  "count": 4,
+  "hits": [
+    {
+      "id": 1,
+      "dofd": "2016-03-14",
+      "smpa": 0,
+      "acct_stat": "13",
+      "pmt_rating": "0",
+      "spc_com_cd": "",
+      "terms_freq": "M",
+      "current_bal": 0,
+      "date_closed": "2018-11-19",
+      "amt_past_due": 0,
+      "activity_date": "2018-07-30",
+      "compl_cond_cd": "",
+      "cons_acct_num": "111111",
+      "orig_chg_off_amt": 0
+    },
+    {
+      "id": 2,
+      "dofd": "2018-08-03",
+      "smpa": 0,
+      "acct_stat": "13",
+      "pmt_rating": "0",
+      "spc_com_cd": "",
+      "terms_freq": "M",
+      "current_bal": 0,
+      "date_closed": "2018-09-07",
+      "amt_past_due": 0,
+      "activity_date": "2018-07-30",
+      "compl_cond_cd": "",
+      "cons_acct_num": "222222",
+      "orig_chg_off_amt": 0
+    },
+    {
+      "id": 3,
+      "dofd": "2016-03-14",
+      "smpa": 0,
+      "acct_stat": "13",
+      "pmt_rating": "0",
+      "spc_com_cd": "",
+      "terms_freq": "M",
+      "current_bal": 0,
+      "date_closed": "2018-11-19",
+      "amt_past_due": 0,
+      "activity_date": "2018-07-30",
+      "compl_cond_cd": "",
+      "cons_acct_num": "333333",
+      "orig_chg_off_amt": 0
+    },
+    {
+      "id": 4,
+      "dofd": "2018-08-03",
+      "smpa": 0,
+      "acct_stat": "13",
+      "pmt_rating": "0",
+      "spc_com_cd": "",
+      "terms_freq": "M",
+      "current_bal": 0,
+      "date_closed": "2018-09-07",
+      "amt_past_due": 0,
+      "activity_date": "2018-07-30",
+      "compl_cond_cd": "",
+      "cons_acct_num": "444444",
+      "orig_chg_off_amt": 0
+    }
+  ]
+}

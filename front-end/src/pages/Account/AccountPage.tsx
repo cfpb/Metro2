@@ -5,7 +5,7 @@ import type { ReactElement } from 'react'
 import type Account from 'types/Account'
 import type Event from 'types/Event'
 import AccountDownloader from './components/Downloader'
-import AccountSummary from './components/Summary'
+import AccountOverview from './components/Overview'
 import { getColDefs } from './utils/getColDefs'
 import getTableFields from './utils/getTableFields'
 
@@ -36,7 +36,9 @@ export default function AccountPage(): ReactElement {
           }
         ]}
       />
-      <AccountSummary accountData={accountData} eventData={eventData} />
+      <div className='row row__content row__summary'>
+        <AccountOverview accountData={accountData} eventData={eventData} />
+      </div>
       <div className='row row__download u-mt0 u-mb0'>
         <AccountDownloader
           rows={rows}
