@@ -1,6 +1,11 @@
 @import (reference) '../../index.less';
 
 .o-expandable {
+  // expandable overrides that should be handled by RDS
+  // no background expandable variant
+  background-color: inherit !important;
+  border-width: 1px 0 !important;
+
   &_content {
     display: grid;
     grid-template-rows: 0fr;
@@ -51,30 +56,23 @@
     padding-right: 0.3em;
     padding-left: 1em;
   }
-}
 
-.o-expandable + .o-expandable {
-  padding: 0;
-  position: relative;
-  border-top: none;
-}
-
-.o-expandable_header-interactive {
-  cursor: default !important;
-
-  .o-expandable_target {
-    padding-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
-    margin-top: unit((-@grid_gutter-width / 3 / @base-font-size-px), em);
-    padding-bottom: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
-    margin-bottom: unit((-@grid_gutter-width / 3 / @base-font-size-px), em);
+  & + & {
+    padding: 0;
+    position: relative;
+    border-top: none;
   }
-}
 
-// expandable overrides that should be handled by RDS
-// no background expandable variant
-.o-expandable {
-  background-color: inherit !important;
-  border-width: 1px 0 !important;
+  &_header-interactive {
+    cursor: default !important;
+
+    .o-expandable_target {
+      padding-top: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
+      margin-top: unit((-@grid_gutter-width / 3 / @base-font-size-px), em);
+      padding-bottom: unit((@grid_gutter-width / 3 / @base-font-size-px), em);
+      margin-bottom: unit((-@grid_gutter-width / 3 / @base-font-size-px), em);
+    }
+  }
 }
 
 // remove double border in accordion

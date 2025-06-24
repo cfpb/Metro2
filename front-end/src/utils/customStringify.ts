@@ -36,10 +36,8 @@ export function stringifySearchParams(search: object | null | undefined): string
   const searchParams = []
   for (const key of searchItems) {
     const value = search[key as keyof typeof search]
-    if (![null, '', undefined].includes(value)) {
-      const stringifiedValue = customStringify(value)
-      if (stringifiedValue !== '') searchParams.push(`${key}=${stringifiedValue}`)
-    }
+    if (![null, '', undefined].includes(value))
+      searchParams.push(`${key}=${customStringify(value)}`)
   }
 
   // If there are any segments in array, join & return. Otherwise, return empty string.
