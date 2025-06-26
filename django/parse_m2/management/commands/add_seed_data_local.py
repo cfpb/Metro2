@@ -26,7 +26,7 @@ class Command(BaseCommand):
 
         dir_help = "Location is relative to the `/django` directory. " + \
             "Defaults to the LOCAL_EVENT_DATA setting in this environment: " + \
-            self.default_location
+            str(self.default_location)
         argparser.add_argument("-d", "--data_directory", nargs="?", required=False, help=dir_help)
 
     def handle(self, *args, **options):

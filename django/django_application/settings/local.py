@@ -11,7 +11,8 @@ DATABASES = {
     }
 }
 
-LOCAL_EVENT_DATA = "parse_m2/local_data/"
+# TODO: decide what this setting should be for open-sourcing
+LOCAL_EVENT_DATA = Path().resolve().parent / "local_data"
 
 LOGGING['root']= {
         'handlers': ['console'],
