@@ -22,8 +22,6 @@
 !.gitignore
 !README.md
 !API.md
-!setup.sh
-!unzip.sh
 !helm-install-local.sh
 !build-images.sh
 !.editorconfig

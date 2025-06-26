@@ -29,19 +29,7 @@ GET - returns a CSV of evaluator metatdata from the database.
 
 Users can export this CSV into Excel in order to sort, filter, and analyze the metadata. The CSV file name will be appended with the current date.
 
-**Example response:**
-File name: `evaluator-metadata-2024-03-18.csv`
-
-*To do:* Update this sample response with more realistic data once eval metadata is ingested in the system.
-
-File contents:
-```csv
-id,description,long_description,fields_used,fields_display,crrg_reference,potential_harm,rationale,alternate_explanation
-
-
-
-
-```
+For each EvaluatorMetadata object in the system, the CSV contains the following fields: ID, category, description, long description, fields used, fields diplay, CRRG reference, potential harm, rationale, and alternate explanation.
 
 ### Exporting evaluator results CSV
 

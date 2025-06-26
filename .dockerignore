@@ -4,7 +4,3 @@
 # ...except these directories
 !django
 !front-end
-
-# ...and these files
-!setup.sh
-!unzip.sh
