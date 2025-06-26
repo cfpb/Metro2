@@ -25,8 +25,8 @@ describe('Evaluator page boolean filters', () => {
   beforeEach(() => {
     // Loading the default fixture should show default results message
     evaluatorPage.loadEvaluatorPage({ view: 'all' })
-    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 1,000')
-    table.hasRowCount(10)
+    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
+    table.hasRowCount(20)
 
     // Open the DOFD boolean filter accordion
     page.openExpandable('Date of first delinquency (DOFD)')
@@ -54,17 +54,17 @@ describe('Evaluator page boolean filters', () => {
    *       - UI: updates the page with all data from react-query storage
    */
   it('Should apply and remove boolean filters with checkboxes', () => {
-    // Intercept '?dofd=false' with 4-result fixture
+    // Intercept '?dofd=false' with 8-result fixture
     evaluatorPage.interceptFilteredResults(
       'noDofdResults', // alias,
       { dofd: 'false', view: 'all' },
-      'evaluatorHits_4' // fixture to return
+      'evaluatorHits_8' // fixture to return
     )
-    // Intercept '?dofd=true' with 6-result fixture
+    // Intercept '?dofd=true' with 16-result fixture
     evaluatorPage.interceptFilteredResults(
       'hasDofdResults', // alias
       { dofd: 'true', view: 'all' }, // query params
-      'evaluatorHits_6' // fixture
+      'evaluatorHits_16' // fixture
     )
     // Intercept '?dofd=any' with spy
     evaluatorPage.interceptFilteredResultsWithSpy(
@@ -72,14 +72,14 @@ describe('Evaluator page boolean filters', () => {
       { dofd: 'any', view: 'all' } // query params
     )
 
-    // Clicking the 'no DOFD' filter checkbox should show 4 results
+    // Clicking the 'no DOFD' filter checkbox should show 8 results
     evaluatorPage.dofdFalseCheckboxLabel().click()
     page.hasURL('events/1/evaluators/Test-Eval-1', { dofd: 'false', view: 'all' })
     cy.wait('@noDofdResults')
     evaluatorPage.dofdFalseCheckbox().should('be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
-    evaluatorPage.hasResultsMessage('Showing 1 - 4 of 4 filtered results')
-    table.hasRowCount(4)
+    evaluatorPage.hasResultsMessage('Showing 1 - 8 of 8 filtered results')
+    table.hasRowCount(8)
 
     // Selecting both filter options should load all results from react-query storage
     // and not call API with dofd query param
@@ -88,51 +88,51 @@ describe('Evaluator page boolean filters', () => {
     cy.get('@anyDofdResults').should('not.been.called')
     evaluatorPage.dofdFalseCheckbox().should('be.checked')
     evaluatorPage.dofdTrueCheckbox().should('be.checked')
-    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 1,000')
-    table.hasRowCount(10)
+    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
+    table.hasRowCount(20)
 
-    // De-selecting the 'no DOFD' checkbox should show 6 results
+    // De-selecting the 'no DOFD' checkbox should show 16 results
     evaluatorPage.dofdFalseCheckboxLabel().click()
     cy.wait(['@hasDofdResults'])
     page.hasURL('events/1/evaluators/Test-Eval-1', { dofd: 'true', view: 'all' })
     evaluatorPage.dofdFalseCheckbox().should('not.be.checked')
     evaluatorPage.dofdTrueCheckbox().should('be.checked')
-    evaluatorPage.hasResultsMessage('Showing 1 - 6 of 6 filtered results')
-    table.hasRowCount(6)
+    evaluatorPage.hasResultsMessage('Showing 1 - 16 of 16 filtered results')
+    table.hasRowCount(16)
 
     // Removing all the dofd filters should load original results from react-query
     evaluatorPage.dofdTrueCheckboxLabel().click()
     page.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
     evaluatorPage.dofdFalseCheckbox().should('not.be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
-    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 1,000')
-    table.hasRowCount(10)
+    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
+    table.hasRowCount(20)
   })
 
   it('Should remove boolean filter with clear filters link', () => {
-    // Intercept '?dofd=false' with 4-result fixture
+    // Intercept '?dofd=false' with 8-result fixture
     evaluatorPage.interceptFilteredResults(
       'noDofdResults', // alias
       { dofd: 'false', view: 'all' }, // query params
-      'evaluatorHits_4' // fixture to return
+      'evaluatorHits_8' // fixture to return
     )
 
-    // Clicking 'no dofd' filter checkbox should show 4 results
+    // Clicking 'no dofd' filter checkbox should show 8 results
     evaluatorPage.dofdFalseCheckboxLabel().click()
     page.hasURL('events/1/evaluators/Test-Eval-1', { dofd: 'false', view: 'all' })
     cy.wait('@noDofdResults')
     evaluatorPage.dofdFalseCheckbox().should('be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
-    evaluatorPage.hasResultsMessage('Showing 1 - 4 of 4 filtered results')
-    table.hasRowCount(4)
+    evaluatorPage.hasResultsMessage('Showing 1 - 8 of 8 filtered results')
+    table.hasRowCount(8)
 
     // Clicking the 'remove filters' link should load all the results again
     cy.findByTestId('remove-all-filters').click()
     page.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
     evaluatorPage.dofdFalseCheckbox().should('not.be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
-    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 1,000')
-    table.hasRowCount(10)
+    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
+    table.hasRowCount(20)
   })
 
   it('Should show no results message with clear filters link when there are no results', () => {
@@ -157,7 +157,7 @@ describe('Evaluator page boolean filters', () => {
     page.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
     evaluatorPage.dofdFalseCheckbox().should('not.be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
-    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 1,000')
-    table.hasRowCount(10)
+    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
+    table.hasRowCount(20)
   })
 })

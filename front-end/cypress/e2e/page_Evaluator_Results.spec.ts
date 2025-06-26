@@ -66,7 +66,7 @@ describe('Results view', () => {
     // All results message is displayed
     cy.get('[data-testid="results-message"]').should(
       'include.text',
-      'Showing 1 - 20 of 1,000'
+      'Showing 1 - 20 of 30'
     )
 
     // Pagination is added to the page
