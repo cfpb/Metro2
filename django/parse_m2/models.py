@@ -79,6 +79,7 @@ class AccountActivity(models.Model):
         verbose_name_plural = "Account Activity"
         indexes = [
             models.Index(fields=['cons_acct_num',]),
+            models.Index(fields=['activity_date',]),
         ]
 
     # Note: Numeric fields are using models.IntegerField, which
