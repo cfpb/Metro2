@@ -97,7 +97,8 @@ export default function EvaluatorResults({
                           view: 'all'
                         })}
                         activeOptions={{ exact: true }}
-                        style={{ pointerEvents: 'auto' }}>
+                        style={{ pointerEvents: 'auto' }}
+                        data-testid='remove-all-filters'>
                         <Icon name='error' />
                         Clear all filters
                       </Link>

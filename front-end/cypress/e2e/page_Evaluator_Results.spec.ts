@@ -3,6 +3,7 @@ import type AccountRecord from 'types/AccountRecord'
 import type EvaluatorMetadata from 'types/EvaluatorMetadata'
 import type Event from 'types/Event'
 
+import { PII_COOKIE_NAME } from '@src/constants/settings'
 import hitsFixture from '../fixtures/evaluatorHits.json'
 import eventFixture from '../fixtures/event.json'
 import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
@@ -88,6 +89,39 @@ describe('Results view', () => {
   // })
 
   // Check that invalid values for valid param keys are replaced
+  // const invalidParams = {
+  //   '?view=invalid': ['view=sample', 'page=1'],
+  //   '?page=num': ['page=1', 'view=sample'],
+  //   '?view=unsupported&page=two': ['view=sample', 'page=1'],
+  //   '?view=all&page=num': ['view=all', 'page=1'],
+  //   '?view=random&page=2': ['view=sample', 'page=1'],
+  //   '?view=sample&page=2': ['view=sample', 'page=1']
+  // } as const
+
+  // Object.entries(invalidParams).forEach(item => {
+  //   it(`Should replace invalid param value in "${item[0]}"`, () => {
+  //     page.loadEvaluatorPage(item[0])
+  //     cy.location('search').should('not.include', item[0])
+  //     item[1].forEach(validParam => {
+  //       cy.location('search').should('include', validParam)
+  //     })
+  //   })
+  // })
+
+  it('Should update params after pagination control interaction', () => {
+    page.loadEvaluatorPage({ view: 'all' })
+
+    // Pagination is added to the page
+    cy.get('.m-pagination').should('exist')
+    cy.get('.m-pagination_current-page').should('have.value', '1')
+
+    cy.get('.m-pagination_btn-next').click()
+    cy.location('search').should('include', 'page=2')
+  })
+})
+
+describe('Invalid param handling', () => {
+  // Check that invalid values for valid param keys are replaced
   const invalidParams = {
     '?view=invalid': ['view=sample', 'page=1'],
     '?page=num': ['page=1', 'view=sample'],
@@ -97,25 +131,25 @@ describe('Results view', () => {
     '?view=sample&page=2': ['view=sample', 'page=1']
   } as const
 
+  beforeEach(() => {
+    cy.viewport(1920, 1800)
+    cy.setCookie(PII_COOKIE_NAME, 'true')
+    cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
+    cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
+    cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/**`, {
+      fixture: 'evaluatorHits'
+    }).as('getEvaluatorHits')
+  })
+
   Object.entries(invalidParams).forEach(item => {
     it(`Should replace invalid param value in "${item[0]}"`, () => {
-      page.loadEvaluatorPage(item[0])
+      cy.visit(`/events/1/evaluators/Test-Eval-1/${item[0]}`)
+      cy.wait(['@getEvent', '@getUser', '@getEvaluatorHits'])
       cy.location('search').should('not.include', item[0])
       item[1].forEach(validParam => {
         cy.location('search').should('include', validParam)
       })
     })
-  })
-
-  it('Should update params after pagination control interaction', () => {
-    page.loadEvaluatorPage('?view=all')
-
-    // Pagination is added to the page
-    cy.get('.m-pagination').should('exist')
-    cy.get('.m-pagination_current-page').should('have.value', '1')
-
-    cy.get('.m-pagination_btn-next').click()
-    cy.location('search').should('include', 'page=2')
   })
 })
 

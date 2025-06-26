@@ -1,4 +1,5 @@
 /* eslint-disable cypress/require-data-selectors */
+import { stringifySearchParams } from 'utils/customStringify'
 
 export class Metro2Page {
   verifyLocatorBarContent(eyebrow: string, heading: string) {
@@ -41,6 +42,27 @@ export class Metro2Page {
   }
 
   getExpandableTargetByText(text: string) {
-    return cy.get('button').contains(text)
+    return cy
+      .get('.o-expandable_header')
+      .contains(text)
+      .parents('.o-expandable')
+      .find('.o-expandable_target')
+  }
+
+  openExpandable(headerText: string) {
+    this.getExpandableTargetByText(headerText).click()
+  }
+
+  queryString(params: object) {
+    const defaults = { page: 1, page_size: 20, view: 'sample' }
+    return stringifySearchParams({ ...defaults, ...params })
+  }
+
+  hasQueryString(params: object) {
+    cy.url().should('include', this.queryString(params))
+  }
+
+  hasURL(path: string, params: object) {
+    cy.url().should('eq', `http://localhost:3000/${path}${this.queryString(params)}`)
   }
 }
