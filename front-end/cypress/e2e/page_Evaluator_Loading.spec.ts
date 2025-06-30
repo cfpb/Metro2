@@ -2,7 +2,7 @@
 /* eslint-disable import/extensions */
 /* eslint-disable cypress/require-data-selectors */
 import type Event from 'types/Event'
-import hitsFixture from '../fixtures/evaluatorHits.json'
+import hitsFixture from '../fixtures/evaluatorHits_page1.json'
 import eventFixture from '../fixtures/event.json'
 
 import { PII_COOKIE_NAME } from '@src/constants/settings'
@@ -45,7 +45,7 @@ describe('Evaluator page loader', () => {
     }).as('getUser')
     cy.intercept('GET', `/api/events/1/evaluator/${evaluatorName}/**`, {
       delay: 500,
-      fixture: 'evaluatorHits'
+      fixture: 'evaluatorHits_page1'
     }).as('getEvaluatorHits')
 
     cy.visit(`/events/1/evaluators/${evaluatorName}/`)
@@ -88,7 +88,7 @@ describe('Evaluator page loader', () => {
     }).as('getUser')
     cy.intercept('GET', `/api/events/1/evaluator/${evaluatorName}/**`, {
       delay: 500,
-      fixture: 'evaluatorHits'
+      fixture: 'evaluatorHits_page1'
     }).as('getEvaluatorHits')
     cy.visit(`/events/1/evaluators/${evaluatorName}/`)
 
@@ -128,7 +128,7 @@ describe('Evaluator page loader', () => {
     // Delay the hits data
     cy.intercept('GET', `/api/events/1/evaluator/${evaluatorName}/**`, {
       delay: 4000,
-      fixture: 'evaluatorHits'
+      fixture: 'evaluatorHits_page1'
     }).as('getEvaluatorHits')
 
     cy.visit(`/events/1/evaluators/${evaluatorName}`)

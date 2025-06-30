@@ -4,18 +4,22 @@ import { useMemo } from 'react'
 import type AccountRecord from 'types/AccountRecord'
 import type Event from 'types/Event'
 import getEvaluatorColDefs from '../utils/getColDefs'
-import NoResultsMessage from './NoResultsMessage'
+import NoResultsMessage from './NoResultsMessage/NoResultsMessage'
 
 interface EvaluatorTableData {
   eventData: Event
   data: AccountRecord[]
   fields: string[]
+  isLoading?: boolean
+  isLoadingError?: boolean
 }
 
 export default function EvaluatorResultsTable({
   eventData,
   data,
-  fields
+  fields,
+  isLoading,
+  isLoadingError
 }: EvaluatorTableData): ReactElement {
   const columnDefinitions = useMemo(
     () => getEvaluatorColDefs(fields, String(eventData.id)),
@@ -27,6 +31,8 @@ export default function EvaluatorResultsTable({
       rows={data}
       columnDefinitions={columnDefinitions}
       NoResultsMessage={NoResultsMessage}
+      isLoading={isLoading}
+      isLoadingError={isLoadingError}
     />
   )
 }

@@ -41,7 +41,7 @@ describe('Evaluator page range amount filters', () => {
       'evaluatorHits_8' // fixture
     )
 
-    // Entering 100 in the current_bal_min field should show 6 results
+    // Entering 100 in the current_bal_min field should show 16 results
     cy.get('#current_bal_min').type('100{enter}')
     page.hasURL('events/1/evaluators/Test-Eval-1', {
       current_bal_min: '100',
@@ -52,7 +52,7 @@ describe('Evaluator page range amount filters', () => {
     evaluatorPage.hasResultsMessage('Showing 1 - 16 of 16 filtered results')
     table.hasRowCount(16)
 
-    // Entering 1000 in the current_bal_max field should show 4 results
+    // Entering 1000 in the current_bal_max field should show 8 results
     cy.get('#current_bal_max').type('1000{enter}')
     page.hasURL('events/1/evaluators/Test-Eval-1', {
       current_bal_min: '100',
@@ -76,7 +76,7 @@ describe('Evaluator page range amount filters', () => {
   })
 
   it('Should remove amount range filter with clear filters link', () => {
-    // Intercept '?current_bal_min=100' with 6-result fixture
+    // Intercept '?current_bal_min=100' with 16-result fixture
     evaluatorPage.interceptFilteredResults(
       'currentBalMin', // alias,
       { current_bal_min: 100, view: 'all' },

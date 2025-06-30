@@ -32,6 +32,7 @@ interface EvaluatorResultsMessageProps {
   pageSize: number
   view: 'all' | 'sample'
   isFiltered: boolean
+  isFetching: boolean
 }
 
 export default function EvaluatorResultsMessage({
@@ -40,13 +41,16 @@ export default function EvaluatorResultsMessage({
   page,
   pageSize,
   view,
+  isFetching,
   isFiltered
 }: EvaluatorResultsMessageProps): ReactElement {
-  let message = ''
-  if (view === 'sample' && totalResultsCount > 20) {
-    message = 'Showing 20 sample results'
-  } else if (isFiltered && currentHitsCount === 0) {
+  let message
+  if (isFetching) {
+    message = ''
+  } else if (currentHitsCount === 0) {
     message = 'Showing 0 results'
+  } else if (view === 'sample' && totalResultsCount > 20) {
+    message = 'Showing 20 sample results'
   } else {
     const start = formatNumber((page - 1) * pageSize + 1)
     const end = formatNumber(Math.min(page * pageSize, currentHitsCount))

@@ -4,7 +4,6 @@ import Loader from 'components/Loader/Loader'
 import { Icon } from 'design-system-react'
 import { useEvaluatorResults } from 'queries/evaluatorHits'
 import type { ReactElement } from 'react'
-import { useEffect } from 'react'
 import type EvaluatorMetadata from 'types/EvaluatorMetadata'
 import type Event from 'types/Event'
 import EvaluatorFilterSidebar from '../filters/EvaluatorFilterSidebar/FilterSidebar'
@@ -37,7 +36,7 @@ export default function EvaluatorResults({
   const isFiltered = Object.keys(query).some(key => filterableFields.includes(key))
 
   // Fetch data from server
-  const { data, isFetching } = useEvaluatorResults(
+  const { data, isLoadingError, isFetching } = useEvaluatorResults(
     eventData.id,
     evaluatorMetadata.id,
     query
@@ -55,16 +54,14 @@ export default function EvaluatorResults({
   const currentHits = data?.count ?? 0
   const pageCount = getPageCount(currentHits, page_size)
 
-  // TODO: think about whether this is needed / when it should happen
-  // should this be handled by the API?
-  useEffect(() => {
-    if (typeof page === 'number' && (page > pageCount || page <= 0)) {
-      void navigate({
-        to: '.',
-        search: (prev: Record<string, unknown>) => ({ ...prev, page: 1 })
-      })
-    }
-  })
+  // TODO: consider refining this to handle 404s for invalid page
+  // differently than other misc errors
+  if (isLoadingError && typeof page === 'number' && page > pageCount) {
+    void navigate({
+      to: '.',
+      search: (prev: Record<string, unknown>) => ({ ...prev, page: 1 })
+    })
+  }
 
   return (
     <>
@@ -84,6 +81,7 @@ export default function EvaluatorResults({
                     isFiltered={isFiltered}
                     currentHitsCount={currentHits}
                     totalResultsCount={totalHits}
+                    isFetching={isFetching}
                   />
                   {isFiltered ? (
                     <p>
@@ -126,6 +124,8 @@ export default function EvaluatorResults({
                     data={rows}
                     fields={fields}
                     eventData={eventData}
+                    isLoading={isFetching}
+                    isLoadingError={isLoadingError}
                   />
                   {view === 'all' && currentHits > 0 ? (
                     <div className='results_pagination'>

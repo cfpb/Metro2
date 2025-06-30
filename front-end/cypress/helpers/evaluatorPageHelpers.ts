@@ -10,18 +10,26 @@ export class EvaluatorPage {
   /**
    * Waits for default evaluator page to load with fixture data.
    * @param {object} params - Optional query string params.
+   * @param {object} hitsFixture - Optional fixture name.
    * @returns {void} void
    */
-  loadEvaluatorPage(params?: object): void {
-    const querystring = params ? this.queryString(params) : ''
-    const apiExt = querystring ? `${querystring}` : '**'
+  loadEvaluatorPage(
+    params: object = {},
+    interceptAllHitsPaths: boolean = false
+  ): void {
+    const querystring = this.queryString(params)
+    const apiExt = interceptAllHitsPaths ? '**' : `${querystring}`
     const urlExt = querystring ? `${querystring}` : ''
+    const hitsFixture =
+      'page' in params && params.page === 2
+        ? 'evaluatorHits_page2'
+        : 'evaluatorHits_page1'
     cy.viewport(1920, 1800)
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
     cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
     cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/${apiExt}`, {
-      fixture: 'evaluatorHits'
+      fixture: hitsFixture
     }).as('getEvaluatorHits')
     cy.visit(`/events/1/evaluators/Test-Eval-1/${urlExt}`)
     cy.wait(['@getEvent', '@getUser', '@getEvaluatorHits'])
@@ -30,7 +38,7 @@ export class EvaluatorPage {
   interceptFilteredResults(
     alias: string,
     params: object = {},
-    fixture: string = 'evaluatorHits'
+    fixture: string = 'evaluatorHits_page2'
   ): void {
     const querystring = this.queryString(params)
     cy.intercept(
@@ -49,6 +57,22 @@ export class EvaluatorPage {
       `/api/events/1/evaluator/Test-Eval-1/${querystring ? querystring : ''}`,
       cy.spy().as(alias)
     )
+  }
+
+  interceptFilteredResultsWithError(
+    alias: string,
+    params: object = {},
+    statusCode: number = 404
+  ) {
+    const querystring = this.queryString(params)
+    cy.intercept(
+      'GET',
+      `/api/events/1/evaluator/Test-Eval-1/${querystring ? querystring : ''}`,
+      {
+        statusCode: statusCode,
+        body: { error: 'Bad Request' }
+      }
+    ).as(alias)
   }
 
   resultsMessage() {

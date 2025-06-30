@@ -34,12 +34,16 @@ const fetchData = async <TData>(
       await new Promise(r => setTimeout(r, delay))
     }
     if (response.ok) return (await response.json()) as TData
+    // const errorBody = (await response.json()) as JSON
+    // throw new Error(`${response.status}`, { cause: errorBody })
     throw new Error(String(response.status))
   } catch (error) {
     // Throw NotFound error to handle 404s in NotFound component
     // All other errors will be caught by ErrorComponent
     const message = error instanceof Error ? error.message : ''
-    if (message === '404') notFound({ throw: true, data: dataType })
+    if (message === '404' && dataType !== 'hits')
+      notFound({ throw: true, data: dataType })
+
     throw new Error(message)
   }
 }

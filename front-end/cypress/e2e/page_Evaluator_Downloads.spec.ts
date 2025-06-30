@@ -2,7 +2,7 @@
 /* eslint-disable import/extensions */
 /* eslint-disable cypress/require-data-selectors */
 import type Event from 'types/Event'
-import hitsFixture from '../fixtures/evaluatorHits.json'
+import hitsFixture from '../fixtures/evaluatorHits_page1.json'
 import eventFixture from '../fixtures/event.json'
 
 import AccountRecord from 'types/AccountRecord'
@@ -36,7 +36,7 @@ describe('Evaluator page', () => {
 
   describe('Download modal', () => {
     it('Should show download modal when button is clicked', () => {
-      modal.getModal().should('not.exist')
+      modal.getModal().should('not.be.visible')
       cy.get('button').contains('Save results').should('be.visible').click()
       modal
         .getModal()
@@ -51,7 +51,7 @@ describe('Evaluator page', () => {
     })
 
     it('Should close the modal when the cancel button is clicked', () => {
-      modal.getModal().should('not.exist')
+      modal.getModal().should('not.be.visible')
       modal.openModal('Save results')
       modal.getModal().should('be.visible')
       modal.closeModal()
