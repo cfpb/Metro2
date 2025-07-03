@@ -1,8 +1,13 @@
+from datetime import date
+from io import StringIO
+
 from django.core.management import call_command
 from django.contrib.auth.models import User
-from parse_m2.models import Metro2Event
+from django.db.models import F
 from django.test import TestCase
-from io import StringIO
+
+from evaluate_m2.tests.evaluator_test_helper import acct_record
+from parse_m2.models import Metro2Event, M2DataFile, AccountActivity
 
 class AddAuthToEventCommandTestCase(TestCase):
     def setUp(self) -> None:
@@ -21,3 +26,27 @@ class AddAuthToEventCommandTestCase(TestCase):
         ev = Metro2Event.objects.get(name="my event")
         self.assertIn(self.user, ev.members.all())
 
+class UpdateActivityDateToDOAITestCase(TestCase):
+    def setUp(self):
+        self.event = Metro2Event.objects.create()
+        self.file = M2DataFile.objects.create(event=self.event)
+        return super().setUp()
+
+    def test_set_values_using_f(self):
+        acct_record(self.file,
+            {'id': 3, 'activity_date': date(2025,2,14), 'doai': date(2023,9,30)})
+        acct_record(self.file,
+            {'id': 4, 'activity_date': date(2025,2,14), 'doai': date(2023,8,20)})
+        acct_record(self.file,
+            {'id': 5, 'activity_date': date(2025,2,14), 'doai': date(2021,3,31)})
+
+        self.event.get_all_account_activity().update(activity_date=F('doai'))
+
+        rec1_actual = AccountActivity.objects.get(id=3)
+        self.assertEqual(rec1_actual.activity_date, date(2023,9,30))
+
+        rec2_actual = AccountActivity.objects.get(id=4)
+        self.assertEqual(rec2_actual.activity_date, date(2023,8,20))
+
+        rec3_actual = AccountActivity.objects.get(id=5)
+        self.assertEqual(rec3_actual.activity_date, date(2021,3,31))
