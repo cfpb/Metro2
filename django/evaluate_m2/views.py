@@ -248,9 +248,11 @@ class EvaluatorResultsView(generics.ListAPIView):
         event_id = self.kwargs["event_id"]
         evaluator_id = self.kwargs["evaluator_id"]
 
+        result_summary = EvaluatorResultSummary.objects.get(
+            event__id=event_id, evaluator__id=evaluator_id)
+
         queryset = EvaluatorResult.objects.filter(
-            result_summary__event__id=event_id,
-            result_summary__evaluator__id=evaluator_id,
+            result_summary=result_summary,
         ).select_related(
             "source_record"
         ).order_by("source_record__activity_date")
