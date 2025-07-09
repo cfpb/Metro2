@@ -40,13 +40,14 @@ class UpdateActivityDateToDOAITestCase(TestCase):
         acct_record(self.file,
             {'id': 5, 'activity_date': date(2025,2,14), 'doai': date(2021,3,31)})
 
-        self.event.get_all_account_activity().update(activity_date=F('doai'))
+        for file in self.event.m2datafile_set.all():
+            file.accountactivity_set.update(activity_date=F('doai'))
 
-        rec1_actual = AccountActivity.objects.get(id=3)
-        self.assertEqual(rec1_actual.activity_date, date(2023,9,30))
+        r1 = AccountActivity.objects.get(id=3)
+        self.assertEqual(r1.activity_date, date(2023,9,30))
 
-        rec2_actual = AccountActivity.objects.get(id=4)
-        self.assertEqual(rec2_actual.activity_date, date(2023,8,20))
+        r2 = AccountActivity.objects.get(id=4)
+        self.assertEqual(r2.activity_date, date(2023,8,20))
 
-        rec3_actual = AccountActivity.objects.get(id=5)
-        self.assertEqual(rec3_actual.activity_date, date(2021,3,31))
+        r3 = AccountActivity.objects.get(id=5)
+        self.assertEqual(r3.activity_date, date(2021,3,31))
