@@ -60,7 +60,7 @@ describe('Modal accessibility', () => {
       cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
       cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
       cy.intercept('GET', '/api/events/1/evaluator/Test-Eval-1/**', {
-        fixture: 'evaluatorHits'
+        fixture: 'evaluatorHits_page1'
       }).as('getEvaluatorHits')
       cy.visit('/events/1/evaluators/Test-Eval-1/')
       cy.wait(['@getEvent', '@getUser', '@getEvaluatorHits'])

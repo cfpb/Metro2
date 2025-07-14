@@ -18,12 +18,14 @@ export default function EvaluatorBooleanFilter({
 
   const queryStringValue = useSearch({
     strict: false,
-    select: (search): boolean | 'any' | 'false' | 'true' | undefined => search[field]
+    select: (search): boolean | '' | 'any' | 'false' | 'true' | undefined =>
+      search[field]
   })
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, checked } = event.currentTarget
     let currentValue: boolean | string | undefined = queryStringValue
+
     if (checked) {
       if (currentValue === undefined) {
         currentValue = name

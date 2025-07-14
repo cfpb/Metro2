@@ -1,8 +1,8 @@
+import COL_DEF_CONSTANTS from '@src/constants/colDefConstants'
 import { Link } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
 import type { ReactElement } from 'react'
 import generateColumnDefinitions from 'utils/generateColDefs'
-import COL_DEF_CONSTANTS from '../../../../constants/colDefConstants'
 
 const getEvaluatorColDefs = (fields: string[], eventId: string): ColDef[] => {
   const accountColDef = {

@@ -19,8 +19,8 @@ import { notFound } from '@tanstack/react-router'
  */
 const fetchData = async <TData>(
   url: string,
-  dataType: string
-  // delay?: number
+  dataType: string,
+  delay?: number
 ): Promise<TData> => {
   try {
     // Fetch data from URL.
@@ -29,17 +29,21 @@ const fetchData = async <TData>(
     // status (404, 500, etc) as its message.
     const response = await fetch(url)
     // Dev hack: uncomment & pass value to delay request & show loading view
-    // if (delay) {
-    //   // eslint-disable-next-line no-promise-executor-return
-    //   await new Promise(r => setTimeout(r, delay))
-    // }
+    if (delay) {
+      // eslint-disable-next-line no-promise-executor-return
+      await new Promise(r => setTimeout(r, delay))
+    }
     if (response.ok) return (await response.json()) as TData
+    // const errorBody = (await response.json()) as JSON
+    // throw new Error(`${response.status}`, { cause: errorBody })
     throw new Error(String(response.status))
   } catch (error) {
     // Throw NotFound error to handle 404s in NotFound component
     // All other errors will be caught by ErrorComponent
     const message = error instanceof Error ? error.message : ''
-    if (message === '404') notFound({ throw: true, data: dataType })
+    if (message === '404' && dataType !== 'hits')
+      notFound({ throw: true, data: dataType })
+
     throw new Error(message)
   }
 }

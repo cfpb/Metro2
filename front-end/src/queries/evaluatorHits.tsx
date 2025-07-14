@@ -21,13 +21,27 @@ export const evaluatorHitsQueryOptions = (
   query: object = {},
   additionalParams: object = {}
 ): UseQueryOptions<EvaluatorHits, Error, EvaluatorHits, string[]> => {
-  const searchParams = stringifySearchParams(query)
+  // Strip boolean filter 'any' values from query
+  // since this is functionally equivalent to applying no filter
+  const queryCopy = { ...query }
+  for (const field of ['dofd', 'date_closed']) {
+    if (queryCopy[field as keyof typeof queryCopy] === 'any') {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete queryCopy[field as keyof typeof queryCopy]
+    }
+  }
+  const searchParams = stringifySearchParams(queryCopy)
   const key = ['event', eventId, 'evaluator', evaluatorId, 'query', searchParams]
   return queryOptions({
     queryKey: key,
     queryFn: async () => fetchEvaluatorHits(eventId, evaluatorId, searchParams),
     staleTime: 60 * 1000,
     placeholderData: keepPreviousData,
+    retry: (failureCount, error) => {
+      // Don't retry if 404 -- that probably indicates an invalid page
+      if (error.message === '404' || failureCount > 3) return false
+      return true
+    },
     ...additionalParams
   })
 }

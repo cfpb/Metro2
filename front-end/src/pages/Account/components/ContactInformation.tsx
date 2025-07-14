@@ -18,6 +18,12 @@ export default function AccountContactInformation({
   )
   const [showPII, setShowPII] = useState(false)
 
+  function onClickHandler(): void {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    if (!data) refetch()
+    setShowPII(true)
+  }
+
   if (isLoading) {
     return (
       <div className='inline-loader'>
@@ -25,12 +31,6 @@ export default function AccountContactInformation({
         Loading...
       </div>
     )
-  }
-
-  function onClickHandler(): void {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    if (!data) refetch()
-    setShowPII(true)
   }
 
   return data && showPII ? (

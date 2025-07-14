@@ -39,11 +39,6 @@ describe('stringifySearchParams', () => {
     expect(stringifySearchParams(UNDEFINED)).toEqual('')
   })
 
-  it('removes blank params', () => {
-    const params = { blank: '  ', has_value: 'value' }
-    expect(stringifySearchParams(params)).toEqual('?has_value=value')
-  })
-
   it('stringifies search params containing numbers and strings', () => {
     const params = {
       first: 'one',

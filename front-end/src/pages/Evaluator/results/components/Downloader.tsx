@@ -1,3 +1,4 @@
+import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 import CopyUrl from 'components/CopyUrl'
 import DownloadModal from 'components/Modals/DownloadModal'
 import { Button } from 'design-system-react'
@@ -12,7 +13,6 @@ import {
   generateDownloadData
 } from 'utils/downloads'
 import { formatNumber } from 'utils/formatNumbers'
-import M2_FIELD_NAMES from '../../../../constants/m2FieldNames'
 
 interface EvaluatorDownloadInterface {
   rows: AccountRecord[]

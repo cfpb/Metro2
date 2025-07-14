@@ -1,8 +1,8 @@
+import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
+import renderWithProviders from '@src/testUtils'
 import { screen, within } from '@testing-library/react'
 import getHeaderName from 'utils/getHeaderName'
-import M2_FIELD_NAMES from '../../../constants/m2FieldNames'
-import renderWithProviders from '../../../testUtils'
-import AccountSummary from './Summary'
+import AccountSummary from './Overview'
 
 const defaultData = {
   cons_acct_num: '999999999',
@@ -40,7 +40,7 @@ const eventData = {
   ]
 }
 
-describe('<AccountSummary />', () => {
+describe('<AccountOverview />', () => {
   it('should render inconsistencies when present', async () => {
     renderWithProviders(
       <AccountSummary accountData={defaultData} eventData={eventData} />

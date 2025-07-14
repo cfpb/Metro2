@@ -1,6 +1,6 @@
 const accountStatusGroups = new Map([
   ['Current', ['11']],
-  ['Paid or settled in full', ['13', '61', '62', '63', '64']],
+  ['Paid or settled in full', ['05', '13', '61', '62', '63', '64']],
   ['Delinquent', ['71', '78', '80', '82', '83', '84', '93', '97']],
   ['Foreclosure or default', ['65', '88', '89', '94']],
   ['Repossession or surrender', ['95', '96']],

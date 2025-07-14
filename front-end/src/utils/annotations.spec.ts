@@ -1,4 +1,4 @@
-import { M2_FIELD_LOOKUPS } from '../constants/annotationLookups'
+import { M2_FIELD_LOOKUPS } from '@src/constants/annotationLookups'
 import { annotateAccountRecords, getM2Definition } from './annotations'
 
 describe('getM2Definition', () => {

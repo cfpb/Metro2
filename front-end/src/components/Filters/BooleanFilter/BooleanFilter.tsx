@@ -4,7 +4,7 @@ import { Checkbox } from 'design-system-react'
 
 interface BooleanFilterData {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  selected?: boolean | 'any' | 'false' | 'true' | undefined
+  selected?: boolean | '' | 'any' | 'false' | 'true' | undefined
   id: string
   label_0?: string
   label_1?: string

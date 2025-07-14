@@ -1,4 +1,4 @@
-import M2_FIELD_NAMES from '../../../constants/m2FieldNames'
+import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 
 // Get fields from M2_FIELD_NAMES
 // remove cons_acct_num since we're not currently getting it on each record
