@@ -12,7 +12,7 @@ export default function GuidePage(): ReactElement {
       path: '/guide/table'
     },
     {
-      name: 'Contributing to an evaluator’s metadata',
+      name: 'Contribute to an evaluator’s metadata',
       path: '/guide/contribute'
     },
     { name: 'Metro2 administrator features', path: '/guide/m2admin' }
