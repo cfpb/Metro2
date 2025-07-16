@@ -14,7 +14,7 @@ export default function Features(): ReactElement {
   return (
     <div className='content-pad'>
       <Heading type='2' className='h1'>
-        3. Use Metro2&apos;s Advanced Table Features
+        Use Metro2&apos;s Advanced Table Features
       </Heading>
 
       <Divider />
@@ -26,7 +26,7 @@ export default function Features(): ReactElement {
       </Paragraph>
 
       <Heading type='3' className='h2'>
-        3.1 Navigate tables
+        Navigate tables
       </Heading>
 
       <Paragraph>
@@ -64,7 +64,7 @@ export default function Features(): ReactElement {
       </Paragraph>
 
       <Heading type='3' className='h2'>
-        3.2 Use Column Features
+        Use Column Features
       </Heading>
       <div className='features'>
         <Table
