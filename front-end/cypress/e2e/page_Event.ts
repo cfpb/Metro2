@@ -1,5 +1,5 @@
 import { PII_COOKIE_NAME } from '@src/constants/settings'
-import eventData from '../fixtures/event.json'
+import eventData from '../fixtures/event_1.json'
 import { Metro2Page } from '../helpers/pageHelper'
 import { Metro2Table } from '../helpers/tableHelpers'
 
@@ -12,7 +12,7 @@ describe('Event page loader', () => {
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', 'api/events/1', {
       delay: 2000,
-      fixture: 'event'
+      fixture: 'event_1'
     }).as('getEvent')
     cy.visit('/events/1')
     cy.get('.loader').should('be.visible')
@@ -24,7 +24,7 @@ describe('Event page loader', () => {
 describe('Event page', () => {
   beforeEach(() => {
     cy.setCookie(PII_COOKIE_NAME, 'true')
-    cy.intercept('GET', 'api/events/1', { fixture: 'event' }).as('getEvent')
+    cy.intercept('GET', 'api/events/1', { fixture: 'event_1' }).as('getEvent')
     cy.visit('/events/1')
   })
   it('Should show locator', () => {
@@ -70,7 +70,7 @@ describe('Event page', () => {
 describe('Event file download', () => {
   beforeEach(() => {
     cy.setCookie(PII_COOKIE_NAME, 'true')
-    cy.intercept('GET', 'api/events/1', { fixture: 'event' }).as('getEvent')
+    cy.intercept('GET', 'api/events/1', { fixture: 'event_1' }).as('getEvent')
     cy.visit('/events/1')
   })
   it('Should have "Save summary" button', () => {

@@ -1,7 +1,7 @@
 /* eslint-disable cypress/require-data-selectors */
 
 import { PII_COOKIE_NAME } from '@src/constants/settings'
-import accountData from '../fixtures/account.json'
+import accountData from '../fixtures/account_1.json'
 
 import { getInputByLabel, Metro2Modal } from '../helpers/modalHelpers'
 import { Metro2Page } from '../helpers/pageHelper'
@@ -17,7 +17,7 @@ describe('Account page loader', () => {
   it('Should show a loading view while account data is fetched', () => {
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', 'api/events/1/account/111111/', {
-      fixture: 'account'
+      fixture: 'account_1'
     }).as('getAccount')
     cy.visit('/events/1/accounts/111111')
     cy.get('.loader').should('be.visible')
@@ -32,7 +32,7 @@ describe('Account page', () => {
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', 'api/events/1/account/111111/', {
       delay: 2000,
-      fixture: 'account'
+      fixture: 'account_1'
     }).as('getAccount')
     cy.visit('/events/1/accounts/111111')
     cy.wait('@getAccount')
@@ -115,7 +115,7 @@ describe(
       cy.setCookie(PII_COOKIE_NAME, 'true')
       cy.intercept('GET', 'api/events/1/account/11111/', {
         delay: 2000,
-        fixture: 'account'
+        fixture: 'account_1'
       }).as('getAccount')
       cy.visit('/events/1/accounts/11111')
       cy.wait('@getAccount')

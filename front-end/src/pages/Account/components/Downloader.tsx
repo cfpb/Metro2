@@ -1,18 +1,18 @@
+import DownloadModal from '@src/components/Modal/DownloadModal'
 import { useQueryClient } from '@tanstack/react-query'
-import DownloadModal from 'components/Modals/DownloadModal'
 import { Button, RadioButton } from 'design-system-react'
 import { Workbook } from 'exceljs'
 import type { ReactElement } from 'react'
 import { useRef, useState } from 'react'
 import type Event from 'types/Event'
 
+import ACCOUNT_HOLDER_FIELDS from '@src/constants/accountHolderFields'
+import EVENT_FIELDS from '@src/constants/eventFields'
+import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 import { accountHolderQueryOptions } from 'queries/accountHolder'
 import type AccountRecord from 'types/AccountRecord'
 import { downloadData } from 'utils/downloads'
 import getHeaderName from 'utils/getHeaderName'
-import ACCOUNT_HOLDER_FIELDS from '../../../constants/accountHolderFields'
-import EVENT_FIELDS from '../../../constants/eventFields'
-import M2_FIELD_NAMES from '../../../constants/m2FieldNames'
 
 interface AccountDownloadInterface {
   rows: AccountRecord[]

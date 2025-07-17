@@ -1,13 +1,13 @@
+import ErrorComponent from '@src/components/Error/ErrorComponent'
+import NotFound from '@src/components/Error/NotFound'
+import WarningModal from '@src/components/Modal/WarningModal'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
   RouterProvider,
   createRouter,
   parseSearchWith
 } from '@tanstack/react-router'
-import ErrorComponent from 'components/Errors/ErrorComponent'
-import NotFound from 'components/Errors/NotFound'
 import Loader from 'components/Loader/Loader'
-import WarningModal from 'components/Modals/WarningModal'
 import type { ReactElement } from 'react'
 
 import customParser from 'utils/customParser'

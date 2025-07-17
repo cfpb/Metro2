@@ -1,12 +1,12 @@
 import { createRoute } from '@tanstack/react-router'
 import rootRoute from '../rootRoute'
 import GuidePage from './GuidePage/GuidePage'
-import Admin from './subpages/Admin'
-import Contribute from './subpages/Contribute'
-import Explore from './subpages/Explore'
-import HelpUs from './subpages/HelpUs'
-import Overview from './subpages/Overview'
-import Table from './subpages/Table'
+import Admin from './sections/Admin'
+import Contribute from './sections/Contribute'
+import Explore from './sections/Explore'
+import HelpUs from './sections/HelpUs'
+import Overview from './sections/Overview'
+import Table from './sections/Table'
 
 export const guideRoute = createRoute({
   path: '/guide',

@@ -3,7 +3,7 @@
 /* eslint-disable cypress/require-data-selectors */
 import type Event from 'types/Event'
 import hitsFixture from '../fixtures/evaluatorHits_page1.json'
-import eventFixture from '../fixtures/event.json'
+import eventFixture from '../fixtures/event_1.json'
 
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 import AccountRecord from 'types/AccountRecord'
@@ -37,7 +37,7 @@ describe('Evaluator page loader', () => {
     // Delay the event data
     cy.intercept('GET', `/api/events/1/`, {
       delay: 4000,
-      fixture: 'event'
+      fixture: 'event_1'
     }).as('getEvent')
     cy.intercept('GET', '/api/users/', {
       delay: 500,
@@ -79,7 +79,7 @@ describe('Evaluator page loader', () => {
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', `/api/events/1/`, {
       delay: 500,
-      fixture: 'event'
+      fixture: 'event_1'
     }).as('getEvent')
     // Delay the users data
     cy.intercept('GET', '/api/users/', {
@@ -120,7 +120,7 @@ describe('Evaluator page loader', () => {
     cy.viewport(1920, 1080)
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', `/api/events/1/`, {
-      fixture: 'event'
+      fixture: 'event_1'
     }).as('getEvent')
     cy.intercept('GET', '/api/users/', {
       fixture: 'user'

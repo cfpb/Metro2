@@ -1,0 +1,51 @@
+{
+  "id": 1,
+  "name": "Browser testing event",
+  "portfolio": "",
+  "eid_or_matter_num": "",
+  "other_descriptor": "",
+  "directory": "",
+  "date_range_start": "2020-01-30",
+  "date_range_end": "2020-11-30",
+  "headers": [
+    "Evaluator",
+    "Description",
+    "Category",
+    "Total instances",
+    "Total accounts"
+  ],
+  "evaluators": [
+    {
+      "hits": 1000,
+      "accounts_affected": 450,
+      "inconsistency_start": "2020-01-30",
+      "inconsistency_end": "2020-11-30",
+      "id": "Test-Eval-1",
+      "description": "This is a test evaluator.",
+      "long_description": "This is a test evaluator.\nTest value 1 < test value 2",
+      "fields_used": ["dofd", "current_bal"],
+      "fields_display": [],
+      "crrg_reference": "",
+      "potential_harm": "",
+      "rationale": "",
+      "alternate_explanation": "",
+      "category": "Delinquency"
+    },
+    {
+      "hits": 85,
+      "accounts_affected": 17,
+      "inconsistency_start": "2020-01-30",
+      "inconsistency_end": "2020-11-30",
+      "id": "Test-Eval-2",
+      "description": "Test evaluator.",
+      "long_description": "Consumer information indicator indicates bankruptcy\nConsumer information indicator: A (Petition for Chapter 7 Bankruptcy), B (Petition for Chapter 11 Bankruptcy), C (Petition for Chapter 12 Bankruptcy), D (Petition for Chapter 13 Bankruptcy), E (Discharged through Bankruptcy Chapter 7), F (Discharged through Bankruptcy Chapter 11), G (Discharged through Bankruptcy Chapter 12), H (Discharged/Completed through Bankruptcy Chapter 13)",
+      "fields_used": ["cons_info_ind", "cons_info_ind_assoc"],
+      "fields_display": ["amt_past_due", "current_bal"],
+      "crrg_reference": "",
+      "potential_harm": "",
+      "rationale": "",
+      "alternate_explanation": "",
+      "category": "Bankruptcy"
+    }
+  ]
+}
