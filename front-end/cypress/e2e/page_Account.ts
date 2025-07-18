@@ -133,7 +133,7 @@ describe(
         .within(() => {
           // This is a partial check of some of the modal content
           // Might want to consider what content we check as a smoke test
-          cy.get('h1').should('have.text', 'Download account data')
+          cy.get('h1').should('have.text', 'Save account data')
           modal.verifyPrivacyMessage()
         })
     })

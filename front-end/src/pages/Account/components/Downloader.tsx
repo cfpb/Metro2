@@ -107,6 +107,8 @@ export default function AccountDownloader({
             <p>Copy the link to this account&apos;s data.</p>
             <CopyUrl />
           </fieldset>
+
+      <fieldset className='o-form_fieldset block block__sub'>
         <legend className='h4'>Choose download options:</legend>
         <p>Choosing to download account data will create a file that
           contains all data for account {accountId} for the given date range. This file
@@ -130,6 +132,7 @@ export default function AccountDownloader({
             defaultChecked
             isLarge
           />
+      </fieldset>
     </>
   )
 
@@ -147,7 +150,7 @@ export default function AccountDownloader({
         onClose={onClose}
         onDownload={onDownload}
         content={header}
-        title='Download account data'
+        title='Save account data'
       />
     </div>
   )
