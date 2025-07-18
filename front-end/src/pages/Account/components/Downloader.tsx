@@ -13,6 +13,7 @@ import getHeaderName from 'utils/getHeaderName'
 import ACCOUNT_HOLDER_FIELDS from '../../../constants/accountHolderFields'
 import EVENT_FIELDS from '../../../constants/eventFields'
 import M2_FIELD_NAMES from '../../../constants/m2FieldNames'
+import CopyUrl from '@src/components/CopyUrl'
 
 interface AccountDownloadInterface {
   rows: AccountRecord[]
@@ -101,31 +102,36 @@ export default function AccountDownloader({
 
   const header = (
     <>
-      <p>
-        <b>Note: </b>Choosing to download account data will create a file that
-        contains all data for account {accountId} for the given date range. This file
-        will contain both PII and CI.
-      </p>
+      <fieldset className='o-form_fieldset block block__sub'>
+            <legend className='h4'>Save a link for later</legend>
+            <p>Copy the link to this account&apos;s data.</p>
+            <CopyUrl />
+          </fieldset>
+
       <fieldset className='o-form_fieldset block block__sub'>
         <legend className='h4'>Choose download options:</legend>
-        <RadioButton
-          id='include'
-          name='contact-info-download'
-          label='Include latest contact information for account holder'
-          labelClassName=''
-          labelInline
-          isLarge
-          inputRef={includeContactInfo}
-        />
-        <RadioButton
-          id='exclude'
-          name='contact-info-download'
-          label='Do not include account holder contact information'
-          labelClassName=''
-          labelInline
-          defaultChecked
-          isLarge
-        />
+        <p>Choosing to download account data will create a file that
+          contains all data for account {accountId} for the given date range. This file
+          will contain both Personally Identifiable Information (PII) and Confidential Information (CI).
+        </p>
+          <RadioButton
+            id='include'
+            name='contact-info-download'
+            label='Include latest contact information for account holder'
+            labelClassName=''
+            labelInline
+            isLarge
+            inputRef={includeContactInfo}
+          />
+          <RadioButton
+            id='exclude'
+            name='contact-info-download'
+            label='Do not include account holder contact information'
+            labelClassName=''
+            labelInline
+            defaultChecked
+            isLarge
+          />
       </fieldset>
     </>
   )
@@ -144,7 +150,7 @@ export default function AccountDownloader({
         onClose={onClose}
         onDownload={onDownload}
         content={header}
-        title='Download account data'
+        title='Save account data'
       />
     </div>
   )
