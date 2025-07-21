@@ -1,18 +1,19 @@
+import DownloadModal from '@src/components/Modal/DownloadModal'
 import { useQueryClient } from '@tanstack/react-query'
-import DownloadModal from 'components/Modals/DownloadModal'
 import { Button, RadioButton } from 'design-system-react'
 import { Workbook } from 'exceljs'
 import type { ReactElement } from 'react'
 import { useRef, useState } from 'react'
 import type Event from 'types/Event'
 
+import ACCOUNT_HOLDER_FIELDS from '@src/constants/accountHolderFields'
+import EVENT_FIELDS from '@src/constants/eventFields'
+import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 import { accountHolderQueryOptions } from 'queries/accountHolder'
 import type AccountRecord from 'types/AccountRecord'
 import { downloadData } from 'utils/downloads'
 import getHeaderName from 'utils/getHeaderName'
-import ACCOUNT_HOLDER_FIELDS from '../../../constants/accountHolderFields'
-import EVENT_FIELDS from '../../../constants/eventFields'
-import M2_FIELD_NAMES from '../../../constants/m2FieldNames'
+
 import CopyUrl from '@src/components/CopyUrl'
 
 interface AccountDownloadInterface {
@@ -103,35 +104,37 @@ export default function AccountDownloader({
   const header = (
     <>
       <fieldset className='o-form_fieldset block block__sub'>
-            <legend className='h4'>Save a link for later</legend>
-            <p>Copy the link to this account&apos;s data.</p>
-            <CopyUrl />
-          </fieldset>
+        <legend className='h4'>Save a link for later</legend>
+        <p>Copy the link to this account&apos;s data.</p>
+        <CopyUrl />
+      </fieldset>
 
       <fieldset className='o-form_fieldset block block__sub'>
         <legend className='h4'>Choose download options:</legend>
-        <p>Choosing to download account data will create a file that
-          contains all data for account {accountId} for the given date range. This file
-          will contain both Personally Identifiable Information (PII) and Confidential Information (CI).
+        <p>
+          Choosing to download account data will create a file that contains all data
+          for account {accountId} for the given date range. This file will contain
+          both Personally Identifiable Information (PII) and Confidential Information
+          (CI).
         </p>
-          <RadioButton
-            id='include'
-            name='contact-info-download'
-            label='Include latest contact information for account holder'
-            labelClassName=''
-            labelInline
-            isLarge
-            inputRef={includeContactInfo}
-          />
-          <RadioButton
-            id='exclude'
-            name='contact-info-download'
-            label='Do not include account holder contact information'
-            labelClassName=''
-            labelInline
-            defaultChecked
-            isLarge
-          />
+        <RadioButton
+          id='include'
+          name='contact-info-download'
+          label='Include latest contact information for account holder'
+          labelClassName=''
+          labelInline
+          isLarge
+          inputRef={includeContactInfo}
+        />
+        <RadioButton
+          id='exclude'
+          name='contact-info-download'
+          label='Do not include account holder contact information'
+          labelClassName=''
+          labelInline
+          defaultChecked
+          isLarge
+        />
       </fieldset>
     </>
   )

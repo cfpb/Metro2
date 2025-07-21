@@ -5,7 +5,7 @@ import type Event from 'types/Event'
 
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 import hitsFixture from '../fixtures/evaluatorHits_page1.json'
-import eventFixture from '../fixtures/event.json'
+import eventFixture from '../fixtures/event_1.json'
 import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
 import { Metro2Table } from '../helpers/tableHelpers'
 
@@ -174,7 +174,7 @@ describe('Invalid param handling', () => {
   beforeEach(() => {
     cy.viewport(1920, 1800)
     cy.setCookie(PII_COOKIE_NAME, 'true')
-    cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
+    cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
     cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
     cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/**`, {
       fixture: 'evaluatorHits_page1'
@@ -197,7 +197,7 @@ describe('Error handling', () => {
   it('Should navigate to page 1 when request 404s', () => {
     cy.viewport(1920, 1800)
     cy.setCookie(PII_COOKIE_NAME, 'true')
-    cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
+    cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
     cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
     // intercept 24 with error
     page.interceptFilteredResultsWithError('page24', { page: 24, view: 'all' }, 404)

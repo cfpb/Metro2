@@ -3,7 +3,7 @@
 /* eslint-disable cypress/require-data-selectors */
 import type Event from 'types/Event'
 import hitsFixture from '../fixtures/evaluatorHits_page1.json'
-import eventFixture from '../fixtures/event.json'
+import eventFixture from '../fixtures/event_1.json'
 
 import AccountRecord from 'types/AccountRecord'
 import EvaluatorMetadata from 'types/EvaluatorMetadata'

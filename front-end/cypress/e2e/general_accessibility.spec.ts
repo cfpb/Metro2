@@ -10,7 +10,7 @@ import { PII_COOKIE_NAME } from '@src/constants/settings'
 import { Metro2Modal } from '../helpers/modalHelpers'
 
 import type Event from 'types/Event'
-import eventFixture from '../fixtures/event.json'
+import eventFixture from '../fixtures/event_1.json'
 
 // Get data from event fixture
 const event: Event = eventFixture
@@ -22,7 +22,7 @@ describe('Table accessibility', () => {
   beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.setCookie(PII_COOKIE_NAME, 'true')
-    cy.intercept('GET', 'api/events/154/', { fixture: 'event' }).as('getEvent')
+    cy.intercept('GET', 'api/events/154/', { fixture: 'event_1' }).as('getEvent')
     cy.visit('/events/154/')
     cy.wait(['@getEvent'])
   })
@@ -57,7 +57,7 @@ describe('Modal accessibility', () => {
     beforeEach(() => {
       cy.viewport(1920, 1080)
       cy.setCookie(PII_COOKIE_NAME, 'true')
-      cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
+      cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
       cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
       cy.intercept('GET', '/api/events/1/evaluator/Test-Eval-1/**', {
         fixture: 'evaluatorHits_page1'
@@ -112,7 +112,7 @@ describe('Modal accessibility', () => {
     beforeEach(() => {
       cy.viewport(1920, 1080)
       // cy.setCookie(PII_COOKIE_NAME, 'true')
-      cy.intercept('GET', 'api/events/1/', { fixture: 'event' }).as('getEvent')
+      cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
       cy.visit('/events/1/')
       cy.wait(['@getEvent'])
     })
