@@ -14,6 +14,8 @@ import type AccountRecord from 'types/AccountRecord'
 import { downloadData } from 'utils/downloads'
 import getHeaderName from 'utils/getHeaderName'
 
+import CopyUrl from '@src/components/CopyUrl'
+
 interface AccountDownloadInterface {
   rows: AccountRecord[]
   fields: string[]
@@ -101,13 +103,20 @@ export default function AccountDownloader({
 
   const header = (
     <>
-      <p>
-        <b>Note: </b>Choosing to download account data will create a file that
-        contains all data for account {accountId} for the given date range. This file
-        will contain both PII and CI.
-      </p>
+      <fieldset className='o-form_fieldset block block__sub'>
+        <legend className='h4'>Save a link for later</legend>
+        <p>Copy the link to this account&apos;s data.</p>
+        <CopyUrl />
+      </fieldset>
+
       <fieldset className='o-form_fieldset block block__sub'>
         <legend className='h4'>Choose download options:</legend>
+        <p>
+          Choosing to download account data will create a file that contains all data
+          for account {accountId} for the given date range. This file will contain
+          both Personally Identifiable Information (PII) and Confidential Information
+          (CI).
+        </p>
         <RadioButton
           id='include'
           name='contact-info-download'
@@ -144,7 +153,7 @@ export default function AccountDownloader({
         onClose={onClose}
         onDownload={onDownload}
         content={header}
-        title='Download account data'
+        title='Save account data'
       />
     </div>
   )

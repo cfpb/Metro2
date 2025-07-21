@@ -74,8 +74,8 @@ describe('Event file download', () => {
     cy.visit('/events/1')
   })
   it('Should have "Save summary" button', () => {
-    cy.get('[class=downloader]')
-      .should('be.visible')
-      .and('have.text', 'Save summary')
+    cy.get('.downloader')
+      .find('button')
+      .should('contain', 'Save summary')
   })
 })
