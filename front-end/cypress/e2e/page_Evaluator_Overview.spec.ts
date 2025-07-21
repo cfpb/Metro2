@@ -77,26 +77,30 @@ describe('Evaluator page', () => {
     })
 
     it('Should display how to evaluate content in an expandable', () => {
-      const howToSections = [
-        'Rationale',
-        'Potential harm',
-        'CRRG reference',
-        'Alternate explanation'
-      ]
+      const populatedMetadata = ['Rationale', 'CRRG reference']
+
+      const missingMetadata = ['Potential harm', 'Alternate explanation']
 
       // Clicking the expandable target should open the expandable
       page.getExpandableTargetByText('How to evaluate these results').click()
       page
         .getExpandableByText('How to evaluate these results')
         .should('be.visible')
-        .and(
-          'include.text',
-          'Help make this tool more useful: Your experience and knowledge about specific evaluators can help others. Consider adding'
-        )
+        .and('include.text', '')
+
+      cy.findByTestId('metadata-populated-fields')
+        .should('be.visible')
         .find('li')
         .each((item, itemIndex) => {
-          cy.wrap(item).should('have.text', howToSections[itemIndex])
+          cy.wrap(item).should('include.text', populatedMetadata[itemIndex])
         })
+      cy.findByTestId('metadata-empty-fields')
+        .should('be.visible')
+        .find('li')
+        .each((item, itemIndex) => {
+          cy.wrap(item).should('include.text', missingMetadata[itemIndex])
+        })
+      cy.findByTestId('metadata-contribute').should('be.visible')
     })
   })
 })
