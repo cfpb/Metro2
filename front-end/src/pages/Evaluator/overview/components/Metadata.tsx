@@ -24,10 +24,38 @@ interface MetadataProps {
 }
 
 export const explanatoryFields = new Map([
-  ['rationale', 'Rationale'],
-  ['potential_harm', 'Potential harm'],
-  ['crrg_reference', 'CRRG reference'],
-  ['alternate_explanation', 'Alternate explanation']
+  [
+    'rationale',
+    {
+      title: 'Rationale',
+      description:
+        "Explains why the inconsistency found by this evaluator is a problem and describes what's required for the account to be accurately furnished."
+    }
+  ],
+  [
+    'potential_harm',
+    {
+      title: 'Potential harm',
+      description:
+        "Describes the negative impact this inconsistency might have on an individual's credit."
+    }
+  ],
+  [
+    'alternate_explanation',
+    {
+      title: 'Alternate explanation',
+      description:
+        'Describes any logical reasons for this inconsistency to exist when the account has been accurately furnished.'
+    }
+  ],
+  [
+    'crrg_reference',
+    {
+      title: 'CRRG reference',
+      description:
+        'Includes references to specific sections of the Credit Reporting Resource Guide (CRRG) that may be useful for interpreting the results of this evaluator.'
+    }
+  ]
 ])
 
 /**
@@ -69,45 +97,70 @@ export default function EvaluatorMetadataSection({
   const [populatedFields, emptyFields] = sortExplanatoryFields(metadata)
 
   return (
-    <>
-      {populatedFields.length > 0
-        ? populatedFields.map(field => (
-            <div key={field} className='u-mb15'>
-              <b>{explanatoryFields.get(field)}: </b>
-              <span>{metadata[field as keyof typeof metadata]}</span>
-            </div>
-          ))
-        : ''}
-      {emptyFields.length > 0 ? (
-        <div className='u-mb15'>
-          <p>
-            <b>Help make this tool more useful:</b> Your experience and knowledge
-            about specific evaluators can help others.
-            {isAdmin ? (
-              <span>
-                {' '}
-                As a Metro2 admin, you can{' '}
-                <a
-                  href={`${adminUrlPrefix}/admin/evaluate_m2/evaluatormetadata/${metadata.id}/change/`}
-                  target='_blank'
-                  rel='noreferrer'>
-                  add information directly to this evaluator.
-                </a>
-              </span>
-            ) : (
-              <span />
-            )}{' '}
-            Consider adding:
-          </p>
-          <ul>
-            {emptyFields.map(field => (
-              <li key={field}>{explanatoryFields.get(field)}</li>
+    <div data-testid='metadata-section'>
+      {populatedFields.length > 0 ? (
+        <div className='block block__sub block__flush-top'>
+          <ul
+            className='m-list m-list__unstyled'
+            data-testid='metadata-populated-fields'>
+            {populatedFields.map(field => (
+              <li key={field} className='u-mb15'>
+                <b>{explanatoryFields.get(field)?.title}: </b>
+                <span>{metadata[field as keyof typeof metadata]}</span>
+              </li>
             ))}
           </ul>
         </div>
-      ) : (
-        ''
-      )}
-    </>
+      ) : null}
+
+      {emptyFields.length > 0 ? (
+        <>
+          <div
+            className='block block__sub block__flush-top'
+            data-testid='metadata-contribute'>
+            <p>
+              <b>We still need metadata for this evaluator.</b> Metadata contributed
+              by users like you will help make the tool easier to understand and more
+              useful for everyone. This evaluator is missing:
+            </p>
+            <ul data-testid='metadata-empty-fields'>
+              {emptyFields.map(field => {
+                const fieldProps = explanatoryFields.get(field)
+                return (
+                  <li key={field}>
+                    <b>{fieldProps?.title}</b>: {fieldProps?.description}
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+          <div className='block block__sub u-mb15'>
+            <p data-testid='metadata-cta'>
+              <span data-testid='metadata-cta_general'>
+                For examples and more information on how to contribute to this
+                evaluator,{' '}
+                <a href='/guide/contribute' target='_blank' rel='noreferrer'>
+                  follow these directions.
+                </a>
+              </span>
+              {isAdmin ? (
+                <span data-testid='metadata-cta_admin'>
+                  {' '}
+                  As a Metro2 admin, you can{' '}
+                  <a
+                    href={`${adminUrlPrefix}/admin/evaluate_m2/evaluatormetadata/${metadata.id}/change/`}
+                    target='_blank'
+                    rel='noreferrer'>
+                    add information directly to this evaluator.
+                  </a>
+                </span>
+              ) : (
+                <span />
+              )}{' '}
+            </p>
+          </div>
+        </>
+      ) : null}
+    </div>
   )
 }

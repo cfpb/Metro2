@@ -25,9 +25,9 @@
       "long_description": "This is a test evaluator.\nTest value 1 < test value 2",
       "fields_used": ["dofd", "current_bal"],
       "fields_display": [],
-      "crrg_reference": "",
+      "crrg_reference": "See page 123.",
       "potential_harm": "",
-      "rationale": "",
+      "rationale": "This is the purpose of the evaluator.",
       "alternate_explanation": "",
       "category": "Delinquency"
     },
