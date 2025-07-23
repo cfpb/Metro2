@@ -1404,15 +1404,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.21.0":
-  version: 7.23.9
-  resolution: "@babel/runtime@npm:7.23.9"
-  dependencies:
-    regenerator-runtime: "npm:^0.14.0"
-  checksum: 10/9a520fe1bf72249f7dd60ff726434251858de15cccfca7aa831bd19d0d3fb17702e116ead82724659b8da3844977e5e13de2bae01eb8a798f2823a669f122be6
-  languageName: node
-  linkType: hard
-
 "@babel/template@npm:^7.20.7, @babel/template@npm:^7.21.9":
   version: 7.21.9
   resolution: "@babel/template@npm:7.21.9"
@@ -2980,17 +2971,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/history@npm:1.120.17":
-  version: 1.120.17
-  resolution: "@tanstack/history@npm:1.120.17"
-  checksum: 10/83a6e6cebaa1fb7d79526ce7fe67b3ab2cce0c9be1cd2ba4bced5e820063aa9408a4999843a73f17afd81f7fd4537b23ac6c83441974688db10f39e6f725ed6a
-  languageName: node
-  linkType: hard
-
-"@tanstack/history@npm:1.15.13":
-  version: 1.15.13
-  resolution: "@tanstack/history@npm:1.15.13"
-  checksum: 10/5d3c52db4c495ba965c31caafadfeba7e5bb514f79048426808fa581bfa26db9825ee8a3bca52ca55dfa91ed98455d388e0a2707df940cfe2d77f8e0aaa19fe6
+"@tanstack/history@npm:1.129.7":
+  version: 1.129.7
+  resolution: "@tanstack/history@npm:1.129.7"
+  checksum: 10/2d5700b66c52a80a6bd873ac3c1d59b192d3860bd49e86a661b4eb84cf6e03887e671fffe3a04295101fdd098009d4e0e4658daa19e2ad45975947955e6f109d
   languageName: node
   linkType: hard
 
@@ -3001,10 +2985,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:5.80.6":
-  version: 5.80.6
-  resolution: "@tanstack/query-core@npm:5.80.6"
-  checksum: 10/25b887f531f705332e07d0c1f77904a4f7318f3e22d9376305151f254bfda1caabcaa73ff66b59d09c3e6de26ba352737f512674317416cb54fb8e8f21150ef1
+"@tanstack/query-core@npm:5.83.0":
+  version: 5.83.0
+  resolution: "@tanstack/query-core@npm:5.83.0"
+  checksum: 10/68d76438ad8b95dce07c848a29bac01144bddbad0a6a860569eae909ecf6ea0dda378b3c5f55c45a415a34af79c90917bb5055912d315307416ef2a28b449699
   languageName: node
   linkType: hard
 
@@ -3027,59 +3011,44 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:^5.80.6":
-  version: 5.80.6
-  resolution: "@tanstack/react-query@npm:5.80.6"
+"@tanstack/react-query@npm:^5.83.0":
+  version: 5.83.0
+  resolution: "@tanstack/react-query@npm:5.83.0"
   dependencies:
-    "@tanstack/query-core": "npm:5.80.6"
+    "@tanstack/query-core": "npm:5.83.0"
   peerDependencies:
     react: ^18 || ^19
-  checksum: 10/1dc0ac2ddf0627ae85982594091c9859b6d6cbca1511b86ee4b18a456697d7b2855e75a431d8afe6c6071b3260ae05f4ee86aa7e2e7ead2ef4ee909efc2b4509
+  checksum: 10/59609393109af3a50fbf5bc84491220b7e171b7e7f67cfc5792dd0c649b26606baf1663c045b531982e4aea7d96214fd6cdcb7d1cf5e14b4846073b46dcd3ac4
   languageName: node
   linkType: hard
 
-"@tanstack/react-router@npm:1.17.4":
-  version: 1.17.4
-  resolution: "@tanstack/react-router@npm:1.17.4"
+"@tanstack/react-router-devtools@npm:^1.129.8":
+  version: 1.129.8
+  resolution: "@tanstack/react-router-devtools@npm:1.129.8"
   dependencies:
-    "@tanstack/history": "npm:1.15.13"
-    "@tanstack/react-store": "npm:^0.2.1"
-    tiny-invariant: "npm:^1.3.1"
-    tiny-warning: "npm:^1.0.3"
+    "@tanstack/router-devtools-core": "npm:^1.129.8"
   peerDependencies:
-    react: ">=16"
-    react-dom: ">=16"
-  checksum: 10/09e56c1df49d7e34c82394f2b20a75e379b11fc818daf7f9ed05c3a6f63149ac99bf8a1b504e5a0a2ea24cb22d2ab4734731968252e149986a82aacae57cfe43
+    "@tanstack/react-router": ^1.129.8
+    react: ">=18.0.0 || >=19.0.0"
+    react-dom: ">=18.0.0 || >=19.0.0"
+  checksum: 10/9a286460166a43601a115b59041cd8ca279bfc8de69b89c7930847c0274d4e1ff605a36c1bd236ad8aba4e25316bd4ee65ff045240286828c9bc5c9d8716ee73
   languageName: node
   linkType: hard
 
-"@tanstack/react-router@npm:^1.120.20":
-  version: 1.120.20
-  resolution: "@tanstack/react-router@npm:1.120.20"
+"@tanstack/react-router@npm:^1.129.8":
+  version: 1.129.8
+  resolution: "@tanstack/react-router@npm:1.129.8"
   dependencies:
-    "@tanstack/history": "npm:1.120.17"
+    "@tanstack/history": "npm:1.129.7"
     "@tanstack/react-store": "npm:^0.7.0"
-    "@tanstack/router-core": "npm:1.120.19"
-    jsesc: "npm:^3.1.0"
+    "@tanstack/router-core": "npm:1.129.8"
+    isbot: "npm:^5.1.22"
     tiny-invariant: "npm:^1.3.3"
     tiny-warning: "npm:^1.0.3"
   peerDependencies:
     react: ">=18.0.0 || >=19.0.0"
     react-dom: ">=18.0.0 || >=19.0.0"
-  checksum: 10/511e6d7a3761c2cb76aa21a948593e6f24d7ffb8dbe36d951f3cbe9b27829ecfb9f177618f12dd867b65ee180ada9fb8e15cdfacf487c0c05820e9b5567459a5
-  languageName: node
-  linkType: hard
-
-"@tanstack/react-store@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@tanstack/react-store@npm:0.2.1"
-  dependencies:
-    "@tanstack/store": "npm:0.1.3"
-    use-sync-external-store: "npm:^1.2.0"
-  peerDependencies:
-    react: ">=16"
-    react-dom: ">=16"
-  checksum: 10/bda3c394e0a2eac08d5c0545a18826ac52fd6d1dd6d142e27bf3a0005aa289015d9b28c25015c1954af410481b50b1a8e811144354fb3bae3b87b547ad32cc25
+  checksum: 10/13419f6a56b9c096846fac6a63cd80214da57ef53e8a5485050d7791d8b7a81a2717a698ceb3ddb9e3fb0b27e1af5089908e4b3619aee67532a5aba3f1ef002c
   languageName: node
   linkType: hard
 
@@ -3096,29 +3065,56 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/router-core@npm:1.120.19":
-  version: 1.120.19
-  resolution: "@tanstack/router-core@npm:1.120.19"
+"@tanstack/router-core@npm:1.129.8":
+  version: 1.129.8
+  resolution: "@tanstack/router-core@npm:1.129.8"
   dependencies:
-    "@tanstack/history": "npm:1.120.17"
+    "@tanstack/history": "npm:1.129.7"
     "@tanstack/store": "npm:^0.7.0"
+    cookie-es: "npm:^1.2.2"
+    seroval: "npm:^1.3.2"
+    seroval-plugins: "npm:^1.3.2"
     tiny-invariant: "npm:^1.3.3"
-  checksum: 10/70417a1e2710e91198c2e62cd97554a01716b18628b9c7ca486c385720c1c62794e44f9f35d7971a8c83263d1481cd81ead2548b4ba7caee3f49bd66cc0ced1f
+    tiny-warning: "npm:^1.0.3"
+  checksum: 10/a380a1e98a1323a8235ece77b11c1caec5a7ee8fe0e45137a0a83b20faf20f775f22cc057a152de9f3ba07766e74a8ca2c57288b491f08f13865ab72c65c87dd
   languageName: node
   linkType: hard
 
-"@tanstack/router-devtools@npm:^1.17.4":
-  version: 1.17.4
-  resolution: "@tanstack/router-devtools@npm:1.17.4"
+"@tanstack/router-devtools-core@npm:^1.129.8":
+  version: 1.129.8
+  resolution: "@tanstack/router-devtools-core@npm:1.129.8"
   dependencies:
-    "@tanstack/react-router": "npm:1.17.4"
-    clsx: "npm:^2.1.0"
-    date-fns: "npm:^2.29.1"
-    goober: "npm:^2.1.14"
+    clsx: "npm:^2.1.1"
+    goober: "npm:^2.1.16"
+    solid-js: "npm:^1.9.5"
   peerDependencies:
-    react: ">=16"
-    react-dom: ">=16"
-  checksum: 10/c865b745439a3b3264ffc10ec9e1b58cc996aabf7fcf4f5685158e2cb4518e44319e544d8de5d78dcf4b76804667d376d83bea00d9792b1807ecebce01a29d13
+    "@tanstack/router-core": ^1.129.8
+    csstype: ^3.0.10
+    solid-js: ">=1.9.5"
+    tiny-invariant: ^1.3.3
+  peerDependenciesMeta:
+    csstype:
+      optional: true
+  checksum: 10/991a75e1994b2febc5b813fb5a10d965e9ffdb4db31135578e706482e1a17693ba7f7a8bf01aeb1354a45f572733d1a402acb544c06e3da004f22ad102a24cec
+  languageName: node
+  linkType: hard
+
+"@tanstack/router-devtools@npm:^1.129.8":
+  version: 1.129.8
+  resolution: "@tanstack/router-devtools@npm:1.129.8"
+  dependencies:
+    "@tanstack/react-router-devtools": "npm:^1.129.8"
+    clsx: "npm:^2.1.1"
+    goober: "npm:^2.1.16"
+  peerDependencies:
+    "@tanstack/react-router": ^1.129.8
+    csstype: ^3.0.10
+    react: ">=18.0.0 || >=19.0.0"
+    react-dom: ">=18.0.0 || >=19.0.0"
+  peerDependenciesMeta:
+    csstype:
+      optional: true
+  checksum: 10/6df22ea7ac82956908b5ce35f9c44f7ffe0d6ae12e5b4c8ef0e081c406e7b31f38216a2d5872ea9c895b304b430d19754fe949a9f0f9d8caddcb8731c134ef17
   languageName: node
   linkType: hard
 
@@ -3129,13 +3125,6 @@ __metadata:
     "@tanstack/react-router": ">=1.43.2"
     zod: ">=3"
   checksum: 10/740c0a90d33fb77fb5bfe98cefe6486d3338b36c3703e0f9e340bc6e12a59b9b6376478691a025d0087be9386e55bbc6ef6f9b41f2f7e1f91aa86e2160e32d5e
-  languageName: node
-  linkType: hard
-
-"@tanstack/store@npm:0.1.3":
-  version: 0.1.3
-  resolution: "@tanstack/store@npm:0.1.3"
-  checksum: 10/90a528e004553538be099b61d357e9dd1af7c0fb35f37b3c50a8a17462c5cd8c8d269d912f60c6dfcc18387a961f8c5a48e0b1e848db7f9d6ad357e45529294b
   languageName: node
   linkType: hard
 
@@ -5332,10 +5321,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clsx@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "clsx@npm:2.1.0"
-  checksum: 10/2e0ce7c3b6803d74fc8147c408f88e79245583202ac14abd9691e2aebb9f312de44270b79154320d10bb7804a9197869635d1291741084826cff20820f31542b
+"clsx@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "clsx@npm:2.1.1"
+  checksum: 10/cdfb57fa6c7649bbff98d9028c2f0de2f91c86f551179541cf784b1cfdc1562dcb951955f46d54d930a3879931a980e32a46b598acaea274728dbe068deca919
   languageName: node
   linkType: hard
 
@@ -5489,6 +5478,13 @@ __metadata:
   version: 2.0.0
   resolution: "convert-source-map@npm:2.0.0"
   checksum: 10/c987be3ec061348cdb3c2bfb924bec86dea1eacad10550a85ca23edb0fe3556c3a61c7399114f3331ccb3499d7fd0285ab24566e5745929412983494c3926e15
+  languageName: node
+  linkType: hard
+
+"cookie-es@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "cookie-es@npm:1.2.2"
+  checksum: 10/0fd742c11caa185928e450543f84df62d4b2c1fc7b5041196b57b7db04e1c6ac6585fb40e4f579a2819efefd2d6a9cbb4d17f71240d05f4dcd8f74ae81341a20
   languageName: node
   linkType: hard
 
@@ -5671,6 +5667,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"csstype@npm:^3.1.0":
+  version: 3.1.3
+  resolution: "csstype@npm:3.1.3"
+  checksum: 10/f593cce41ff5ade23f44e77521e3a1bcc2c64107041e1bf6c3c32adc5187d0d60983292fda326154d20b01079e24931aa5b08e4467cc488b60bb1e7f6d478ade
+  languageName: node
+  linkType: hard
+
 "cypress-real-events@npm:^1.14.0":
   version: 1.14.0
   resolution: "cypress-real-events@npm:1.14.0"
@@ -5758,15 +5761,6 @@ __metadata:
     whatwg-mimetype: "npm:^3.0.0"
     whatwg-url: "npm:^12.0.0"
   checksum: 10/006e869b5bf079647949a3e9b1dd69d84b2d5d26e6b01c265485699bc96e83817d4b5aae758b2910a4c58c0601913f3a0034121c1ca2da268e9a244c57515b15
-  languageName: node
-  linkType: hard
-
-"date-fns@npm:^2.29.1":
-  version: 2.30.0
-  resolution: "date-fns@npm:2.30.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.21.0"
-  checksum: 10/70b3e8ea7aaaaeaa2cd80bd889622a4bcb5d8028b4de9162cbcda359db06e16ff6e9309e54eead5341e71031818497f19aaf9839c87d1aba1e27bb4796e758a9
   languageName: node
   linkType: hard
 
@@ -7403,9 +7397,9 @@ display-element-css@cfpb/storybook-addon-display-element-css:
     "@babel/preset-env": "npm:^7.28.0"
     "@cfpb/cfpb-design-system": "npm:0.26.1"
     "@cypress/code-coverage": "npm:^3.14.4"
-    "@tanstack/react-query": "npm:^5.80.6"
-    "@tanstack/react-router": "npm:^1.120.20"
-    "@tanstack/router-devtools": "npm:^1.17.4"
+    "@tanstack/react-query": "npm:^5.83.0"
+    "@tanstack/react-router": "npm:^1.129.8"
+    "@tanstack/router-devtools": "npm:^1.129.8"
     "@tanstack/router-zod-adapter": "npm:^1.81.5"
     "@tanstack/zod-adapter": "npm:^1.99.9"
     "@testing-library/cypress": "npm:^10.0.3"
@@ -7848,12 +7842,12 @@ display-element-css@cfpb/storybook-addon-display-element-css:
   languageName: node
   linkType: hard
 
-"goober@npm:^2.1.14":
-  version: 2.1.14
-  resolution: "goober@npm:2.1.14"
+"goober@npm:^2.1.16":
+  version: 2.1.16
+  resolution: "goober@npm:2.1.16"
   peerDependencies:
     csstype: ^3.0.10
-  checksum: 10/372f18333ef64c403d29be7c1175cc9cd74cb947ec52cd42fbb1cf3f9870ac1dfec9c7671192cbf47ebc0ec17d8b05b6ef9a2b92952397d5b555a692381d5eaa
+  checksum: 10/27b57b1aef751a5b287c75cac2a3ad5f540c577fc0c89882d11d88ed6f541dbf2c1792b181a8555220da8fcf618813381fba1506d80da7831ba6e95a4f3d9ed2
   languageName: node
   linkType: hard
 
@@ -8699,6 +8693,13 @@ display-element-css@cfpb/storybook-addon-display-element-css:
   languageName: node
   linkType: hard
 
+"isbot@npm:^5.1.22":
+  version: 5.1.28
+  resolution: "isbot@npm:5.1.28"
+  checksum: 10/8cf014c170bcff9bc74dd51582f786ebb307dd9b61dc4423ae4d4809e52481cc5a66ed5fcb1107b149ad60fdf5f761eb16cb6eeba17a6781da9ac2931a222115
+  languageName: node
+  linkType: hard
+
 "isexe@npm:^2.0.0":
   version: 2.0.0
   resolution: "isexe@npm:2.0.0"
@@ -9025,15 +9026,6 @@ display-element-css@cfpb/storybook-addon-display-element-css:
   bin:
     jsesc: bin/jsesc
   checksum: 10/8e5a7de6b70a8bd71f9cb0b5a7ade6a73ae6ab55e697c74cc997cede97417a3a65ed86c36f7dd6125fe49766e8386c845023d9e213916ca92c9dfdd56e2babf3
-  languageName: node
-  linkType: hard
-
-"jsesc@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "jsesc@npm:3.1.0"
-  bin:
-    jsesc: bin/jsesc
-  checksum: 10/20bd37a142eca5d1794f354db8f1c9aeb54d85e1f5c247b371de05d23a9751ecd7bd3a9c4fc5298ea6fa09a100dafb4190fa5c98c6610b75952c3487f3ce7967
   languageName: node
   linkType: hard
 
@@ -11911,6 +11903,22 @@ display-element-css@cfpb/storybook-addon-display-element-css:
   languageName: node
   linkType: hard
 
+"seroval-plugins@npm:^1.3.2, seroval-plugins@npm:~1.3.0":
+  version: 1.3.2
+  resolution: "seroval-plugins@npm:1.3.2"
+  peerDependencies:
+    seroval: ^1.0
+  checksum: 10/39f17c3edaf9f15db15dbdd8fb0bb76528db56639799e0dc10821bb8f0151e188ffa9730512120bf155a099b4152bc9f9fc33e4caeb6ce4ea98104e382c5066f
+  languageName: node
+  linkType: hard
+
+"seroval@npm:^1.3.2, seroval@npm:~1.3.0":
+  version: 1.3.2
+  resolution: "seroval@npm:1.3.2"
+  checksum: 10/663380c9dbd55bc58e4fb2577c1339551d1266bec41bbe9e16dfef6182295c766b3774826cdbc6311bd466f8af458a21ffcb7cab02fb57224a349322cc8989eb
+  languageName: node
+  linkType: hard
+
 "set-blocking@npm:^2.0.0":
   version: 2.0.0
   resolution: "set-blocking@npm:2.0.0"
@@ -12115,6 +12123,17 @@ display-element-css@cfpb/storybook-addon-display-element-css:
     ip-address: "npm:^9.0.5"
     smart-buffer: "npm:^4.2.0"
   checksum: 10/ed0224ce2c7daaa7690cb87cf53d9703ffc4e983aca221f6f5b46767b232658df49494fd86acd0bf97ada6de05248ea8ea625c2343d48155d8463fc40d4a340f
+  languageName: node
+  linkType: hard
+
+"solid-js@npm:^1.9.5":
+  version: 1.9.7
+  resolution: "solid-js@npm:1.9.7"
+  dependencies:
+    csstype: "npm:^3.1.0"
+    seroval: "npm:~1.3.0"
+    seroval-plugins: "npm:~1.3.0"
+  checksum: 10/1a5e498a39114819609bae7c682e9ba7619db2698dab0bdaf6459d4f1bc4f9489959030de8f7eba4d373dd18b99a1ea480ba4794e6eddacbf4874714e6a7b11d
   languageName: node
   linkType: hard
 
@@ -12879,13 +12898,6 @@ display-element-css@cfpb/storybook-addon-display-element-css:
   version: 1.0.0
   resolution: "time-zone@npm:1.0.0"
   checksum: 10/e46f5a69b8c236dcd8e91e29d40d4e7a3495ed4f59888c3f84ce1d9678e20461421a6ba41233509d47dd94bc18f1a4377764838b21b584663f942b3426dcbce8
-  languageName: node
-  linkType: hard
-
-"tiny-invariant@npm:^1.3.1":
-  version: 1.3.1
-  resolution: "tiny-invariant@npm:1.3.1"
-  checksum: 10/872dbd1ff20a21303a2fd20ce3a15602cfa7fcf9b228bd694a52e2938224313b5385a1078cb667ed7375d1612194feaca81c4ecbe93121ca1baebe344de4f84c
   languageName: node
   linkType: hard
 
