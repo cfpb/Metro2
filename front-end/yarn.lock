@@ -4161,32 +4161,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ag-charts-types@npm:11.3.0":
-  version: 11.3.0
-  resolution: "ag-charts-types@npm:11.3.0"
-  checksum: 10/200a3cd3ccaf6575ff6e409ffbcbfdd43a5d6db8ecb9388cc33f38422ce1a22789f1f227c078065ea65e6dc116679cfa57557d271af3f91b03d03419c36392bb
+"ag-charts-types@npm:12.0.2":
+  version: 12.0.2
+  resolution: "ag-charts-types@npm:12.0.2"
+  checksum: 10/acf84686b5ccb69abae1711619db749f7dfd1f50c091b20ffd4000edaffc12bb2c6fdd8188a3bf2f7dba604df6089fe237684ad1f57d8c66b7d01c78412ad0d8
   languageName: node
   linkType: hard
 
-"ag-grid-community@npm:33.3.0, ag-grid-community@npm:^33.3.0":
-  version: 33.3.0
-  resolution: "ag-grid-community@npm:33.3.0"
+"ag-grid-community@npm:34.0.2, ag-grid-community@npm:^34.0.2":
+  version: 34.0.2
+  resolution: "ag-grid-community@npm:34.0.2"
   dependencies:
-    ag-charts-types: "npm:11.3.0"
-  checksum: 10/9dd1fa09814c7c3a11b6880551ab8a963dbeec106194b8331162f12aa8d8ec2a5df83da552fd88e2462c6fc40b49f3f6a530c9bbea1b5ba38a0a39de978d7ddf
+    ag-charts-types: "npm:12.0.2"
+  checksum: 10/97d6bd117d02bf2687af82482d958074d18de76f09a1c6de2794470bd0f88f21998a5bbbb3dbfffd751dc40a03cb04c2afc5a86f3ebbe5b3aa70fcae5d6fe8c0
   languageName: node
   linkType: hard
 
-"ag-grid-react@npm:^33.3.0":
-  version: 33.3.0
-  resolution: "ag-grid-react@npm:33.3.0"
+"ag-grid-react@npm:^34.0.2":
+  version: 34.0.2
+  resolution: "ag-grid-react@npm:34.0.2"
   dependencies:
-    ag-grid-community: "npm:33.3.0"
+    ag-grid-community: "npm:34.0.2"
     prop-types: "npm:^15.8.1"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/e8d7d83a6ac672b10e7f0980d5196e6bad15ecbc862415e0bd60844dd08bfca23f6c812ca3a7f6ed9a698dd1fba059ce6954ab5538d0b52e1d3b1c6ff179a03c
+  checksum: 10/0ff9cb5715fa6f0bbf021d351371326171ded899289c87738ff848471ec3fe92c68b49dcefdf4aad17e57e5a2b00e5e715753f3e672159dbd8bf1a6799374f27
   languageName: node
   linkType: hard
 
@@ -7419,8 +7419,8 @@ display-element-css@cfpb/storybook-addon-display-element-css:
     "@typescript-eslint/parser": "npm:5.59.6"
     "@vitejs/plugin-react": "npm:^4.7.0"
     "@vitest/coverage-istanbul": "npm:0.31.1"
-    ag-grid-community: "npm:^33.3.0"
-    ag-grid-react: "npm:^33.3.0"
+    ag-grid-community: "npm:^34.0.2"
+    ag-grid-react: "npm:^34.0.2"
     autoprefixer: "npm:10.4.14"
     babel-loader: "npm:^10.0.0"
     css-mediaquery: "npm:0.1.2"
