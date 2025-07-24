@@ -4,7 +4,7 @@
 
 .ag-theme-alpine {
   // Override defaults to approximate Design System table styles
-  --ag-font-family: 'Avenir Next', arial, sans-serif !important;
+  --ag-font-family: 'Source Sans 3 Variable', arial, sans-serif !important;
   --ag-font-size: unit((16px / @base-font-size-px), em);
   --ag-border-color: @table-border;
   --ag-header-column-resize-handle-color: @table-border;
@@ -12,6 +12,10 @@
   --ag-odd-row-background-color: @white;
   // --ag-row-height: 2em;
   --ag-header-height: 2.5em;
+
+  .ag-icon {
+    font-family: var(--ag-icon-font-family) !important;
+  }
 
   .ag-root-wrapper {
     margin: unit((5px / @base-font-size-px), em) 0
