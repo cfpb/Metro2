@@ -35,12 +35,12 @@ describe('Results view', () => {
     cy.location('search').should('include', 'view=sample').and('include', 'page=1')
 
     // Sample view tab is active
-    cy.get('[data-testid="results-view-toggle"]').should('be.visible')
-    cy.get('#sample-tab').should('have.class', 'active')
-    cy.get('#all-tab').should('not.have.class', 'active')
+    cy.get('.tabbed_navigation').should('be.visible')
+    cy.findByTestId('sample-results-tab').should('have.class', 'active')
+    cy.findByTestId('all-results-tab').should('not.have.class', 'active')
 
     // Sample results message is displayed
-    cy.get('[data-testid="results-message"]').should(
+    cy.findByTestId('results-message').should(
       'have.text',
       'Showing 20 sample results'
     )
@@ -55,7 +55,7 @@ describe('Results view', () => {
 
     // Sample view is indicated in URL and tab
     cy.location('search').should('include', 'view=sample').and('include', 'page=1')
-    cy.get('#sample-tab').should('have.class', 'active')
+    cy.findByTestId('sample-results-tab').should('have.class', 'active')
 
     // Intercept all results request
     page.interceptFilteredResults(
@@ -65,7 +65,7 @@ describe('Results view', () => {
     )
 
     // Click all results button
-    cy.get('#all-tab').click({ force: true })
+    cy.findByTestId('all-results-tab').click({ force: true })
 
     cy.wait(['@allResults'])
 
@@ -73,10 +73,7 @@ describe('Results view', () => {
     cy.location('search').should('include', 'view=all').and('include', 'page=1')
 
     // All results message is displayed
-    cy.get('[data-testid="results-message"]').should(
-      'include.text',
-      'Showing 1 - 20 of 30'
-    )
+    cy.findByTestId('results-message').should('include.text', 'Showing 1 - 20 of 30')
 
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
@@ -90,10 +87,7 @@ describe('Results view', () => {
     page.loadEvaluatorPage({ view: 'all' })
 
     // All results message is displayed
-    cy.get('[data-testid="results-message"]').should(
-      'include.text',
-      'Showing 1 - 20 of 30'
-    )
+    cy.findByTestId('results-message').should('include.text', 'Showing 1 - 20 of 30')
 
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
@@ -107,7 +101,7 @@ describe('Results view', () => {
     page.loadEvaluatorPage({ view: 'all', page: 2 })
 
     // Page 2 results message is displayed
-    cy.get('[data-testid="results-message"]').should(
+    cy.findByTestId('results-message').should(
       'include.text',
       'Showing 21 - 30 of 30'
     )
@@ -128,10 +122,7 @@ describe('Results view', () => {
     cy.get('.m-pagination_current-page').should('have.value', '1')
 
     // All results message is displayed
-    cy.get('[data-testid="results-message"]').should(
-      'include.text',
-      'Showing 1 - 20 of 30'
-    )
+    cy.findByTestId('results-message').should('include.text', 'Showing 1 - 20 of 30')
     // Table shows 20 rows
     table.hasRowCount(20)
 
@@ -151,7 +142,7 @@ describe('Results view', () => {
     cy.location('search').should('include', 'page=2')
 
     // Updated results message is displayed
-    cy.get('[data-testid="results-message"]').should(
+    cy.findByTestId('results-message').should(
       'include.text',
       'Showing 21 - 30 of 30'
     )

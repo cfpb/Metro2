@@ -20,6 +20,15 @@ body,
   max-width: none !important;
 }
 
+// Metro 2 header is a link but doesn't need link styling
+header h1 {
+  font-size: 1.25rem !important;
+
+  a {
+    color: black !important;
+  }
+}
+
 // global layout pattern
 // provides left / right padding and flex layout for the loader
 .row {
@@ -32,39 +41,16 @@ body,
   flex-direction: column;
 }
 
-.row__download {
-  align-items: end;
-  justify-content: end;
-  margin-bottom: unit((@grid_gutter-width / 2 / @base-font-size-px), em);
+// Rows with a left-aligned heading and right-aligned link or button
+.row__action {
+  align-items: baseline;
+  justify-content: space-between;
 
+  h1,
+  h2,
+  h3,
   h4 {
     margin-bottom: 0;
-  }
-
-  .downloader {
-    margin-left: auto;
-  }
-}
-
-// remove extra padding from nav header and align nav-items
-.m2-nav .navbar-static {
-  padding: 0;
-
-  .h4 {
-    .respond-to-min(@bp-med-min, {
-      margin-bottom: 0;
-    });
-
-    min-width: fit-content;
-  }
-}
-
-// Metro 2 header is a link but doesn't need link styling
-header h1 {
-  font-size: 1.25rem !important;
-
-  a {
-    color: black !important;
   }
 }
 
@@ -83,107 +69,19 @@ header h1 {
   }
 }
 
+.tab-panel {
+  border-top: 1px solid @gray-30;
+  margin-top: 1px;
+}
+
 // Add spacing between link text and icons
 .a-link_text + .cf-icon-svg-wrapper,
 .a-btn__link .cf-icon-svg-wrapper {
   padding-left: 0.2rem;
 }
 
-.u-block {
-  display: block;
-}
-
 .a-btn__warning {
   .cf-icon-svg-wrapper {
-    margin-right: 5px;
-  }
-}
-
-.evaluator-hits-row {
-  .row__download {
-    border-top: 1px solid @gray-30;
-    padding-top: 1rem;
-    background: @gray-5;
-  }
-
-  > .row {
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-bottom: 0.5rem;
-  }
-}
-
-.tabbed_navigation {
-  color: @black;
-  margin-top: 2rem;
-  margin-bottom: -1px;
-  z-index: 1;
-
-  fieldset {
-    display: inline-flex;
-  }
-
-  > .row {
-    margin-bottom: 0;
-  }
-
-  .table_guide {
-    margin: 1rem 0 0 auto;
-  }
-
-  .tab {
-    padding: 1rem 2rem 0.8rem;
-    font-size: unit((19px / @base-font-size-px), em);
-    font-weight: 500;
-
-    .cf-icon-svg-wrapper {
-      margin-right: 5px;
-    }
-
-    .link-text::after {
-      content: '';
-      border-top: solid 1px @gray;
-      display: block;
-    }
-
-    &.active {
-      border: 1px solid @gray-30;
-      color: @black;
-      background: @gray-5;
-      pointer-events: none;
-      position: relative;
-      border-bottom: 1px solid @gray-5;
-
-      &::after {
-        content: '';
-        display: block;
-        width: calc(100% - 2px);
-        outline: 2px solid @gray-5;
-        position: absolute;
-        bottom: -1px;
-        left: 1px;
-        z-index: 1;
-      }
-    }
-
-    &:not(.active) {
-      color: @pacific-dark;
-      background: @white;
-      border: none;
-
-      &:hover {
-        color: @navy-dark;
-      }
-
-      &:focus {
-        color: @navy-dark;
-      }
-
-      .link-text::after {
-        content: '';
-        border-top: solid 1px @gray;
-        display: block;
-      }
-    }
+    margin-right: 0.3em;
   }
 }
