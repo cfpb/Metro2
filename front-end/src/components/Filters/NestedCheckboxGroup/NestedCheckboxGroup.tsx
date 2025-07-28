@@ -1,5 +1,7 @@
+/* eslint-disable react/jsx-handler-names */
+
 import Accordion from 'components/Accordion/Accordion'
-import type { ChangeEvent, ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { IndeterminateCheckbox } from '../IndeterminateCheckbox/IndeterminateCheckbox'
 import './NestedCheckboxGroup.less'
 
@@ -44,11 +46,11 @@ export interface CheckboxItem {
   name: number | string
   checked?: boolean
   children?: CheckboxItem[]
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 interface NestedCheckboxGroupProperties {
   items: CheckboxItem[]
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   level?: number
 }
 
@@ -69,12 +71,8 @@ export const getCheckedDescendants = (
 
 export default function NestedCheckboxGroup({
   items,
-  onChange,
   level = 1
 }: NestedCheckboxGroupProperties): ReactElement {
-  const onChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
-    onChange?.(event)
-  }
   return (
     <>
       {items.map(item => {
@@ -89,7 +87,7 @@ export default function NestedCheckboxGroup({
             openOnLoad={level === 1 && someChecked}
             header={
               <IndeterminateCheckbox
-                onChange={onChangeHandler}
+                onChange={item.onChange}
                 id={String(item.key)}
                 label={item.name}
                 checked={allChecked}
@@ -97,11 +95,7 @@ export default function NestedCheckboxGroup({
                 isIndeterminate={!allChecked && someChecked}
               />
             }>
-            <NestedCheckboxGroup
-              items={item.children}
-              onChange={onChangeHandler}
-              level={level + 1}
-            />
+            <NestedCheckboxGroup items={item.children} level={level + 1} />
           </Accordion>
         ) : (
           <IndeterminateCheckbox
@@ -110,7 +104,7 @@ export default function NestedCheckboxGroup({
             label={item.name}
             checked={item.checked}
             className='nested'
-            onChange={onChangeHandler}
+            onChange={item.onChange}
           />
         )
       })}

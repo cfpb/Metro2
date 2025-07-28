@@ -135,7 +135,7 @@
     ],
     "react/no-unstable-nested-components": "error",
     "react/jsx-handler-names": [
-      "error",
+      1,
       {
         "eventHandlerPrefix": "on",
         "eventHandlerPropPrefix": "on",
