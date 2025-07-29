@@ -76,6 +76,11 @@ export default function EvaluatorCheckboxGroup({
   const groupedField = field in fieldGroups
   const currentFieldGroups = groupedField ? fieldGroups[field] : new Map()
 
+  /**
+   * After a checkbox is changed, receives updated list
+   * of values for the field, updates query params, and calls
+   * navigate.
+   */
   const updateNavigation = (fieldValue: unknown[]): void => {
     void navigate({
       resetScroll: false,
@@ -118,7 +123,6 @@ export default function EvaluatorCheckboxGroup({
    *   - if checked, update navigation with current list of
    *     values for the field + all possible values for group
    *   - if unchecked, remove all group values from current value list
-   *
    */
   const onGroupCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -135,10 +139,10 @@ export default function EvaluatorCheckboxGroup({
 
   /**
    * When an individual checkbox is changed:
-   *   - if checked, add this value to applied values
-   *        list and update navigation
-   *   - if unchecked, remove value from applied values
-   *        list and update navigation
+   *   - if checked, add this value to list of applied values
+   *     from query params and update navigation
+   *   - if unchecked, remove value from list of applied values
+   *     and update navigation
    */
   const onIndividualCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>
