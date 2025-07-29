@@ -11,4 +11,4 @@ django-filter==25.1
 gunicorn==23.0.0
 whitenoise==6.9.0
 smart-open[s3]==7.1.0
-urllib3==2.3.0  # not required directly by Metro2; but pinned to avoid CVEs
+urllib3==2.5.0  # not required directly by Metro2; but pinned to avoid CVEs
