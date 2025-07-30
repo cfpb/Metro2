@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
 
 import renderWithProviders from '../../../../testUtils'
-import EvaluatorResultsTabs from './ResultsTabs'
+import EvaluatorResultsTabs from './ResultsTabbedNavigation'
 
 const mocks = vi.hoisted(() => ({
   useNavigate: vi.fn(),

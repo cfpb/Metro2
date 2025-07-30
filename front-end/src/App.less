@@ -1,8 +1,8 @@
 @import (reference) './index.less';
 @import url('design-system-react/style.css');
 
-// set heights & layout so the loader can cover
-// a section of the page to bottom of viewport
+// Set heights & layout so the loader can cover
+// a section of the page to bottom of viewport.
 html,
 body,
 #root {
@@ -14,7 +14,7 @@ body,
   flex-direction: column;
 }
 
-// design system overrides needed for full-width layout
+// Design system overrides needed for full-width layout.
 .wrapper,
 .grid {
   max-width: none !important;
@@ -29,14 +29,19 @@ header h1 {
   }
 }
 
-// global layout pattern
-// provides left / right padding and flex layout for the loader
+// Global layout pattern
+// Some content -- loader, locator bar -- needs to be full width,
+// so 'row' class provides left / right padding for individual content sections
+// as well as flex layout for the loader.
 .row {
   margin: unit((@grid_gutter-width / 2 / @base-font-size-px), em)
     unit((@grid_gutter-width / @base-font-size-px), em);
   display: flex;
 }
 
+// Row class modifiers
+
+// Rows with column layout
 .row__content {
   flex-direction: column;
 }
@@ -54,7 +59,12 @@ header h1 {
   }
 }
 
-// Styles for summary content on evaluator and account pages
+// Rows with right-aligned content
+.row__right {
+  justify-content: end;
+}
+
+// Rows with summary content on evaluator and account pages
 .row__summary {
   margin-top: unit((@grid_gutter-width / 2 / @base-font-size-px), em);
 
@@ -69,17 +79,13 @@ header h1 {
   }
 }
 
-.tab-panel {
-  border-top: 1px solid @gray-30;
-  margin-top: 1px;
-}
-
 // Add spacing between link text and icons
 .a-link_text + .cf-icon-svg-wrapper,
 .a-btn__link .cf-icon-svg-wrapper {
   padding-left: 0.2rem;
 }
 
+// Add spacing for icon on warning button
 .a-btn__warning {
   .cf-icon-svg-wrapper {
     margin-right: 0.3em;

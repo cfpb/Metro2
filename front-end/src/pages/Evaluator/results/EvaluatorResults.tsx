@@ -1,7 +1,7 @@
 import { ITEMS_PER_PAGE } from '@src/constants/settings'
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import Loader from 'components/Loader/Loader'
-import { Link as DSRLink, Icon, LinkText } from 'design-system-react'
+import { Icon } from 'design-system-react'
 
 import { useEvaluatorResults } from 'queries/evaluatorHits'
 import type { ReactElement } from 'react'
@@ -12,8 +12,8 @@ import './EvaluatorResults.less'
 import EvaluatorDownloader from './components/Downloader'
 import EvaluatorResultsMessage from './components/ResultsMessage'
 import EvaluatorResultsPagination from './components/ResultsPagination'
+import EvaluatorResultsTabbedNavigation from './components/ResultsTabbedNavigation'
 import EvaluatorResultsTable from './components/ResultsTable'
-import EvaluatorResultsTabs from './components/ResultsTabs'
 import filterableFields from './utils/getFilterableFields'
 import getPageCount from './utils/getPageCount'
 import getTableFields from './utils/getTableFields'
@@ -67,10 +67,10 @@ export default function EvaluatorResults({
   return (
     <>
       <div className='row row__action u-mb0'>
-        <EvaluatorResultsTabs />
-        <DSRLink href='guide/table' className='table_guide'>
-          <LinkText>See advanced table features</LinkText>
-        </DSRLink>
+        <EvaluatorResultsTabbedNavigation />
+        <Link to='/guide/table' target='_blank'>
+          See advanced table features
+        </Link>
       </div>
       <div className='loader_wrapper'>
         {isFetching ? <Loader message='Your data is loading' /> : null}

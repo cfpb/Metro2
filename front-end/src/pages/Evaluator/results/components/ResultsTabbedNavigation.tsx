@@ -2,7 +2,7 @@ import TabbedNavigation from '@src/components/TabbedNavigation/TabbedNavigation'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 
-export default function EvaluatorResultsTabs(): ReactElement {
+export default function EvaluatorResultsTabbedNavigation(): ReactElement {
   const view: unknown = useSearch({
     strict: false,
     select: search => search.view

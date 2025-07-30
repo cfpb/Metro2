@@ -1,5 +1,5 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import type { CheckboxItem } from 'components/Filters/NestedCheckboxGroup/NestedCheckboxGroup'
+import type { CheckboxItem } from 'components/Filters/NestedCheckboxGroup/CheckboxItem'
 import NestedCheckboxGroup from 'components/Filters/NestedCheckboxGroup/NestedCheckboxGroup'
 import type { ReactElement } from 'react'
 
@@ -69,17 +69,19 @@ export default function EvaluatorCheckboxGroup({
   })
 
   /**
-   * Checks if this is field where the values can be grouped
-   * Generates an object containing nested entries for the field,
-   * any groups it contains, and its possible values
-   * */
+   * Gets any groupings for this field's values.
+   */
   const groupedField = field in fieldGroups
   const currentFieldGroups = groupedField ? fieldGroups[field] : new Map()
 
   /**
+   * Event handlers
+   */
+
+  /**
    * After a checkbox is changed, receives updated list
-   * of values for the field, updates query params, and calls
-   * navigate.
+   * of values for the field, generates updated query params,
+   * and calls navigate with new params.
    */
   const updateNavigation = (fieldValue: unknown[]): void => {
     void navigate({
@@ -155,9 +157,14 @@ export default function EvaluatorCheckboxGroup({
     updateNavigation(vals)
   }
 
+  /**
+   * Generate list of checkbox items for this field
+   */
   let children: CheckboxItem[] = []
 
   if (field in fieldGroups) {
+    // If the field has groups, generate checkbox items for each group.
+    // Each group item gets an array of child items for its values.
     children = [...fieldGroups[field as keyof typeof fieldGroups]].map(item => ({
       key: `${field}_${item[0]}`, // prefix key with field because some fields share values
       name: item[0],
@@ -167,6 +174,7 @@ export default function EvaluatorCheckboxGroup({
       )
     }))
   } else {
+    // If there are no groups, generate an array of items for the field's values.
     const values = Object.keys(
       M2_FIELD_LOOKUPS[field as keyof typeof M2_FIELD_LOOKUPS]
     )
@@ -175,8 +183,10 @@ export default function EvaluatorCheckboxGroup({
     )
   }
 
+  // Get display name for field
   const fieldName = getHeaderName(field)
 
+  // If the field can be blank, add a checkbox item for blank values.
   if (canBeBlankFields.has(field)) {
     children.unshift({
       key: `${field}_blank`,
@@ -185,16 +195,15 @@ export default function EvaluatorCheckboxGroup({
     })
   }
 
-  return (
-    <NestedCheckboxGroup
-      items={[
-        {
-          key: field,
-          name: fieldName,
-          onChange: onFieldCheckboxChange,
-          children
-        }
-      ]}
-    />
-  )
+  // Create a checkbox item for the field with the child array generated above
+  const items = [
+    {
+      key: field,
+      name: fieldName,
+      onChange: onFieldCheckboxChange,
+      children
+    }
+  ]
+
+  return <NestedCheckboxGroup items={items} />
 }
