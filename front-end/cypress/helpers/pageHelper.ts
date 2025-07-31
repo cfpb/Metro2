@@ -77,7 +77,10 @@ export class Metro2Page {
     cy.url().should('eq', `http://localhost:3000/${path}${this.queryString(params)}`)
   }
 
-  checkboxHasState(label: string, state: 'checked' | 'unchecked' | 'indeterminate') {
+  checkboxShouldHaveState(
+    label: string,
+    state: 'checked' | 'unchecked' | 'indeterminate'
+  ) {
     if (state === 'checked') {
       this.getInputByLabel(label).should('be.checked')
       cy.contains('label', label).parent().should('not.have.class', 'indeterminate')
