@@ -1,6 +1,9 @@
+/* eslint-disable react/jsx-handler-names */
+
 import Accordion from 'components/Accordion/Accordion'
-import type { ChangeEvent, ReactElement } from 'react'
+import type { ReactElement } from 'react'
 import { IndeterminateCheckbox } from '../IndeterminateCheckbox/IndeterminateCheckbox'
+import type { CheckboxItem } from './CheckboxItem'
 import './NestedCheckboxGroup.less'
 
 /**
@@ -12,6 +15,7 @@ import './NestedCheckboxGroup.less'
  * Parent checkbox state is calculated as follows:
  *    - if all the parent's descendant checkboxes are checked, parent = checked
  *    - if some but not all of the descendants are checked, parent = indeterminate
+ *    - otherwise, parent = not checked
  *
  * @param {array} items An array of checkbox items, each of which might have its own
  *                      array of child checkbox items.
@@ -21,34 +25,25 @@ import './NestedCheckboxGroup.less'
  *                        {
  *                          key: 'parent',
  *                          name: 'Parent',
- *                          checked: false,
+ *                          onChange: parentChangeHandler
  *                          children: [
  *                              {
  *                                key: 'child1',
  *                                name: 'First child',
- *                                checked: false
+ *                                checked: false, // optional
+ *                                onChange: childChangeHandler
+ *                                children: [child items] // optional
  *                              }
  *                          ]
  *                        }
  *                      ]
- * @param {function} onChange Change handler called when any checkbox's state changes.
- * @param {boolean} topLevel Whether the current loop is the top level parent.
- *                           Initially defaults to true, and is set to false
- *                           when called on children.
- *
+ * @param {boolean} level Current level. Defaults to 1, is incremented
+ *                        for children.
  *
  */
 
-export interface CheckboxItem {
-  key: number | string
-  name: number | string
-  checked?: boolean
-  children?: CheckboxItem[]
-}
-
 interface NestedCheckboxGroupProperties {
   items: CheckboxItem[]
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
   level?: number
 }
 
@@ -69,18 +64,14 @@ export const getCheckedDescendants = (
 
 export default function NestedCheckboxGroup({
   items,
-  onChange,
   level = 1
 }: NestedCheckboxGroupProperties): ReactElement {
-  const onChangeHandler = (event: ChangeEvent<HTMLInputElement>): void => {
-    onChange?.(event)
-  }
   return (
     <>
       {items.map(item => {
         const checkedDescendants = getCheckedDescendants(item)
         const allChecked = checkedDescendants.every(Boolean)
-        const someChecked = checkedDescendants.includes(true)
+        const someChecked = allChecked || checkedDescendants.includes(true)
         return item.children && item.children.length > 0 ? (
           <Accordion
             className={`nested nested_level-${level}`}
@@ -89,7 +80,7 @@ export default function NestedCheckboxGroup({
             openOnLoad={level === 1 && someChecked}
             header={
               <IndeterminateCheckbox
-                onChange={onChangeHandler}
+                onChange={item.onChange}
                 id={String(item.key)}
                 label={item.name}
                 checked={allChecked}
@@ -97,11 +88,7 @@ export default function NestedCheckboxGroup({
                 isIndeterminate={!allChecked && someChecked}
               />
             }>
-            <NestedCheckboxGroup
-              items={item.children}
-              onChange={onChangeHandler}
-              level={level + 1}
-            />
+            <NestedCheckboxGroup items={item.children} level={level + 1} />
           </Accordion>
         ) : (
           <IndeterminateCheckbox
@@ -110,7 +97,7 @@ export default function NestedCheckboxGroup({
             label={item.name}
             checked={item.checked}
             className='nested'
-            onChange={onChangeHandler}
+            onChange={item.onChange}
           />
         )
       })}

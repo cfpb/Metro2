@@ -3,6 +3,12 @@
  *
  * Stringifies values without quotation marks or encoding
  *
+ * Input     Output
+ * string    trimmed string
+ * number    number as string
+ * array     comma-separated string of values, sorted alphabetically
+ * object    result of JSON.stringify(object)
+ *
  * @param {number | object | string} value - A value to stringify
  * @returns {string} A string
  */

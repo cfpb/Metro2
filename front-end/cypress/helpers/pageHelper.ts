@@ -36,17 +36,28 @@ export class Metro2Page {
   }
 
   getExpandableByText(text: string) {
-    return this.getExpandableTargetByText(text)
-      .parents('.o-expandable')
-      .get('.o-expandable_content')
-  }
-
-  getExpandableTargetByText(text: string) {
     return cy
       .get('.o-expandable_header')
       .contains(text)
       .parents('.o-expandable')
+      .first()
+      .find('.o-expandable_content')
+      .first()
+  }
+
+  getExpandableTargetByText(text: string) {
+    // We need to find the element that opens the expandable.
+    // It could be the entire header or a button within the header,
+    // so we get the first expandable parent of the header
+    // containing the text (since expandables can be nested)
+    // and then find the target within it
+    return cy
+      .get('.o-expandable_header')
+      .contains(text)
+      .parents('.o-expandable')
+      .first()
       .find('.o-expandable_target')
+      .first()
   }
 
   openExpandable(headerText: string) {
@@ -64,5 +75,28 @@ export class Metro2Page {
 
   hasURL(path: string, params: object) {
     cy.url().should('eq', `http://localhost:3000/${path}${this.queryString(params)}`)
+  }
+
+  checkboxShouldHaveState(
+    label: string,
+    state: 'checked' | 'unchecked' | 'indeterminate'
+  ) {
+    if (state === 'checked') {
+      this.getInputByLabel(label).should('be.checked')
+      cy.contains('label', label).parent().should('not.have.class', 'indeterminate')
+    } else if (state === 'unchecked') {
+      this.getInputByLabel(label).should('not.be.checked')
+      cy.contains('label', label).parent().should('not.have.class', 'indeterminate')
+    } else if (state === 'indeterminate') {
+      this.getInputByLabel(label).should('not.be.checked')
+      cy.contains('label', label).parent().should('have.class', 'indeterminate')
+    }
+  }
+
+  getInputByLabel(label: string) {
+    return cy.contains('label', label).then($label => {
+      const inputId = $label.attr('for')
+      cy.get(`#${inputId}`)
+    })
   }
 }

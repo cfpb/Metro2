@@ -1,5 +1,5 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import type { CheckboxItem } from 'components/Filters/NestedCheckboxGroup/NestedCheckboxGroup'
+import type { CheckboxItem } from 'components/Filters/NestedCheckboxGroup/CheckboxItem'
 import NestedCheckboxGroup from 'components/Filters/NestedCheckboxGroup/NestedCheckboxGroup'
 import type { ReactElement } from 'react'
 
@@ -31,7 +31,7 @@ interface EvaluatorCheckboxGroupProperties {
   field: keyof EvaluatorSearch
 }
 
-const canBeBlank = new Set([
+const canBeBlankFields = new Set([
   'compl_cond_cd',
   'php1',
   'pmt_rating',
@@ -45,44 +45,14 @@ const canBeBlank = new Set([
 export const generateCheckboxItem = (
   field: keyof EvaluatorSearch,
   val: string,
-  appliedFilters: string[]
+  appliedFilters: string[],
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 ): CheckboxItem => ({
   checked: appliedFilters.includes(String(val)),
   key: `${field}_${val}`,
-  name: annotateM2FieldValue(field, val)
+  name: annotateM2FieldValue(field, val),
+  onChange
 })
-
-/**
- * generateGroupedCheckboxItems
- *
- * Generates an array of checkbox item groups.
- *
- * @param {string} field - name of a Metro 2 list value field
- *
- */
-export const generateGroupedCheckboxItems = (
-  field: keyof EvaluatorSearch,
-  appliedFilters: string[]
-): CheckboxItem[] =>
-  // Create nested lists of options for each of the groups
-  // Get the groups for this field from the fieldGroups object
-  // The group name / value pairs are stored as a Map to maintain order,
-  // so we need to generate an array from the groups to iterate over
-  [...fieldGroups[field as keyof typeof fieldGroups]].map(item => ({
-    key: `${field}_${item[0]}`, // prefix key with field because some fields share values
-    name: item[0],
-    children: item[1].map(val => generateCheckboxItem(field, val, appliedFilters))
-  }))
-
-export const generateFlatCheckboxItems = (
-  field: keyof EvaluatorSearch,
-  appliedFilters: string[]
-): CheckboxItem[] => {
-  const fieldValues = Object.keys(
-    M2_FIELD_LOOKUPS[field as keyof typeof M2_FIELD_LOOKUPS]
-  )
-  return fieldValues.map(val => generateCheckboxItem(field, val, appliedFilters))
-}
 
 export default function EvaluatorCheckboxGroup({
   field
@@ -99,77 +69,28 @@ export default function EvaluatorCheckboxGroup({
   })
 
   /**
-   * Checks if this is field where the values can be grouped
-   * Generates an object containing nested entries for the field,
-   * any groups it contains, and its possible values
-   * */
+   * Gets any groupings for this field's values.
+   */
   const groupedField = field in fieldGroups
   const currentFieldGroups = groupedField ? fieldGroups[field] : new Map()
 
-  const fieldName = getHeaderName(field)
-
-  const children =
-    field in fieldGroups
-      ? generateGroupedCheckboxItems(field, appliedFilters)
-      : generateFlatCheckboxItems(field, appliedFilters)
-
-  if (canBeBlank.has(field)) {
-    children.unshift({
-      key: `${field}_blank`,
-      name: `Blank (no ${fieldName.toLowerCase()})`,
-      checked: appliedFilters.includes('blank')
-    })
-  }
-
-  const checkboxItems = [
-    {
-      key: field,
-      name: fieldName,
-      children
-    }
-  ]
+  /**
+   * Event handlers
+   */
 
   /**
-   * When one of the nested checkboxes is checked or unchecked,
-   * determine what type of checkbox it is.
-   *   - Parent checkbox for the field
-   *      - if checked, push all values to search params.
-   *        include 'blank' if this field can be blank
-   *      - if unchecked, remove field from search params
-   *   - Group checkbox
-   *      - if checked, push all group values to search params
-   *      - if unchecked, remove all group values from params
-   *   - Individual checkbox
-   *      - if checked, push value to search params
-   *      - if unchecked, remove value from search params
+   * After a checkbox is changed, receives updated list
+   * of values for the field, generates updated query params,
+   * and calls navigate with new params.
    */
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    let vals: (number | string)[] = []
-    const { name, checked } = event.currentTarget
-    const currentTarget = name.replace(`${field}_`, '')
-    if (currentTarget === field) {
-      if (checked) {
-        vals = Object.keys(M2_FIELD_LOOKUPS[field as keyof typeof M2_FIELD_LOOKUPS])
-        if (canBeBlank.has(field)) vals.push('blank')
-      }
-    } else if (groupedField && currentFieldGroups.get(currentTarget)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const groupValues: (number | string)[] = currentFieldGroups.get(currentTarget)
-      vals = checked
-        ? [...appliedFilters, ...groupValues]
-        : appliedFilters.filter(i => !groupValues.includes(i))
-    } else {
-      vals = checked
-        ? [...appliedFilters, currentTarget]
-        : appliedFilters.filter(item => item !== currentTarget)
-    }
+  const updateNavigation = (fieldValue: unknown[]): void => {
     void navigate({
       resetScroll: false,
       to: '.',
       search: (prev: Record<string, unknown>) => {
         const params = { ...prev }
-        if (vals.length > 0) {
-          params[field] = [...new Set(vals)].sort()
+        if (fieldValue.length > 0) {
+          params[field] = [...new Set(fieldValue)].sort()
         } else if (field in params) {
           // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete params[field]
@@ -181,5 +102,108 @@ export default function EvaluatorCheckboxGroup({
     })
   }
 
-  return <NestedCheckboxGroup items={checkboxItems} onChange={onChange} />
+  /**
+   * When parent checkbox for the field is changed:
+   *   - if checked, update navigation with all possible values
+   *     for the field
+   *   - if unchecked, update navigation with empty array
+   */
+  const onFieldCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const { checked } = event.currentTarget
+    let vals: string[] = []
+    if (checked) {
+      vals = Object.keys(M2_FIELD_LOOKUPS[field as keyof typeof M2_FIELD_LOOKUPS])
+      if (canBeBlankFields.has(field)) vals.push('blank')
+    }
+    updateNavigation(vals)
+  }
+
+  /**
+   * When a group checkbox is changed:
+   *   - if checked, update navigation with current list of
+   *     values for the field + all possible values for group
+   *   - if unchecked, remove all group values from current value list
+   */
+  const onGroupCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const { name, checked } = event.currentTarget
+    const currentTarget = name.replace(`${field}_`, '')
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const groupValues: (number | string)[] = currentFieldGroups.get(currentTarget)
+    const vals = checked
+      ? [...appliedFilters, ...groupValues]
+      : appliedFilters.filter(i => !groupValues.includes(i))
+    updateNavigation(vals)
+  }
+
+  /**
+   * When an individual checkbox is changed:
+   *   - if checked, add this value to list of applied values
+   *     from query params and update navigation
+   *   - if unchecked, remove value from list of applied values
+   *     and update navigation
+   */
+  const onIndividualCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const { name, checked } = event.currentTarget
+    const currentTarget = name.replace(`${field}_`, '')
+    const vals: (number | string)[] = checked
+      ? [...appliedFilters, currentTarget]
+      : appliedFilters.filter(item => item !== currentTarget)
+    updateNavigation(vals)
+  }
+
+  /**
+   * Generate list of checkbox items for this field
+   */
+  let children: CheckboxItem[] = []
+
+  if (field in fieldGroups) {
+    // If the field has groups, generate checkbox items for each group.
+    // Each group item gets an array of child items for its values.
+    children = [...fieldGroups[field as keyof typeof fieldGroups]].map(item => ({
+      key: `${field}_${item[0]}`, // prefix key with field because some fields share values
+      name: item[0],
+      onChange: onGroupCheckboxChange,
+      children: item[1].map(val =>
+        generateCheckboxItem(field, val, appliedFilters, onIndividualCheckboxChange)
+      )
+    }))
+  } else {
+    // If there are no groups, generate an array of items for the field's values.
+    const values = Object.keys(
+      M2_FIELD_LOOKUPS[field as keyof typeof M2_FIELD_LOOKUPS]
+    )
+    children = values.map(val =>
+      generateCheckboxItem(field, val, appliedFilters, onIndividualCheckboxChange)
+    )
+  }
+
+  // Get display name for field
+  const fieldName = getHeaderName(field)
+
+  // If the field can be blank, add a checkbox item for blank values.
+  if (canBeBlankFields.has(field)) {
+    children.unshift({
+      key: `${field}_blank`,
+      name: `Blank (no ${fieldName.toLowerCase()})`,
+      checked: appliedFilters.includes('blank')
+    })
+  }
+
+  // Create a checkbox item for the field with the child array generated above
+  const items = [
+    {
+      key: field,
+      name: fieldName,
+      onChange: onFieldCheckboxChange,
+      children
+    }
+  ]
+
+  return <NestedCheckboxGroup items={items} />
 }

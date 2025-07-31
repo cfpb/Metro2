@@ -37,7 +37,6 @@ export default function EventDownloader({
   const onDownload = async (): Promise<void> => {
     const csv = generateDownloadData(fields, rows, headerMap)
     const fileName = `${eventName}.csv`
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     downloadData(csv, fileName)
   }
 

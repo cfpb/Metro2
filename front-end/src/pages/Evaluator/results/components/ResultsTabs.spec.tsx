@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
 
 import renderWithProviders from '../../../../testUtils'
-import EvaluatorResultsToggle from './ResultsToggle'
+import EvaluatorResultsTabs from './ResultsTabbedNavigation'
 
 const mocks = vi.hoisted(() => ({
   useNavigate: vi.fn(),
@@ -26,36 +26,36 @@ describe('<EvaluatorResultsToggle />', () => {
 
   it('all results button is checked when useSearch returns all', async () => {
     vi.mocked(useSearch).mockReturnValue('all')
-    renderWithProviders(<EvaluatorResultsToggle />)
-    const sampleButton = await screen.findByTestId('sample-results-button')
-    const allButton = await screen.findByTestId('all-results-button')
+    renderWithProviders(<EvaluatorResultsTabs />)
+    const sampleTab = await screen.findByTestId('sample-results-tab')
+    const allTab = await screen.findByTestId('all-results-tab')
 
-    expect(sampleButton).not.toHaveClass('active')
-    expect(allButton).toHaveClass('active')
+    expect(sampleTab).not.toHaveClass('active')
+    expect(allTab).toHaveClass('active')
   })
 
   it('sample results button is checked when useSearch returns sample', async () => {
     vi.mocked(useSearch).mockReturnValue('sample')
-    renderWithProviders(<EvaluatorResultsToggle />)
-    const sampleButton = await screen.findByTestId('sample-results-button')
-    const allButton = await screen.findByTestId('all-results-button')
+    renderWithProviders(<EvaluatorResultsTabs />)
+    const sampleTab = await screen.findByTestId('sample-results-tab')
+    const allTab = await screen.findByTestId('all-results-tab')
 
-    expect(sampleButton).toHaveClass('active')
-    expect(allButton).not.toHaveClass('active')
+    expect(sampleTab).toHaveClass('active')
+    expect(allTab).not.toHaveClass('active')
   })
 
   it('navigate is called when toggle radio is clicked', async () => {
     vi.mocked(useSearch).mockReturnValue('sample')
     vi.mocked(useNavigate).mockImplementation(() => mocks.navigate)
-    renderWithProviders(<EvaluatorResultsToggle />)
-    const sampleButton = await screen.findByTestId('sample-results-button')
-    const allButton = await screen.findByTestId('all-results-button')
+    renderWithProviders(<EvaluatorResultsTabs />)
+    const sampleTab = await screen.findByTestId('sample-results-tab')
+    const allTab = await screen.findByTestId('all-results-tab')
     // on load, sample button should be checked
-    expect(sampleButton).toHaveClass('active')
-    expect(allButton).not.toHaveClass('active')
+    expect(sampleTab).toHaveClass('active')
+    expect(allTab).not.toHaveClass('active')
     expect(mocks.navigate).not.toBeCalled()
     // clicking the all button should call navigate
-    allButton.click()
+    allTab.click()
     expect(mocks.navigate).toBeCalledTimes(1)
   })
 })

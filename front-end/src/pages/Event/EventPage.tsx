@@ -22,7 +22,7 @@ export default function EventPage(): ReactElement {
         subhead={dateRange ? `Data from ${dateRange}` : undefined}
       />
       <div className='block block__sub'>
-        <div className='row row__download'>
+        <div className='row row__right'>
           <EventDownloader rows={eventData.evaluators} eventName={eventData.name} />
         </div>
         <div className='row row__content'>
