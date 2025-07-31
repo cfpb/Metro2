@@ -4,18 +4,18 @@
 
 The Metro 2 front end provides a user interface for interacting with the results of the evaluators run on a set of Metro 2 data (internally termed an `event`). The tool consists of several pages, including:
 
-- Landing page: a home page listing all the `events` that are assigned to the user
-- Event page: an overview page for a specific event, showing a table of all the evaluators that detected inconsistencies in that event's Metro 2 data set. There are also two types of child pages for each event:
+- **Landing page**: a home page listing all the `events` that are assigned to the user
+- **Event page**: an overview page for a specific event, showing a table of all the evaluators that detected inconsistencies in that event's Metro 2 data set. There are also two types of child pages for each event:
 
-  - Evaluator page: a page for the results of a specific evaluator that had hits on the event. The evaluator page combines information specific to the event (date range, number of times the evaluator hit on the event's data, number of individual accounts affected) and metadata about the evaluator itself (description, pseudo code representation, etc.)
+  - **Evaluator page**: a page for the results of a specific evaluator that had hits on the event. The evaluator page combines information specific to the event (date range, number of times the evaluator hit on the event's data, number of individual accounts affected) and metadata about the evaluator itself (description, pseudo code representation, etc.)
 
-    It also displays a table containing the individual Metro 2 account records that were flagged by the evaluator. Users can toggle between a sample view of the table, which shows 20 representative account records, and a full results view, which allows filtering of all the flagged account records by multiple fields (account status, amount past due, etc.) The evaluator table displays a subset of Metro 2 fields -- the fields used by the evaluator, related fields, and the filterable fields.
+    The evaluator page also displays a table containing the individual Metro 2 account records that were flagged by the evaluator. Users can toggle between a sample view of the table, which shows 20 representative account records, and a full results view, which allows filtering of all the flagged account records by multiple fields (account status, amount past due, etc.) The evaluator table displays a subset of Metro 2 fields -- the fields used by the evaluator, related fields, and the filterable fields.
 
     Users can download all results, the representative sample, or filtered results for the evaluator, depending on the current view. Evaluator page state is stored in the URL, so the tool also provides copy url functionality to let users return to a specific view of the results.
 
-  - Account page: a page for a specific account from an event's Metro 2 data. The account page displays a table containing all the records for that account over the course of the event's time frame and indicates which evaluators hit for each record.
+  - **Account page**: a page for a specific account from an event's Metro 2 data. The account page displays a table containing all the records for that account over the course of the event's time frame and indicates which evaluators hit for each record.
 
-- User guide: a set of pages containing information on how to use the tool's user interface
+- **User guide**: a set of pages containing information on how to use the tool's user interface
 
 ## Features
 
