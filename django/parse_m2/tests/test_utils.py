@@ -1,5 +1,5 @@
 from django.test import TestCase
-from datetime import datetime
+from datetime import date
 
 from parse_m2 import parse_utils
 
@@ -53,10 +53,10 @@ class ParserUtilsTestCase(TestCase):
 
     def test_cast_field_to_value_for_required_date_type(self):
         result = parse_utils.cast_to_type("12312011", "date")
-        self.assertEqual(result, datetime(2011, 12, 31))
+        self.assertEqual(result, date(2011, 12, 31))
 
         result = parse_utils.cast_to_type("10252020", "date")
-        self.assertEqual(result, datetime(2020, 10, 25))
+        self.assertEqual(result, date(2020, 10, 25))
 
         with self.assertRaises(parse_utils.UnreadableLineException):
             parse_utils.cast_to_type("00000000", "date")
@@ -67,10 +67,10 @@ class ParserUtilsTestCase(TestCase):
 
     def test_cast_field_to_value_for_optional_date_type(self):
         result = parse_utils.cast_to_type("12312011", "date optional")
-        self.assertEqual(result, datetime(2011, 12, 31))
+        self.assertEqual(result, date(2011, 12, 31))
 
         result = parse_utils.cast_to_type("10252020", "date optional")
-        self.assertEqual(result, datetime(2020, 10, 25))
+        self.assertEqual(result, date(2020, 10, 25))
 
         result = parse_utils.cast_to_type("00000000", "date optional")
         self.assertEqual(result, None)
@@ -131,7 +131,7 @@ class ParserUtilsTestCase(TestCase):
 
         str = "test03111901"
         result = parse_utils.get_field_value({"x": (5,12, "date")}, "x", str)
-        self.assertEqual(result, datetime(1901, 3, 11))
+        self.assertEqual(result, date(1901, 3, 11))
 
     # Tests for decode_if_needed
     # ========================

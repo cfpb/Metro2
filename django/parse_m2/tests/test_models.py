@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 import os
-from datetime import date, datetime
+from datetime import date
 
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import (
@@ -18,7 +18,7 @@ class ParserModelsTestCase(TestCase):
         # Create the parent records for the AccountActivity data
         event = Metro2Event(name='test_exam')
         self.data_file = M2DataFile(event=event, file_name='file.txt')
-        self.activity_date = datetime(2021, 1, 1)
+        self.activity_date = date(2021, 1, 1)
         self.account_activity = AccountActivity(data_file = self.data_file,
                                                 activity_date = self.activity_date)
         self.account_holder = AccountHolder(account_activity = self.account_activity,
@@ -88,7 +88,7 @@ class ParserModelsTestCase(TestCase):
             self.assertEqual(result.credit_limit, 210000)
             self.assertEqual(result.php, "222211000000000000010100")
             self.assertEqual(result.date_closed, None)
-            self.assertEqual(result.doai, datetime(2023, 3, 31))
+            self.assertEqual(result.doai, date(2023, 3, 31))
 
     def test_parse_account_holder(self):
         with open(self.base_seg) as file:
@@ -147,7 +147,7 @@ class ParserModelsTestCase(TestCase):
             seg = file.readline()
             result = K4.parse_from_segment(seg, self.account_activity)
             self.assertIsInstance(result, K4)
-            self.assertEqual(result.balloon_pmt_due_dt, datetime(2025, 2, 18))
+            self.assertEqual(result.balloon_pmt_due_dt, date(2025, 2, 18))
             self.assertEqual(result.balloon_pmt_amt, 495000)
 
     def test_parse_l1(self):
