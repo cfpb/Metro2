@@ -7,7 +7,7 @@ from parse_m2.models import (
 )
 
 
-def acct_record(file: M2DataFile, custom_values: dict):
+def acct_record(file: M2DataFile, custom_values: dict) -> AccountActivity:
     """
     Returns an AccountActivity record for use in tests, using the values
     provided, or defaulting to basic values where none are provided.
