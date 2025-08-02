@@ -2,10 +2,11 @@
 
 The Metro2 Django app parses Metro2 data, runs evaluators, manages user access, and provides an API to support the React front-end.
 
-# Sections
+## Sections
 - Two ways to run the project:
     - How to run in docker-compose
     - How to run locally in a virtualenv
+- Generating data
 
 
 ## How to run in docker-compose (recommended)
@@ -77,3 +78,21 @@ Instructions for running locally (for now):
 5. If you want to access the python console for the project: `./manage.py shell`
 
 All of the useful actions listed above for use in docker-compose can also be used in the local virtualenv.
+
+## Generated data
+
+The repository contains a set of data files with randomly generated fake data.
+When a user runs `docker compose up`, the seed data script runs the parser to ingest these fake data files and runs all avaliable evaluators on the parsed data.
+The data is not representative of any actual credit or loan scenarios.
+Instead, it is intended to provide a semi-realistic placeholder in the Metro2 Evaluator Tool's UI,
+so users can explore the functionality of the application--including evaluator results, filtering, and administrator page--without needing to find or produce Metro2-conforming data.
+
+The data files in `sample_data/` were generated using the methods in [`parse_m2/data_generator.py`](parse_m2/data_generator.py).
+These files do not completely fulfill the Metro2 data standard as described in the CRRG.
+Instead, the generated data contains only the fields that are used in the Metro2 Evaluator Tool's parser.
+Fields that are ignored by the parser contain a filler character (`.`).
+The files do not contain Trailer segments, since those are ignored by the parser.
+
+For the fields that are included, some are filled with static values, such as Identification Number, Portfolio Type, and Terms Frequency.
+Some are filled by choosing a value from a list of valid possible values, such as Account Type and Special Comment Code.
+For many numeric and date fields, such as Credit Limit, Date Opened, and Date of Last Payment, their values are chosen randomly from a selected range.

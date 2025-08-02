@@ -11,8 +11,7 @@ DATABASES = {
     }
 }
 
-# TODO: decide what this setting should be for open-sourcing
-LOCAL_EVENT_DATA = Path().resolve().parent / "local_data"
+LOCAL_EVENT_DATA = Path().resolve() / "sample_data"
 
 LOGGING['root']= {
         'handlers': ['console'],
