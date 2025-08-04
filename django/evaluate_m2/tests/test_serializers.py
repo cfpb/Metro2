@@ -165,43 +165,40 @@ class EventsViewSerializerTestCase(TestCase):
     def setUp(self) -> None:
         # Create an EvaluatorMetadata record
         self.eval = EvaluatorMetadata.objects.create(
-            id='Status-DOFD-1',
-            category='closed/not closed',
-            description='description of Status-DOFD-1',
+            id='Sample-Eval-1',
+            category='paid/not paid',
+            description='description of Sample-Eval-1',
             long_description='',
-            fields_used=['placeholder', 'date of first delinquency'],
+            fields_used=['hcola', 'smpa', 'date of first delinquency'],
             fields_display=['amount past due', 'compliance condition code',
                     'current balance', 'date closed', 'original charge-off amount',
                     'terms frequency'],
             crrg_reference='400',
-            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            alternate_explanation='Lorem ipsum dolor sit amet',
         )
 
         # Create the parent records for the AccountActivity data
-        self.event = Metro2Event(id=1, name='test_exam')
-        self.event.save()
-        file = M2DataFile(event=self.event, file_name="tst.txt")
-        file.save()
+        self.event = Metro2Event.objects.create(id=1, name='test_exam')
+        file = M2DataFile.objects.create(event=self.event, file_name="tst.txt")
         activity = { 'id': 32, 'activity_date': date(2023,11,20),
                     'cons_acct_num': '0032','current_bal':0, 'amt_past_due': 5 }
         acct_record(file, activity)
 
-        self.eval_rs = EvaluatorResultSummary(
+        self.eval_rs = EvaluatorResultSummary.objects.create(
             event=self.event, evaluator=self.eval, hits=2, accounts_affected=1,
             inconsistency_start=date(2021, 1, 1), inconsistency_end=date(2021, 2, 1))
-        self.eval_rs.save()
 
         self.json_representation = {
             'hits': 2, 'accounts_affected': 1, 'inconsistency_start':date(2021, 1, 1),
-            'inconsistency_end': date(2021, 2, 1), 'id': 'Status-DOFD-1',
-            'category': 'closed/not closed',
-            'description': 'description of Status-DOFD-1', 'long_description': '',
-            'fields_used': ['account status', 'date of first delinquency'],
+            'inconsistency_end': date(2021, 2, 1), 'id': 'Sample-Eval-1',
+            'category': 'paid/not paid',
+            'description': 'description of Sample-Eval-1', 'long_description': '',
+            'fields_used': ['hcola', 'smpa', 'date of first delinquency'],
             'fields_display': ['amount past due', 'compliance condition code',
                 'current balance', 'date closed', 'original charge-off amount',
                 'terms frequency'],
             'crrg_reference': '400', 'potential_harm': '',
-            'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet',
             }
 
     def test_evaluator_metadata_serializer(self):
