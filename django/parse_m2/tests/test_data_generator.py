@@ -61,10 +61,11 @@ class GenerateDataTestCase(TestCase):
     ## Methods for fabricating data
     #######################################
     def test_random_date(self):
-        dt = data_generator.random_date(date(2001,1,1), date(2010,12,31))
-        dt = data_generator.random_date(date(2001,1,1), date(2010,12,31))
-        dt = data_generator.random_date(date(2001,1,1), date(2010,12,31))
-        dt = data_generator.random_date(date(2001,1,1), date(2010,12,31))
+        dt1 = data_generator.random_date(date(2001,1,1), date(2010,12,31))
+        dt2 = data_generator.random_date(date(2001,1,1), date(2010,12,31))
+        dt3 = data_generator.random_date(date(2001,1,1), date(2010,12,31))
+        dt4 = data_generator.random_date(date(2001,1,1), date(2010,12,31))
+        self.assertNotEqual(len({dt1, dt2, dt3, dt4}), 1)
 
     #######################################
     ## Methods for producing segments of M2 data

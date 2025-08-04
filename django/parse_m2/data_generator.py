@@ -12,12 +12,14 @@ def save_m2_file(filename: str, size: int, activity_date: date):
     with open(filename, mode='w+') as f:
         f.write(header_segment_data(activity_date) + "\n")
         for x in range(size):
-            write_one_row(f, activity_date)
+            # A random-looking acct num that gets used once in every generated file
+            acct_num = 123456789 + (13783 * x)
+            write_one_row(f, activity_date, acct_num)
 
-def write_one_row(f, activity_date: date) -> str:
+def write_one_row(f, activity_date: date, acct_num: int) -> str:
     # Write base segment
-    acct_activity = generate_acct_activity(activity_date)
-    acct_holder = generate_acct_holder()
+    acct_activity = generate_acct_activity(activity_date, acct_num)
+    acct_holder = generate_acct_holder(acct_num)
     f.write(base_segment_data(acct_activity, acct_holder))
 
     # Write some extra segments
@@ -43,20 +45,16 @@ def pick_extra_segments():
         picks = ['K4']
     return picks
 
-
-
 #######################################
 ## Methods for generating fake account data
 #######################################
-def generate_acct_activity(activity_date: date) -> AccountActivity:
-    # acct nums are usually right aligned and packed with zeroes
-    cons_acct_num = format_num_value(random.randrange(6000,1000000),30)
+def generate_acct_activity(activity_date: date, acct_num: int) -> AccountActivity:
     credit_limit = random.randrange(1000,99000)
     acct_stat = random.choice(acct_statuses)
 
     return AccountActivity(
-        activity_date = activity_date,
-        cons_acct_num = cons_acct_num,
+        activity_date = activity_date, # acct nums are usually formatted like numbers
+        cons_acct_num = format_num_value(acct_num, 30),
         id_num = 'FURNISHER ID',
         port_type = 'C',  # Line of credit
         acct_type = random.choice(acct_types),
@@ -82,13 +80,13 @@ def generate_acct_activity(activity_date: date) -> AccountActivity:
         int_type_ind = 'F',  # fixed interest
     )
 
-def generate_acct_holder() -> AccountHolder:
+def generate_acct_holder(acct_num: int) -> AccountHolder:
     return AccountHolder(
         # Person-related fields
         cons_info_ind = random.choices(cons_info_inds, weights=cii_weights, k=1)[0],
         first_name = 'FIRSTNAME',
         middle_name = 'MIDDLENAME',
-        surname = 'SURNAME',
+        surname = f'SURNAME{acct_num}',
         dob = '12311990',
         phone_num = '5558675309',
         ssn = '333224444',
