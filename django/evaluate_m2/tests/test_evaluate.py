@@ -3,9 +3,6 @@ from django.test import TestCase, override_settings
 
 from datetime import date
 from evaluate_m2.evaluate import Evaluate, evaluator
-from cfpb_evaluators.status_evals import (
-    eval_status_dofd_1_func,
-    eval_status_dofd_2_func)
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
 from parse_m2.models import M2DataFile, Metro2Event
 from evaluate_m2.tests.evaluator_test_helper import acct_record
@@ -129,8 +126,8 @@ class EvaluateTestCase(TestCase):
 
     def test_run_evaluators_with_no_records_does_not_raise_exception(self):
         event = Metro2Event.objects.create(name='test_no_activity_exam')
-        evaluator.evaluators = {"Status-DOFD-1": eval_status_dofd_1_func,
-                                "Status-DOFD-2": eval_status_dofd_2_func}
+        evaluator.evaluators = {"Sample-err": sample_erroring_eval,
+                                "Sample-1": sample_eval_always_hits,}
         evaluator.run_evaluators(event)
 
         self.assertEqual(0, EvaluatorResult.objects.count())
