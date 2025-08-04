@@ -22,7 +22,7 @@ class EvaluateViewsTestCase(TestCase):
             category='DOFD',
             description='description of Status-DOFD-1',
             long_description='',
-            fields_used=['placeholder', 'dofd'],
+            fields_used=['hcola', 'smpa', 'dofd'],
             fields_display=['amt_past_due', 'compl_cond_cd', 'smpa',],
         )
         self.stat_dofd_2 = EvaluatorMetadata.objects.create(
@@ -344,7 +344,7 @@ class EvaluateViewsTestCase(TestCase):
                 'id': 'Status-DOFD-1',
                 'category': 'DOFD',
                 'description': 'description of Status-DOFD-1', 'long_description': '',
-                'fields_used': ['acct_stat', 'dofd'],
+                'fields_used': ['hcola', 'smpa', 'dofd'],
                 'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa',],
                 'crrg_reference': '', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': '',
