@@ -1,6 +1,6 @@
 from django.test import TestCase
 import os
-from datetime import datetime
+from datetime import date
 
 from parse_m2.m2_parser import M2FileParser
 from parse_m2 import parse_utils
@@ -26,7 +26,7 @@ class ParserTestCase(TestCase):
 
         event = Metro2Event.objects.create(name='test_exam')
         self.parser = M2FileParser(event=event, filepath="file.txt")
-        self.activity_date = datetime(2021, 1, 1)
+        self.activity_date = date(2021, 1, 1)
         self.account_activity = AccountActivity(
             data_file=self.parser.file_record, activity_date = self.activity_date)
         self.account_holder = AccountHolder(
@@ -238,7 +238,7 @@ class ParserTestCase(TestCase):
         with open(self.header_seg, mode='r') as file:
             header_row = file.readline()
             activity_date = self.parser.get_activity_date_from_header(header_row)
-            self.assertEqual(activity_date, datetime(2023, 12, 31, 0, 0))
+            self.assertEqual(activity_date, date(2023, 12, 31))
 
     def test_parser_saves_header_as_unparseable(self):
         # First line of bad_header_file matches the header format, but doesn't

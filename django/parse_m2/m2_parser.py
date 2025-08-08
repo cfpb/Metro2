@@ -14,7 +14,7 @@ from parse_m2 import parse_utils
 class M2FileParser():
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
-    parser_version = "1.6"
+    parser_version = "1.7"
 
     chunk_size = 2000  # TODO: determine a good number for this
     any_non_whitespace = r'\S'
