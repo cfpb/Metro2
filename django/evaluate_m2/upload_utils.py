@@ -24,7 +24,7 @@ def stream_full_results_csv_to_s3(result_summary: EvaluatorResultSummary, url: s
     logger = logging.getLogger('evaluate.stream_full_results_csv_to_s3')
     if not url:
         url = full_s3_url(result_summary.event_id, result_summary.evaluator_id, 'csv')
-    logger.info(f"Saving CSV at: {url}")
+    logger.info(f"Saving CSV for event {result_summary.event_id}, evaluator {result_summary.evaluator_id}")
 
     with open(url, 'w', transport_params={'client': s3_session()}) as fout:
         generate_full_csv(result_summary, fout)
@@ -68,7 +68,7 @@ def stream_sample_results_json_to_s3(result_summary: EvaluatorResultSummary, rec
     logger = logging.getLogger('evaluate.stream_sample_results_json_to_s3')
     if not url:
         url = full_s3_url(result_summary.event_id, result_summary.evaluator_id, 'json')
-    logger.info(f"Saving JSON file at: {url}")
+    logger.info(f"Saving JSON for event {result_summary.event_id}, evaluator {result_summary.evaluator_id}")
 
     with open(url, 'w', transport_params={'client': s3_session()}) as jsonFile:
         response = generate_json_sample(result_summary, record_set)
