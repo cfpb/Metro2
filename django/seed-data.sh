@@ -9,7 +9,7 @@ python ./manage.py generate_admin_user --username=admin --password=admin
 
 echo
 echo "Add evaluator Metadata to the database"
-python manage.py import_evaluator_metadata -f cfpb_evaluators/eval_metadata.csv
+python manage.py import_evaluator_metadata -f evaluate_m2/m2_evaluators/eval_metadata.csv
 
 echo
 echo "Parse the data file and run the evaluators"
