@@ -1,0 +1,6 @@
+id,category,description,long_description,fields_used,fields_display,rationale,potential_harm,alternate_explanation,crrg_reference,
+Portfolio-Type-1,Inconsistencies in account characteristics,"Account type does not match the portfolio type, Line of Credit","Account type does not match the portfolio type, Line of Credit.
+
+Portfolio type: C (Credit)
+Account type≠ 15 (Line of credit), 43 (Debit card), 47 (Credit Line Secured), 89 (Home equity line of credit), 7A (Commercial Line of Credit ), 9B (Business Line Personally Guaranteed)","Portfolio type
+Account type",,,,,,

@@ -150,5 +150,6 @@ if len(sys.argv) > 1 and sys.argv[1] == 'test':
 
 # A dictionary like {"Evaluator-ID": "import_path.evaluator_callable"}
 METRO2_EVALUATORS = {
-    # **removed**
+    # Portfolio evaluators
+    "Portfolio-Type-1": "evaluate_m2.m2_evaluators.portfolio_evals.eval_portfolio_type_1_func",
 }
