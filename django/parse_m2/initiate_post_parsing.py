@@ -20,7 +20,7 @@ def associate_previous_records(event: Metro2Event):
     logger.info("First, make sure all previous_values pointers are empty")
     event.get_all_account_activity().update(previous_values_id=None)
 
-    logger.info(f"Beginning to update all records for event: {event.name}")
+    logger.info(f"Beginning to update all records for event: {event.id}")
     query_sql = """
         UPDATE "parse_m2_accountactivity" SET "previous_values_id" = prevals
         FROM (

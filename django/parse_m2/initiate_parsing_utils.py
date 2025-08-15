@@ -42,7 +42,7 @@ def parsed_file_exists(event: Metro2Event, filename: str) -> bool:
     with the given filename, return True. Otherwise return False.
 
     We use this method to ensure we don't parse duplicate file records
-    when adding more files to an existing event, or (future state) when
+    when adding more files to an existing event, or when
     the parser is running in parallel in multiple processes.
     """
     file = event.m2datafile_set.filter(file_name=filename)

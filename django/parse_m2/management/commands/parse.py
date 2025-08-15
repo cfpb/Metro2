@@ -41,5 +41,5 @@ class Command(BaseCommand):
             parse_files_from_local_filesystem(event, skip_existing=True)
 
         logger.info(
-            self.style.SUCCESS(f"Finished parsing data for event: {event.name}.")
+            self.style.SUCCESS(f"Finished parsing data for event: {event_id}.")
         )

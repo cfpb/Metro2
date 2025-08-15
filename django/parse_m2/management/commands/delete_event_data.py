@@ -48,5 +48,5 @@ class Command(BaseCommand):
             parsed_files.delete()
 
         logger.info(
-            self.style.SUCCESS(f"Finished deleting data for event: {event.name}.")
+            self.style.SUCCESS(f"Finished deleting data for event: {event_id}.")
         )

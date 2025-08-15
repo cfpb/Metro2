@@ -39,8 +39,6 @@ class Command(BaseCommand):
             data_directory = self.default_location
 
         if not Metro2Event.objects.filter(name=event_name).exists():
-            logger.info(f"Event Record does not exist for event name: {event_name}.")
-
             # Create a new Metro2Event. All records parsed will be associated with this Event.
             event = Metro2Event(name=event_name, directory=data_directory)
             event.save()

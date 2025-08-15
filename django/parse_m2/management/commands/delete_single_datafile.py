@@ -64,5 +64,5 @@ class Command(BaseCommand):
         datafile.delete()
 
         logger.info(
-            self.style.SUCCESS(f"Successfully deleted file {datafile.file_name} for event: {event.name}.")
+            self.style.SUCCESS(f"Successfully deleted file {datafile.file_name} for event: {event_id}.")
         )

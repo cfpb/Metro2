@@ -24,7 +24,7 @@ def stream_full_results_csv_to_s3(result_summary: EvaluatorResultSummary, url: s
     logger = logging.getLogger('evaluate.stream_full_results_csv_to_s3')
     if not url:
         url = full_s3_url(result_summary.event_id, result_summary.evaluator_id, 'csv')
-    logger.info(f"Saving CSV at: {url}")
+    logger.info(f"Saving CSV for event {result_summary.event_id}, evaluator {result_summary.evaluator_id}")
 
     with open(url, 'w', transport_params={'client': s3_session()}) as fout:
         generate_full_csv(result_summary, fout)
@@ -37,8 +37,6 @@ def generate_full_csv(result_summary: EvaluatorResultSummary, fout):
     by evaluate.py to send the CSV to S3. When S3_ENABLED == False, this
     method is used by views.py to generate the file for the API response.
     """
-    logger = logging.getLogger('evaluate.generate_full_csv')
-
     # For now, limit file uploads to 1 million records
     # TODO: handle uploading results where hits > 1 million
     total_hits = min(result_summary.hits, 1_000_000)
@@ -50,7 +48,6 @@ def generate_full_csv(result_summary: EvaluatorResultSummary, fout):
     writer.writerow(result_summary.create_csv_header())
     for i in range(0, total_hits, CHUNK_SIZE):
         max_count = min(total_hits, (i + CHUNK_SIZE))
-        logger.debug(f"\tGetting chunk size: [{i}: {max_count}]")
         for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
             # TODO: This method queries the database for every eval result.
             # Find a way to use pre-fetched data to improve efficiency
@@ -68,7 +65,7 @@ def stream_sample_results_json_to_s3(result_summary: EvaluatorResultSummary, rec
     logger = logging.getLogger('evaluate.stream_sample_results_json_to_s3')
     if not url:
         url = full_s3_url(result_summary.event_id, result_summary.evaluator_id, 'json')
-    logger.info(f"Saving JSON file at: {url}")
+    logger.info(f"Saving JSON for event {result_summary.event_id}, evaluator {result_summary.evaluator_id}")
 
     with open(url, 'w', transport_params={'client': s3_session()}) as jsonFile:
         response = generate_json_sample(result_summary, record_set)

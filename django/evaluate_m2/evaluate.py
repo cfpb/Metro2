@@ -49,7 +49,7 @@ class Evaluate():
             for eval_name, eval_func in self.evaluators.items():
                 self.run_single_evaluator(event, eval_name, eval_func, record_set)
         else:
-            logger.info(f"No AccountActivity found for the event '{event.name}'")
+            logger.info(f"No AccountActivity found for the event '{event.id}'")
 
     def run_single_evaluator(self, event, eval_name, eval_func, record_set):
         logger = logging.getLogger('evaluate.run_single_evaluator')
