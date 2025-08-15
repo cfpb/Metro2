@@ -44,7 +44,7 @@ class Command(BaseCommand):
             logger.info(f"Deleting results of {eval_results.count()} evaluators from previous run of this event.")
             eval_results.delete()
 
-        logger.info(f"Beginning evaluators for event: {event.name}...")
+        logger.info(f"Beginning evaluators for event: {event_id}...")
         evaluator.run_evaluators(event)
         logger.info(
             self.style.SUCCESS(f"Finished running evaluators for event ID: {event_id} and saving results.")

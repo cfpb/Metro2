@@ -31,7 +31,7 @@ class Command(BaseCommand):
             # If the event doesn't exist, exit
             raise CommandError(f"No event found with id {event_id}. Exiting.")
 
-        logger.info(f"Beginning post-parse process for event: {event.name}.")
+        logger.info(f"Beginning post-parse process for event: {event_id}.")
         post_parse(event)
 
         logger.info("Done. Generating report...")

@@ -60,12 +60,12 @@ class Command(BaseCommand):
             parse_files_from_local_filesystem(event)
 
         logger.info(
-            self.style.SUCCESS(f"Finished parsing data for event: {event.name}.")
+            self.style.SUCCESS(f"Finished parsing data for event: {event_id}.")
         )
-        logger.info(f"Beginning post parsing process for event: {event.name}.")
+        logger.info(f"Beginning post parsing process for event: {event_id}.")
         post_parse(event)
         # Run the evaluators
-        logger.info(f"Beginning evaluators for event: {event.name}...")
+        logger.info(f"Beginning evaluators for event: {event_id}...")
         evaluator.run_evaluators(event)
         logger.info(
             self.style.SUCCESS(f"Finished running evaluators for event ID: {event_id} and saving results.")
