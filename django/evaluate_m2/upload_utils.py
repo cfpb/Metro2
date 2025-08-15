@@ -37,8 +37,6 @@ def generate_full_csv(result_summary: EvaluatorResultSummary, fout):
     by evaluate.py to send the CSV to S3. When S3_ENABLED == False, this
     method is used by views.py to generate the file for the API response.
     """
-    logger = logging.getLogger('evaluate.generate_full_csv')
-
     # For now, limit file uploads to 1 million records
     # TODO: handle uploading results where hits > 1 million
     total_hits = min(result_summary.hits, 1_000_000)
@@ -50,7 +48,6 @@ def generate_full_csv(result_summary: EvaluatorResultSummary, fout):
     writer.writerow(result_summary.create_csv_header())
     for i in range(0, total_hits, CHUNK_SIZE):
         max_count = min(total_hits, (i + CHUNK_SIZE))
-        logger.debug(f"\tGetting chunk size: [{i}: {max_count}]")
         for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
             # TODO: This method queries the database for every eval result.
             # Find a way to use pre-fetched data to improve efficiency
