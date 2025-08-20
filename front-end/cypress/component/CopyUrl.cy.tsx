@@ -1,11 +1,9 @@
 import CopyUrl from '@src/components/CopyUrl'
-import { isEmpty } from 'cypress/types/lodash';
 
-describe('Accordion.cy.tsx', () => {
-    beforeEach(() => {
-        // Code to run before each 'it'in describe block
-        cy.mount(<CopyUrl/>)
-      });
+describe('CopyUrl.cy.tsx', () => {
+  beforeEach(() => {
+    cy.mount(<CopyUrl/>)
+  });
 
   it('displays copy url button', () => {
     cy.contains('button', 'Copy URL')
@@ -14,43 +12,32 @@ describe('Accordion.cy.tsx', () => {
   })  
 
   it('button displays "Copy URL" after intial call/action', () => {
-    cy.get('button').contains('Copy URL').click()
-    .should('contain', 'URL Copied!')
+    cy.window().then((win) => {
+      cy.stub(win.navigator.clipboard, 'writeText').as('clipboardWrite').resolves()
+    })
+    cy.get('button').contains('Copy URL').click().should('contain', 'URL Copied!')
+    cy.get('@clipboardWrite').should('have.been.calledOnce')
     cy.wait(500)
     cy.get('.a-btn').should('contain', 'Copy URL')
   })
 
-  it('should copy URL to the clipboard', { browser: 'electron' }, () => {
-
+  it('should copy URL to the clipboard', () => {
+    cy.window().then((win) => {
+      cy.stub(win.navigator.clipboard, 'writeText').as('clipboardWrite').resolves()
+    })
     cy.url().then((url) => {
-    let currentUrl = url
-    cy.wrap(currentUrl).as('currentUrl')
-    cy.log('The current URL is: ' + currentUrl)
-    cy.get('button').click(); 
-
-    // compare clipboard to url
-    cy.window().then(async (win) => {
-      const clipboardContent = await win.navigator.clipboard.readText()
-      expect(clipboardContent).to.eq(currentUrl)
-      })
+      cy.get('button').contains('Copy URL').click().should('contain', 'URL Copied!')
+      cy.get('@clipboardWrite').should('have.been.calledOnceWith', url)
     })
-  });
-
-    describe('copy button failure', () =>{
-        beforeEach(() => {
-          window.history.pushState({}, '', null)
-          cy.mount(<CopyUrl />)
-      });
+  }) 
         
-        it.only('button displays "Failed to copy URL" when clicked', () => {
-            cy.get('button').click()  
-            .should('contain', 'Failed to copy URL')
-            .and('be.visible')
-            // query cypress for result **as alias**
-      //   cy.wait('@responseRole').then(({ request, response }) => {
-      //   console.log(request.body)
-      //   console.log(response.body)
-      // })
+  it('button displays "Failed to copy URL" when clipboard copy fails', () => {
+    cy.window().then((win) => {
+      cy.stub(win.navigator.clipboard, 'writeText').as('clipboardWrite').throws()
     })
+    cy.get('button').click()  
+      .should('contain', 'Failed to copy URL')
+      .and('be.visible')
+      cy.get('@clipboardWrite').should('have.been.calledOnce')
   })
 })
