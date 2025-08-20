@@ -339,10 +339,7 @@ def set_field_value(field_ref: dict, field_name: str, input, segment: str):
     value = format_value(input, field_len, field_type)
 
     # place the field value into the segment at the correct position
-    try:
-        return segment[0:field_start - 1] + value + segment[field_end:]
-    except:
-        import pdb; pdb.set_trace()
+    return segment[0:field_start - 1] + value + segment[field_end:]
 
 def format_value(input, field_len: int, field_type: str) -> str:
     if field_type[:4] == "date":
