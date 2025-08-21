@@ -39,7 +39,7 @@ export default function AccountPage(): ReactElement {
       <div className='row row__content row__summary'>
         <AccountOverview accountData={accountData} eventData={eventData} />
       </div>
-      <div className='row row__action u-mt0 u-mb0'>
+      <div className='row row__right u-mt0 u-mb0'>
         <AccountDownloader
           rows={rows}
           fields={fields}
