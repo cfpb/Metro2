@@ -16,6 +16,8 @@
 !.github/**
 !local_data/
 !local_data/**
+!docs/
+!docs/**
 
 # ...and the following files
 !Dockerfile
