@@ -4,7 +4,7 @@ Parsing is the process by which the Metro 2 Evaluator Tool ingests Metro 2-forma
 
 Contents:
 - [How to parse a dataset](#how-to-parse-a-dataset)
-- [Normalizing mal-formatted data]()
+- [Normalizing mal-formatted data](#normalizing-mal-formatted-data)
 - [Appendix: How the parser works](#appendix-how-the-parser-works)
 
 ## How to parse a dataset
@@ -54,6 +54,49 @@ The parser is designed to be hands-off, but sometimes it doesn't work out that w
 
 
 ## Normalizing mal-formatted data
+
+Sometimes entities provide data that doesn't conform to the Metro2 standard. Sometimes, for a variety of reasons, we may decide it's not worth waiting for the entity to produce better data. Instead, we make do with the data we have. In these cases, we use a process to "normalize" the data files, i.e. produce a corrected file that can be parsed by our parser.
+
+To make the explanation easier to understand, we'll use a specific dataset flaw as an example in the steps below.
+
+### Step 1: understand the format issue
+The Metro 2 parser tries to return meaningful errors when formatting issues are encountered. You can try parsing a file, and if all of the records are being counted as Unparseable Data, you can assume that file file is malformed. The error messages may help understand what the formatting error is.
+
+In our example, with some analysis, we found that some of the files omitted the RDW/BDW, which is a 4-character data field in position 1 of the base segment.
+
+### Step 2: create a method to correct the format issue
+For our exmaple, we created a method that iterates through each line of a file (and each file in a S3 bucket directory), creates a "normalized" (corrected) version of the files, and saves them back to the S3 bucket in a new folder. For that case, the normalization method we used was specific to the missing RDW field issue.
+
+The code from the example above is designed to be modified to correct any format issue (assuming it's consistent on every line of a file). To do that, update [`normalize_format.py`](/django/parse_m2/normalize_format.py). Test your code using sample data that has the format issue you're correcting.
+
+### Step 3: determine which files have the format issue
+Our example dataset combined data from two different sources; some of them had the format issue and others didn't, but we didn't know which. The files were collected into folders, and we assumed that each folder would be consistent in format (luckily, that assumption was correct). With that assumption, we used the parser to parse a few files from each folder and checked whether they parsed successfully. 
+
+More detailed instructions for that:
+1. Take note of the file structure of files for this event, either locally or in S3
+2. To test-parse a subset of an event's files, visit the event record in the Metro2 Django Admin site, and update the `directory` value to the specific S3 directory you want to test
+2. Use the `parse` management command to begin the parsing process on that specific directory
+3. Visit the Django admin page to see whether the tradelines are parsing successfully or being marked as unparseable. If a file has 0 parsed and lots of unparseable lines, assume the whole folder has the parsing issue. For files with lots of parsed and very few unparseable lines, assume they don't have the parsing issue
+4. Repeat with each folder of files in the event's S3 bucket directory; create a list of which folders need to have files normalized and which don't.
+
+### Step 4: normalize file formats
+1. Pick a folder that needs to be normalized based on Step 3 and take note of its directory path. Let's say it's something like `raw-data/my-dataset/09-2025`. You'll use this as the input path for the file correction script.
+2. Decide what path you want to save the normalized files at. In this example, you could decide to use `raw-data/my-dataset-normalized/09-2025`. You'll use this as the output path. It should not end with a slash.
+3. Use the `normalize_format` management command on the files. In the given example, the command would be `python manage.py normalize_format -i raw-data/my-dataset/09-2025 -o raw-data/my-dataset-normalized/09-2025`.
+4. The job will iterate through all of the files in the input directory and make a format-normalized copy in the output directory. You can check on the progress by browsing to the S3 bucket in the AWS console and seeing the files uploaded to the output folder.
+6. Repeat for any other folders of files that need to be normalized.
+
+Note: this currently only works if the input and output paths don't contain spaces.
+
+### Step 5: Create a clean directory of files ready to parse
+In the previous step, we created a directory that contains normalized data files, but is missing ones that didn't need correction. In order to make use of the parser's hands-off operation, we make a copy of the files that didn't need normalization and add them to the directory of corrected data. We keep the original files intact in case we need to audit or troubleshoot the normalizing process.
+
+### Step 6: Clean up test-parsed files
+You can delete the set of test-parsed records that were created during the normalizing process. The management command `delete_event_data -e [event_id]` deletes all Metro2 records that are associated with this event, including every file and segment record produced by the parser (and all eval results, if any).
+
+### Step 7: Parse
+Follow the steps in the [How to parse](#how-to-parse-a-dataset) above, starting with step 2. The `directory` value of the Metro2Event will be the clean directory of parseable files. In the example above, it would be `raw-data/my-dataset-normalized`.
+
 
 ## Appendix: How the parser works
 
