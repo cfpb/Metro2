@@ -3,6 +3,7 @@
 - [Existing Metro2 evaluators]()
 - [Creating evalutors]()
 - [Handling evaluator metadata](#handling-evaluator-metadata)
+- [How to run the evaluators]()
 
 ## Handling evaluator metadata
 
@@ -32,3 +33,9 @@ Do this when users have made manual updates to the evaluator metadata and you wa
 How to export the evaluator metadata:
 1. Visit the `/all-evaluator-metadata` endpoint for the environment in the browser.
     - This will download a CSV of all evaluator metadata in the system, which you can import into any Metro2 environment.
+
+## How to run evaluators
+
+After a dataset has been parsed and is saved in the Metro 2 database, the evaluators can be used to analyze and find inconsistencies in the data. To do so, use the `evaluate` management command: `python manage.py evaluate -e [event_id]`. This will run all of the evaluators that have been configured in the `METRO2_EVALUATORS` django setting.
+
+When the evaluators are run, the results are saved in the Metro 2 database. When the process is finished, the results are available to be viewed in the Metro 2 application.
