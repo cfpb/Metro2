@@ -7,46 +7,46 @@ describe('Accordion.cy.tsx', () => {
       // Code to run before each 'it'in describe block
       cy.mount(<Accordion header='Criteria evaluated'>
       //   <div className="long-description">
-      //     <h4>Current balance is less than amount past due</h4>
-      //     <p>Current balance &lt; amount past due</p>
+      //     <h4>Subheading</h4>
+      //     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
       //   </div>
       // </Accordion>)
   })
       
   it('displays accordion', () => {
-    cy.get('[data-test-id="accordion"]')
+    cy.findByTestId('accordion')
     .find('button')
     .contains('Criteria evaluated')
     .and('be.visible')
   })
 
   it('accordion has a border', () => {
-    cy.get('[data-test-id="accordion"]')
+    cy.findByTestId('accordion')
     .should('have.css', 'border')
   })
 
   it('accordion is closed on load', () => {
-    cy.get('[data-test-id="accordion"]')
+    cy.findByTestId('accordion')
     .find('button') 
     .should('have.text', 'Criteria evaluated')
-    .get('[data-test-id="expandable-content"]')
-    .find('[data-test-id="accordion-inner"]')
+    cy.findByTestId('expandable-content')
+    cy.findByTestId('accordion-inner')
     .should('not.be.visible')
   })
 
   it('accordion expands', () => {
-    cy.get('[data-test-id="accordion"]')
+    cy.findByTestId('accordion')
     .find('button') 
     .should('have.text', 'Criteria evaluated').click()
-    .get('[data-test-id="expandable-content"]')
-    .find('[data-test-id="accordion-inner"]')
+    cy.findByTestId('expandable-content')
+    cy.findByTestId('accordion-inner')
     .should('be.visible')
   })
 
   it('load accordion child content', () => {
-    cy.get('[data-test-id="accordion"]')
+    cy.findByTestId('accordion')
     .find('button').click()
-    .get('[data-test-id="accordion-inner"]')
+    cy.findByTestId('accordion-inner')
     .should('be.visible')
     .get('div.long-description').within(() => {
       cy.get('h4').should('exist');
@@ -55,14 +55,14 @@ describe('Accordion.cy.tsx', () => {
   })
 
   it('down arrow displayed on load', () => {
-     cy.get('[data-test-id="accordion"]')
+     cy.findByTestId('accordion')
     .find('button')
     .find('svg')
     .should('have.attr', 'alt', 'down')
   })
 
   it('down arrow switches to up arrow on click', () => {
-    cy.get('[data-test-id="accordion"]')
+    cy.findByTestId('accordion')
     .find('button')
     .find('svg').click()
     .get('svg.cf-icon-svg--up')
