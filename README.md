@@ -56,3 +56,9 @@ Instructions on how to run automated tests for the front-end and back-end codeba
 
 1. Install any front-end dependencies listed in [front-end/README.md](/front-end/README.md)
 2. Run linting and tests: From the `/front-end` directory, run `yarn validate`
+
+## Note on repo history
+
+This repository was migrated from a private repository in August, 2025.
+In order to publish it open source, we used [`git-filter-repo`](https://github.com/newren/git-filter-repo) to remove private and internal-only data from the git history.
+Any anomalies in the git history (seemingly missing commits, inaccurate commit messages, etc.) stem from that repo-cleaning process.
