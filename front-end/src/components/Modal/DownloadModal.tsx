@@ -58,6 +58,7 @@ export default function DownloadModal({
               id='confirmPII'
               isLarge
               checked={isChecked}
+              data-testid='pii-checkbox'
               label='I confirm that I am knowingly downloading PII or CI and understand that I am responsible for safeguarding this data.'
               onChange={onChange}
             />
