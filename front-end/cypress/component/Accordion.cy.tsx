@@ -6,11 +6,11 @@ describe('Accordion.cy.tsx', () => {
   beforeEach(() => {
       // Code to run before each 'it'in describe block
       cy.mount(<Accordion header='Criteria evaluated'>
-      //   <div className="long-description">
-      //     <h4>Subheading</h4>
-      //     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-      //   </div>
-      // </Accordion>)
+        <div className="long-description">
+          <h4>Subheading</h4>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          </div>
+      </Accordion>)
   })
       
   it('displays accordion', () => {
@@ -20,16 +20,16 @@ describe('Accordion.cy.tsx', () => {
     .and('be.visible')
   })
 
-  it('accordion has a border', () => {
+  it('accordion has a border by default', () => {
     cy.findByTestId('accordion')
-    .should('have.css', 'border')
+    .should('have.class', 'o-expandable__border')
+    .and('have.css', 'border')
   })
 
   it('accordion is closed on load', () => {
     cy.findByTestId('accordion')
     .find('button') 
     .should('have.text', 'Criteria evaluated')
-    cy.findByTestId('expandable-content')
     cy.findByTestId('accordion-inner')
     .should('not.be.visible')
   })
