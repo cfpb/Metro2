@@ -54,7 +54,7 @@ export default function Accordion({
   return (
     <div
       className={expandableClasses.join(' ')}
-      data-test-id='accordion'
+      data-testid='accordion'
       {...properties}>
       {typeof header === 'string' ? (
         <button
@@ -76,8 +76,8 @@ export default function Accordion({
           </button>
         </div>
       )}
-      <div className='o-expandable_content'>
-        <div className='o-expandable_inner'>{children}</div>
+      <div data-testid='expandable-content' className='o-expandable_content'>
+        <div data-testid='accordion-inner' className='o-expandable_inner'>{children}</div>
       </div>
     </div>
   )
