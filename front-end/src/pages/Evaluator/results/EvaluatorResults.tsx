@@ -75,7 +75,7 @@ export default function EvaluatorResults({
       <div className='loader_wrapper'>
         {isFetching ? <Loader message='Your data is loading' /> : null}
         <div className='evaluator-hits-row'>
-          <div className='row row__content u-mt0 tab-panel'>
+          <div className='row row__content u-mt0'>
             <div className='tab-panel'>
               <div className={`results-container results-container__${view}`}>
                 <div className='row row__action '>

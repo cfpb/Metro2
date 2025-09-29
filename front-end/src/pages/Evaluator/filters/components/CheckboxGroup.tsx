@@ -150,6 +150,7 @@ export default function EvaluatorCheckboxGroup({
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     const { name, checked } = event.currentTarget
+
     const currentTarget = name.replace(`${field}_`, '')
     const vals: (number | string)[] = checked
       ? [...appliedFilters, currentTarget]
@@ -191,7 +192,8 @@ export default function EvaluatorCheckboxGroup({
     children.unshift({
       key: `${field}_blank`,
       name: `Blank (no ${fieldName.toLowerCase()})`,
-      checked: appliedFilters.includes('blank')
+      checked: appliedFilters.includes('blank'),
+      onChange: onIndividualCheckboxChange,
     })
   }
 
