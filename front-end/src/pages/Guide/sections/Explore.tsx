@@ -1,6 +1,10 @@
 /* eslint-disable react/jsx-key */
 import { Divider, Heading, List, ListItem, Paragraph } from 'design-system-react'
 import type { ReactElement } from 'react'
+import eventList from '../images/event_list.png'
+import evalList from '../images/evaluator_list.png'
+import singleEvalList from '../images/single_eval_list.png'
+import singleAccountView from '../images/single_account_view.png'
 
 export default function Explore(): ReactElement {
   return (
@@ -18,7 +22,7 @@ export default function Explore(): ReactElement {
         The event list is the main entry point into the Metro 2 application. It lists all the events that you are assigned to. 
         </Paragraph>
         <img
-          src="/images/guide/event_list.png"
+          src={eventList}
           alt='Events list'
           className='imageBorder'
         />
@@ -50,7 +54,7 @@ export default function Explore(): ReactElement {
         </Paragraph>
 
         <img
-          src="/images/guide/evaluator_list.png"
+          src={evalList}
           alt='Evaluator list'
           className='imageBorder'
         />
@@ -97,7 +101,7 @@ export default function Explore(): ReactElement {
         This view provides details about the logic check performed by the evaluator and the inaccuracies it found in the data.
         </Paragraph>
         <img
-          src='/images/guide/single_eval_list.png'
+          src={singleEvalList}
           alt='Single evaluator list'
           className='imageBorder'
         />
@@ -148,7 +152,7 @@ export default function Explore(): ReactElement {
         The page shows all data associated with an individual account number.
         </Paragraph>
         <img
-          src='/images/guide/single_account_view.png'
+          src={singleAccountView}
           alt='Single account view'
           className='imageBorder'
         />
