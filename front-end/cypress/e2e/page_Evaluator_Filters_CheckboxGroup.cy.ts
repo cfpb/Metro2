@@ -99,4 +99,77 @@ describe('Checkbox group filters', () => {
     page.checkboxShouldHaveState('Account status', 'unchecked')
     getCheckedCheckboxesInAccordion('Account status').should('have.length', 0)
   })
+
+  it('Should apply and remove a blank filter', () => {
+    // Intercept '?spc_com_cd=blank' with 16-result fixture
+    evaluatorPage.interceptFilteredResults(
+      'blankSCC', // alias,
+      { spc_com_cd: 'blank', view: 'all' }, // query params
+      'evaluatorHits_16' // fixture to return
+    )
+
+    // Open the special comment code filter
+    page.openExpandable('Special comment code')
+
+    /**
+     * Special comment code filter should not be applied when page loads
+     */
+
+    // Special comment code parent checkbox should be unchecked
+    page.checkboxShouldHaveState('Special comment code', 'unchecked')
+
+    // None of the checkboxes in the Special comment code expandable should be checked
+    getCheckedCheckboxesInAccordion('Special comment code').should('have.length', 0)
+
+    // Query string should not include spc_com_cd param
+    cy.url().should('not.include', 'spc_com_cd')
+
+    /**
+     * Clicking a special comment code status checkbox should apply the filter
+     */
+
+    // Click the 'Blank' checkbox in the special comment code filter
+    page.getExpandableByText('Special comment code').within(() => {
+      cy.get('label').contains('Blank').click()
+    })
+
+    // API request for filtered results should be made
+    cy.wait('@blankSCC')
+
+    // URL should contain new query param for special comment code filter
+    cy.url().should('include', 'spc_com_cd=blank')
+
+    // Blank checkbox should be checked
+    page.getExpandableByText('Special comment code').within(() => {
+      page.checkboxShouldHaveState('Blank', 'checked')
+    })
+
+    // "Special comment code" parent checkbox should show indeterminate state
+    // since some of its children are checked
+    page.checkboxShouldHaveState('Special comment code', 'indeterminate')
+
+    // Results table and message should show 16 results
+    evaluatorPage.hasResultsMessage('Showing 1 - 16 of 16 filtered results')
+    table.hasRowCount(16)
+
+    /**
+     * Clicking the special comment code checkbox again should remove the filter
+     */
+
+    // Click the special comment code 'blank' checkbox
+    page.getExpandableByText('Special comment code').within(() => {
+      cy.get('label').contains('Blank').click()
+    })
+
+    // Query string should no longer include spc_com_cd param
+    cy.url().should('not.include', 'spc_com_cd')
+
+    // Table and message should show original 20 results again
+    evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
+    table.hasRowCount(20)
+
+    // Special comment code checkboxes should be unchecked
+    page.checkboxShouldHaveState('Special comment code', 'unchecked')
+    getCheckedCheckboxesInAccordion('Special comment code').should('have.length', 0)
+  })
 })
