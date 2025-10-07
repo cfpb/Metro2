@@ -1,5 +1,10 @@
 import { Heading, Divider, Paragraph } from 'design-system-react'
 import type { ReactElement } from 'react'
+import adminOne from '../images/admin_1.png'
+import adminTwo from '../images/admin_2.png'
+import adminThree from '../images/admin_3.png'
+import adminFour from '../images/admin_4.png'
+import adminFive from '../images/admin_5.png'
 
 export default function Admin(): ReactElement {
   return (
@@ -29,16 +34,18 @@ export default function Admin(): ReactElement {
 
       <Paragraph>Click on “Metro2 events” in the lefthand navigation.</Paragraph>
       <img
-        src='/images/guide/admin_1.png'
+        src={adminOne}
         alt='Step 1'
+        className='imageBorder'
       />
 
       <Heading type='4'>Step 2</Heading>
 
       <Paragraph>Select the event you want to assign users to.</Paragraph>
       <img
-        src='/images/guide/admin_2.png'
+        src={adminTwo}
         alt='Step 2'
+        className='imageBorder'
       />
 
       <Heading type='4'>Step 3</Heading>
@@ -48,16 +55,18 @@ export default function Admin(): ReactElement {
         right-facing arrow to add them to “Chosen members”.
       </Paragraph>
       <img
-        src='/images/guide/admin_3.png'
+        src={adminThree}
         alt='Step 3'
+        className='imageBorder'
       />
 
       <Heading type='4'>Step 4</Heading>
 
       <Paragraph>Press the “Save” button to save your changes.</Paragraph>
       <img
-        src='/images/guide/admin_4.png'
+        src={adminFour}
         alt='Step 4'
+        className='imageBorder'
       />
 
       <Heading type='4'>Step 5</Heading>
@@ -67,8 +76,9 @@ export default function Admin(): ReactElement {
         bullets), they’ll see the event(s) they’ve been assigned to
       </Paragraph>
       <img
-        src='/images/guide/admin_5.png'
+        src={adminFive}
         alt='Step 5'
+        className='imageBorder'
       />
     </div>
   )
