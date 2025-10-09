@@ -5,39 +5,35 @@
   // no background expandable variant
   background-color: inherit !important;
   border-width: 1px 0 !important;
+  overflow: hidden;
 
-  &_content {
+  &_wrapper {
     display: grid;
     grid-template-rows: 0fr;
+    // overflow: hidden;
     transition: grid-template-rows 0.3s ease-in-out;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
 
     &::before {
       display: none !important;
     }
   }
 
-  &_inner {
-    overflow: hidden;
-
-    &::before {
-      content: '';
-      display: block;
-      border-top: 1px solid gray;
-      padding-bottom: unit((@grid_gutter-width / 2 / @base-font-size-px), em);
-    }
-
-    &::after {
-      padding-bottom: unit((@grid_gutter-width / 2 / @base-font-size-px), em);
-      display: block;
-      content: '';
-    }
+  &__open > &_wrapper {
+    grid-template-rows: 1fr;
   }
 
-  &__open > &_content {
-    grid-template-rows: 1fr;
-    padding-bottom: unit((@grid_gutter-width / 2 / @base-font-size-px), em);
+  &_inner {
+    // min-height: 0;
+    overflow: hidden;
+  }
+
+  &_content {
+    visibility: hidden;
+    transition: visibility 0.3s ease-in-out;
+  }
+
+  &__open > &_wrapper > &_inner > &_content {
+    visibility: visible;
   }
 
   &_target {

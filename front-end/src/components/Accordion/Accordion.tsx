@@ -76,8 +76,13 @@ export default function Accordion({
           </button>
         </div>
       )}
-      <div data-testid='expandable-content' className='o-expandable_content'>
-        <div data-testid='accordion-inner' className='o-expandable_inner'>{children}</div>
+
+      <div data-testid='accordion-wrapper' className='o-expandable_wrapper'>
+        <div data-testid='accordion-inner' className='o-expandable_inner'>
+          <div data-testid='accordion-content' className='o-expandable_content'>
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   )
