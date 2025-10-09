@@ -52,7 +52,8 @@ export default function EvaluatorResults({
   )
 
   const totalHits = evaluatorMetadata.hits
-  const currentHits = data?.count ?? 0
+  const currentHits = view === 'sample' ? (data?.hits.length ?? 0) : (data?.count ?? 0)
+ 
   const pageCount = getPageCount(currentHits, page_size)
 
   // TODO: consider refining this to handle 404s for invalid page
@@ -75,7 +76,7 @@ export default function EvaluatorResults({
       <div className='loader_wrapper'>
         {isFetching ? <Loader message='Your data is loading' /> : null}
         <div className='evaluator-hits-row'>
-          <div className='row row__content u-mt0 tab-panel'>
+          <div className='row row__content u-mt0'>
             <div className='tab-panel'>
               <div className={`results-container results-container__${view}`}>
                 <div className='row row__action '>
