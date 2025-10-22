@@ -17,8 +17,8 @@ const M2_FIELD_NAMES = new Map([
   ['actual_pmt_amt', 'Actual payment amount'],
   ['acct_stat', 'Account status'],
   ['pmt_rating', 'Payment rating'],
-  ['php', 'Payment history profile'],
-  ['php1', 'Payment history profile (most recent entry)'],
+  ['php1', 'Payment history profile'],
+  ['php', 'Payment history profile (all entries)'],
   ['spc_com_cd', 'Special comment code'],
   ['compl_cond_cd', 'Compliance condition code'],
   ['current_bal', 'Current balance'],
@@ -31,14 +31,11 @@ const M2_FIELD_NAMES = new Map([
   ['int_type_ind', 'Interest type indicator'],
   ['account_holder__first_name', 'Account holder first name'],
   ['account_holder__surname', 'Account holder surname'],
-  [
-    'account_holder__cons_info_ind',
-    'Bankruptcy - Consumer information indicator for account holder'
-  ],
+  ['account_holder__cons_info_ind', 'Consumer information indicator'],
   ['account_holder__ecoa', 'ECOA code for account holder'],
   [
     'account_holder__cons_info_ind_assoc',
-    'Bankruptcy - Consumer information indicator for associated consumers'
+    'Consumer information indicator - J1+J2 segments'
   ],
   ['account_holder__ecoa_assoc', 'ECOA codes for associated consumers'],
   ['k2__purch_sold_ind', 'Purchased-sold indicator (K2)'],
