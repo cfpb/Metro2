@@ -238,14 +238,14 @@ describe('Results table', () => {
       'Account status',
       'Payment rating',
       'Payment history profile',
-      'Payment history profile (most recent entry)',
+      'Payment history profile (all entries)',
       'Special comment code',
       'Compliance condition code',
       'Amount past due',
       'Date of account information',
       'Date closed',
-      'Bankruptcy - Consumer information indicator for account holder',
-      'Bankruptcy - Consumer information indicator for associated consumers',
+      'Consumer information indicator',
+      'Consumer information indicator - J1+J2 segments',
       'Account change indicator (L1)'
     ]
     table.verifyHeaders(expectedHeaders)
