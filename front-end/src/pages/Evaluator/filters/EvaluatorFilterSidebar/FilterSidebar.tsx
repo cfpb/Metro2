@@ -3,7 +3,7 @@ import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
 import EvaluatorBooleanFilter from '../components/BooleanFilter'
 import EvaluatorCheckboxGroup from '../components/CheckboxGroup'
 import EvaluatorRangeFilter from '../components/RangeFilter'
-import './FilterSidebar.less'
+import './FilterSidebar.scss'
 
 export default function EvaluatorFilterSidebar(): ReactElement {
   return (

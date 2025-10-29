@@ -1,0 +1,18 @@
+@use 'sass:math';
+
+@use '@cfpb/cfpb-design-system/src/abstracts' as *;
+
+.event-item {
+  h3,
+  h4 {
+    margin-bottom: math.div(math.div($grid_gutter-width, 4), $base-font-size-px) + em;
+  }
+
+  h3 + h4 {
+    margin-top: 0;
+  }
+
+  & + & {
+    margin-top: math.div($grid_gutter-width, $base-font-size-px) + em;
+  }
+}

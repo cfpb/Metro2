@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 
 import type EventMetadata from 'types/EventMetadata'
 import { formatDateRange } from 'utils/formatDates'
-import './EventList.less'
+import './EventList.scss'
 
 interface EventListProperties {
   heading?: string

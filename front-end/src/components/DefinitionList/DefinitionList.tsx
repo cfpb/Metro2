@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import './DefinitionList.less'
+import './DefinitionList.scss'
 
 export interface Definition {
   term: string

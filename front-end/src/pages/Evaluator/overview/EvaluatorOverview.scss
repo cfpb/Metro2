@@ -1,0 +1,24 @@
+@use 'sass:math';
+
+@use '@cfpb/cfpb-design-system/src/abstracts' as *;
+
+.evaluator-description {
+  max-width: 670px;
+}
+
+.evaluator-metadata {
+  max-width: 870px;
+}
+
+// Styles for evaluator long description
+.long-description {
+  h4 {
+    margin-bottom: math.div(math.div($grid_gutter-width, 5), $base-font-size-px) + em;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: math.div($grid_gutter-width, $base-font-size-px) + em;
+  }
+}

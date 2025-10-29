@@ -2,7 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 import { useState } from 'react'
 
 import { Icon } from 'design-system-react'
-import './Accordion.less'
+import './Accordion.scss'
 
 export interface AccordionProperties {
   header: ReactNode

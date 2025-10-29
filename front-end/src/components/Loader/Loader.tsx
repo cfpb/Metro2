@@ -1,5 +1,5 @@
 import { Icon } from 'design-system-react'
-import './Loader.less'
+import './Loader.scss'
 
 interface Properties {
   message?: string

@@ -1,0 +1,16 @@
+@use '@cfpb/cfpb-design-system/src/abstracts' as *;
+@use '@cfpb/cfpb-design-system/src/utilities' as *;
+
+.error-container {
+  .error-message {
+    max-width: 500px;
+    margin: auto;
+
+    .m-btn-group .a-btn + .a-btn {
+      margin-left: 1rem;
+      @include respond-to-max($bp-sm-min) {
+        margin: 0.5rem 0;
+      }
+    }
+  }
+}

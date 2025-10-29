@@ -1,6 +1,6 @@
 import { Icon } from 'design-system-react'
 import type { ReactElement } from 'react'
-import './TabbedNavigation.less'
+import './TabbedNavigation.scss'
 
 interface Tab {
   id: number | string

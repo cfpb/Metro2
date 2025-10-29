@@ -1,7 +1,7 @@
 import { Button } from 'design-system-react'
 import type { ReactElement, ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
-import './Modal.less'
+import './Modal.scss'
 
 interface ModalProperties {
   open: boolean

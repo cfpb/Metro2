@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
-import './ErrorMessage.less'
+import './ErrorMessage.scss'
 
 interface ErrorMessageProperties {
   title: string

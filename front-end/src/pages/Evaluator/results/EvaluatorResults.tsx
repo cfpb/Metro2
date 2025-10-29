@@ -8,7 +8,7 @@ import type { ReactElement } from 'react'
 import type EvaluatorMetadata from 'types/EvaluatorMetadata'
 import type Event from 'types/Event'
 import EvaluatorFilterSidebar from '../filters/EvaluatorFilterSidebar/FilterSidebar'
-import './EvaluatorResults.less'
+import './EvaluatorResults.scss'
 import EvaluatorDownloader from './components/Downloader'
 import EvaluatorResultsMessage from './components/ResultsMessage'
 import EvaluatorResultsPagination from './components/ResultsPagination'
@@ -52,8 +52,8 @@ export default function EvaluatorResults({
   )
 
   const totalHits = evaluatorMetadata.hits
-  const currentHits = view === 'sample' ? (data?.hits.length ?? 0) : (data?.count ?? 0)
- 
+  const currentHits = view === 'sample' ? data?.hits.length ?? 0 : data?.count ?? 0
+
   const pageCount = getPageCount(currentHits, page_size)
 
   // TODO: consider refining this to handle 404s for invalid page

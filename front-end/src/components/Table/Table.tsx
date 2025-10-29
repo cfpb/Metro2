@@ -3,7 +3,7 @@ import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import type { ComponentType, ReactElement } from 'react'
 import { useEffect, useState } from 'react'
-import './Table.less'
+import './Table.scss'
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
 
 // Register all Community features

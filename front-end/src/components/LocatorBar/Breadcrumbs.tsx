@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
-import './Breadcrumbs.less'
+import './Breadcrumbs.scss'
 
 export interface Breadcrumb {
   text: string

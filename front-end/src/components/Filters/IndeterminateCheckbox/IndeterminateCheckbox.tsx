@@ -2,7 +2,7 @@ import type { ChangeEvent, ReactElement, ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 
 import { Label } from 'design-system-react'
-import './IndeterminateCheckbox.less'
+import './IndeterminateCheckbox.scss'
 
 /**
  * IndeterminateCheckbox

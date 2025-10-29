@@ -7,7 +7,7 @@ import EvaluatorLongDescription from './components/LongDescription'
 import EvaluatorMetadataSection from './components/Metadata'
 import EvaluatorSummary from './components/Summary'
 
-import './EvaluatorOverview.less'
+import './EvaluatorOverview.scss'
 
 interface EvaluatorOverviewProperties {
   metadata: EvaluatorMetadata

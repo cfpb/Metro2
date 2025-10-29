@@ -1,0 +1,83 @@
+@use 'sass:math';
+
+@use '@cfpb/cfpb-design-system/src/abstracts' as *;
+@use '@cfpb/cfpb-design-system/src/utilities' as *;
+
+.o-expandable {
+  // expandable overrides that should be handled by RDS
+  // no background expandable variant
+  background-color: inherit !important;
+  border-width: 1px 0 !important;
+  overflow: hidden;
+
+  &_wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    // overflow: hidden;
+    transition: grid-template-rows 0.3s ease-in-out;
+
+    &::before {
+      display: none !important;
+    }
+  }
+
+  &__open > &_wrapper {
+    grid-template-rows: 1fr;
+  }
+
+  &_inner {
+    // min-height: 0;
+    overflow: hidden;
+  }
+
+  &_content {
+    visibility: hidden;
+    transition: visibility 0.3s ease-in-out;
+  }
+
+  &__open &_content {
+    visibility: visible;
+  }
+
+  &_target {
+    border: none;
+    background: none;
+  }
+
+  &_cue {
+    white-space: nowrap;
+  }
+
+  &_cue-text {
+    font-size: 0.8em !important;
+    position: relative;
+    top: -0.1em;
+    padding-right: 0.3em;
+    padding-left: 1em;
+  }
+
+  & + & {
+    padding: 0;
+    position: relative;
+    border-top: none;
+  }
+
+  &_header-interactive {
+    cursor: default !important;
+
+    .o-expandable_target {
+      padding-top: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
+      margin-top: math.div(-(math.div($grid_gutter-width, 3)), $base-font-size-px) +
+        em;
+      padding-bottom: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) +
+        em;
+      margin-bottom: math.div(-(math.div($grid_gutter-width, 3)), $base-font-size-px) +
+        em;
+    }
+  }
+}
+
+// remove double border in accordion
+.o-expandable-group .o-expandable__padded + .o-expandable__padded {
+  margin-top: -1px;
+}

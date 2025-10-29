@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
-import './NoResultsMessage.less'
+import './NoResultsMessage.scss'
 
 interface NoResultsMessageProps {
   isError?: boolean

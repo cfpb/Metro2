@@ -3,8 +3,8 @@ import type { ReactElement } from 'react'
 import type { Breadcrumb } from './Breadcrumbs'
 
 import { Breadcrumbs } from './Breadcrumbs'
-import './Breadcrumbs.less'
-import './LocatorBar.less'
+import './Breadcrumbs.scss'
+import './LocatorBar.scss'
 
 /**
  * LocatorBar
