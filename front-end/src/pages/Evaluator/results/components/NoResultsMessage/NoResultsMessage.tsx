@@ -37,7 +37,7 @@ export default function NoResultsMessage({
                 view: 'all'
               })}
               style={{ pointerEvents: 'auto' }}
-              data-testid='no-results-message_clear-filters'>
+              data-testid='no-results-message__clear-filters'>
               Clear all filters
             </Link>
           </p>

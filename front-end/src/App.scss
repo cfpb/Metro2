@@ -47,12 +47,12 @@ header h1 {
 // Row class modifiers
 
 // Rows with column layout
-.row__content {
+.row--content {
   flex-direction: column;
 }
 
 // Rows with a left-aligned heading and right-aligned link or button
-.row__action {
+.row--action {
   align-items: baseline;
   justify-content: space-between;
 
@@ -65,12 +65,12 @@ header h1 {
 }
 
 // Rows with right-aligned content
-.row__right {
+.row--right {
   justify-content: end;
 }
 
 // Rows with summary content on evaluator and account pages
-.row__summary {
+.row--summary {
   margin-top: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + em;
 
   h2 {
@@ -85,13 +85,13 @@ header h1 {
 }
 
 // Add spacing between link text and icons
-.a-link_text + .cf-icon-svg-wrapper,
-.a-btn__link .cf-icon-svg-wrapper {
+.a-link__text + .cf-icon-svg-wrapper,
+.a-btn--link .cf-icon-svg-wrapper {
   padding-left: 0.2rem;
 }
 
 // Add spacing for icon on warning button
-.a-btn__warning {
+.a-btn--warning {
   .cf-icon-svg-wrapper {
     margin-right: 0.3em;
   }

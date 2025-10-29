@@ -103,13 +103,13 @@ export default function AccountDownloader({
 
   const header = (
     <>
-      <fieldset className='o-form_fieldset block block__sub'>
+      <fieldset className='o-form__fieldset block block--sub'>
         <legend className='h4'>Save a link for later</legend>
         <p>Copy the link to this account&apos;s data.</p>
         <CopyUrl />
       </fieldset>
 
-      <fieldset className='o-form_fieldset block block__sub'>
+      <fieldset className='o-form__fieldset block block--sub'>
         <legend className='h4'>Choose download options:</legend>
         <p>
           Choosing to download account data will create a file that contains all data

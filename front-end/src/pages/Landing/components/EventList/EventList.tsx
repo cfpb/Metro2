@@ -15,7 +15,7 @@ export default function EventList({
   events
 }: EventListProperties): ReactElement {
   return (
-    <div className='row row__content block u-mt15'>
+    <div className='row row--content block u-mt15'>
       {heading ? (
         <h2 className='h5' data-testid='event-heading'>
           {heading}

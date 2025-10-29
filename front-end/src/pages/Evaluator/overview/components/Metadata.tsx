@@ -116,7 +116,7 @@ export default function EvaluatorMetadataSection({
       {emptyFields.length > 0 ? (
         <>
           <div
-            className='block block__sub block__flush-top'
+            className='block block--sub block--flush-top'
             data-testid='metadata-contribute'>
             <p>
               <b>We still need metadata for this evaluator.</b> Metadata contributed
@@ -134,9 +134,9 @@ export default function EvaluatorMetadataSection({
               })}
             </ul>
           </div>
-          <div className='block block__sub u-mb15'>
+          <div className='block block--sub u-mb15'>
             <p data-testid='metadata-cta'>
-              <span data-testid='metadata-cta_general'>
+              <span data-testid='metadata-cta__general'>
                 For examples and more information on how to contribute to this
                 evaluator,{' '}
                 <a href='/guide/contribute' target='_blank' rel='noreferrer'>
@@ -144,7 +144,7 @@ export default function EvaluatorMetadataSection({
                 </a>
               </span>
               {isAdmin ? (
-                <span data-testid='metadata-cta_admin'>
+                <span data-testid='metadata-cta__admin'>
                   {' '}
                   As a Metro2 admin, you can{' '}
                   <a

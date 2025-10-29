@@ -2,19 +2,19 @@
 
 .filter-sidebar {
   // show lines between checkboxes in sidebar filters
-  .m-form-field__checkbox + .m-form-field__checkbox {
+  .m-form-field--checkbox + .m-form-field--checkbox {
     border-top: 1px solid var(--gray-40);
     padding-top: 0.75em;
   }
 
-  .m-form-field__checkbox.nested {
+  .m-form-field--checkbox.nested {
     padding: 1em;
     margin-top: -1em;
     margin-bottom: -1em;
   }
 
   .o-expandable.nested_level-2 {
-    .o-expandable_content {
+    .o-expandable__content {
       background-color: var(--gray-10);
       margin-left: 2.5em;
 
@@ -27,12 +27,12 @@
 
   // all top-level sidebar expandables should get blue background / white text,
   // but level 2 nested expandables should not
-  .o-expandable__open:not(.nested_level-2) > .o-expandable_header,
-  .o-expandable:not(.nested_level-2) > .o-expandable_header:hover {
+  .o-expandable--open:not(.nested--level-2) > .o-expandable__header,
+  .o-expandable:not(.nested--level-2) > .o-expandable__header:hover {
     background-color: var(--navy-90);
     color: var(--white);
 
-    .o-expandable_cue-text {
+    .o-expandable__cue-text {
       &::after {
         border-bottom-color: var(--white);
         border-top-color: var(--white);

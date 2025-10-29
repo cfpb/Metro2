@@ -67,19 +67,19 @@ export default function EvaluatorResults({
 
   return (
     <>
-      <div className='row row__action u-mb0'>
+      <div className='row row--action u-mb0'>
         <EvaluatorResultsTabbedNavigation />
         <Link to='/guide/table' target='_blank'>
           See advanced table features
         </Link>
       </div>
-      <div className='loader_wrapper'>
+      <div className='loader__wrapper'>
         {isFetching ? <Loader message='Your data is loading' /> : null}
         <div className='evaluator-hits-row'>
-          <div className='row row__content u-mt0'>
+          <div className='row row--content u-mt0'>
             <div className='tab-panel'>
-              <div className={`results-container results-container__${view}`}>
-                <div className='row row__action '>
+              <div className={`results-container results-container--${view}`}>
+                <div className='row row--action '>
                   <div className='results-message' data-testid='results-message'>
                     <EvaluatorResultsMessage
                       page={page ?? 1}
@@ -93,7 +93,7 @@ export default function EvaluatorResults({
                     {isFiltered ? (
                       <p>
                         <Link
-                          className='a-btn a-btn__link a-btn__warning'
+                          className='a-btn a-btn--link a-btn--warning'
                           to='.'
                           resetScroll={false}
                           search={(prev): object => ({
@@ -123,10 +123,10 @@ export default function EvaluatorResults({
                   />
                 </div>
                 <div className='results'>
-                  <div className='results_sidebar sidebar'>
+                  <div className='results__sidebar sidebar'>
                     {view === 'all' ? <EvaluatorFilterSidebar /> : null}
                   </div>
-                  <div className='results_table'>
+                  <div className='results__table'>
                     <EvaluatorResultsTable
                       data={rows}
                       fields={fields}
@@ -135,7 +135,7 @@ export default function EvaluatorResults({
                       isLoadingError={isLoadingError}
                     />
                     {view === 'all' && currentHits > 0 ? (
-                      <div className='results_pagination'>
+                      <div className='results__pagination'>
                         <EvaluatorResultsPagination
                           pageCount={pageCount}
                           page={currentHits === 0 ? 0 : page}
