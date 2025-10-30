@@ -8,7 +8,7 @@
   border-top: 1px solid var(--gray-60);
   background-color: var(--gray-10);
 
-  &__actions {
+  &--actions {
     padding-top: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
   }
 

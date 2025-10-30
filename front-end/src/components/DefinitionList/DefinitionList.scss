@@ -1,7 +1,7 @@
 @use 'sass:math';
 @use '@cfpb/cfpb-design-system/src/abstracts' as *;
 
-.definition-list__item {
+.definition-list--item {
   margin-bottom: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
 
   dt,

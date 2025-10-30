@@ -41,7 +41,7 @@ export default function LocatorBar({
   breadcrumbs = null
 }: LocatorBarProperties): ReactElement {
   let className = 'locator-bar'
-  if (breadcrumbs) className += ' locator-bar__actions'
+  if (breadcrumbs) className += ' locator-bar--actions'
 
   return (
     <div className={className}>

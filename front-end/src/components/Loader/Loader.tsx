@@ -11,11 +11,11 @@ export default function Loader({
   hasBackground = true
 }: Properties): JSX.Element {
   return (
-    <div className={`loader ${hasBackground ? 'loader__background' : ''}`}>
-      <div className='loader_container'>
-        <div className='loader_message'>
+    <div className={`loader ${hasBackground ? 'loader--background' : ''}`}>
+      <div className='loader__container'>
+        <div className='loader__message'>
           <Icon name='updating' size='32px' />
-          <span className='loader_text'>{message}</span>
+          <span className='loader__text'>{message}</span>
         </div>
       </div>
     </div>

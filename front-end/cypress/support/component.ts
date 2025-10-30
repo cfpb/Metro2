@@ -22,7 +22,7 @@ import { mount } from 'cypress/react'
 import type { ReactNode } from 'react'
 
 // Import app styles
-import '@src/App.less'
+import '@src/App.scss'
 import { MountWithProviders } from './MountWithProviders'
 
 // Augment the Cypress namespace to include type definitions for

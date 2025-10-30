@@ -28,7 +28,7 @@ export default function WarningModal(): ReactElement | null {
           id='accept'
           label='Accept and continue to PII'
           data-testid='csv-download-button'
-          className='a-btn a-btn__full-on-xs'
+          className='a-btn a-btn--full-on-xs'
           onClick={onClick}
           size='default'
         />

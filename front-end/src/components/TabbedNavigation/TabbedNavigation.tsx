@@ -23,8 +23,8 @@ export default function TabbedNavigation({
   }
 
   return (
-    <div className='tabbed_navigation'>
-      <fieldset className='o-form_fieldset'>
+    <div className='tabbed__navigation'>
+      <fieldset className='o-form__fieldset'>
         {tabs.map(tab => (
           <button
             type='button'
