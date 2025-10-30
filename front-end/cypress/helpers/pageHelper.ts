@@ -17,7 +17,7 @@ export class Metro2Page {
   verifyBreadcrumbs(breadcrumbs: [{ text: string; href: string }]) {
     cy.get('.m-breadcrumbs')
       .should('be.visible')
-      .find('.m-breadcrumbs_crumb')
+      .find('.m-breadcrumbs__crumb')
       .should('have.length', breadcrumbs.length)
       .each((breadcrumb, index) => {
         const expectedValue = breadcrumbs[index]
@@ -37,11 +37,11 @@ export class Metro2Page {
 
   getExpandableByText(text: string) {
     return cy
-      .get('.o-expandable_header')
+      .get('.o-expandable__header')
       .contains(text)
       .parents('.o-expandable')
       .first()
-      .find('.o-expandable_content')
+      .find('.o-expandable__content')
       .first()
   }
 
@@ -52,11 +52,11 @@ export class Metro2Page {
     // containing the text (since expandables can be nested)
     // and then find the target within it
     return cy
-      .get('.o-expandable_header')
+      .get('.o-expandable__header')
       .contains(text)
       .parents('.o-expandable')
       .first()
-      .find('.o-expandable_target')
+      .find('.o-expandable__target')
       .first()
   }
 
