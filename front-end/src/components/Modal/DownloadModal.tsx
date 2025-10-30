@@ -48,9 +48,9 @@ export default function DownloadModal({
   return (
     <Modal open={open} onClose={onClose}>
       <h1 className='h3'>{title}</h1>
-      <div className='block block__sub'>{content}</div>
+      <div className='block block--sub'>{content}</div>
       {!hidePII && (
-        <fieldset className='o-form_fieldset block block__sub'>
+        <fieldset className='o-form__fieldset block block--sub'>
           <legend className='h4'>{privacyAuthorizationHeader}</legend>
           <p>{copy}</p>
           <div className='u-mt15'>
@@ -75,7 +75,7 @@ export default function DownloadModal({
             disabled={!isChecked}
             label={buttonText}
             data-testid='csv-download-button'
-            className='a-btn a-btn__full-on-xs'
+            className='a-btn a-btn--full-on-xs'
             onClick={onClick}
             size='default'
           />
@@ -84,7 +84,7 @@ export default function DownloadModal({
             appearance='primary'
             asLink
             label='Cancel'
-            className='a-btn a-btn__link a-btn__full-on-xs'
+            className='a-btn a-btn--link a-btn--full-on-xs'
             onClick={onClose}
             size='default'
           />

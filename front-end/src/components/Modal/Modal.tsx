@@ -61,7 +61,7 @@ export function Modal({
               appearance='primary'
               asLink
               label='Close'
-              className='a-btn a-btn__link'
+              className='a-btn a-btn--link'
               onClick={onClose}
               size='default'
             />

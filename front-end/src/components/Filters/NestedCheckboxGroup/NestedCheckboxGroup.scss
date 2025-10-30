@@ -1,11 +1,11 @@
 .o-expandable.nested {
-  .a-label__heading {
+  .a-label--heading {
     position: relative;
     top: 0.25em;
   }
 
   .o-expandable {
-    &_content {
+    &__content {
       padding-left: 0;
       padding-right: 0;
 
@@ -21,14 +21,14 @@
         margin-bottom: -1rem;
       }
 
-      .m-form-field__checkbox + .o-expandable {
+      .m-form-field--checkbox + .o-expandable {
         margin-top: 0.75rem;
       }
     }
   }
 
-  &:not(.o-expandable__open) {
-    .o-expandable_content {
+  &:not(.o-expandable--open) {
+    .o-expandable__content {
       visibility: hidden !important;
     }
   }

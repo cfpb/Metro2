@@ -10,7 +10,7 @@
   border-width: 1px 0 !important;
   overflow: hidden;
 
-  &_wrapper {
+  &__wrapper {
     display: grid;
     grid-template-rows: 0fr;
     // overflow: hidden;
@@ -21,34 +21,34 @@
     }
   }
 
-  &__open > &_wrapper {
+  &--open > &__wrapper {
     grid-template-rows: 1fr;
   }
 
-  &_inner {
+  &__inner {
     // min-height: 0;
     overflow: hidden;
   }
 
-  &_content {
+  &__content {
     visibility: hidden;
     transition: visibility 0.3s ease-in-out;
   }
 
-  &__open &_content {
+  &--open &__content {
     visibility: visible;
   }
 
-  &_target {
+  &__target {
     border: none;
     background: none;
   }
 
-  &_cue {
+  &__cue {
     white-space: nowrap;
   }
 
-  &_cue-text {
+  &__cue-text {
     font-size: 0.8em !important;
     position: relative;
     top: -0.1em;
@@ -62,10 +62,10 @@
     border-top: none;
   }
 
-  &_header-interactive {
+  &__header-interactive {
     cursor: default !important;
 
-    .o-expandable_target {
+    .o-expandable__target {
       padding-top: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
       margin-top: math.div(-(math.div($grid_gutter-width, 3)), $base-font-size-px) +
         em;
@@ -78,6 +78,6 @@
 }
 
 // remove double border in accordion
-.o-expandable-group .o-expandable__padded + .o-expandable__padded {
+.o-expandable-group .o-expandable--padded + .o-expandable--padded {
   margin-top: -1px;
 }

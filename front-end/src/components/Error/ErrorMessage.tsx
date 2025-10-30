@@ -19,7 +19,7 @@ export default function ErrorMessage({
         </h2>
         <p data-testid='error-description'>{description}</p>
         <div className='m-btn-group'>
-          <Link to='/' className='a-btn a-btn__full-on-xs' data-testid='back-button'>
+          <Link to='/' className='a-btn a-btn--full-on-xs' data-testid='back-button'>
             Back to Metro 2 home page
           </Link>
         </div>

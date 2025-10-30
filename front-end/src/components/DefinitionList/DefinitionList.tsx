@@ -17,7 +17,7 @@ export default function DefinitionList({
   return (
     <dl className='definition-list'>
       {items.map(item => (
-        <div key={item.term} className='definition-list__item' data-testid='dl-item'>
+        <div key={item.term} className='definition-list--item' data-testid='dl-item'>
           <dt>{item.term}:</dt>
           <dd>{item.definition}</dd>
         </div>
