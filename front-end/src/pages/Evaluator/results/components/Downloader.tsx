@@ -116,7 +116,7 @@ export default function EvaluatorDownloader({
   }
 
   const modalContent = (
-    <fieldset className='o-form_fieldset block block__sub'>
+    <fieldset className='o-form__fieldset block block--sub'>
       <legend className='h4'>Save a link for later</legend>
       <p>
         Copy the link to this evaluator’s results. Any filters you’ve applied will be

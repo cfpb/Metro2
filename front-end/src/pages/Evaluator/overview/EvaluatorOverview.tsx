@@ -23,11 +23,11 @@ export default function EvaluatorOverview({
   return (
     <div className='row row--content row--summary' data-testid='evaluator-summary'>
       <div className='content-l'>
-        <div className='content-l__col content-l__col--1-3'>
+        <div className='content-l__col content-l__col-1-3'>
           <h3 className='h2'>Details</h3>
           <EvaluatorSummary event={event} metadata={metadata} />
         </div>
-        <div className='content-l__col content-l__col--2-3'>
+        <div className='content-l__col content-l__col-2-3'>
           <h3 className='h2'>Description</h3>
           <p className='evaluator-description'>{metadata.description}</p>
           <div className='evaluator-metadata'>

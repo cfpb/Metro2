@@ -43,10 +43,10 @@ export default function RangeFilter({
   return (
     <div className='range-filter'>
       <div className='range-input'>
-        <Label htmlFor={`${id}__min`}>Min</Label>
+        <Label htmlFor={`${id}_min`}>Min</Label>
         <TextInput
-          name={`${id}__min`}
-          id={`${id}__min`}
+          name={`${id}_min`}
+          id={`${id}_min`}
           type='number'
           value={min}
           onBlur={onBlur}
@@ -55,10 +55,10 @@ export default function RangeFilter({
         />
       </div>
       <div className='range-input'>
-        <Label htmlFor={`${id}__max`}>Max</Label>
+        <Label htmlFor={`${id}_max`}>Max</Label>
         <TextInput
-          name={`${id}__max`}
-          id={`${id}__max`}
+          name={`${id}_max`}
+          id={`${id}_max`}
           type='number'
           value={max}
           onBlur={onBlur}

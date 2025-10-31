@@ -99,7 +99,7 @@ export default function EvaluatorMetadataSection({
   return (
     <div data-testid='metadata-section'>
       {populatedFields.length > 0 ? (
-        <div className='block block__sub block__flush-top'>
+        <div className='block block--sub block__flush-top'>
           <ul
             className='m-list m-list__unstyled'
             data-testid='metadata-populated-fields'>

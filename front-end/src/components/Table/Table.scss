@@ -1,17 +1,18 @@
 @use 'sass:math';
 @use '@cfpb/cfpb-design-system/src/abstracts' as *;
 @use '@cfpb/cfpb-design-system/src/utilities' as *;
-@import url('ag-grid-community/styles/ag-grid.css');
-@import url('ag-grid-community/styles/ag-theme-alpine.css');
+@import 'ag-grid-community/styles/ag-grid.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 .ag-theme-alpine {
   // Override defaults to approximate Design System table styles
   --ag-font-family: 'Source Sans 3 Variable', arial, sans-serif !important;
   --ag-font-size: math.div(16px / $base-font-size-px) + em;
-  --ag-border-color: $table-border;
-  --ag-header-column-resize-handle-color: $table-border;
-  --ag-secondary-border-color: $table-border;
+  --ag-border-color: var(--gray);
+  --ag-header-column-resize-handle-color: var(--gray);
+  --ag-secondary-border-color: var(--gray);
   --ag-odd-row-background-color: var(--white);
+
   // --ag-row-height: 2em;
   --ag-header-height: 2.5em;
 
@@ -38,13 +39,20 @@
   .ag-header-cell {
     line-height: 1.25em !important;
     word-break: normal;
-    padding-top: math.div(10px, $base-font-size-px) + em;
-    padding-bottom: math.div(10px, $base-font-size-px) + em;
+
+    // padding-top: math.div(10px, $base-font-size-px) + em;
+    // padding-bottom: math.div(10px, $base-font-size-px) + em;
   }
 
   .ag-header {
     text-transform: uppercase;
     font-size: math.div(13px, $base-font-size-px) + em;
+  }
+
+  .ag-sort-indicator-container {
+    .ag-icon {
+      font-size-adjust: 1;
+    }
   }
 
   &.data-grid-container--message .ag-center-cols-viewport {
@@ -78,14 +86,14 @@
   }
 }
 
+// .ag-root-wrapper {
+//   margin: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + em
+//     math.div($grid_gutter-width, $base-font-size-px) + em;
+// }
+
 // override centered text alignment
 .ag-overlay-wrapper {
   text-align: left;
-}
-
-.ag-root-wrapper {
-  margin: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + em
-    math.div($grid_gutter-width, $base-font-size-px) + em;
 }
 
 // grid container fills width of screen
@@ -96,6 +104,7 @@
   // with a max of 900px (~20 rows)
   &--fixed-height {
     height: 88vh;
+
     // height: 95%;
     max-height: 1100px;
   }

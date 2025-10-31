@@ -42,7 +42,7 @@ export default function EventDownloader({
 
   const copy = (
     <>
-      <fieldset className='o-form_fieldset block block__sub'>
+      <fieldset className='o-form__fieldset block block--sub'>
         <h3 className='h4'>Save a link for later</h3>
         <p>Copy the link to this event&apos;s results.</p>
         <CopyUrl />

@@ -14,7 +14,9 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
     <Suspense fallback={<LoadingOrError />}>
       <header className='row row--action'>
         <h1 className='h4'>
-          <Link to='/'>Metro2 Evaluator Tool</Link>
+          <Link to='/' className='a-link'>
+            Metro2 Evaluator Tool
+          </Link>
         </h1>
         <div className='links'>
           <Link to='/guide' className='nav-item'>

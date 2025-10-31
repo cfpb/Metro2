@@ -1,5 +1,4 @@
 @use 'sass:math';
-
 @use '@cfpb/cfpb-design-system/src/abstracts' as *;
 @use '@cfpb/cfpb-design-system/src/utilities' as *;
 
@@ -12,6 +11,7 @@
 
   &--background {
     background-color: rgb(0 0 0 / 60%);
+
     // background: rgb(16 24 32 / 20%);
   }
 

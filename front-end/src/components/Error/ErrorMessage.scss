@@ -8,6 +8,7 @@
 
     .m-btn-group .a-btn + .a-btn {
       margin-left: 1rem;
+
       @include respond-to-max($bp-sm-min) {
         margin: 0.5rem 0;
       }

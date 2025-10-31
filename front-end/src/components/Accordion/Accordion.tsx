@@ -21,7 +21,7 @@ export default function Accordion({
   // inAccordionGroup = false,
   openOnLoad = false,
   className = '',
-  isPadded = true,
+  isPadded = false,
   hasBorder = true,
   hasBackground = true,
   ...properties
