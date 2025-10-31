@@ -1,6 +1,8 @@
 @use '@cfpb/cfpb-design-system/src/utilities' as *;
 
 .a-checkbox:indeterminate + .a-label::before {
+  --cfpb-background-icon-svg: 'minus';
+
   background-size: auto 1.1875em;
   background-repeat: no-repeat;
   background-position: center 0;

@@ -13,7 +13,8 @@
   "ignorePatterns": [
     "vite.config.ts",
     "vitest.config.ts",
-    "src/components/Table/suppressKeyboardEvents.tsx"
+    "src/components/Table/suppressKeyboardEvents.tsx",
+    "postcss"
   ],
   "plugins": ["react-prefer-function-component"],
   "extends": [
