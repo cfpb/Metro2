@@ -7,7 +7,7 @@ import EvaluatorLongDescription from './components/LongDescription'
 import EvaluatorMetadataSection from './components/Metadata'
 import EvaluatorSummary from './components/Summary'
 
-import './EvaluatorOverview.less'
+import './EvaluatorOverview.scss'
 
 interface EvaluatorOverviewProperties {
   metadata: EvaluatorMetadata
@@ -21,13 +21,13 @@ export default function EvaluatorOverview({
   event
 }: EvaluatorOverviewProperties): ReactElement {
   return (
-    <div className='row row__content row__summary' data-testid='evaluator-summary'>
+    <div className='row row--content row--summary' data-testid='evaluator-summary'>
       <div className='content-l'>
-        <div className='content-l_col content-l_col-1-3'>
+        <div className='content-l__col content-l__col-1-3'>
           <h3 className='h2'>Details</h3>
           <EvaluatorSummary event={event} metadata={metadata} />
         </div>
-        <div className='content-l_col content-l_col-2-3'>
+        <div className='content-l__col content-l__col-2-3'>
           <h3 className='h2'>Description</h3>
           <p className='evaluator-description'>{metadata.description}</p>
           <div className='evaluator-metadata'>

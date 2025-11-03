@@ -3,8 +3,8 @@ import type { ReactElement } from 'react'
 import type { Breadcrumb } from './Breadcrumbs'
 
 import { Breadcrumbs } from './Breadcrumbs'
-import './Breadcrumbs.less'
-import './LocatorBar.less'
+import './Breadcrumbs.scss'
+import './LocatorBar.scss'
 
 /**
  * LocatorBar
@@ -41,7 +41,7 @@ export default function LocatorBar({
   breadcrumbs = null
 }: LocatorBarProperties): ReactElement {
   let className = 'locator-bar'
-  if (breadcrumbs) className += ' locator-bar__actions'
+  if (breadcrumbs) className += ' locator-bar--actions'
 
   return (
     <div className={className}>

@@ -42,7 +42,7 @@ export default function AccountContactInformation({
       <div>{data.phone_num}</div>
     </div>
   ) : (
-    <button className='a-btn a-btn__link' type='button' onClick={onClickHandler}>
+    <button className='a-btn a-btn--link' type='button' onClick={onClickHandler}>
       Show
     </button>
   )

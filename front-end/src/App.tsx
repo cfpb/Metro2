@@ -12,7 +12,7 @@ import type { ReactElement } from 'react'
 
 import customParser from 'utils/customParser'
 import { stringifySearchParams } from 'utils/customStringify'
-import './App.less'
+import './App.scss'
 import routeTree from './router'
 
 // React-Query setup

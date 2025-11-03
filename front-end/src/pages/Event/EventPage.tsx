@@ -21,11 +21,11 @@ export default function EventPage(): ReactElement {
         icon='bank-round'
         subhead={dateRange ? `Data from ${dateRange}` : undefined}
       />
-      <div className='block block__sub'>
-        <div className='row row__right'>
+      <div className='block block--sub'>
+        <div className='row row--right'>
           <EventDownloader rows={eventData.evaluators} eventName={eventData.name} />
         </div>
-        <div className='row row__content'>
+        <div className='row row--content'>
           <Table
             rows={eventData.evaluators}
             columnDefinitions={getColumnDefinitions(String(eventData.id))}

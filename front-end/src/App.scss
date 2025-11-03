@@ -1,0 +1,97 @@
+@use 'sass:math';
+@use '@cfpb/cfpb-design-system/src/index' as *;
+@use '@cfpb/cfpb-design-system/src/abstracts' as *;
+@import 'design-system-react/style.css';
+@include define-custom-props;
+@include licensed-font('/static/fonts');
+
+// Set heights & layout so the loader can cover
+// a section of the page to bottom of viewport.
+html,
+body,
+#root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+// Design system overrides needed for full-width layout.
+.wrapper,
+.grid {
+  max-width: none !important;
+}
+
+// Metro 2 header is a link but doesn't need link styling
+header h1 {
+  font-size: 1.25rem !important;
+
+  a {
+    color: black !important;
+  }
+}
+
+// Global layout pattern
+// Some content -- loader, locator bar -- needs to be full width,
+// so 'row' class provides left / right padding for individual content sections
+// as well as flex layout for the loader.
+.row {
+  margin: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + em
+    math.div($grid_gutter-width, $base-font-size-px) + em;
+  display: flex;
+}
+
+// Row class modifiers
+
+// Rows with column layout
+.row--content {
+  flex-direction: column;
+}
+
+// Rows with a left-aligned heading and right-aligned link or button
+.row--action {
+  align-items: baseline;
+  justify-content: space-between;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin-bottom: 0;
+  }
+}
+
+// Rows with right-aligned content
+.row--right {
+  justify-content: end;
+}
+
+// Rows with summary content on evaluator and account pages
+.row--summary {
+  margin-top: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + em;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  ol,
+  ul {
+    margin-top: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
+  }
+}
+
+// Add spacing between link text and icons
+.a-link__text + .cf-icon-svg-wrapper,
+.a-btn--link .cf-icon-svg-wrapper {
+  padding-left: 0.2rem;
+}
+
+// Add spacing for icon on warning button
+.a-btn--warning {
+  .cf-icon-svg-wrapper {
+    margin-right: 0.3em;
+  }
+}

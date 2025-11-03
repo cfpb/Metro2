@@ -1,7 +1,7 @@
 import { Label, TextInput } from 'design-system-react'
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
-import './RangeFilter.less'
+import './RangeFilter.scss'
 
 interface RangeFilterData {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void

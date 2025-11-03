@@ -1,0 +1,71 @@
+@use 'sass:math';
+@use '@cfpb/cfpb-design-system/src/abstracts' as *;
+@use '@cfpb/cfpb-design-system/src/utilities' as *;
+
+.tabbed__navigation {
+  color: var(--black);
+  margin-top: 2rem;
+  margin-bottom: -1px;
+  z-index: 1;
+
+  fieldset {
+    display: inline-flex;
+  }
+
+  .tab {
+    padding: 1rem 2rem 0.8rem;
+    font-size: math.div(19px, $base-font-size-px) + em;
+    font-weight: 500;
+
+    .cf-icon-svg-wrapper {
+      margin-right: math.div(5px, $base-font-size-px) + em;
+    }
+
+    .link-text::after {
+      content: '';
+      border-top: solid 1px var(--gray);
+      display: block;
+    }
+
+    &.active {
+      border: 1px solid var(--gray-30);
+      color: var(--black);
+      background: var(--gray-5);
+      pointer-events: none;
+      position: relative;
+      border-bottom: 1px solid var(--gray-5);
+
+      &::after {
+        content: '';
+        display: block;
+        width: calc(100% - 2px);
+        outline: 2px solid var(--gray-5);
+        position: absolute;
+        bottom: -1px;
+        left: 1px;
+        z-index: 1;
+      }
+    }
+
+    &:not(.active) {
+      color: var(--pacific-dark);
+      background: var(--white);
+      border: none;
+
+      &:hover {
+        color: var(--navy-dark);
+      }
+
+      &:focus {
+        color: var(--navy-dark);
+      }
+    }
+  }
+}
+
+// tab panel styling
+// TODO: consider where this should go
+.tab-panel {
+  border-top: 1px solid var(--gray-30);
+  margin-top: 1px;
+}

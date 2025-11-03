@@ -2,7 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 import { useState } from 'react'
 
 import { Icon } from 'design-system-react'
-import './Accordion.less'
+import './Accordion.scss'
 
 export interface AccordionProperties {
   header: ReactNode
@@ -21,7 +21,7 @@ export default function Accordion({
   // inAccordionGroup = false,
   openOnLoad = false,
   className = '',
-  isPadded = true,
+  isPadded = false,
   hasBorder = true,
   hasBackground = true,
   ...properties
@@ -29,22 +29,22 @@ export default function Accordion({
   const [isExpanded, setIsExpanded] = useState(openOnLoad)
 
   const expandableClasses = ['o-expandable', className]
-  if (isExpanded) expandableClasses.push('o-expandable__open')
-  if (isPadded) expandableClasses.push('o-expandable__padded')
-  if (hasBorder) expandableClasses.push('o-expandable__border')
-  if (hasBackground) expandableClasses.push('o-expandable__background')
+  if (isExpanded) expandableClasses.push('o-expandable--open')
+  if (isPadded) expandableClasses.push('o-expandable--padded')
+  if (hasBorder) expandableClasses.push('o-expandable--border')
+  if (hasBackground) expandableClasses.push('o-expandable--background')
 
   const onClick = (): void => {
     setIsExpanded(!isExpanded)
   }
 
   const expandableLink = (
-    <span className='o-expandable_link'>
+    <span className='o-expandable__link'>
       <span
-        className={`o-expandable_cue o-expandable_cue__${
+        className={`o-expandable__cue o-expandable__cue--${
           isExpanded ? 'close' : 'open'
         }`}>
-        <span className='o-expandable_cue-text'>
+        <span className='o-expandable__cue-text'>
           <Icon name={isExpanded ? 'up' : 'down'} alt={isExpanded ? 'up' : 'down'} />
         </span>
       </span>
@@ -59,27 +59,27 @@ export default function Accordion({
       {typeof header === 'string' ? (
         <button
           type='button'
-          className='o-expandable_header o-expandable_target'
+          className='o-expandable__header o-expandable__target'
           aria-expanded={isExpanded}
           title={header}
           onClick={onClick}>
-          <h3 className='h4 o-expandable_label'>{header}</h3>
+          <h3 className='h4 o-expandable__label'>{header}</h3>
           {expandableLink}
         </button>
       ) : (
         <div
-          className='o-expandable_header o-expandable_header-interactive'
+          className='o-expandable__header o-expandable__header-interactive'
           aria-expanded={isExpanded}>
           {header}
-          <button type='button' className='o-expandable_target' onClick={onClick}>
+          <button type='button' className='o-expandable__target' onClick={onClick}>
             {expandableLink}
           </button>
         </div>
       )}
 
-      <div data-testid='accordion-wrapper' className='o-expandable_wrapper'>
-        <div data-testid='accordion-inner' className='o-expandable_inner'>
-          <div data-testid='accordion-content' className='o-expandable_content'>
+      <div data-testid='accordion-wrapper' className='o-expandable__wrapper'>
+        <div data-testid='accordion-inner' className='o-expandable__inner'>
+          <div data-testid='accordion-content' className='o-expandable__content'>
             {children}
           </div>
         </div>

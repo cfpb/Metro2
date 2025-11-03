@@ -35,7 +35,7 @@ describe('Results view', () => {
     cy.location('search').should('include', 'view=sample').and('include', 'page=1')
 
     // Sample view tab is active
-    cy.get('.tabbed_navigation').should('be.visible')
+    cy.get('.tabbed__navigation').should('be.visible')
     cy.findByTestId('sample-results-tab').should('have.class', 'active')
     cy.findByTestId('all-results-tab').should('not.have.class', 'active')
 
@@ -77,7 +77,7 @@ describe('Results view', () => {
 
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
-    cy.get('.m-pagination_current-page').should('have.value', '1')
+    cy.get('.m-pagination__current-page').should('have.value', '1')
 
     // Table shows 20 rows
     table.hasRowCount(20)
@@ -91,7 +91,7 @@ describe('Results view', () => {
 
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
-    cy.get('.m-pagination_current-page').should('have.value', '1')
+    cy.get('.m-pagination__current-page').should('have.value', '1')
 
     // Table shows 20 rows
     table.hasRowCount(20)
@@ -108,7 +108,7 @@ describe('Results view', () => {
 
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
-    cy.get('.m-pagination_current-page').should('have.value', '2')
+    cy.get('.m-pagination__current-page').should('have.value', '2')
 
     // Table shows 10 rows
     table.hasRowCount(10)
@@ -119,7 +119,7 @@ describe('Results view', () => {
 
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
-    cy.get('.m-pagination_current-page').should('have.value', '1')
+    cy.get('.m-pagination__current-page').should('have.value', '1')
 
     // All results message is displayed
     cy.findByTestId('results-message').should('include.text', 'Showing 1 - 20 of 30')
@@ -134,7 +134,7 @@ describe('Results view', () => {
     )
 
     // Click next button to navigate to page 2
-    cy.get('.m-pagination_btn-next').click()
+    cy.get('.m-pagination__btn-next').click()
 
     cy.wait(['@page2'])
 

@@ -4,7 +4,7 @@ import Accordion from 'components/Accordion/Accordion'
 import type { ReactElement } from 'react'
 import { IndeterminateCheckbox } from '../IndeterminateCheckbox/IndeterminateCheckbox'
 import type { CheckboxItem } from './CheckboxItem'
-import './NestedCheckboxGroup.less'
+import './NestedCheckboxGroup.scss'
 
 /**
  * NestedCheckboxGroup

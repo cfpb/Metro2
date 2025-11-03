@@ -1,5 +1,5 @@
 import Accordion from '../../src/components/Accordion/Accordion'
-import '../../src/components/Accordion/Accordion.less'
+import '../../src/components/Accordion/Accordion.scss'
 import '../fixtures/event_1.json'
 
 describe('Accordion.cy.tsx', () => {
@@ -24,7 +24,7 @@ describe('Accordion.cy.tsx', () => {
 
   it('accordion has a border by default', () => {
     cy.findByTestId('accordion')
-      .should('have.class', 'o-expandable__border')
+      .should('have.class', 'o-expandable--border')
       .and('have.css', 'border')
   })
 

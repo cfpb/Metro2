@@ -1,7 +1,7 @@
 import { Button } from 'design-system-react'
 import type { ReactElement, ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
-import './Modal.less'
+import './Modal.scss'
 
 interface ModalProperties {
   open: boolean
@@ -61,7 +61,7 @@ export function Modal({
               appearance='primary'
               asLink
               label='Close'
-              className='a-btn a-btn__link'
+              className='a-btn a-btn--link'
               onClick={onClose}
               size='default'
             />

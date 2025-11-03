@@ -16,7 +16,7 @@ export default function AccountOverview({
 }: AccountOverviewProperties): ReactElement {
   return (
     <div className='content-l'>
-      <div className='content-l_col content-l_col-1-3' data-testid='details'>
+      <div className='content-l__col content-l__col-1-3' data-testid='details'>
         <h2>Account Details</h2>
         <AccountSummary
           latestAccountRecord={accountData.account_activity[0]}
@@ -25,7 +25,7 @@ export default function AccountOverview({
       </div>
       {accountData.inconsistencies.length > 0 ? (
         <div
-          className='content-l_col content-l_col-1-3'
+          className='content-l__col content-l__col-1-3'
           data-testid='inconsistencies'>
           <h2>Inconsistencies found</h2>
           <AccountInconsistenciesList

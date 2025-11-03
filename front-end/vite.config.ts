@@ -1,10 +1,42 @@
 /// <reference types="vitest" />
 import react from '@vitejs/plugin-react'
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import eslint from 'vite-plugin-eslint'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import pluginProcessIcons from './postcss/processIcons'
 
 export default defineConfig(({ mode }) => ({
+  css: {
+    postcss: {
+      plugins: [pluginProcessIcons()]
+    }
+  },
+  resolve: {
+    alias: {
+      '~': resolve(__dirname),
+      '@cfpb/cfpb-design-system/src/index': resolve(
+        __dirname,
+        'node_modules/@cfpb/cfpb-design-system/src/index.scss'
+      ),
+      '@cfpb/cfpb-design-system/src/abstracts': resolve(
+        __dirname,
+        'node_modules/@cfpb/cfpb-design-system/src/abstracts/index.scss'
+      ),
+      '@cfpb/cfpb-design-system/src/utilities': resolve(
+        __dirname,
+        'node_modules/@cfpb/cfpb-design-system/src/utilities/index.scss'
+      ),
+      '@cfpb/cfpb-design-system/src/components/cfpb-typography/mixins': resolve(
+        __dirname,
+        'node_modules/@cfpb/cfpb-design-system/src/components/cfpb-typography/mixins.scss'
+      ),
+      '@cfpb/cfpb-design-system/src/components/cfpb-notifications/vars': resolve(
+        __dirname,
+        'node_modules/@cfpb/cfpb-design-system/src/components/cfpb-notifications/vars.scss'
+      )
+    }
+  },
   test: {
     css: false,
     // include: ['src/**/__tests__/*'],

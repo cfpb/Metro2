@@ -1,7 +1,7 @@
 import { Link, Outlet } from '@tanstack/react-router'
 import { Layout, List, ListItem, Paragraph } from 'design-system-react'
 import type { ReactElement } from 'react'
-import './GuidePage.less'
+import './GuidePage.scss'
 
 export default function GuidePage(): ReactElement {
   const menuItems = [

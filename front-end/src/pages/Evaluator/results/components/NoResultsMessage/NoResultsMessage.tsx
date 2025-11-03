@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
-import './NoResultsMessage.less'
+import './NoResultsMessage.scss'
 
 interface NoResultsMessageProps {
   isError?: boolean
@@ -37,7 +37,7 @@ export default function NoResultsMessage({
                 view: 'all'
               })}
               style={{ pointerEvents: 'auto' }}
-              data-testid='no-results-message_clear-filters'>
+              data-testid='no-results-message__clear-filters'>
               Clear all filters
             </Link>
           </p>

@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
-import './Breadcrumbs.less'
+import './Breadcrumbs.scss'
 
 export interface Breadcrumb {
   text: string
@@ -15,7 +15,7 @@ export function Breadcrumbs({ links }: BreadcrumbProperties): ReactElement {
   return (
     <nav className='m-breadcrumbs'>
       {links.map(link => (
-        <Link className='m-breadcrumbs_crumb' to={link.href} key={link.href}>
+        <Link className='m-breadcrumbs__crumb' to={link.href} key={link.href}>
           &lt; {link.text}{' '}
         </Link>
       ))}

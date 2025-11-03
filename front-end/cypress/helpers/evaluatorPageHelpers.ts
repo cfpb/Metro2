@@ -88,7 +88,7 @@ export class EvaluatorPage {
   }
 
   getNoResultsClearFiltersLink() {
-    return cy.findByTestId('no-results-message_clear-filters')
+    return cy.findByTestId('no-results-message__clear-filters')
   }
 
   hasNoResultsMessage() {

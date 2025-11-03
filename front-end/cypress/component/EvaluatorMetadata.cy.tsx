@@ -115,8 +115,8 @@ describe('EvaluatorMetadataSection.cy.tsx', () => {
     cy.mount(<EvaluatorMetadataSection metadata={metadata} isAdmin />)
     cy.findByTestId('metadata-contribute').should('be.visible')
     cy.findByTestId('metadata-cta').should('be.visible')
-    cy.findByTestId('metadata-cta_general').should('be.visible')
-    cy.findByTestId('metadata-cta_admin').should('be.visible')
+    cy.findByTestId('metadata-cta__general').should('be.visible')
+    cy.findByTestId('metadata-cta__admin').should('be.visible')
   })
 
   it('should not show admin contribute call to action to non-admins', () => {
@@ -134,7 +134,7 @@ describe('EvaluatorMetadataSection.cy.tsx', () => {
     cy.mount(<EvaluatorMetadataSection metadata={metadata} isAdmin={false} />)
     cy.findByTestId('metadata-contribute').should('be.visible')
     cy.findByTestId('metadata-cta').should('be.visible')
-    cy.findByTestId('metadata-cta_general').should('be.visible')
-    cy.findByTestId('metadata-cta_admin').should('not.exist')
+    cy.findByTestId('metadata-cta__general').should('be.visible')
+    cy.findByTestId('metadata-cta__admin').should('not.exist')
   })
 })
