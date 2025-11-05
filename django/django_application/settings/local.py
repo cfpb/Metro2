@@ -19,11 +19,6 @@ LOGGING['root']= {
     }
 
 # Un-comment the following settings when testing S3 locally.
-# You will need to add AWS service account keys to your settings directory.
-# S3_BUCKET_NAME = f"cfpb-metro2-***REMOVED***"
+# You will also need to provide credentials. See s3_utils.py for more information.
 # S3_ENABLED=True
-# SETTINGS_DIR = Path(__file__).resolve().parent
-# AWS_CREDS_LOCATION = [
-#     SETTINGS_DIR / 'aws-svc-access-key.txt',
-#     SETTINGS_DIR / 'aws-svc-secret-key.txt',
-# ]
+# S3_BUCKET_NAME = "bucket-name"
