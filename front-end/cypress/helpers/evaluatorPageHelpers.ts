@@ -3,7 +3,12 @@ import { stringifySearchParams } from 'utils/customStringify'
 
 export class EvaluatorPage {
   queryString(params: object) {
-    const defaults = { page: 1, page_size: 20, view: 'sample' }
+    const defaults = {
+      page: 1,
+      page_size: 20,
+      view: 'sample',
+      sort: 'activity_date'
+    }
     return stringifySearchParams({ ...defaults, ...params })
   }
 
@@ -106,5 +111,9 @@ export class EvaluatorPage {
   }
   dofdTrueCheckbox() {
     return cy.get('#dofd_true')
+  }
+
+  hasURL(path: string, params: object) {
+    cy.url().should('eq', `http://localhost:3000/${path}${this.queryString(params)}`)
   }
 }

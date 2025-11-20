@@ -13,10 +13,15 @@ export default function EvaluatorResultsTabbedNavigation(): ReactElement {
     void navigate({
       resetScroll: false,
       to: '.',
-      search: prev =>
-        event.currentTarget.id === 'all-results-tab'
-          ? { ...prev, view: 'all' }
-          : { view: 'sample' }
+      search: prev => {
+        if (event.currentTarget.id === 'all-results-tab') {
+          return { ...prev, view: 'all', page: 1 }
+        }
+        return prev.sort
+          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-return
+            { sort: prev.sort, view: 'sample', page: 1 }
+          : { view: 'sample', page: 1 }
+      }
     })
   }
 

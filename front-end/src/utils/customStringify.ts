@@ -3,21 +3,25 @@
  *
  * Stringifies values without quotation marks or encoding
  *
- * Input     Output
- * string    trimmed string
- * number    number as string
- * array     comma-separated string of values, sorted alphabetically
- * object    result of JSON.stringify(object)
+ * Input                    Output
+ * string                   trimmed string
+ * number                   number as string
+ * array, key == 'sort'     comma-separated string of values
+ * array, key != 'sort'     comma-separated string of values, sorted alphabetically
+ * object                   result of JSON.stringify(object)
  *
  * @param {number | object | string} value - A value to stringify
+ * @param {string} key - The value's field
  * @returns {string} A string
  */
 export function customStringify(
-  value: number | object | string | null | undefined
+  value: number | object | string | null | undefined,
+  key: string | null = ''
 ): string {
   if (typeof value === 'string') return value.trim()
   if (typeof value === 'number') return String(value)
-  if (Array.isArray(value)) return value.sort().join(',')
+  if (Array.isArray(value))
+    return key === 'sort' ? value.join(',') : value.sort().join(',')
   if (value && typeof value === 'object') return JSON.stringify(value)
   return ''
 }
@@ -43,7 +47,7 @@ export function stringifySearchParams(search: object | null | undefined): string
   for (const key of searchItems) {
     const value = search[key as keyof typeof search]
     if (![null, '', undefined].includes(value))
-      searchParams.push(`${key}=${customStringify(value)}`)
+      searchParams.push(`${key}=${customStringify(value, key)}`)
   }
 
   // If there are any segments in array, join & return. Otherwise, return empty string.

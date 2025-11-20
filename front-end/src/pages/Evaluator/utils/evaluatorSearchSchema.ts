@@ -1,14 +1,18 @@
+/* eslint-disable unicorn/prefer-top-level-await, @typescript-eslint/no-unsafe-assignment */
+
 import { ITEMS_PER_PAGE } from '@src/constants/settings'
-import { fallback } from '@tanstack/router-zod-adapter'
 import { z } from 'zod'
 import BooleanStringValidator from './booleanValidator'
 import { listValueValidator } from './listValidator'
 import minMaxValidator from './minMaxValidator'
 
+import sortValidator from './sortValidator'
+
 export const evaluatorSchema = z.object({
-  view: fallback(z.enum(['all', 'sample']), 'sample'),
-  page: fallback(z.number().gt(0).int(), 1),
-  page_size: fallback(z.number().gt(0), ITEMS_PER_PAGE),
+  view: z.enum(['all', 'sample']).default('sample').catch('sample'),
+  page: z.number().gt(0).int().default(1).catch(1),
+  page_size: z.number().gt(0).default(ITEMS_PER_PAGE).catch(ITEMS_PER_PAGE),
+  sort: sortValidator,
   amt_past_due_min: minMaxValidator,
   amt_past_due_max: minMaxValidator,
   current_bal_min: minMaxValidator,

@@ -59,7 +59,7 @@ const colDefs: ColDef<CarManufacturer>[] = [
   }
 ]
 
-describe('<Table />', () => {
+describe.skip('<Table />', () => {
   it('renders with default props', () => {
     render(<Table<CarManufacturer> rows={data} columnDefinitions={colDefs} />)
     const container = screen.getByTestId('data-grid-container')

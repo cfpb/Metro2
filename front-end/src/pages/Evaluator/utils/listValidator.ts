@@ -15,7 +15,7 @@ export const validateFieldValues = (
 
 export const listValueValidator = (
   field: keyof typeof M2_FIELD_LOOKUPS
-): z.ZodOptional<z.ZodEffects<z.ZodAny, string[], unknown>> =>
+): z.ZodOptional =>
   z
     .any()
     .transform(val => validateFieldValues(val, field))

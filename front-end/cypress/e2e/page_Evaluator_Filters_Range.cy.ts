@@ -43,7 +43,7 @@ describe('Evaluator page range amount filters', () => {
 
     // Entering 100 in the current_bal_min field should show 16 results
     cy.get('#current_bal_min').type('100{enter}')
-    page.hasURL('events/1/evaluators/Test-Eval-1', {
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', {
       current_bal_min: '100',
       view: 'all'
     })
@@ -54,7 +54,7 @@ describe('Evaluator page range amount filters', () => {
 
     // Entering 1000 in the current_bal_max field should show 8 results
     cy.get('#current_bal_max').type('1000{enter}')
-    page.hasURL('events/1/evaluators/Test-Eval-1', {
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', {
       current_bal_min: '100',
       current_bal_max: '1000',
       view: 'all'
@@ -85,7 +85,7 @@ describe('Evaluator page range amount filters', () => {
 
     // Entering 100 in the current_bal_min field should show 16 results
     cy.get('#current_bal_min').type('100{enter}')
-    page.hasURL('events/1/evaluators/Test-Eval-1', {
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', {
       current_bal_min: '100',
       view: 'all'
     })
@@ -96,7 +96,7 @@ describe('Evaluator page range amount filters', () => {
 
     // Clicking the 'remove filters' link should load all the results again
     cy.findByTestId('remove-all-filters').click()
-    page.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
     cy.get('#current_bal_min').should('have.value', '')
     evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
     table.hasRowCount(20)
@@ -112,7 +112,7 @@ describe('Evaluator page range amount filters', () => {
 
     // Entering 100 in the current_bal_min field should show no results message
     cy.get('#current_bal_min').type('100{enter}')
-    page.hasURL('events/1/evaluators/Test-Eval-1', {
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', {
       current_bal_min: '100',
       view: 'all'
     })
@@ -123,7 +123,7 @@ describe('Evaluator page range amount filters', () => {
 
     // Clicking no results message clear filters link should load all results
     evaluatorPage.getNoResultsClearFiltersLink().click()
-    page.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
     cy.get('#current_bal_min').should('have.value', '')
     evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
     table.hasRowCount(20)

@@ -40,7 +40,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "stylelint-config-prettier": "^9.0.5",
-    "zod": "^3.23.8"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",

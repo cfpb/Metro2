@@ -61,7 +61,7 @@ export default function EvaluatorResults({
   if (isLoadingError && typeof page === 'number' && page > pageCount) {
     void navigate({
       to: '.',
-      search: (prev: Record<string, unknown>) => ({ ...prev, page: 1 })
+      search: prev => ({ ...prev, page: 1 })
     })
   }
 

@@ -74,7 +74,10 @@ describe('Evaluator page boolean filters', () => {
 
     // Clicking the 'no DOFD' filter checkbox should show 8 results
     evaluatorPage.dofdFalseCheckboxLabel().click()
-    page.hasURL('events/1/evaluators/Test-Eval-1', { dofd: 'false', view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', {
+      dofd: 'false',
+      view: 'all'
+    })
     cy.wait('@noDofdResults')
     evaluatorPage.dofdFalseCheckbox().should('be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
@@ -84,7 +87,10 @@ describe('Evaluator page boolean filters', () => {
     // Selecting both filter options should load all results from react-query storage
     // and not call API with dofd query param
     evaluatorPage.dofdTrueCheckboxLabel().click()
-    page.hasURL('events/1/evaluators/Test-Eval-1', { dofd: 'any', view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', {
+      dofd: 'any',
+      view: 'all'
+    })
     cy.get('@anyDofdResults').should('not.been.called')
     evaluatorPage.dofdFalseCheckbox().should('be.checked')
     evaluatorPage.dofdTrueCheckbox().should('be.checked')
@@ -94,7 +100,10 @@ describe('Evaluator page boolean filters', () => {
     // De-selecting the 'no DOFD' checkbox should show 16 results
     evaluatorPage.dofdFalseCheckboxLabel().click()
     cy.wait(['@hasDofdResults'])
-    page.hasURL('events/1/evaluators/Test-Eval-1', { dofd: 'true', view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', {
+      dofd: 'true',
+      view: 'all'
+    })
     evaluatorPage.dofdFalseCheckbox().should('not.be.checked')
     evaluatorPage.dofdTrueCheckbox().should('be.checked')
     evaluatorPage.hasResultsMessage('Showing 1 - 16 of 16 filtered results')
@@ -102,7 +111,7 @@ describe('Evaluator page boolean filters', () => {
 
     // Removing all the dofd filters should load original results from react-query
     evaluatorPage.dofdTrueCheckboxLabel().click()
-    page.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
     evaluatorPage.dofdFalseCheckbox().should('not.be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
     evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
@@ -119,7 +128,10 @@ describe('Evaluator page boolean filters', () => {
 
     // Clicking 'no dofd' filter checkbox should show 8 results
     evaluatorPage.dofdFalseCheckboxLabel().click()
-    page.hasURL('events/1/evaluators/Test-Eval-1', { dofd: 'false', view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', {
+      dofd: 'false',
+      view: 'all'
+    })
     cy.wait('@noDofdResults')
     evaluatorPage.dofdFalseCheckbox().should('be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
@@ -128,7 +140,7 @@ describe('Evaluator page boolean filters', () => {
 
     // Clicking the 'remove filters' link should load all the results again
     cy.findByTestId('remove-all-filters').click()
-    page.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
     evaluatorPage.dofdFalseCheckbox().should('not.be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
     evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
@@ -146,7 +158,10 @@ describe('Evaluator page boolean filters', () => {
     // Clicking no dofd checkbox should show no results message
     evaluatorPage.dofdFalseCheckboxLabel().click()
     cy.wait('@noDofdResults')
-    page.hasURL('events/1/evaluators/Test-Eval-1', { dofd: 'false', view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', {
+      dofd: 'false',
+      view: 'all'
+    })
     evaluatorPage.dofdFalseCheckbox().should('be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
     evaluatorPage.hasResultsMessage('Showing 0 results')
@@ -154,7 +169,7 @@ describe('Evaluator page boolean filters', () => {
 
     // Clicking no results message clear filters link should load all results
     evaluatorPage.getNoResultsClearFiltersLink().click()
-    page.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
+    evaluatorPage.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
     evaluatorPage.dofdFalseCheckbox().should('not.be.checked')
     evaluatorPage.dofdTrueCheckbox().should('not.be.checked')
     evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
