@@ -87,7 +87,7 @@ export const SPECIAL_COMMENT_CODE_LOOKUP = {
   AO: 'Voluntarily surrendered - then redeemed or reinstated.',
   AP: 'Credit Line suspended.',
   AS: 'Account closed due to refinance.',
-  AT: 'Account closed due to refinance.',
+  AT: 'Account closed due to transfer.',
   AU: 'Account paid in full for less than the full balance',
   AV: 'First payment never received.',
   AW: 'Affected by natural or declared disaster.',
@@ -225,7 +225,7 @@ export const ACCOUNT_TYPE_LOOKUP = {
   '2C': 'U.S. Department of Agriculture (USDA) Real Estate Mortgage Loan',
   '4D': 'Telecommunications/Cellular',
   '6D': 'Home Equity',
-  '0F': 'Export construction Loan',
+  '0F': 'Construction Loan',
   '0G': 'Flexible Spending Credit Card'
 }
 
