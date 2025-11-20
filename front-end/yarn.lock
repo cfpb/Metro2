@@ -3127,30 +3127,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/router-zod-adapter@npm:^1.81.5":
-  version: 1.81.5
-  resolution: "@tanstack/router-zod-adapter@npm:1.81.5"
-  peerDependencies:
-    "@tanstack/react-router": ">=1.43.2"
-    zod: ">=3"
-  checksum: 10/740c0a90d33fb77fb5bfe98cefe6486d3338b36c3703e0f9e340bc6e12a59b9b6376478691a025d0087be9386e55bbc6ef6f9b41f2f7e1f91aa86e2160e32d5e
-  languageName: node
-  linkType: hard
-
 "@tanstack/store@npm:0.7.0, @tanstack/store@npm:^0.7.0":
   version: 0.7.0
   resolution: "@tanstack/store@npm:0.7.0"
   checksum: 10/d7adffba7d69904d70df44adb132b77b52ed9ef1cdf5afc8034a123ee835680f1c9af16b62cba5a44ffd61072832c6276037028420b381aba9b929cab7cd8162
-  languageName: node
-  linkType: hard
-
-"@tanstack/zod-adapter@npm:^1.99.9":
-  version: 1.99.9
-  resolution: "@tanstack/zod-adapter@npm:1.99.9"
-  peerDependencies:
-    "@tanstack/react-router": ">=1.43.2"
-    zod: ^3.23.8
-  checksum: 10/c33bd1adc1b1a1812daf12024a63c281b1f9ba568e12dc33395617adc271856a9402d10d7ab7f34db7cb4eabcffa3f5585b85c3587476064acce9baf3baa704a
   languageName: node
   linkType: hard
 
@@ -7457,8 +7437,6 @@ __metadata:
     "@tanstack/react-query": "npm:^5.83.0"
     "@tanstack/react-router": "npm:^1.129.8"
     "@tanstack/router-devtools": "npm:^1.129.8"
-    "@tanstack/router-zod-adapter": "npm:^1.81.5"
-    "@tanstack/zod-adapter": "npm:^1.99.9"
     "@testing-library/cypress": "npm:^10.0.3"
     "@testing-library/dom": "npm:9.3.0"
     "@testing-library/jest-dom": "npm:5.16.5"
