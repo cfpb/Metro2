@@ -1,4 +1,4 @@
-@use '@cfpb/cfpb-design-system/src/abstracts' as *;
+@use '@cfpb/cfpb-design-system/src/elements/abstracts' as *;
 
 .filter-sidebar {
   // show lines between checkboxes in sidebar filters
@@ -25,8 +25,7 @@
     }
   }
 
-  // all top-level sidebar expandables should get blue background / white text,
-  // but level 2 nested expandables should not
+  // all top-level sidebar expandables should get blue background / white text
   .o-expandable--open.nested_level-1 > .o-expandable__header,
   .o-expandable.nested_level-1 > .o-expandable__header:hover {
     background-color: var(--navy-90);

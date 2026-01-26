@@ -1545,74 +1545,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cfpb/cfpb-atomic-component@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@cfpb/cfpb-atomic-component@npm:2.0.1"
-  checksum: 10/788f7570d6f650c1d2239a5eac23233d3d48ce4998d5ea9728551919c8e3c09fed1ae5f15d04bc8c977807d6c225a8692b366a1d5d86a75bc4c91c041074c343
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-buttons@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-buttons@npm:2.0.0"
-  dependencies:
-    "@cfpb/cfpb-core": "npm:^2.0.0"
-    "@cfpb/cfpb-icons": "npm:^2.0.0"
-  checksum: 10/e07f677eb23bcc786111029740d30b26c042b0e5d7c14ea6cc7013d42c675496b6ae2d6437375e23fb1b22fef684d57a9e013c51529847558ebb8da03d80850d
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-core@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-core@npm:2.0.0"
-  checksum: 10/99c0fe8e0ae6be420f3c9adb9675d2f357b477da2d4db7436edef41e87aa37151a593d8a06c9127425e03a6089c8974a4ea6a11ace4d269f9947600e4508f5d2
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-design-system@npm:^4.2.2, @cfpb/cfpb-design-system@npm:^4.2.4":
-  version: 4.2.4
-  resolution: "@cfpb/cfpb-design-system@npm:4.2.4"
+"@cfpb/cfpb-design-system@npm:4.3.2, @cfpb/cfpb-design-system@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "@cfpb/cfpb-design-system@npm:4.3.2"
   dependencies:
     "@fontsource-variable/source-sans-3": "npm:5.2.9"
     tippy.js: "npm:6.3.7"
-  checksum: 10/2286e699506aa994efeb0ef6e33811ebc03d8cc828e86a0d4c332261c61e86bec4517f4a5f7aad752370fef5aabbb51f7bcb3062a8ea2671c6263bf760eba0c0
+  checksum: 10/bafcfd51a788d9425aa13dc284d80adfb39291d54e8dbdcf8d5e45f04c63546b8e3f5b9011bf1c78e534c7049f4e27be099481d391f4013aab7974addd9c5155
   languageName: node
   linkType: hard
 
-"@cfpb/cfpb-expandables@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@cfpb/cfpb-expandables@npm:2.0.1"
+"@cfpb/design-system-react@npm:^0.0.10":
+  version: 0.0.10
+  resolution: "@cfpb/design-system-react@npm:0.0.10"
   dependencies:
-    "@cfpb/cfpb-atomic-component": "npm:^2.0.1"
-    "@cfpb/cfpb-core": "npm:^2.0.0"
-    "@cfpb/cfpb-icons": "npm:^2.0.0"
-  checksum: 10/c1ce31a80bf6a9951a189a3e41fd296dd92b52db594b9fcbe472680f32bb1b7cb20d21072e8553a590b186f1fe4f5a999aea16c1492f50109def92d774706dcd
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-forms@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-forms@npm:2.0.0"
-  dependencies:
-    "@cfpb/cfpb-buttons": "npm:^2.0.0"
-    "@cfpb/cfpb-core": "npm:^2.0.0"
-    "@cfpb/cfpb-grid": "npm:^2.0.0"
-    "@cfpb/cfpb-icons": "npm:^2.0.0"
-  checksum: 10/693f231d2dc850b861979b2ee78a2e38018f68d76e9ea587196f4702a6ff22ba346bf5fa88e77c79aefffa40c20556d998028a9e4a314ea530f192547ac49032
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-grid@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-grid@npm:2.0.0"
-  checksum: 10/2f2e19f877a331fc0cc1378140a3d5c8d3d523c972c002da63ecbb16553b5e5f36a4541046f3f73853abee8c42ae391a52b57aaa3511b74b9f0fabcb7a249c5a
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-icons@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-icons@npm:2.0.0"
-  checksum: 10/fa1a05f951e36139b98cb2e83d0f9d6f027d8e55984493c0cd7a43d59924491f08dd9d792440ee3eb136ee63e45931ad281785dc7d193c870bcae3496846eef5
+    "@cfpb/cfpb-design-system": "npm:4.3.2"
+    "@tanstack/react-query": "npm:^4.13.5"
+    classnames: "npm:^2.3.2"
+    react: "npm:18.2.0"
+    react-dom: "npm:18.2.0"
+    react-router-dom: "npm:^6.3.0"
+    react-select: "npm:^5.7.2"
+    sass-embedded: "npm:^1.90.0"
+  checksum: 10/fff2291c63338ef3bbf5c3b398d8839dfcb476c8183d1aa22cf48952bd72183dc5dadff71dd6504a01b4c3cd41a37dfe45b5f9fa2e30fa4ba3fdea011f58ac45
   languageName: node
   linkType: hard
 
@@ -2291,7 +2246,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource-variable/source-sans-3@npm:5.2.9, @fontsource-variable/source-sans-3@npm:^5.2.8":
+"@fontsource-variable/source-sans-3@npm:5.2.9":
   version: 5.2.9
   resolution: "@fontsource-variable/source-sans-3@npm:5.2.9"
   checksum: 10/fa48c295cc37cda0ab9bcf08b5e37d156c39fa09cd3caac41bd1cbec6b6b134858ec779ce40aa9be3af8c7970142498896404f4e5a188b3dc17b670fcd8c34c8
@@ -6012,26 +5967,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"design-system-react@https://github.com/cfpb/design-system-react.git":
-  version: 0.0.0
-  resolution: "design-system-react@https://github.com/cfpb/design-system-react.git#commit=68fbd676b5728a7496f6e57bc1b885a2e3b09b12"
-  dependencies:
-    "@cfpb/cfpb-design-system": "npm:^4.2.2"
-    "@cfpb/cfpb-expandables": "npm:^2.0.1"
-    "@cfpb/cfpb-forms": "npm:^2.0.0"
-    "@cfpb/cfpb-icons": "npm:^2.0.0"
-    "@fontsource-variable/source-sans-3": "npm:^5.2.8"
-    "@tanstack/react-query": "npm:^4.13.5"
-    classnames: "npm:^2.3.2"
-    react: "npm:18.2.0"
-    react-dom: "npm:18.2.0"
-    react-router-dom: "npm:^6.3.0"
-    react-select: "npm:^5.7.2"
-    sass-embedded: "npm:^1.90.0"
-  checksum: 10/55c29e7ea96a4932e4efd2f057f13173598ce8335efcfe7e7c463e5ebb5ab5889962193314d69cdff84b00b9d896c2d17729c60fb37a11e1b12b73bac3da7d45
-  languageName: node
-  linkType: hard
-
 "detect-libc@npm:^1.0.3":
   version: 1.0.3
   resolution: "detect-libc@npm:1.0.3"
@@ -7469,7 +7404,8 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.0"
     "@babel/preset-env": "npm:^7.28.0"
-    "@cfpb/cfpb-design-system": "npm:^4.2.4"
+    "@cfpb/cfpb-design-system": "npm:^4.3.2"
+    "@cfpb/design-system-react": "npm:^0.0.10"
     "@cypress/code-coverage": "npm:^3.14.4"
     "@tanstack/react-query": "npm:^5.83.0"
     "@tanstack/react-router": "npm:^1.129.8"
@@ -7501,7 +7437,6 @@ __metadata:
     csstype: "npm:^3.2.3"
     cypress: "npm:^15.7.0"
     cypress-real-events: "npm:^1.15.0"
-    design-system-react: "https://github.com/cfpb/design-system-react.git"
     eslint: "npm:^8.45.0"
     eslint-config-airbnb: "npm:19.0.4"
     eslint-config-airbnb-base: "npm:15.0.0"

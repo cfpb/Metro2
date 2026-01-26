@@ -1,5 +1,5 @@
+import { Icon } from '@cfpb/design-system-react'
 import { useQuery } from '@tanstack/react-query'
-import { Icon } from 'design-system-react'
 import { accountHolderQueryOptions } from 'queries/accountHolder'
 import type { ReactElement } from 'react'
 import { useState } from 'react'

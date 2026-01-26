@@ -1,4 +1,4 @@
-import { Heading, Divider, Paragraph } from 'design-system-react'
+import { Divider, Heading, Paragraph } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
 
 export default function HelpUs(): ReactElement {

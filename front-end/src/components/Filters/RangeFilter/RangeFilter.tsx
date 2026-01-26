@@ -1,4 +1,4 @@
-import { Label, TextInput } from 'design-system-react'
+import { Label, TextInput } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import './RangeFilter.scss'

@@ -12,12 +12,19 @@ ARG USER_UID=1001
 
 WORKDIR ${APP_HOME}
 
+# Add Zscaler CA certificate
+ADD https://raw.githubusercontent.com/cfpb/zscaler-cert/refs/heads/main/zscaler_root_ca.pem /usr/local/share/ca-certificates/zscaler_root_ca.crt
+
 # Add `$HOME/.local/bin` to PATH
 RUN echo 'export PATH=$HOME/.local/bin:$PATH' >> /etc/profile
 
 COPY . .
 
-RUN adduser -u $USER_UID -D $USERNAME && \
+ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+
+RUN apk add --no-cache --no-check-certificate ca-certificates && \
+    update-ca-certificates && \
+    adduser -u $USER_UID -D $USERNAME && \
     yarn && \
     chown -R $USERNAME:$USERNAME $APP_HOME
 

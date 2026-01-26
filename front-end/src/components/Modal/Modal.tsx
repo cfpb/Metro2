@@ -1,4 +1,4 @@
-import { Button } from 'design-system-react'
+import { Button } from '@cfpb/design-system-react'
 import type { ReactElement, ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 import './Modal.scss'

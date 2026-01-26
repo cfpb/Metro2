@@ -15,6 +15,7 @@ export default function LandingPage(): ReactElement {
         heading='Here are your assigned events'
         icon='bank-round'
       />
+
       {userData.assigned_events.length > 0 ? (
         <EventList events={userData.assigned_events} />
       ) : null}
