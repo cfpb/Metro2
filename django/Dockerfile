@@ -14,6 +14,11 @@ ARG USER_UID=1002
 
 RUN adduser -u $USER_UID -D $USERNAME
 
+# Add Zscaler Root CA certificate, rebuild CA certificates, and both the root
+# cert and the rebuilt ca-certificates cert to APP_HOME for reuse.
+ADD https://raw.githubusercontent.com/cfpb/zscaler-cert/refs/heads/main/zscaler_root_ca.pem /usr/local/share/ca-certificates/zscaler_root_ca.crt
+RUN apk add --no-cache --no-check-certificate ca-certificates && update-ca-certificates
+
 # upgrade apk and pip, add build dependencies to .build-deps virtual to be
 # deleted later
 RUN apk update --no-cache && \
