@@ -11,11 +11,11 @@ RUN apk update --no-cache && \
     pip install --upgrade pip 
 
 # Ensure that the environment uses UTF-8 encoding by default
-ENV LANG en_US.UTF-8
-ENV ENV /etc/profile
-ENV PIP_NO_CACHE_DIR true
+ENV LANG=en_US.UTF-8
+ENV ENV=/etc/profile
+ENV PIP_NO_CACHE_DIR=true
 
-ENV APP_HOME /src/metro2/django
+ENV APP_HOME=/src/metro2/django
 
 ARG USERNAME=default-user
 ARG USER_UID=1002
