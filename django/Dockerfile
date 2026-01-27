@@ -1,4 +1,4 @@
-FROM python:3.11-alpine AS base
+FROM python:3.13-alpine AS base
 
 # upgrade apk and pip, add build dependencies to .build-deps virtual to be
 # deleted later
