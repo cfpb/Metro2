@@ -1,7 +1,7 @@
 APScheduler==3.11.0
 asgiref==3.8.1
 coverage==7.8.0
-Django==4.2.25
+Django==4.2.27
 psycopg2-binary==2.9.10
 ruff==0.11.4
 boto3==1.37.29
@@ -11,4 +11,4 @@ django-filter==25.1
 gunicorn==23.0.0
 whitenoise==6.9.0
 smart-open[s3]==7.1.0
-urllib3==2.5.0  # not required directly by Metro2; but pinned to avoid CVEs
+urllib3==2.6.3  # not required directly by Metro2; but pinned to avoid CVEs
