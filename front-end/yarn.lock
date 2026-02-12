@@ -4960,13 +4960,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:^5.0.0, camelcase@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "camelcase@npm:5.3.1"
-  checksum: 10/e6effce26b9404e3c0f301498184f243811c30dfe6d0b9051863bd8e4034d09c8c2923794f280d6827e5aa055f6c434115ff97864a16a963366fb35fd673024b
-  languageName: node
-  linkType: hard
-
 "caniuse-lite@npm:^1.0.30001464, caniuse-lite@npm:^1.0.30001489, caniuse-lite@npm:^1.0.30001718, caniuse-lite@npm:^1.0.30001726":
   version: 1.0.30001769
   resolution: "caniuse-lite@npm:1.0.30001769"
