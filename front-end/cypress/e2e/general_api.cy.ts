@@ -19,4 +19,55 @@
 //       expect(fields.every(field => expectedFields.includes(field))).to.be.true
 //     })
 //   })
+
+// describe('Not found errors', () => {
+//   it('Should render a not found message for a non-existent route', () => {
+//     cy.visit('/not-a-real-route')
+
+//     cy.get('[data-testid="error-title"]').should(
+//       'have.text',
+//       'The page doesn’t exist.'
+//     )
+//   })
+
+//   it('Should render a not found message for a non-existent event', () => {
+//     cy.visit('/events/123456789')
+
+//     cy.get('[data-testid="error-title"]').should(
+//       'have.text',
+//       'The page doesn’t exist.'
+//     )
+//   })
+
+//   it('Should render a not found message for a non-existent evaluator', () => {
+//     // expect an unhandled promise exception
+//     cy.once('uncaught:exception', () => false)
+
+//     cy.intercept('/api/events/1/evaluator/not-an-evaluator/').as(
+//       'nonexistentEvaluator'
+//     )
+
+//     cy.visit('/events/1/evaluators/not-an-evaluator')
+
+//     cy.wait('@nonexistentEvaluator').its('response.statusCode').should('eq', 404)
+
+//     cy.get('[data-testid="error-title"]').should(
+//       'have.text',
+//       `The results for this evaluator don’t exist.`
+//     )
+//   })
+
+//   it('Should render a not found message for a non-existent account', () => {
+//     cy.intercept('/api/events/1/account/not-an-account/').as('nonexistentAccount')
+
+//     cy.visit('/events/1/accounts/not-an-account')
+
+//     cy.wait('@nonexistentAccount').its('response.statusCode').should('eq', 404)
+
+//     cy.get('[data-testid="error-title"]').should(
+//       'have.text',
+//       `The account doesn’t exist.`
+//     )
+//   })
+// })
 // })
