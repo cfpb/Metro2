@@ -1522,6 +1522,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cfpb/browserslist-config@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "@cfpb/browserslist-config@npm:0.0.6"
+  checksum: 10/29518353fe6d7ee8d9efed6bcbd3e61caab467b474912ce925e280753e5ea6b8293c50077bc61050310d9aec8976d97f25870f35d82eb9461e397b0ea6a87690
+  languageName: node
+  linkType: hard
+
 "@cfpb/cfpb-atomic-component@npm:^2.0.1":
   version: 2.0.1
   resolution: "@cfpb/cfpb-atomic-component@npm:2.0.1"
@@ -4953,24 +4960,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001464, caniuse-lite@npm:^1.0.30001489":
-  version: 1.0.30001492
-  resolution: "caniuse-lite@npm:1.0.30001492"
-  checksum: 10/2df92cdc9940ce7246237ae0af40d34d704729f271b1b880cce94bf1d60216da98414b2ea0ba26e24e1452e533fe25e6d3be98511c941b8b9c6f85a552f7800d
+"camelcase@npm:^5.0.0, camelcase@npm:^5.3.1":
+  version: 5.3.1
+  resolution: "camelcase@npm:5.3.1"
+  checksum: 10/e6effce26b9404e3c0f301498184f243811c30dfe6d0b9051863bd8e4034d09c8c2923794f280d6827e5aa055f6c434115ff97864a16a963366fb35fd673024b
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.30001718":
-  version: 1.0.30001721
-  resolution: "caniuse-lite@npm:1.0.30001721"
-  checksum: 10/88fa7ecb5b9a4c1393d7793fc6d35552340beba9a898b4f7b05f9ae266b230ffa35aef5da0d33d1872fb1fcb32d860dfd00298d7b4da8eeea5e6eb3cfa029a18
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001726":
-  version: 1.0.30001727
-  resolution: "caniuse-lite@npm:1.0.30001727"
-  checksum: 10/6155a4141332c337d6317325bea58a09036a65f45bd9bd834ec38978b40c27d214baa04d25b21a5661664f3fbd00cb830e2bdb7eee8df09970bdd98a71f4dabf
+"caniuse-lite@npm:^1.0.30001464, caniuse-lite@npm:^1.0.30001489, caniuse-lite@npm:^1.0.30001718, caniuse-lite@npm:^1.0.30001726":
+  version: 1.0.30001769
+  resolution: "caniuse-lite@npm:1.0.30001769"
+  checksum: 10/4b7d087832d4330a8b1fa02cd9455bdb068ea67f1735f2aa6324d5b64b24f5079cf6349b13d209f268ffa59644b9f4f784266b780bafd877ceb83c9797ca80ba
   languageName: node
   linkType: hard
 
@@ -7244,6 +7244,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.0"
     "@babel/preset-env": "npm:^7.28.0"
+    "@cfpb/browserslist-config": "npm:^0.0.6"
     "@cfpb/cfpb-design-system": "npm:^4.2.4"
     "@tanstack/react-query": "npm:^5.83.0"
     "@tanstack/react-router": "npm:^1.129.8"
