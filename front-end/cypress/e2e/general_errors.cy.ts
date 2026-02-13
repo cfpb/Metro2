@@ -39,6 +39,8 @@ describe('Errors', () => {
     })
 
     it('Should render a not found message for a non-existent event', () => {
+      cy.intercept('GET', '/api/events/123456789/', { statusCode: 404 })
+
       cy.visit('/events/123456789')
 
       cy.get('[data-testid="error-title"]').should(
@@ -48,16 +50,11 @@ describe('Errors', () => {
     })
 
     it('Should render a not found message for a non-existent evaluator', () => {
-      // expect an unhandled promise exception
-      cy.once('uncaught:exception', () => false)
-
-      cy.intercept('/api/events/1/evaluator/not-an-evaluator/').as(
-        'nonexistentEvaluator'
-      )
+      cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
+      cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
 
       cy.visit('/events/1/evaluators/not-an-evaluator')
-
-      cy.wait('@nonexistentEvaluator').its('response.statusCode').should('eq', 404)
+      cy.wait(['@getEvent', '@getUser'])
 
       cy.get('[data-testid="error-title"]').should(
         'have.text',
@@ -66,11 +63,14 @@ describe('Errors', () => {
     })
 
     it('Should render a not found message for a non-existent account', () => {
-      cy.intercept('/api/events/1/account/not-an-account/').as('nonexistentAccount')
+      cy.intercept('GET', '/api/events/1/', { fixture: 'event_1' }).as('getEvent')
+      cy.intercept('GET', '/api/events/1/account/not-an-account/', {
+        statusCode: 404
+      }).as('nonexistentAccount')
 
       cy.visit('/events/1/accounts/not-an-account')
 
-      cy.wait('@nonexistentAccount').its('response.statusCode').should('eq', 404)
+      cy.wait(['@getEvent', '@nonexistentAccount'])
 
       cy.get('[data-testid="error-title"]').should(
         'have.text',
