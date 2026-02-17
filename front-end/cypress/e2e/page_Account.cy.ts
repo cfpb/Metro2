@@ -16,12 +16,13 @@ const modal = new Metro2Modal()
 describe('Account page loader', () => {
   it('Should show a loading view while account data is fetched', () => {
     cy.setCookie(PII_COOKIE_NAME, 'true')
+    cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
     cy.intercept('GET', 'api/events/1/account/111111/', {
       fixture: 'account_1'
     }).as('getAccount')
     cy.visit('/events/1/accounts/111111')
     cy.get('.loader').should('be.visible')
-    cy.wait('@getAccount')
+    cy.wait(['@getEvent', '@getAccount'])
     cy.get('.loader').should('not.exist')
   })
 })
@@ -30,12 +31,13 @@ describe('Account page', () => {
   beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.setCookie(PII_COOKIE_NAME, 'true')
+    cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
     cy.intercept('GET', 'api/events/1/account/111111/', {
       delay: 2000,
       fixture: 'account_1'
     }).as('getAccount')
     cy.visit('/events/1/accounts/111111')
-    cy.wait('@getAccount')
+    cy.wait(['@getEvent', '@getAccount'])
   })
 
   it('Should show breadcrumbs back to the parent event page', () => {
@@ -113,12 +115,15 @@ describe(
   () => {
     beforeEach(() => {
       cy.setCookie(PII_COOKIE_NAME, 'true')
+
+      cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
+
       cy.intercept('GET', 'api/events/1/account/11111/', {
         delay: 2000,
         fixture: 'account_1'
       }).as('getAccount')
       cy.visit('/events/1/accounts/11111')
-      cy.wait('@getAccount')
+      cy.wait(['@getEvent', '@getAccount'])
     })
 
     it('Should show download modal when button is clicked', () => {
