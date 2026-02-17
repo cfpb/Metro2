@@ -1,0 +1,53 @@
+name: Front-end Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: front-end
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: yarn
+          cache-dependency-path: front-end/yarn.lock
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          yarn install --immutable
+
+      - name: Build Docker images
+        working-directory: .
+        run: docker compose build
+
+      - name: Start application
+        working-directory: .
+        run: docker compose up -d
+
+      - name: Wait for app to be ready
+        run: |
+          npx wait-on http://localhost:3000 --timeout 120000
+
+      - name: Run Cypress
+        run: yarn test:e2e:ci
+        env:
+          CI: true
+
+      - name: Shut down Docker
+        if: always()
+        working-directory: .
+        run: docker compose down
