@@ -94,8 +94,6 @@
     "start-server-and-test": "2.0.0",
     "stylelint": "^16.26.1",
     "stylelint-config-prettier": "^9.0.5",
-    "stylelint-config-recommended-scss": "^16.0.2",
-    "stylelint-config-standard": "^39.0.1",
     "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "5.0.4",
     "vite": "^7.2.6",

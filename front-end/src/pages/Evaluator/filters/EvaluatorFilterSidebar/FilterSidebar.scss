@@ -13,7 +13,7 @@
     margin-bottom: -1em;
   }
 
-  .o-expandable.nested_level-2 {
+  .o-expandable.nested--level-2 {
     .o-expandable__content {
       background-color: var(--gray-10);
       margin-left: 2.5em;
@@ -27,8 +27,8 @@
 
   // all top-level sidebar expandables should get blue background / white text,
   // but level 2 nested expandables should not
-  .o-expandable--open.nested_level-1 > .o-expandable__header,
-  .o-expandable.nested_level-1 > .o-expandable__header:hover {
+  .o-expandable--open.nested--level-1 > .o-expandable__header,
+  .o-expandable.nested--level-1 > .o-expandable__header:hover {
     background-color: var(--navy-90);
     color: var(--white);
 

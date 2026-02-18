@@ -28,7 +28,7 @@
     margin-top: 15vh;
   }
 
-  &_text {
+  &__text {
     padding-left: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
   }
 }
