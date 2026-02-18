@@ -2,8 +2,9 @@
 // https://github.com/cfpb/design-system/blob/main/esbuild/plugins/postcss-process-icons.js
 
 import { readFileSync } from 'node:fs'
-import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
+const __filename = fileURLToPath(import.meta.url)
 const currentDir = dirname(__filename)
 
 const pluginProcessIcons = () => {
