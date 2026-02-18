@@ -4,14 +4,8 @@ import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import eslint from 'vite-plugin-eslint'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import pluginProcessIcons from './postcss/processIcons'
 
 export default defineConfig(({ mode }) => ({
-  css: {
-    postcss: {
-      plugins: [pluginProcessIcons()]
-    }
-  },
   resolve: {
     alias: {
       '~': resolve(__dirname),
