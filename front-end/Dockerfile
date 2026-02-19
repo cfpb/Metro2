@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:24-alpine AS base
 
 # Ensure that the environment uses UTF-8 encoding by default
 ENV LANG=en_US.UTF-8
@@ -23,6 +23,12 @@ COPY . .
 ADD https://raw.githubusercontent.com/cfpb/zscaler-cert/refs/heads/main/zscaler_root_ca.pem /usr/local/share/ca-certificates/zscaler_root_ca.crt
 RUN apk add --no-cache --no-check-certificate ca-certificates && update-ca-certificates
 ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+
+# Enabled Corepack
+RUN corepack enable
+
+# Fetch the Yarn version specified in package.json
+RUN corepack prepare --activate
 
 RUN yarn && \
     chown -R $USERNAME:$USERNAME $APP_HOME

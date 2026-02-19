@@ -18,6 +18,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable corepack
+        run: corepack enable
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -27,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          corepack enable
+          corepack prepare --activate
           yarn install --immutable
 
       - name: Build Docker images
