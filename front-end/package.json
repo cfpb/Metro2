@@ -45,7 +45,6 @@
   "devDependencies": {
     "@babel/core": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
-    "@cypress/code-coverage": "^3.14.4",
     "@testing-library/cypress": "^10.1.0",
     "@testing-library/dom": "9.3.0",
     "@testing-library/jest-dom": "5.16.5",
@@ -67,7 +66,7 @@
     "babel-loader": "^10.0.0",
     "css-mediaquery": "0.1.2",
     "csstype": "^3.2.3",
-    "cypress": "^15.7.0",
+    "cypress": "^15.10.0",
     "cypress-real-events": "^1.15.0",
     "eslint": "^8.45.0",
     "eslint-config-airbnb": "19.0.4",
