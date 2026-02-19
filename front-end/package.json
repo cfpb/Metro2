@@ -43,7 +43,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^3.14.4",
     "@testing-library/cypress": "^10.1.0",
     "@testing-library/dom": "9.3.0",
     "@testing-library/jest-dom": "5.16.5",
@@ -62,7 +61,7 @@
     "autoprefixer": "10.4.14",
     "css-mediaquery": "0.1.2",
     "csstype": "^3.2.3",
-    "cypress": "^15.7.0",
+    "cypress": "^15.10.0",
     "cypress-real-events": "^1.15.0",
     "eslint": "^8.45.0",
     "eslint-config-airbnb": "19.0.4",
@@ -87,8 +86,6 @@
     "start-server-and-test": "2.0.0",
     "stylelint": "^16.26.1",
     "stylelint-config-prettier": "^9.0.5",
-    "stylelint-config-recommended-scss": "^16.0.2",
-    "stylelint-config-standard": "^39.0.1",
     "stylelint-config-standard-scss": "^16.0.0",
     "typescript": "5.0.4",
     "vite": "^7.2.6",

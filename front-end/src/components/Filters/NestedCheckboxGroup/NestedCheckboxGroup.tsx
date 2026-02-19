@@ -74,7 +74,7 @@ export default function NestedCheckboxGroup({
         const someChecked = allChecked || checkedDescendants.includes(true)
         return item.children && item.children.length > 0 ? (
           <Accordion
-            className={`nested nested_level-${level}`}
+            className={`nested nested--level-${level}`}
             hasBackground={false}
             key={item.key}
             openOnLoad={level === 1 && someChecked}
