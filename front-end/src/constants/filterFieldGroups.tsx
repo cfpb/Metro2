@@ -80,8 +80,8 @@ const fieldGroups = {
   acct_stat: accountStatusGroups,
   php1: phpCodeGroups,
   pmt_rating: paymentRatingGroups,
-  account_holder__cons_info_ind: bankruptcyGroups,
-  account_holder__cons_info_ind_assoc: bankruptcyGroups,
+  cons_info_ind: bankruptcyGroups,
+  cons_info_ind_assoc: bankruptcyGroups,
   terms_freq: termsFrequencyGroups,
   spc_com_cd: specialCommentCodeGroups
 }

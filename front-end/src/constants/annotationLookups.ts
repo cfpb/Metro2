@@ -279,17 +279,17 @@ export const M2_FIELD_LOOKUPS = {
   port_type: PORTFOLIO_TYPE_LOOKUP,
   spc_com_cd: SPECIAL_COMMENT_CODE_LOOKUP,
   terms_freq: TERMS_FREQUENCY_LOOKUP,
-  account_holder__cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
-  account_holder__cons_info_ind_assoc: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
-  account_holder__ecoa: ECOA_CODE_LOOKUP,
-  account_holder__ecoa_assoc: ECOA_CODE_LOOKUP,
+  cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
+  cons_info_ind_assoc: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
+  ecoa: ECOA_CODE_LOOKUP,
+  ecoa_assoc: ECOA_CODE_LOOKUP,
   k2__purch_sold_ind: K2_PURCHASED_SOLD_INDICATOR_LOOKUP,
   l1__change_ind: L1_CHANGE_INDICATOR_LOOKUP,
-  previous_values__account_holder__cons_info_ind:
+  previous_values__cons_info_ind:
     CONSUMER_INFORMATION_INDICATOR_LOOKUP,
-  previous_values__account_holder__cons_info_ind_assoc:
+  previous_values__cons_info_ind_assoc:
     CONSUMER_INFORMATION_INDICATOR_LOOKUP,
-  previous_values__account_holder__ecoa: ECOA_CODE_LOOKUP,
+  previous_values__ecoa: ECOA_CODE_LOOKUP,
   previous_values__l1__change_ind: L1_CHANGE_INDICATOR_LOOKUP,
   previous_values__port_type: PORTFOLIO_TYPE_LOOKUP,
   previous_values__acct_type: ACCOUNT_TYPE_LOOKUP,

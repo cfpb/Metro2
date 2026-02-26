@@ -37,8 +37,8 @@ const canBeBlankFields = new Set([
   'pmt_rating',
   'spc_com_cd',
   'terms_freq',
-  'account_holder__cons_info_ind',
-  'account_holder__cons_info_ind_assoc',
+  'cons_info_ind',
+  'cons_info_ind_assoc',
   'l1__change_ind'
 ])
 

@@ -52,7 +52,7 @@ describe('annotateAccountRecords', () => {
         orig_chg_off_amt: 0,
         dofd: '2018-01-31',
         php: '111110010010000000000DDD',
-        account_holder__cons_info_ind_assoc: ['A', 'B'],
+        cons_info_ind_assoc: ['A', 'B'],
         terms_freq: 'M'
       },
       {
@@ -67,7 +67,7 @@ describe('annotateAccountRecords', () => {
         dofd: '2018-01-31',
         php: '011110010010000000000DDD',
         php1: '0',
-        account_holder__cons_info_ind_assoc: null,
+        cons_info_ind_assoc: null,
         terms_freq: 'D',
         spc_com_cd: 'AI'
       }
@@ -84,7 +84,7 @@ describe('annotateAccountRecords', () => {
         orig_chg_off_amt: 0,
         dofd: '2018-01-31',
         php: '111110010010000000000DDD',
-        account_holder__cons_info_ind_assoc: [
+        cons_info_ind_assoc: [
           'A (Petition for Chapter 7 Bankruptcy)',
           'B (Petition for Chapter 11 Bankruptcy)'
         ],
@@ -102,7 +102,7 @@ describe('annotateAccountRecords', () => {
         dofd: '2018-01-31',
         php: '011110010010000000000DDD',
         php1: '0 (0 - 29 days past due date (current account))',
-        account_holder__cons_info_ind_assoc: '',
+        cons_info_ind_assoc: '',
         terms_freq: 'D (Deferred)',
         spc_com_cd: 'AI (Recalled to active military duty.)'
       }
