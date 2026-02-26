@@ -42,11 +42,11 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     pmt_rating = AnyCharFilter(field_name="source_record__pmt_rating")
     spc_com_cd = AnyCharFilter(field_name="source_record__spc_com_cd")
     terms_freq = AnyCharFilter(field_name="source_record__terms_freq")
-    account_holder__cons_info_ind = AnyCharFilter(
-        field_name="source_record__account_holder__cons_info_ind"
+    cons_info_ind = AnyCharFilter(
+        field_name="source_record__cons_info_ind"
     )
-    account_holder__cons_info_ind_assoc = AnyCharFilter(
-        field_name="source_record__account_holder__cons_info_ind_assoc"
+    cons_info_ind_assoc = AnyCharFilter(
+        field_name="source_record__cons_info_ind_assoc"
     )
     l1__change_ind = AnyCharFilter(field_name="source_record__l1__change_ind")
 
@@ -83,7 +83,7 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
             "pmt_rating",
             "spc_com_cd",
             "terms_freq",
-            "account_holder__cons_info_ind",
+            "cons_info_ind",
             "l1__change_ind",
             "dofd",
             "date_closed",
