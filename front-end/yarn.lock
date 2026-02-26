@@ -570,13 +570,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bufbuild/protobuf@npm:^2.5.0":
-  version: 2.10.0
-  resolution: "@bufbuild/protobuf@npm:2.10.0"
-  checksum: 10/58a213899a34d6a742da6ce6f7405583b390a23243287799d869afb21a7a7778475529b50f5bdbf2acbf50cce740dba1292aa7b548c576514f8b55e139ca90c4
-  languageName: node
-  linkType: hard
-
 "@cacheable/memory@npm:^2.0.6":
   version: 2.0.6
   resolution: "@cacheable/memory@npm:2.0.6"
@@ -606,74 +599,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cfpb/cfpb-atomic-component@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@cfpb/cfpb-atomic-component@npm:2.0.1"
-  checksum: 10/788f7570d6f650c1d2239a5eac23233d3d48ce4998d5ea9728551919c8e3c09fed1ae5f15d04bc8c977807d6c225a8692b366a1d5d86a75bc4c91c041074c343
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-buttons@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-buttons@npm:2.0.0"
-  dependencies:
-    "@cfpb/cfpb-core": "npm:^2.0.0"
-    "@cfpb/cfpb-icons": "npm:^2.0.0"
-  checksum: 10/e07f677eb23bcc786111029740d30b26c042b0e5d7c14ea6cc7013d42c675496b6ae2d6437375e23fb1b22fef684d57a9e013c51529847558ebb8da03d80850d
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-core@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-core@npm:2.0.0"
-  checksum: 10/99c0fe8e0ae6be420f3c9adb9675d2f357b477da2d4db7436edef41e87aa37151a593d8a06c9127425e03a6089c8974a4ea6a11ace4d269f9947600e4508f5d2
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-design-system@npm:^4.2.2, @cfpb/cfpb-design-system@npm:^4.2.4":
-  version: 4.2.4
-  resolution: "@cfpb/cfpb-design-system@npm:4.2.4"
+"@cfpb/cfpb-design-system@npm:4.4.0, @cfpb/cfpb-design-system@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@cfpb/cfpb-design-system@npm:4.4.0"
   dependencies:
     "@fontsource-variable/source-sans-3": "npm:5.2.9"
     tippy.js: "npm:6.3.7"
-  checksum: 10/2286e699506aa994efeb0ef6e33811ebc03d8cc828e86a0d4c332261c61e86bec4517f4a5f7aad752370fef5aabbb51f7bcb3062a8ea2671c6263bf760eba0c0
+  checksum: 10/eb834e320dc911fd501aa187e38ccbf58b00f3de8f629aa54fcf0cb4cc2e1eddb539dfec3f2406fac5b075fe25250ad19a56e1f704386c7af5ddbec6882dcc4d
   languageName: node
   linkType: hard
 
-"@cfpb/cfpb-expandables@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@cfpb/cfpb-expandables@npm:2.0.1"
+"@cfpb/design-system-react@npm:0.0.15":
+  version: 0.0.15
+  resolution: "@cfpb/design-system-react@npm:0.0.15"
   dependencies:
-    "@cfpb/cfpb-atomic-component": "npm:^2.0.1"
-    "@cfpb/cfpb-core": "npm:^2.0.0"
-    "@cfpb/cfpb-icons": "npm:^2.0.0"
-  checksum: 10/c1ce31a80bf6a9951a189a3e41fd296dd92b52db594b9fcbe472680f32bb1b7cb20d21072e8553a590b186f1fe4f5a999aea16c1492f50109def92d774706dcd
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-forms@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-forms@npm:2.0.0"
-  dependencies:
-    "@cfpb/cfpb-buttons": "npm:^2.0.0"
-    "@cfpb/cfpb-core": "npm:^2.0.0"
-    "@cfpb/cfpb-grid": "npm:^2.0.0"
-    "@cfpb/cfpb-icons": "npm:^2.0.0"
-  checksum: 10/693f231d2dc850b861979b2ee78a2e38018f68d76e9ea587196f4702a6ff22ba346bf5fa88e77c79aefffa40c20556d998028a9e4a314ea530f192547ac49032
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-grid@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-grid@npm:2.0.0"
-  checksum: 10/2f2e19f877a331fc0cc1378140a3d5c8d3d523c972c002da63ecbb16553b5e5f36a4541046f3f73853abee8c42ae391a52b57aaa3511b74b9f0fabcb7a249c5a
-  languageName: node
-  linkType: hard
-
-"@cfpb/cfpb-icons@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/cfpb-icons@npm:2.0.0"
-  checksum: 10/fa1a05f951e36139b98cb2e83d0f9d6f027d8e55984493c0cd7a43d59924491f08dd9d792440ee3eb136ee63e45931ad281785dc7d193c870bcae3496846eef5
+    "@cfpb/browserslist-config": "npm:^0.0.6"
+    "@cfpb/cfpb-design-system": "npm:4.4.0"
+    react-select: "npm:^5.10.2"
+  peerDependencies:
+    react: ^18.0.0 || ^19.0.0
+    react-dom: ^18.0.0 || ^19.0.0
+    react-router: ^7.13.0
+  checksum: 10/0f5f04d8319fb3ac406c850d70bd7db57088701e79175b42b90715f91ad05a9fc8ebe2aa1dd7440fa3161077c9d6db5472284c639dceb21606d276cec79624ab
   languageName: node
   linkType: hard
 
@@ -1312,7 +1259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource-variable/source-sans-3@npm:5.2.9, @fontsource-variable/source-sans-3@npm:^5.2.8":
+"@fontsource-variable/source-sans-3@npm:5.2.9":
   version: 5.2.9
   resolution: "@fontsource-variable/source-sans-3@npm:5.2.9"
   checksum: 10/fa48c295cc37cda0ab9bcf08b5e37d156c39fa09cd3caac41bd1cbec6b6b134858ec779ce40aa9be3af8c7970142498896404f4e5a188b3dc17b670fcd8c34c8
@@ -1783,13 +1730,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.23.0":
-  version: 1.23.0
-  resolution: "@remix-run/router@npm:1.23.0"
-  checksum: 10/0a9f02c26c150d8210b05927c43d2f57ee8b7f812c81abb76df1721c7367ef692e54f4044981e756ce13d0619fb3c6a9b1514524d69aea9b32bfaf565299a8c7
-  languageName: node
-  linkType: hard
-
 "@rolldown/pluginutils@npm:1.0.0-beta.27":
   version: 1.0.0-beta.27
   resolution: "@rolldown/pluginutils@npm:1.0.0-beta.27"
@@ -1998,36 +1938,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:4.41.0":
-  version: 4.41.0
-  resolution: "@tanstack/query-core@npm:4.41.0"
-  checksum: 10/c226b5c346238f15bb91c6f6e36975123f6dfb2e2ca2c141cade6ff8dee47c23af7b97eaeb94195a0a903b29c64c5cf53d988d7ce5ffcf3a79840513fd16ff4b
-  languageName: node
-  linkType: hard
-
 "@tanstack/query-core@npm:5.83.0":
   version: 5.83.0
   resolution: "@tanstack/query-core@npm:5.83.0"
   checksum: 10/68d76438ad8b95dce07c848a29bac01144bddbad0a6a860569eae909ecf6ea0dda378b3c5f55c45a415a34af79c90917bb5055912d315307416ef2a28b449699
-  languageName: node
-  linkType: hard
-
-"@tanstack/react-query@npm:^4.13.5":
-  version: 4.42.0
-  resolution: "@tanstack/react-query@npm:4.42.0"
-  dependencies:
-    "@tanstack/query-core": "npm:4.41.0"
-    use-sync-external-store: "npm:^1.2.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-native: "*"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-    react-native:
-      optional: true
-  checksum: 10/40035c881054f8297cc4058fe67c4386108da89b84f74e13d77b6b08cb806e06b9231e816dfdecd629d679409b73c5dcbb253ffc18fb2f4f5847438f657b95c5
   languageName: node
   linkType: hard
 
@@ -3575,13 +3489,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer-builder@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "buffer-builder@npm:0.2.0"
-  checksum: 10/16bd9eb8ac6630a05441bcb56522e956ae6a0724371ecc49b9a6bc10d35690489140df73573d0577e1e85c875737e560a4e2e67521fddd14714ddf4e0097d0ec
-  languageName: node
-  linkType: hard
-
 "buffer-crc32@npm:^0.2.1, buffer-crc32@npm:^0.2.13, buffer-crc32@npm:~0.2.3":
   version: 0.2.13
   resolution: "buffer-crc32@npm:0.2.13"
@@ -3860,13 +3767,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.3.2":
-  version: 2.5.1
-  resolution: "classnames@npm:2.5.1"
-  checksum: 10/58eb394e8817021b153bb6e7d782cfb667e4ab390cb2e9dac2fc7c6b979d1cc2b2a733093955fc5c94aa79ef5c8c89f11ab77780894509be6afbb91dddd79d15
-  languageName: node
-  linkType: hard
-
 "clean-regexp@npm:^1.0.0":
   version: 1.0.0
   resolution: "clean-regexp@npm:1.0.0"
@@ -4010,13 +3910,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colorjs.io@npm:^0.5.0":
-  version: 0.5.2
-  resolution: "colorjs.io@npm:0.5.2"
-  checksum: 10/a6f6345865b177d19481008cb299c46ec9ff1fd206f472cd9ef69ddbca65832c81237b19fdcd24f3f9540c3e6343a22eb486cd800f5eab9815ce7c98c16a0f0e
-  languageName: node
-  linkType: hard
-
 "colors@npm:1.4.0":
   version: 1.4.0
   resolution: "colors@npm:1.4.0"
@@ -4121,6 +4014,13 @@ __metadata:
   version: 0.4.2
   resolution: "cookie@npm:0.4.2"
   checksum: 10/2e1de9fdedca54881eab3c0477aeb067f281f3155d9cfee9d28dfb252210d09e85e9d175c0a60689661feb9e35e588515352f2456bc1f8e8db4267e05fd70137
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^1.0.1":
+  version: 1.1.1
+  resolution: "cookie@npm:1.1.1"
+  checksum: 10/85538153054791155cf4d38d2e807e3b9382d71bf71d92fc46fca348515ea574049d0d9ef8eb84d2d54a681ad1d7a7316b1989b901dace50a6c0f4c3858dbdb2
   languageName: node
   linkType: hard
 
@@ -4522,26 +4422,6 @@ __metadata:
   version: 2.0.3
   resolution: "dequal@npm:2.0.3"
   checksum: 10/6ff05a7561f33603df87c45e389c9ac0a95e3c056be3da1a0c4702149e3a7f6fe5ffbb294478687ba51a9e95f3a60e8b6b9005993acd79c292c7d15f71964b6b
-  languageName: node
-  linkType: hard
-
-"design-system-react@https://github.com/cfpb/design-system-react.git":
-  version: 0.0.0
-  resolution: "design-system-react@https://github.com/cfpb/design-system-react.git#commit=68fbd676b5728a7496f6e57bc1b885a2e3b09b12"
-  dependencies:
-    "@cfpb/cfpb-design-system": "npm:^4.2.2"
-    "@cfpb/cfpb-expandables": "npm:^2.0.1"
-    "@cfpb/cfpb-forms": "npm:^2.0.0"
-    "@cfpb/cfpb-icons": "npm:^2.0.0"
-    "@fontsource-variable/source-sans-3": "npm:^5.2.8"
-    "@tanstack/react-query": "npm:^4.13.5"
-    classnames: "npm:^2.3.2"
-    react: "npm:18.2.0"
-    react-dom: "npm:18.2.0"
-    react-router-dom: "npm:^6.3.0"
-    react-select: "npm:^5.7.2"
-    sass-embedded: "npm:^1.90.0"
-  checksum: 10/55c29e7ea96a4932e4efd2f057f13173598ce8335efcfe7e7c463e5ebb5ab5889962193314d69cdff84b00b9d896c2d17729c60fb37a11e1b12b73bac3da7d45
   languageName: node
   linkType: hard
 
@@ -5894,7 +5774,8 @@ __metadata:
   resolution: "front-end@workspace:."
   dependencies:
     "@cfpb/browserslist-config": "npm:^0.0.6"
-    "@cfpb/cfpb-design-system": "npm:^4.2.4"
+    "@cfpb/cfpb-design-system": "npm:^4.4.0"
+    "@cfpb/design-system-react": "npm:0.0.15"
     "@tanstack/react-query": "npm:^5.83.0"
     "@tanstack/react-router": "npm:^1.129.8"
     "@tanstack/router-devtools": "npm:^1.129.8"
@@ -5922,7 +5803,6 @@ __metadata:
     csstype: "npm:^3.2.3"
     cypress: "npm:^15.10.0"
     cypress-real-events: "npm:^1.15.0"
-    design-system-react: "https://github.com/cfpb/design-system-react.git"
     eslint: "npm:^8.45.0"
     eslint-config-airbnb: "npm:19.0.4"
     eslint-config-airbnb-base: "npm:15.0.0"
@@ -5946,6 +5826,7 @@ __metadata:
     query-string: "npm:^9.1.1"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
+    react-router-dom: "npm:^7.13.1"
     sass: "npm:^1.93.2"
     start-server-and-test: "npm:2.0.0"
     stylelint: "npm:^16.26.1"
@@ -9224,31 +9105,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.3.0":
-  version: 6.30.1
-  resolution: "react-router-dom@npm:6.30.1"
+"react-router-dom@npm:^7.13.1":
+  version: 7.13.1
+  resolution: "react-router-dom@npm:7.13.1"
   dependencies:
-    "@remix-run/router": "npm:1.23.0"
-    react-router: "npm:6.30.1"
+    react-router: "npm:7.13.1"
   peerDependencies:
-    react: ">=16.8"
-    react-dom: ">=16.8"
-  checksum: 10/d61f04a36ca8a0a61e71bac2616f3f0d4142ced4a473d872738ca363b43d042f4d6dc249e7f7ae1c06f89599277e2fde11583d61cf6b34e999e79caf845acb37
+    react: ">=18"
+    react-dom: ">=18"
+  checksum: 10/bda00612fc5032ad2b693d9d6dc9049690c7967900a166887ce60727be5b375a1c9d5c9e4083a80a2baa548428edf74c1cd2a43255a771e9cab7ea33b42aefc2
   languageName: node
   linkType: hard
 
-"react-router@npm:6.30.1":
-  version: 6.30.1
-  resolution: "react-router@npm:6.30.1"
+"react-router@npm:7.13.1":
+  version: 7.13.1
+  resolution: "react-router@npm:7.13.1"
   dependencies:
-    "@remix-run/router": "npm:1.23.0"
+    cookie: "npm:^1.0.1"
+    set-cookie-parser: "npm:^2.6.0"
   peerDependencies:
-    react: ">=16.8"
-  checksum: 10/880d6cafd6376dd1e624f6f600b7a208c4142d60eaea66241980ef57260c237b3465c3ff96b28f21ae354410345bbbb1817c3bba083012aade6626027d53506f
+    react: ">=18"
+    react-dom: ">=18"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+  checksum: 10/da3c9f52ccb968647090013f735b8506b5f6a0290a43259d78e9ef6a664715978b6de90417e56b18717ce4ffc306e02826f0418e046aae22936a6f8cf386bc79
   languageName: node
   linkType: hard
 
-"react-select@npm:^5.7.2":
+"react-select@npm:^5.10.2":
   version: 5.10.2
   resolution: "react-select@npm:5.10.2"
   dependencies:
@@ -9732,15 +9617,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.4.0":
-  version: 7.8.2
-  resolution: "rxjs@npm:7.8.2"
-  dependencies:
-    tslib: "npm:^2.1.0"
-  checksum: 10/03dff09191356b2b87d94fbc1e97c4e9eb3c09d4452399dddd451b09c2f1ba8d56925a40af114282d7bc0c6fe7514a2236ca09f903cf70e4bbf156650dddb49d
-  languageName: node
-  linkType: hard
-
 "rxjs@npm:^7.5.1, rxjs@npm:^7.5.5, rxjs@npm:^7.8.0":
   version: 7.8.1
   resolution: "rxjs@npm:7.8.1"
@@ -9791,210 +9667,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-embedded-all-unknown@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-all-unknown@npm:1.93.2"
-  dependencies:
-    sass: "npm:1.93.2"
-  conditions: (!cpu=arm | !cpu=arm64 | !cpu=riscv64 | !cpu=x64)
-  languageName: node
-  linkType: hard
-
-"sass-embedded-android-arm64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-android-arm64@npm:1.93.2"
-  conditions: os=android & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-android-arm@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-android-arm@npm:1.93.2"
-  conditions: os=android & cpu=arm
-  languageName: node
-  linkType: hard
-
-"sass-embedded-android-riscv64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-android-riscv64@npm:1.93.2"
-  conditions: os=android & cpu=riscv64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-android-x64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-android-x64@npm:1.93.2"
-  conditions: os=android & cpu=x64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-darwin-arm64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-darwin-arm64@npm:1.93.2"
-  conditions: os=darwin & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-darwin-x64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-darwin-x64@npm:1.93.2"
-  conditions: os=darwin & cpu=x64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-linux-arm64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-linux-arm64@npm:1.93.2"
-  conditions: os=linux & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-linux-arm@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-linux-arm@npm:1.93.2"
-  conditions: os=linux & cpu=arm
-  languageName: node
-  linkType: hard
-
-"sass-embedded-linux-musl-arm64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-linux-musl-arm64@npm:1.93.2"
-  conditions: os=linux & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-linux-musl-arm@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-linux-musl-arm@npm:1.93.2"
-  conditions: os=linux & cpu=arm
-  languageName: node
-  linkType: hard
-
-"sass-embedded-linux-musl-riscv64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-linux-musl-riscv64@npm:1.93.2"
-  conditions: os=linux & cpu=riscv64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-linux-musl-x64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-linux-musl-x64@npm:1.93.2"
-  conditions: os=linux & cpu=x64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-linux-riscv64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-linux-riscv64@npm:1.93.2"
-  conditions: os=linux & cpu=riscv64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-linux-x64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-linux-x64@npm:1.93.2"
-  conditions: os=linux & cpu=x64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-unknown-all@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-unknown-all@npm:1.93.2"
-  dependencies:
-    sass: "npm:1.93.2"
-  conditions: (!os=android | !os=darwin | !os=linux | !os=win32)
-  languageName: node
-  linkType: hard
-
-"sass-embedded-win32-arm64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-win32-arm64@npm:1.93.2"
-  conditions: os=win32 & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"sass-embedded-win32-x64@npm:1.93.2":
-  version: 1.93.2
-  resolution: "sass-embedded-win32-x64@npm:1.93.2"
-  conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
-"sass-embedded@npm:^1.90.0":
-  version: 1.93.2
-  resolution: "sass-embedded@npm:1.93.2"
-  dependencies:
-    "@bufbuild/protobuf": "npm:^2.5.0"
-    buffer-builder: "npm:^0.2.0"
-    colorjs.io: "npm:^0.5.0"
-    immutable: "npm:^5.0.2"
-    rxjs: "npm:^7.4.0"
-    sass-embedded-all-unknown: "npm:1.93.2"
-    sass-embedded-android-arm: "npm:1.93.2"
-    sass-embedded-android-arm64: "npm:1.93.2"
-    sass-embedded-android-riscv64: "npm:1.93.2"
-    sass-embedded-android-x64: "npm:1.93.2"
-    sass-embedded-darwin-arm64: "npm:1.93.2"
-    sass-embedded-darwin-x64: "npm:1.93.2"
-    sass-embedded-linux-arm: "npm:1.93.2"
-    sass-embedded-linux-arm64: "npm:1.93.2"
-    sass-embedded-linux-musl-arm: "npm:1.93.2"
-    sass-embedded-linux-musl-arm64: "npm:1.93.2"
-    sass-embedded-linux-musl-riscv64: "npm:1.93.2"
-    sass-embedded-linux-musl-x64: "npm:1.93.2"
-    sass-embedded-linux-riscv64: "npm:1.93.2"
-    sass-embedded-linux-x64: "npm:1.93.2"
-    sass-embedded-unknown-all: "npm:1.93.2"
-    sass-embedded-win32-arm64: "npm:1.93.2"
-    sass-embedded-win32-x64: "npm:1.93.2"
-    supports-color: "npm:^8.1.1"
-    sync-child-process: "npm:^1.0.2"
-    varint: "npm:^6.0.0"
-  dependenciesMeta:
-    sass-embedded-all-unknown:
-      optional: true
-    sass-embedded-android-arm:
-      optional: true
-    sass-embedded-android-arm64:
-      optional: true
-    sass-embedded-android-riscv64:
-      optional: true
-    sass-embedded-android-x64:
-      optional: true
-    sass-embedded-darwin-arm64:
-      optional: true
-    sass-embedded-darwin-x64:
-      optional: true
-    sass-embedded-linux-arm:
-      optional: true
-    sass-embedded-linux-arm64:
-      optional: true
-    sass-embedded-linux-musl-arm:
-      optional: true
-    sass-embedded-linux-musl-arm64:
-      optional: true
-    sass-embedded-linux-musl-riscv64:
-      optional: true
-    sass-embedded-linux-musl-x64:
-      optional: true
-    sass-embedded-linux-riscv64:
-      optional: true
-    sass-embedded-linux-x64:
-      optional: true
-    sass-embedded-unknown-all:
-      optional: true
-    sass-embedded-win32-arm64:
-      optional: true
-    sass-embedded-win32-x64:
-      optional: true
-  bin:
-    sass: dist/bin/sass.js
-  checksum: 10/1f5c6fe5e0533d54472f1b17af964e3e4361bf51e6fe4d1fea784c3f26e56d53fa570ef696ae7bf0d38a2197ac242fe450b5b0c22c1f99c8f43bec6bb0fee242
-  languageName: node
-  linkType: hard
-
-"sass@npm:1.93.2, sass@npm:^1.93.2":
+"sass@npm:^1.93.2":
   version: 1.93.2
   resolution: "sass@npm:1.93.2"
   dependencies:
@@ -10107,6 +9780,13 @@ __metadata:
   version: 2.6.0
   resolution: "set-cookie-parser@npm:2.6.0"
   checksum: 10/8d451ebadb760989f93b634942c79de3c925ca7a986d133d08a80c40b5ae713ce12e354f0d5245c49f288c52daa7bd6554d5dc52f8a4eecaaf5e192881cf2b1f
+  languageName: node
+  linkType: hard
+
+"set-cookie-parser@npm:^2.6.0":
+  version: 2.7.2
+  resolution: "set-cookie-parser@npm:2.7.2"
+  checksum: 10/4b6f5ec4e3fa1aef471d9207117704d217ba6bb6443400b41f5ea945c4a7f6fc08e405a122c1a32b4ebde41f06dea75e02c2af87cee9abb27f3e3fe911e5839b
   languageName: node
   linkType: hard
 
@@ -10874,22 +10554,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sync-child-process@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "sync-child-process@npm:1.0.2"
-  dependencies:
-    sync-message-port: "npm:^1.0.0"
-  checksum: 10/6fbdbb7b6f5730a1966d6a77cdbfe7f5cb8d1a582dab955c62c32b56dc6c432ccdbfc68027265486f8f4b1a998cc4d7ee21856e8125748bef70b8874aaedb21c
-  languageName: node
-  linkType: hard
-
-"sync-message-port@npm:^1.0.0":
-  version: 1.1.3
-  resolution: "sync-message-port@npm:1.1.3"
-  checksum: 10/a84b681afd678f28af4498074c4bc5cd5c763395fbf169f1bc9777c2e01aa8d41a3046dcca43a41e81102a7fd697713dfc03e155d1c662fec88af9481b249b8a
-  languageName: node
-  linkType: hard
-
 "systeminformation@npm:^5.27.14":
   version: 5.30.7
   resolution: "systeminformation@npm:5.30.7"
@@ -11427,15 +11091,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.2.0":
-  version: 1.6.0
-  resolution: "use-sync-external-store@npm:1.6.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/b40ad2847ba220695bff2d4ba4f4d60391c0fb4fb012faa7a4c18eb38b69181936f5edc55a522c4d20a788d1a879b73c3810952c9d0fd128d01cb3f22042c09e
-  languageName: node
-  linkType: hard
-
 "use-sync-external-store@npm:^1.4.0":
   version: 1.4.0
   resolution: "use-sync-external-store@npm:1.4.0"
@@ -11481,13 +11136,6 @@ __metadata:
     spdx-correct: "npm:^3.0.0"
     spdx-expression-parse: "npm:^3.0.0"
   checksum: 10/86242519b2538bb8aeb12330edebb61b4eb37fd35ef65220ab0b03a26c0592c1c8a7300d32da3cde5abd08d18d95e8dabfad684b5116336f6de9e6f207eec224
-  languageName: node
-  linkType: hard
-
-"varint@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "varint@npm:6.0.0"
-  checksum: 10/7684113c9d497c01e40396e50169c502eb2176203219b96e1c5ac965a3e15b4892bd22b7e48d87148e10fffe638130516b6dbeedd0efde2b2d0395aa1772eea7
   languageName: node
   linkType: hard
 

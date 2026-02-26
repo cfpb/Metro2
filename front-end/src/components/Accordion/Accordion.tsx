@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react'
 import { useState } from 'react'
 
-import { Icon } from 'design-system-react'
+import { Icon } from '@cfpb/design-system-react'
 import './Accordion.scss'
 
 export interface AccordionProperties {
@@ -23,7 +23,7 @@ export default function Accordion({
   className = '',
   isPadded = false,
   hasBorder = true,
-  hasBackground = true,
+  hasBackground = false,
   ...properties
 }: AccordionProperties): ReactElement {
   const [isExpanded, setIsExpanded] = useState(openOnLoad)

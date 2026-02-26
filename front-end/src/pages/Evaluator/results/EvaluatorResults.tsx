@@ -1,7 +1,7 @@
+import { Icon } from '@cfpb/design-system-react'
 import { ITEMS_PER_PAGE } from '@src/constants/settings'
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import Loader from 'components/Loader/Loader'
-import { Icon } from 'design-system-react'
 
 import { useEvaluatorResults } from 'queries/evaluatorHits'
 import type { ReactElement } from 'react'

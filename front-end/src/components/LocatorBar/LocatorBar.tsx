@@ -1,4 +1,4 @@
-import { Icon } from 'design-system-react'
+import { Icon } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
 import type { Breadcrumb } from './Breadcrumbs'
 
@@ -49,7 +49,12 @@ export default function LocatorBar({
         <Breadcrumbs links={breadcrumbs} data-testid='locator-bar-breadcrumbs' />
       ) : null}
       <div className='header-with-icon'>
-        <Icon name={icon} size='47px' data-testid='locator-bar-icon' />
+        <Icon
+          name={icon}
+          size='47px'
+          data-testid='locator-bar-icon'
+          isPresentational
+        />
         <div>
           {eyebrow ? (
             <div className='h5 eyebrow' data-testid='locator-bar-eyebrow'>

@@ -1,10 +1,16 @@
 /* eslint-disable react/jsx-key */
-import { Divider, Heading, List, ListItem, Paragraph } from 'design-system-react'
+import {
+  Divider,
+  Heading,
+  List,
+  ListItem,
+  Paragraph
+} from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
-import eventList from '../images/event_list.png'
 import evalList from '../images/evaluator_list.png'
-import singleEvalList from '../images/single_eval_list.png'
+import eventList from '../images/event_list.png'
 import singleAccountView from '../images/single_account_view.png'
+import singleEvalList from '../images/single_eval_list.png'
 
 export default function Explore(): ReactElement {
   return (

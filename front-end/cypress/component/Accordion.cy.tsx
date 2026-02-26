@@ -58,15 +58,14 @@ describe('Accordion.cy.tsx', () => {
     cy.findByTestId('accordion')
       .find('button')
       .find('svg')
-      .should('have.attr', 'alt', 'down')
+      .should('have.class', 'cf-icon-svg--down')
   })
 
   it('down arrow switches to up arrow on click', () => {
     cy.findByTestId('accordion')
       .find('button')
-      .find('svg')
       .click()
-      .get('svg.cf-icon-svg--up')
-      .should('have.attr', 'alt', 'up')
+      .find('svg')
+      .should('have.class', 'cf-icon-svg--up')
   })
 })

@@ -1,4 +1,4 @@
-import { Heading, Divider, Paragraph } from 'design-system-react'
+import { Divider, Heading, Paragraph } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
 import adminOne from '../images/admin_1.png'
 import adminTwo from '../images/admin_2.png'

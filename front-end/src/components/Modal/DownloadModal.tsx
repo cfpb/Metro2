@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Checkbox } from 'design-system-react'
+import { Button, ButtonGroup, Checkbox } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import { Modal, ModalFooter } from './Modal'

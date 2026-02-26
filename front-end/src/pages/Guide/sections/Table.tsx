@@ -7,7 +7,7 @@ import {
   ListItem,
   Paragraph,
   Table
-} from 'design-system-react'
+} from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
 
 export default function Features(): ReactElement {

@@ -12,6 +12,7 @@ import AccountContactInformation from './ContactInformation'
 interface AccountSummaryProperties {
   latestAccountRecord: AccountRecord
   eventId: number
+  accountId: string
 }
 
 const summaryFields = [
@@ -40,16 +41,14 @@ const summaryFields = [
 
 export default function AccountSummary({
   latestAccountRecord,
+  accountId,
   eventId
 }: AccountSummaryProperties): ReactElement {
   const summaryItems: Definition[] = [
     {
       term: 'Contact Information',
       definition: (
-        <AccountContactInformation
-          accountId={String(latestAccountRecord.cons_acct_num)}
-          eventId={eventId}
-        />
+        <AccountContactInformation accountId={accountId} eventId={eventId} />
       )
     }
   ]

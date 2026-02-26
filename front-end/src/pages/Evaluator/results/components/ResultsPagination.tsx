@@ -1,5 +1,5 @@
+import { Pagination } from '@cfpb/design-system-react'
 import { useNavigate } from '@tanstack/react-router'
-import { Pagination } from 'design-system-react'
 import type { ReactElement } from 'react'
 
 interface EvaluatorPaginationData {
