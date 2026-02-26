@@ -6,7 +6,7 @@ from parse_m2.m2_parser import M2FileParser
 from parse_m2 import parse_utils
 from parse_m2.models import (
     Metro2Event, UnparseableData,
-    AccountHolder, AccountActivity,
+    AccountActivity,
     J1, J2, K1, K2, K3, K4, L1, N1
 )
 
@@ -29,8 +29,8 @@ class ParserTestCase(TestCase):
         self.activity_date = date(2021, 1, 1)
         self.account_activity = AccountActivity(
             data_file=self.parser.file_record, activity_date = self.activity_date)
-        self.account_holder = AccountHolder(
-            account_activity=self.account_activity, activity_date = self.activity_date)
+        # self.account_holder = AccountHolder(
+        #     account_activity=self.account_activity, activity_date = self.activity_date)
 
     ############################
     # Tests for the whole parsing process
@@ -42,7 +42,7 @@ class ParserTestCase(TestCase):
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
-            self.assertEqual(AccountHolder.objects.count(), 3)
+            # self.assertEqual(AccountHolder.objects.count(), 3)
             self.assertEqual(AccountActivity.objects.count(), 3)
             self.assertEqual(J1.objects.count(), 2)
             self.assertEqual(J2.objects.count(), 1)
@@ -74,13 +74,13 @@ class ParserTestCase(TestCase):
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
-            self.assertEqual(AccountHolder.objects.count(), 3)
+            # self.assertEqual(AccountHolder.objects.count(), 3)
             self.assertEqual(J1.objects.count(), 2)
             self.assertEqual(J2.objects.count(), 1)
 
-            account_1 = AccountHolder.objects.get(cons_acct_num='ACCTNUMBER1')
-            account_2 = AccountHolder.objects.get(cons_acct_num='ACCTNUMBER2')
-            account_3 = AccountHolder.objects.get(cons_acct_num='ACCTNUMBER3')
+            account_1 = AccountActivity.objects.get(cons_acct_num='ACCTNUMBER1')
+            account_2 = AccountActivity.objects.get(cons_acct_num='ACCTNUMBER2')
+            account_3 = AccountActivity.objects.get(cons_acct_num='ACCTNUMBER3')
 
             # The test file first row contains multiple J1 segments
             self.assertEqual(account_1.cons_info_ind_assoc, ['1A', 'A'])
@@ -111,7 +111,7 @@ class ParserTestCase(TestCase):
 
             # The test file contains the following segments:
             self.assertEqual(UnparseableData.objects.count(), 1)
-            self.assertEqual(AccountHolder.objects.count(), 2)
+            # self.assertEqual(AccountHolder.objects.count(), 2)
             self.assertEqual(AccountActivity.objects.count(), 2)
             self.assertEqual(K1.objects.count(), 1)
             self.assertEqual(K2.objects.count(), 1)
@@ -124,7 +124,7 @@ class ParserTestCase(TestCase):
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
-            self.assertEqual(AccountHolder.objects.count(), 3)
+            # self.assertEqual(AccountHolder.objects.count(), 3)
             self.assertEqual(AccountActivity.objects.count(), 3)
 
             # The file contains empty placeholders for the extra segments,
@@ -257,7 +257,7 @@ class ParserTestCase(TestCase):
 
             # Everything else should be empty
             self.assertEqual(UnparseableData.objects.count(), 0)
-            self.assertEqual(AccountHolder.objects.count(), 0)
+            # self.assertEqual(AccountHolder.objects.count(), 0)
             self.assertEqual(AccountActivity.objects.count(), 0)
             self.assertEqual(K1.objects.count(), 0)
             self.assertEqual(K2.objects.count(), 0)

@@ -3,13 +3,13 @@ from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
 
 from parse_m2.admin import (
-    AccountHolderAdmin, AccountActivityAdmin,
+    AccountActivityAdmin,
     J1Admin, J2Admin, K1Admin, K2Admin, K3Admin,
     K4Admin, L1Admin, N1Admin, Metro2EventAdmin,
     M2DataFileAdmin, UnparseableDataAdmin
 )
 from parse_m2.models import (
-    AccountHolder, AccountActivity,
+    AccountActivity,
     J1, J2, K1, K2, K3, K4, L1, N1,
     Metro2Event, M2DataFile,
     UnparseableData
@@ -70,22 +70,22 @@ class UnparseableDataAdminTestCase(TestCase):
     def test_delete_permission_is_false(self):
         self.assertFalse(self.ma.has_delete_permission(self.request))
 
-class AccountHolderAdminTestCase(TestCase):
-    def setUp(self):
-        self.request = MockRequest()
-        self.ma = AccountHolderAdmin(AccountHolder, AdminSite())
-
-    def test_add_permission_is_false(self):
-        self.assertFalse(self.ma.has_add_permission(self.request))
-
-    def test_view_permission_is_true(self):
-        self.assertTrue(self.ma.has_view_permission(self.request))
-
-    def test_change_permission_is_false(self):
-        self.assertFalse(self.ma.has_change_permission(self.request))
-
-    def test_delete_permission_is_false(self):
-        self.assertFalse(self.ma.has_delete_permission(self.request))
+# class AccountHolderAdminTestCase(TestCase):
+#     def setUp(self):
+#         self.request = MockRequest()
+#         self.ma = AccountHolderAdmin(AccountHolder, AdminSite())
+# 
+#     def test_add_permission_is_false(self):
+#         self.assertFalse(self.ma.has_add_permission(self.request))
+# 
+#     def test_view_permission_is_true(self):
+#         self.assertTrue(self.ma.has_view_permission(self.request))
+# 
+#     def test_change_permission_is_false(self):
+#         self.assertFalse(self.ma.has_change_permission(self.request))
+# 
+#     def test_delete_permission_is_false(self):
+#         self.assertFalse(self.ma.has_delete_permission(self.request))
 
 class AccountActivityAdminTestCase(TestCase):
     def setUp(self):

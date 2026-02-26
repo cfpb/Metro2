@@ -128,6 +128,30 @@ class AccountActivity(models.Model):
     dolp = models.DateField(null=True)
     int_type_ind = models.CharField(max_length=200)
 
+    # Person-related fields
+    cons_info_ind_assoc = JSONField(encoder=DjangoJSONEncoder, null=True)
+    ecoa_assoc = JSONField(encoder=DjangoJSONEncoder, null=True)
+    surname = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200)
+    middle_name = models.CharField(max_length=200)
+    gen_code = models.CharField(max_length=200)
+    ssn = models.CharField(max_length=200)
+    dob = models.CharField(max_length=200)
+    phone_num = models.CharField(max_length=200)
+    ecoa = models.CharField(max_length=200)
+    cons_info_ind = models.CharField(max_length=200)
+    # Address-related fields
+    cons_info_ind_assoc = JSONField(encoder=DjangoJSONEncoder, null=True)
+    country_cd = models.CharField(max_length=200)
+    addr_line_1 = models.CharField(max_length=200)
+    addr_line_2 = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    state = models.CharField(max_length=200)
+    zip = models.CharField(max_length=200)
+    addr_ind = models.CharField(max_length=200)
+    res_cd = models.CharField(max_length=200)
+
+
     @classmethod
     def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date):
         # Construct the php1 field from php
@@ -165,53 +189,6 @@ class AccountActivity(models.Model):
             date_closed = get_field_value(fields.base_fields, "date_closed", base_seg),
             dolp = get_field_value(fields.base_fields, "dolp", base_seg),
             int_type_ind = get_field_value(fields.base_fields, "int_type_ind", base_seg),
-        )
-
-    def save(self, *args, **kwargs):
-        if not self.php1:
-            self.php1 = self.php[0] if self.php else ""
-        super().save(*args, **kwargs)
-
-
-class AccountHolder(models.Model):
-    class Meta:
-        verbose_name_plural = "Account Holders"
-
-    account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE, related_name='account_holder')
-    activity_date = models.DateField()
-    cons_acct_num = models.CharField(max_length=200)
-    # Person-related fields
-    cons_info_ind_assoc = JSONField(encoder=DjangoJSONEncoder, null=True)
-    ecoa_assoc = JSONField(encoder=DjangoJSONEncoder, null=True)
-    surname = models.CharField(max_length=200)
-    first_name = models.CharField(max_length=200)
-    middle_name = models.CharField(max_length=200)
-    gen_code = models.CharField(max_length=200)
-    ssn = models.CharField(max_length=200)
-    dob = models.CharField(max_length=200)
-    phone_num = models.CharField(max_length=200)
-    ecoa = models.CharField(max_length=200)
-    cons_info_ind = models.CharField(max_length=200)
-    # Address-related fields
-    cons_info_ind_assoc = JSONField(encoder=DjangoJSONEncoder, null=True)
-    country_cd = models.CharField(max_length=200)
-    addr_line_1 = models.CharField(max_length=200)
-    addr_line_2 = models.CharField(max_length=200)
-    city = models.CharField(max_length=200)
-    state = models.CharField(max_length=200)
-    zip = models.CharField(max_length=200)
-    addr_ind = models.CharField(max_length=200)
-    res_cd = models.CharField(max_length=200)
-
-    # def __str__(self) -> str:
-        # return f"AccountHolder {self.id} (File ID: {self.data_file.id})"
-
-    @classmethod
-    def parse_from_segment(cls, base_seg: str, acct_activity: AccountActivity, activity_date):
-        return cls(
-            activity_date = activity_date,
-            account_activity = acct_activity,
-            cons_acct_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg),
 
             # Person-related values
             surname = get_field_value(fields.base_fields, "surname", base_seg),
@@ -234,6 +211,32 @@ class AccountHolder(models.Model):
             addr_ind = get_field_value(fields.base_fields, "addr_ind", base_seg),
             res_cd = get_field_value(fields.base_fields, "res_cd", base_seg),
         )
+
+    def save(self, *args, **kwargs):
+        if not self.php1:
+            self.php1 = self.php[0] if self.php else ""
+        super().save(*args, **kwargs)
+
+
+# class AccountHolder(models.Model):
+#     class Meta:
+#         verbose_name_plural = "Account Holders"
+# 
+#     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE, related_name='account_holder')
+#     activity_date = models.DateField()
+#     cons_acct_num = models.CharField(max_length=200)
+# 
+#     # def __str__(self) -> str:
+#         # return f"AccountHolder {self.id} (File ID: {self.data_file.id})"
+# 
+#     @classmethod
+#     def parse_from_segment(cls, base_seg: str, acct_activity: AccountActivity, activity_date):
+#         return cls(
+#             activity_date = activity_date,
+#             account_activity = acct_activity,
+#             cons_acct_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg),
+# 
+#         )
 
 ##########################################
 ## Extra segment models

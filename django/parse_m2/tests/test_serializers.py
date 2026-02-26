@@ -2,7 +2,7 @@ from datetime import date
 from django.test import TestCase
 from parse_m2.initiate_post_parsing import post_parse
 from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import K2, K4, L1, Metro2Event, M2DataFile, AccountHolder, AccountActivity
+from parse_m2.models import K2, K4, L1, Metro2Event, M2DataFile, AccountActivity
 from rest_framework.renderers import JSONRenderer
 from parse_m2.serializers import (
     AccountActivitySerializer,
@@ -42,11 +42,9 @@ class AccountActivitySerializerTestCase(TestCase):
             date_closed=None,
             dolp=date(2023,1,1),
             int_type_ind="int_type_ind",
+            surname="Doe", first_name="Jane",
+            cons_info_ind_assoc=["1A", "B"], ecoa_assoc=["2", "1"]
         )
-        AccountHolder.objects.create(
-            account_activity=self.acct_activity, activity_date=date(2023, 11, 30),
-            surname="Doe", first_name="Jane", cons_acct_num="98765",
-            cons_info_ind_assoc=["1A", "B"], ecoa_assoc=["2", "1"])
         K2.objects.create(account_activity=self.acct_activity, purch_sold_name="Fake")
         K4.objects.create(account_activity=self.acct_activity, balloon_pmt_amt=11854)
         L1.objects.create(account_activity=self.acct_activity, change_ind="2",
@@ -55,8 +53,8 @@ class AccountActivitySerializerTestCase(TestCase):
             "id": self.acct_activity.id,
             "inconsistencies": [],
             "activity_date": "2023-11-20",
-            "account_holder__surname": "Doe",
-            "account_holder__first_name": "Jane",
+            "surname": "Doe",
+            "first_name": "Jane",
             "port_type": "port_type",
             "acct_type": "acct_type",
             "date_open": "2020-03-17",
@@ -81,10 +79,10 @@ class AccountActivitySerializerTestCase(TestCase):
             "date_closed": None,
             "dolp": "2023-01-01",
             "int_type_ind": "int_type_ind",
-            "account_holder__cons_info_ind": '',
-            "account_holder__ecoa": '',
-            "account_holder__cons_info_ind_assoc": ["1A", "B"],
-            "account_holder__ecoa_assoc": ["2", "1"],
+            "cons_info_ind": '',
+            "ecoa": '',
+            "cons_info_ind_assoc": ["1A", "B"],
+            "ecoa_assoc": ["2", "1"],
             "k2__purch_sold_ind": '',
             "k2__purch_sold_name": "Fake",
             "k4__balloon_pmt_amt": 11854,
@@ -92,6 +90,7 @@ class AccountActivitySerializerTestCase(TestCase):
             "l1__new_id_num": "0032",
             "l1__new_acc_num": "32",
         }
+        # ATTENTION!! This part of teh API is changing -- removing the account_holder__ previx
 
     def test_account_activity_serializer(self):
         serializer = AccountActivitySerializer(self.acct_activity)
@@ -120,7 +119,7 @@ class AccountHolderSerializerTestCase(TestCase):
         event = Metro2Event(name="test")
         event.save()
         file = M2DataFile.objects.create(event=event, file_name="test.txt")
-        acct_activity = acct_record(file, {
+        self.acct_activity = acct_record(file, {
             "activity_date": test_date,
             "cons_acct_num": "12345",
             "surname": "Doe",
@@ -134,10 +133,8 @@ class AccountHolderSerializerTestCase(TestCase):
             "cons_info_ind": "Z"
         })
 
-        self.acct_holder = acct_activity.account_holder
-
         self.json_representation = {
-            "id": self.acct_holder.id,
+            "id": self.acct_activity.id,
             "surname": "Doe",
             "first_name": "Jane",
             "middle_name": "A",
@@ -159,11 +156,11 @@ class AccountHolderSerializerTestCase(TestCase):
         }
 
     def test_account_holder_serializer(self):
-        serializer = AccountHolderSerializer(self.acct_holder)
+        serializer = AccountHolderSerializer(self.acct_activity)
         self.assertEqual(serializer.data, self.json_representation)
 
     def test_account_holder_serializer_many_true(self):
-        acct_holders = [self.acct_holder]
+        acct_holders = [self.acct_activity]
         serializer = AccountHolderSerializer(acct_holders, many=True)
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render([self.json_representation])

@@ -6,7 +6,7 @@ from django.urls import path, reverse
 from django.utils.html import format_html
 
 from parse_m2.models import (
-    AccountHolder, AccountActivity,
+    AccountActivity,
     J1, J2, K1, K2, K3, K4, L1, N1,
     Metro2Event, M2DataFile,
     UnparseableData
@@ -104,24 +104,14 @@ class AccountActivityAdmin(admin.ModelAdmin):
                     'terms_freq', 'smpa', 'actual_pmt_amt', 'acct_stat', 'pmt_rating',
                     'php', 'spc_com_cd', 'compl_cond_cd', 'current_bal', 'amt_past_due',
                     'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp',
-                    'int_type_ind']
-
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-class AccountHolderAdmin(admin.ModelAdmin):
-    list_display = ['account_activity', 'activity_date', 'cons_acct_num', 'surname',
+                    'int_type_ind'] + \
+    ['surname',
                     'first_name', 'middle_name', 'gen_code','ssn', 'dob',
                     'phone_num', 'ecoa', 'cons_info_ind', 'country_cd',
                     'addr_line_1', 'addr_line_2', 'city', 'state', 'zip',
                     'addr_ind', 'res_cd', 'cons_info_ind_assoc',
                     'ecoa_assoc']
+
     def has_add_permission(self, request, obj=None):
         return False
     def has_view_permission(self, request, obj=None):
@@ -130,6 +120,16 @@ class AccountHolderAdmin(admin.ModelAdmin):
         return False
     def has_delete_permission(self, request, obj=None):
         return False
+
+# class AccountHolderAdmin(admin.ModelAdmin):
+#     def has_add_permission(self, request, obj=None):
+#         return False
+#     def has_view_permission(self, request, obj=None):
+#         return True
+#     def has_change_permission(self, request, obj=None):
+#         return False
+#     def has_delete_permission(self, request, obj=None):
+#         return False
 
 class J1Admin(admin.ModelAdmin):
     list_display = ['account_activity', 'surname',
@@ -245,7 +245,7 @@ admin.site.register(Metro2Event, Metro2EventAdmin)
 admin.site.register(M2DataFile, M2DataFileAdmin)
 admin.site.register(UnparseableData, UnparseableDataAdmin)
 admin.site.register(AccountActivity, AccountActivityAdmin)
-admin.site.register(AccountHolder, AccountHolderAdmin)
+# admin.site.register(AccountHolder, AccountHolderAdmin)
 admin.site.register(J1, J1Admin)
 admin.site.register(J2, J2Admin)
 admin.site.register(K1, K1Admin)

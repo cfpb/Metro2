@@ -41,8 +41,8 @@ class EvaluatorMetadata(models.Model):
         'pmt_rating',
         'spc_com_cd',
         'terms_freq',
-        'account_holder__cons_info_ind',
-        'account_holder__cons_info_ind_assoc',
+        'cons_info_ind',
+        'cons_info_ind_assoc',
         'l1__change_ind',
         'dofd',
         'date_closed',
@@ -68,6 +68,8 @@ class EvaluatorMetadata(models.Model):
             self.fields_used + \
             self.fields_display + \
             self.filterable_fields
+
+        # ATTENTION: this means we'll need to update the metadata to remove the account_holder__ previx from all fields
 
         dups_removed = [*dict.fromkeys(fieldset)]
         return dups_removed

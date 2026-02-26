@@ -5,7 +5,7 @@ from unittest.mock import patch
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
 from parse_m2.initiate_parsing_utils import parsed_file_exists
-from parse_m2.models import Metro2Event, M2DataFile, AccountHolder, UnparseableData
+from parse_m2.models import Metro2Event, M2DataFile, AccountActivity, UnparseableData
 
 
 class InitiateLocalParsingTestCase(TestCase):
@@ -26,7 +26,7 @@ class InitiateLocalParsingTestCase(TestCase):
         # one M2DataFile object for each file
         self.assertEqual(M2DataFile.objects.count(), 3)
         # 3 records in the first file, 2 in the second
-        self.assertEqual(AccountHolder.objects.count(), 5)
+        self.assertEqual(AccountActivity.objects.count(), 5)
 
     def test_file_with_bad_extension(self):
         parse_files_from_local_filesystem(self.event)
@@ -51,7 +51,7 @@ class InitiateLocalParsingTestCase(TestCase):
         # the zip contained 1 file
         self.assertEqual(M2DataFile.objects.count(), 1)
         # the file contained 1997 parseable records
-        self.assertEqual(AccountHolder.objects.count(), 1997)
+        self.assertEqual(AccountActivity.objects.count(), 1997)
 
 
 class InitiateS3ParsingTestCase(TestCase):
@@ -69,7 +69,7 @@ class InitiateS3ParsingTestCase(TestCase):
             self.assertEqual(file.file_name, "s3:test-tiny/m2_2k_lines_deidentified.TXT")
 
             # The test file should contain 1998 base segments
-            self.assertEqual(AccountHolder.objects.count(), 1998)
+            self.assertEqual(AccountActivity.objects.count(), 1998)
 
     def xtest_fetch_s3_zip(self):
         with patch.dict('os.environ', {'AWS_PROFILE': 'prof'}):
@@ -83,7 +83,7 @@ class InitiateS3ParsingTestCase(TestCase):
             self.assertEqual(file.file_name, expected_name)
 
             # The test file should contain 1997 valid base segments and one unparseable
-            self.assertEqual(AccountHolder.objects.count(), 1997)
+            self.assertEqual(AccountActivity.objects.count(), 1997)
             self.assertEqual(UnparseableData.objects.count(), 1)
 
 class InitiateParsingUtilsTestCase(TestCase):

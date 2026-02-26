@@ -4,7 +4,7 @@ from datetime import datetime, date, timedelta
 
 from parse_m2 import fields
 from parse_m2.models import (
-    AccountActivity, AccountHolder, J1, J2, K4
+    AccountActivity, J1, J2, K4
 )
 
 
@@ -19,8 +19,7 @@ def save_m2_file(filename: str, size: int, activity_date: date):
 def write_one_row(f, activity_date: date, acct_num: int) -> str:
     # Write base segment
     acct_activity = generate_acct_activity(activity_date, acct_num)
-    acct_holder = generate_acct_holder(acct_num)
-    f.write(base_segment_data(acct_activity, acct_holder))
+    f.write(base_segment_data(acct_activity))
 
     # Write some extra segments
     for segment_type in pick_extra_segments():
@@ -78,10 +77,7 @@ def generate_acct_activity(activity_date: date, acct_num: int) -> AccountActivit
         date_closed = None,  # assuming not closed (for now)
         dolp = random_date(activity_date - timedelta(days=90), activity_date),  # a date in the 3 months before activity_date
         int_type_ind = 'F',  # fixed interest
-    )
 
-def generate_acct_holder(acct_num: int) -> AccountHolder:
-    return AccountHolder(
         # Person-related fields
         cons_info_ind = random.choices(cons_info_inds, weights=cii_weights, k=1)[0],
         first_name = 'FIRSTNAME',
@@ -102,6 +98,10 @@ def generate_acct_holder(acct_num: int) -> AccountHolder:
         addr_ind = '',
         res_cd = '',
     )
+
+# def generate_acct_holder(acct_num: int) -> AccountHolder:
+#     return AccountHolder(
+#     )
 
 def generate_j1() -> J1:
     return J1(
@@ -200,7 +200,7 @@ def header_segment_data(activity_date: date) -> str:
     seg = set_field_value(fields.header_fields, 'activity_date', activity_date, seg)
     return seg
 
-def base_segment_data(acct_activity: AccountActivity, acct_hldr: AccountHolder):
+def base_segment_data(acct_activity: AccountActivity):
     # start with a string of 426 meaningless characters
     seg = blank_segment("base")
     bf = fields.base_fields
@@ -233,23 +233,23 @@ def base_segment_data(acct_activity: AccountActivity, acct_hldr: AccountHolder):
     seg = set_field_value(bf, "int_type_ind", acct_activity.int_type_ind, seg)
 
     # AccountHolder fields
-    seg = set_field_value(bf, "surname", acct_hldr.surname, seg)
-    seg = set_field_value(bf, "first_name", acct_hldr.first_name, seg)
-    seg = set_field_value(bf, "middle_name", acct_hldr.middle_name, seg)
-    seg = set_field_value(bf, "gen_code", acct_hldr.gen_code, seg)
-    seg = set_field_value(bf, "ssn", acct_hldr.ssn, seg)
-    seg = set_field_value(bf, "dob", acct_hldr.dob, seg)
-    seg = set_field_value(bf, "phone_num", acct_hldr.phone_num, seg)
-    seg = set_field_value(bf, "ecoa", acct_hldr.ecoa, seg)
-    seg = set_field_value(bf, "cons_info_ind", acct_hldr.cons_info_ind, seg)
-    seg = set_field_value(bf, "country_cd", acct_hldr.country_cd, seg)
-    seg = set_field_value(bf, "addr_line_1", acct_hldr.addr_line_1, seg)
-    seg = set_field_value(bf, "addr_line_2", acct_hldr.addr_line_2, seg)
-    seg = set_field_value(bf, "city", acct_hldr.city, seg)
-    seg = set_field_value(bf, "state", acct_hldr.state, seg)
-    seg = set_field_value(bf, "zip", acct_hldr.zip, seg)
-    seg = set_field_value(bf, "addr_ind", acct_hldr.addr_ind, seg)
-    seg = set_field_value(bf, "res_cd", acct_hldr.res_cd, seg)
+    seg = set_field_value(bf, "surname", acct_activity.surname, seg)
+    seg = set_field_value(bf, "first_name", acct_activity.first_name, seg)
+    seg = set_field_value(bf, "middle_name", acct_activity.middle_name, seg)
+    seg = set_field_value(bf, "gen_code", acct_activity.gen_code, seg)
+    seg = set_field_value(bf, "ssn", acct_activity.ssn, seg)
+    seg = set_field_value(bf, "dob", acct_activity.dob, seg)
+    seg = set_field_value(bf, "phone_num", acct_activity.phone_num, seg)
+    seg = set_field_value(bf, "ecoa", acct_activity.ecoa, seg)
+    seg = set_field_value(bf, "cons_info_ind", acct_activity.cons_info_ind, seg)
+    seg = set_field_value(bf, "country_cd", acct_activity.country_cd, seg)
+    seg = set_field_value(bf, "addr_line_1", acct_activity.addr_line_1, seg)
+    seg = set_field_value(bf, "addr_line_2", acct_activity.addr_line_2, seg)
+    seg = set_field_value(bf, "city", acct_activity.city, seg)
+    seg = set_field_value(bf, "state", acct_activity.state, seg)
+    seg = set_field_value(bf, "zip", acct_activity.zip, seg)
+    seg = set_field_value(bf, "addr_ind", acct_activity.addr_ind, seg)
+    seg = set_field_value(bf, "res_cd", acct_activity.res_cd, seg)
     return seg
 
 def j1_segment_data(j1: J1) -> str:

@@ -2,7 +2,7 @@ from datetime import date
 from evaluate_m2.evaluate import evaluator
 
 from parse_m2.models import (
-    AccountActivity, AccountHolder, J1,
+    AccountActivity,  J1,
     J2, K2, K4, L1, M2DataFile, Metro2Event
 )
 
@@ -99,15 +99,7 @@ def acct_record(file: M2DataFile, custom_values: dict) -> AccountActivity:
         date_closed = values["date_closed"],
         dolp = values["dolp"],
         int_type_ind = values["int_type_ind"],
-    )
-    acct_activity.save()
-
-    # Create the AccountHolder record with provided values
-    acct_holder = AccountHolder(
-        id=values["id"],
-        account_activity=acct_activity,
-        activity_date=values["activity_date"],
-        cons_acct_num = values["cons_acct_num"],
+        #acct holder values
         cons_info_ind = values["cons_info_ind"],
         first_name = values["first_name"],
         middle_name = values["middle_name"],
@@ -120,7 +112,7 @@ def acct_record(file: M2DataFile, custom_values: dict) -> AccountActivity:
         ecoa_assoc = values["ecoa_assoc"],
         ecoa = values["ecoa"],
     )
-    acct_holder.save()
+    acct_activity.save()
     return acct_activity
 
 def k2_record(custom_values: dict):
