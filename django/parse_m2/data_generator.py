@@ -99,10 +99,6 @@ def generate_acct_activity(activity_date: date, acct_num: int) -> AccountActivit
         res_cd = '',
     )
 
-# def generate_acct_holder(acct_num: int) -> AccountHolder:
-#     return AccountHolder(
-#     )
-
 def generate_j1() -> J1:
     return J1(
         cons_info_ind = random.choices(cons_info_inds, weights=cii_weights, k=1)[0],

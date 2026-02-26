@@ -218,26 +218,6 @@ class AccountActivity(models.Model):
         super().save(*args, **kwargs)
 
 
-# class AccountHolder(models.Model):
-#     class Meta:
-#         verbose_name_plural = "Account Holders"
-# 
-#     account_activity = models.OneToOneField(AccountActivity, on_delete=models.CASCADE, related_name='account_holder')
-#     activity_date = models.DateField()
-#     cons_acct_num = models.CharField(max_length=200)
-# 
-#     # def __str__(self) -> str:
-#         # return f"AccountHolder {self.id} (File ID: {self.data_file.id})"
-# 
-#     @classmethod
-#     def parse_from_segment(cls, base_seg: str, acct_activity: AccountActivity, activity_date):
-#         return cls(
-#             activity_date = activity_date,
-#             account_activity = acct_activity,
-#             cons_acct_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg),
-# 
-#         )
-
 ##########################################
 ## Extra segment models
 ##########################################

@@ -121,16 +121,6 @@ class AccountActivityAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-# class AccountHolderAdmin(admin.ModelAdmin):
-#     def has_add_permission(self, request, obj=None):
-#         return False
-#     def has_view_permission(self, request, obj=None):
-#         return True
-#     def has_change_permission(self, request, obj=None):
-#         return False
-#     def has_delete_permission(self, request, obj=None):
-#         return False
-
 class J1Admin(admin.ModelAdmin):
     list_display = ['account_activity', 'surname',
                     'first_name', 'middle_name', 'gen_code','ssn',
@@ -245,7 +235,6 @@ admin.site.register(Metro2Event, Metro2EventAdmin)
 admin.site.register(M2DataFile, M2DataFileAdmin)
 admin.site.register(UnparseableData, UnparseableDataAdmin)
 admin.site.register(AccountActivity, AccountActivityAdmin)
-# admin.site.register(AccountHolder, AccountHolderAdmin)
 admin.site.register(J1, J1Admin)
 admin.site.register(J2, J2Admin)
 admin.site.register(K1, K1Admin)

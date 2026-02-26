@@ -11,23 +11,17 @@ def acct_record(file: M2DataFile, custom_values: dict) -> AccountActivity:
     """
     Returns an AccountActivity record for use in tests, using the values
     provided, or defaulting to basic values where none are provided.
-    Also creates the AccountHolder record associated with the AccountActivity
-    record.
 
     Inputs:
-    - file: M2DataFile record the AccountHolder record will be associated with
+    - file: M2DataFile record the AccountActivity record will be associated with
     - custom_values: Dict of values to override the defaults. Keys should match
-                     the field names in the AccountActivity and AccountHolder models
+                     the field names in the AccountActivity model
     """
     # Set basic defaults for all values in AccountActivity.
-    # If we end up needing more values in AccountHolder, add
-    # them here as well.
     default_values = {
-        # Shared values (used in both AccountHolder and AccountActivity)
+        "id":"1",
         "activity_date": date(2022, 5, 30),
         "cons_acct_num": "",
-        # AccountActivity values
-        "id":"1",
         "previous_values": None,
         "port_type": "A",
         "acct_type": "",
@@ -200,15 +194,12 @@ def create_bulk_acct_record(file: M2DataFile, value_list: dict, size: int):
     """
     Returns a list of AccountActivity records for use in tests, using the values
     provided, or defaulting to basic values where none are provided.
-    Also creates the AccountHolder records associated with the AccountActivity
-    record.
 
     Inputs:
-    - file: M2DataFile record the AccountHolder records will be associated with
+    - file: M2DataFile record the AccountActivity records will be associated with
     - value_list: Dict of lists to convert to list of dict to override default_values.
-                     Keys should match the field names in the AccountActivity and
-                     AccountHolder models
-    - size: The number of AccountActivity and AccountHolder records to create
+                     Keys should match the field names in the AccountActivity model
+    - size: The number of AccountActivity records to create
     """
     account_activities:list[AccountActivity] = []
     # Convert dictionary of list to list of dictionaries
@@ -231,7 +222,6 @@ def create_bulk_JSegments(j_type: str, value_list: dict, size: int):
                      Keys should match the field names in the J Segments
     - size: The number of J Segments to create
     """
-    # Create bulk account holder data
     j_segments=[]
 
     # Convert dictionary of list to list of dictionaries

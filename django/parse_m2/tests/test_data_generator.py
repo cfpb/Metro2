@@ -38,7 +38,6 @@ class GenerateDataTestCase(TestCase):
             self.assertEqual(M2DataFile.objects.first().activity_date, activity_date)
 
             # The file contains the following segments:
-            # self.assertEqual(AccountHolder.objects.count(), 10)
             self.assertEqual(AccountActivity.objects.count(), 10)
 
             # The test file may contain some of these:
@@ -83,10 +82,8 @@ class GenerateDataTestCase(TestCase):
 
         # Parse the serialized record so we can check that the values serialized correctly
         parsed_r1_act = AccountActivity.parse_from_segment(serialized_r1, m2df, date(2022,1,1))
-        # parsed_r1_holder = AccountHolder.parse_from_segment(serialized_r1, parsed_r1_act, date(2022,1,1))
 
         self.assertEqual(parsed_r1_act.acct_stat, r1_act.acct_stat)
-        # self.assertEqual(parsed_r1_holder.cons_acct_num, r1_holder.cons_acct_num)
         self.assertEqual(parsed_r1_act.doai, r1_act.doai)
 
     def test_j1(self):

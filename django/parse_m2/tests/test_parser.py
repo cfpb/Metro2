@@ -29,8 +29,6 @@ class ParserTestCase(TestCase):
         self.activity_date = date(2021, 1, 1)
         self.account_activity = AccountActivity(
             data_file=self.parser.file_record, activity_date = self.activity_date)
-        # self.account_holder = AccountHolder(
-        #     account_activity=self.account_activity, activity_date = self.activity_date)
 
     ############################
     # Tests for the whole parsing process
@@ -257,7 +255,6 @@ class ParserTestCase(TestCase):
 
             # Everything else should be empty
             self.assertEqual(UnparseableData.objects.count(), 0)
-            # self.assertEqual(AccountHolder.objects.count(), 0)
             self.assertEqual(AccountActivity.objects.count(), 0)
             self.assertEqual(K1.objects.count(), 0)
             self.assertEqual(K2.objects.count(), 0)

@@ -21,8 +21,6 @@ class ParserModelsTestCase(TestCase):
         self.activity_date = date(2021, 1, 1)
         self.account_activity = AccountActivity(data_file = self.data_file,
                                                 activity_date = self.activity_date)
-        # self.account_holder = AccountHolder(account_activity = self.account_activity,
-        #                                     activity_date = self.activity_date)
 
     def create_exam_activity(self):
         acct_date=date(2019, 12, 31)
@@ -93,12 +91,6 @@ class ParserModelsTestCase(TestCase):
             self.assertEqual(result.first_name, "FIRSTNAME1")
             self.assertEqual(result.country_cd, "US")
             self.assertEqual(result.phone_num, "3333334444")
-
-    # def test_parse_account_holder(self):
-    #     with open(self.base_seg) as file:
-    #         base_segment = file.readline()
-    #         result = AccountHolder.parse_from_segment(base_segment, self.account_activity, self.activity_date)
-    #         self.assertIsInstance(result, AccountHolder)
 
     def test_parse_j1(self):
         filename = os.path.join('parse_m2', 'tests', 'sample_files', 'j1_segment.txt')
