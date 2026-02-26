@@ -21,6 +21,7 @@ export default function AccountOverview({
         <AccountSummary
           latestAccountRecord={accountData.account_activity[0]}
           eventId={eventData.id}
+          accountId={accountData.cons_acct_num}
         />
       </div>
       {accountData.inconsistencies.length > 0 ? (

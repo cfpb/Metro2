@@ -1,4 +1,4 @@
-import { Button } from 'design-system-react'
+import { Button } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import { acceptPIIWarning, hasAcceptedPIIWarning } from 'utils/cookies'

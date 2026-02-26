@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 
-import { Checkbox } from 'design-system-react'
+import { Checkbox } from '@cfpb/design-system-react'
 
 interface BooleanFilterData {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void

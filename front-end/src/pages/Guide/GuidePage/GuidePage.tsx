@@ -1,5 +1,5 @@
+import { Layout, List, ListItem, Paragraph } from '@cfpb/design-system-react'
 import { Link, Outlet } from '@tanstack/react-router'
-import { Layout, List, ListItem, Paragraph } from 'design-system-react'
 import type { ReactElement } from 'react'
 import './GuidePage.scss'
 

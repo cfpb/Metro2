@@ -1,4 +1,4 @@
-import { Icon } from 'design-system-react'
+import { Icon } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
 import './TabbedNavigation.scss'
 
@@ -33,7 +33,7 @@ export default function TabbedNavigation({
             key={tab.id}
             id={String(tab.id)}
             data-testid={tab.id}>
-            <Icon name={tab.icon} />
+            <Icon name={tab.icon} isPresentational />
             <span className='link-text'>{tab.text}</span>
           </button>
         ))}

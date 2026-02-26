@@ -47,11 +47,11 @@ export class Metro2Modal {
   }
 
   getCloseButton() {
-    return cy.get('button').contains('Cancel')
+    return cy.contains('button', 'Cancel')
   }
 
   getSaveButton() {
-    return cy.get('button').contains('Download')
+    return cy.contains('button', 'Download')
   }
 
   verifyPrivacyCheckboxRequired() {

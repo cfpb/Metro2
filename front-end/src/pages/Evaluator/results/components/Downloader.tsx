@@ -1,7 +1,7 @@
+import { Button } from '@cfpb/design-system-react'
 import DownloadModal from '@src/components/Modal/DownloadModal'
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 import CopyUrl from 'components/CopyUrl'
-import { Button } from 'design-system-react'
 import { useEvaluatorResults } from 'queries/evaluatorHits'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
