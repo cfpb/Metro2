@@ -40,7 +40,7 @@ const L1_CHANGE_INDICATOR_LOOKUP = {
 }
 
 export const PAYMENT_RATING_LOOKUP = {
-  '0': '0–29 days past the due date (current account)',
+  '0': '0-29 days past the due date (current account)',
   '1': '30-59 days past the due date',
   '2': '60-89 days past the due date',
   '3': '90-119 days past the due date',
@@ -52,7 +52,7 @@ export const PAYMENT_RATING_LOOKUP = {
 }
 
 export const PAYMENT_HISTORY_PROFILE_LOOKUP = {
-  '0': '0 – 29 days past due date (current account)',
+  '0': '0 - 29 days past due date (current account)',
   '1': '30 - 59 days past due date',
   '2': '60 - 89 days past due date',
   '3': '90 - 119 days past due date',
@@ -112,7 +112,7 @@ export const SPECIAL_COMMENT_CODE_LOOKUP = {
   BT: 'Principal deferred/Interest payment only.',
   CH: 'Guaranteed/Insured.',
   CI: 'Account closed due to inactivity.',
-  CJ: 'Credit line no longer available – in repayment phase.',
+  CJ: 'Credit line no longer available - in repayment phase.',
   CK: 'Credit line reduced due to collateral depreciation.',
   CL: 'Credit line suspended due to collateral depreciation.',
   CM: 'Collateral released by creditor / Balance owing.',
