@@ -105,12 +105,10 @@ class AccountActivityAdmin(admin.ModelAdmin):
                     'php', 'spc_com_cd', 'compl_cond_cd', 'current_bal', 'amt_past_due',
                     'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp',
                     'int_type_ind'] + \
-    ['surname',
-                    'first_name', 'middle_name', 'gen_code','ssn', 'dob',
-                    'phone_num', 'ecoa', 'cons_info_ind', 'country_cd',
-                    'addr_line_1', 'addr_line_2', 'city', 'state', 'zip',
-                    'addr_ind', 'res_cd', 'cons_info_ind_assoc',
-                    'ecoa_assoc']
+                    ['surname', 'first_name', 'middle_name', 
+                    'ecoa', 'cons_info_ind', 'country_cd', 'city', 'state', 'zip',
+                    'res_cd', 'cons_info_ind_assoc', 'ecoa_assoc']
+                    # Some Account Holder information is not included in Admin list view
 
     def has_add_permission(self, request, obj=None):
         return False
