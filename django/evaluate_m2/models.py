@@ -69,8 +69,6 @@ class EvaluatorMetadata(models.Model):
             self.fields_display + \
             self.filterable_fields
 
-        # ATTENTION: this means we'll need to update the metadata to remove the account_holder__ previx from all fields
-
         dups_removed = [*dict.fromkeys(fieldset)]
         return dups_removed
 

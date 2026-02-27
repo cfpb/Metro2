@@ -90,7 +90,6 @@ class AccountActivitySerializerTestCase(TestCase):
             "l1__new_id_num": "0032",
             "l1__new_acc_num": "32",
         }
-        # ATTENTION!! This part of teh API is changing -- removing the account_holder__ previx
 
     def test_account_activity_serializer(self):
         serializer = AccountActivitySerializer(self.acct_activity)
