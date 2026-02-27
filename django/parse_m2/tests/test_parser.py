@@ -40,7 +40,6 @@ class ParserTestCase(TestCase):
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
-            # self.assertEqual(AccountHolder.objects.count(), 3)
             self.assertEqual(AccountActivity.objects.count(), 3)
             self.assertEqual(J1.objects.count(), 2)
             self.assertEqual(J2.objects.count(), 1)
@@ -72,7 +71,6 @@ class ParserTestCase(TestCase):
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
-            # self.assertEqual(AccountHolder.objects.count(), 3)
             self.assertEqual(J1.objects.count(), 2)
             self.assertEqual(J2.objects.count(), 1)
 
@@ -109,7 +107,6 @@ class ParserTestCase(TestCase):
 
             # The test file contains the following segments:
             self.assertEqual(UnparseableData.objects.count(), 1)
-            # self.assertEqual(AccountHolder.objects.count(), 2)
             self.assertEqual(AccountActivity.objects.count(), 2)
             self.assertEqual(K1.objects.count(), 1)
             self.assertEqual(K2.objects.count(), 1)
@@ -122,7 +119,6 @@ class ParserTestCase(TestCase):
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
-            # self.assertEqual(AccountHolder.objects.count(), 3)
             self.assertEqual(AccountActivity.objects.count(), 3)
 
             # The file contains empty placeholders for the extra segments,
