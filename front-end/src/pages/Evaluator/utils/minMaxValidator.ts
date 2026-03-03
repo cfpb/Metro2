@@ -1,4 +1,5 @@
-import { fallback } from '@tanstack/router-zod-adapter'
+/* eslint-disable unicorn/prefer-top-level-await */
+
 import { z } from 'zod'
 
 /**
@@ -8,6 +9,6 @@ import { z } from 'zod'
  * Tanstack router to remove the parameter
  * from the query string if its value is invalid.
  */
-const minMaxValidator = fallback(z.union([z.number(), z.enum([''])]).optional(), '')
+const minMaxValidator = z.union([z.number(), z.enum([''])]).optional().catch('')
 
 export default minMaxValidator
