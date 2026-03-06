@@ -32,6 +32,7 @@ export default function EvaluatorResults({
   const query = useSearch({ strict: false })
 
   const { page, view, page_size, ...others } = query
+
   if (view == 'sample' && page != 1) {
     void navigate({
       to: '.',
@@ -74,15 +75,15 @@ export default function EvaluatorResults({
 
   return (
     <>
+      <div className='row row--action u-mb0'>
+        <EvaluatorResultsTabbedNavigation />
+        <Link to='/guide/table' target='_blank'>
+          See advanced table features
+        </Link>
+      </div>
+
       <div className='loader__wrapper'>
         {isFetching ? <Loader message='Your data is loading' /> : null}
-        <div className='row row--action u-mb0'>
-          <EvaluatorResultsTabbedNavigation />
-          <Link to='/guide/table' target='_blank'>
-            See advanced table features
-          </Link>
-        </div>
-
         <div className='evaluator-hits-row'>
           <div className='row row--content u-mt0'>
             <div className='tab-panel'>
