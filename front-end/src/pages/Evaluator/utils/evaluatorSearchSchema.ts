@@ -27,12 +27,5 @@ export const evaluatorSchema = z.object({
   dofd: BooleanStringValidator,
   date_closed: BooleanStringValidator
 })
-
-export const evaluatorSearchSchema = evaluatorSchema
-
-// .transform((params): object =>
-//   params.view === 'sample' ? { ...params, page: 1 } : { ...params }
-// )
-
  
 export type EvaluatorSearch = z.infer<typeof evaluatorSchema>

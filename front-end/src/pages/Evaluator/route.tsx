@@ -6,7 +6,7 @@ import type EvaluatorMetadata from 'types/EvaluatorMetadata'
 import type Event from 'types/Event'
 import getEvaluatorDataFromEvent from 'utils/getEvaluatorFromEvent'
 import EvaluatorPage from './EvaluatorPage'
-import { evaluatorSearchSchema } from './utils/evaluatorSearchSchema'
+import { evaluatorSchema } from './utils/evaluatorSearchSchema'
 
 export async function getEvaluator(
   eventData: Promise<Event>,
@@ -31,9 +31,7 @@ const evaluatorRoute = createRoute({
   getParentRoute: () => eventRoute,
   shouldReload: false,
   component: EvaluatorPage,
-  validateSearch: evaluatorSearchSchema,
-  // input =>
-  //   evaluatorSearchSchema.parse(input) as z.input<EvaluatorSearch>,
+  validateSearch: evaluatorSchema,
   loader: async ({ context, params: { eventId, evaluatorId } }) => {
     const userData = context.queryClient.ensureQueryData(userQueryOptions())
     const eventData = context.queryClient.ensureQueryData(eventQueryOptions(eventId))
