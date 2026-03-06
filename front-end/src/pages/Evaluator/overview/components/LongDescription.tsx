@@ -37,10 +37,10 @@ export default function EvaluatorLongDescription({
           {segment.split('\n').map((line, lineIndex) =>
             lineIndex === 0 &&
             !pseudoCodeSymbols.some(char => line.includes(char)) ? (
-              // eslint-disable-next-line react/no-array-index-key
+               
               <h4 key={lineIndex}>{line}</h4>
             ) : (
-              // eslint-disable-next-line react/no-array-index-key
+               
               <p key={lineIndex}>{line}</p>
             )
           )}

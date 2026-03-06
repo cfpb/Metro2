@@ -8,8 +8,9 @@ const BooleanStringValidator =
       z.boolean().transform(val => val.toString()),
       z.enum(['any', 'true', 'false', ''])
     ])
-    .optional()
     .catch('')
+    .optional()
+   
 
 
 export default BooleanStringValidator

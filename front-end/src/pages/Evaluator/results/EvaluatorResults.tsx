@@ -30,11 +30,14 @@ export default function EvaluatorResults({
   const navigate = useNavigate()
 
   const query = useSearch({ strict: false })
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { page, view, page_size } = query
 
-  // Check if the search params include any of the filterable fields
-  const isFiltered = Object.keys(query).some(key => filterableFields.includes(key))
+  const { page, view, page_size, ...others } = query
+  if (view == 'sample' && page != 1) {
+    void navigate({
+      to: '.',
+      search: (prev: Record<string, unknown>) => ({ ...prev, page: 1 })
+    })
+  }
 
   // Fetch data from server
   const { data, isLoadingError, isFetching } = useEvaluatorResults(
@@ -42,6 +45,9 @@ export default function EvaluatorResults({
     evaluatorMetadata.id,
     query
   )
+
+  // Check if the search params include any of the filterable fields
+  const isFiltered = Object.keys(others).some(key => filterableFields.includes(key))
 
   const rows = data?.hits ?? []
 
@@ -52,7 +58,8 @@ export default function EvaluatorResults({
   )
 
   const totalHits = evaluatorMetadata.hits
-  const currentHits = view === 'sample' ? data?.hits.length ?? 0 : data?.count ?? 0
+  const currentHits =
+    view === 'sample' ? (data?.hits.length ?? 0) : (data?.count ?? 0)
 
   const pageCount = getPageCount(currentHits, page_size)
 
@@ -67,14 +74,15 @@ export default function EvaluatorResults({
 
   return (
     <>
-      <div className='row row--action u-mb0'>
-        <EvaluatorResultsTabbedNavigation />
-        <Link to='/guide/table' target='_blank'>
-          See advanced table features
-        </Link>
-      </div>
       <div className='loader__wrapper'>
         {isFetching ? <Loader message='Your data is loading' /> : null}
+        <div className='row row--action u-mb0'>
+          <EvaluatorResultsTabbedNavigation />
+          <Link to='/guide/table' target='_blank'>
+            See advanced table features
+          </Link>
+        </div>
+
         <div className='evaluator-hits-row'>
           <div className='row row--content u-mt0'>
             <div className='tab-panel'>

@@ -32,7 +32,7 @@ export default function AccountDownloader({
 
   const [isOpen, setIsOpen] = useState(false)
 
-  const includeContactInfo = useRef<HTMLInputElement>(null)
+  const includeContactInfo = useRef<HTMLInputElement>(null!)
 
   const onClose = (): void => {
     setIsOpen(false)
@@ -89,7 +89,7 @@ export default function AccountDownloader({
     const buffer = await workbook.xlsx.writeBuffer()
     try {
       downloadData(
-        buffer as Buffer,
+        buffer as unknown as Buffer,
         `${eventData.name}_${accountId}.xlsx`,
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       )

@@ -30,7 +30,6 @@ const fetchData = async <TData>(
     const response = await fetch(url)
     // Dev hack: uncomment & pass value to delay request & show loading view
     if (delay) {
-      // eslint-disable-next-line no-promise-executor-return
       await new Promise(r => setTimeout(r, delay))
     }
     if (response.ok) return (await response.json()) as TData
@@ -42,9 +41,11 @@ const fetchData = async <TData>(
     // All other errors will be caught by ErrorComponent
     const message = error instanceof Error ? error.message : ''
     if (message === '404' && dataType !== 'hits')
-      notFound({ throw: true, data: dataType })
+      // notFound({ throw: true, data: dataType })
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
+      throw notFound({ data: dataType })
 
-    throw new Error(message)
+    throw new Error(message, { cause: error })
   }
 }
 

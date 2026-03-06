@@ -1,4 +1,4 @@
-import type { ChangeEvent, ReactElement, ReactNode } from 'react'
+import type { ChangeEvent, JSX, ReactElement, ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 
 import { Label } from '@cfpb/design-system-react'

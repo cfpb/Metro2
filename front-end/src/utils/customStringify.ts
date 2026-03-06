@@ -17,7 +17,7 @@ export function customStringify(
 ): string {
   if (typeof value === 'string') return value.trim()
   if (typeof value === 'number') return String(value)
-  if (Array.isArray(value)) return value.sort().join(',')
+  if (Array.isArray(value)) return value.toSorted().join(',')
   if (value && typeof value === 'object') return JSON.stringify(value)
   return ''
 }
@@ -36,7 +36,7 @@ export function stringifySearchParams(search: object | null | undefined): string
   if (typeof search !== 'object' || search === null) return ''
 
   // Sort the items so they'll be in consistent order for react query
-  const searchItems = Object.keys(search).sort()
+  const searchItems = Object.keys(search).toSorted()
 
   // For items with a non-null value, add a `key=stringified value` segment to a new array.
   const searchParams = []

@@ -23,7 +23,7 @@ export default function EvaluatorResultsTable({
 }: EvaluatorTableData): ReactElement {
   const columnDefinitions = useMemo(
     () => getEvaluatorColDefs(fields, String(eventData.id)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     []
   )
   return (

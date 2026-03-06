@@ -1,4 +1,4 @@
-/* eslint-disable cypress/require-data-selectors */
+ 
 import AccountRecord from '@src/types/AccountRecord'
 import { getDisplayValue } from './displayValueHelper'
 
@@ -47,7 +47,7 @@ export class Metro2Table {
         // this could be a formatted date, a USD formatted number,
         // a string with parenthetical annotation,
         // or the raw value from the record.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+         
         const expectedValue = getDisplayValue(
           field,
           rowData[field as keyof AccountRecord]

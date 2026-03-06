@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-handler-names */
+ 
 
 import Accordion from 'components/Accordion/Accordion'
 import type { ReactElement } from 'react'

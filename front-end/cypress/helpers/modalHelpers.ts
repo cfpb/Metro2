@@ -1,4 +1,4 @@
-/* eslint-disable cypress/require-data-selectors */
+ 
 export const getInputByLabel = (label: string) => {
   return cy
     .contains('label', label)

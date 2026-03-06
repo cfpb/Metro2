@@ -4,9 +4,12 @@ import RangeFilter from 'components/Filters/RangeFilter/RangeFilter'
 import type { ReactElement } from 'react'
 import getHeaderName from 'utils/getHeaderName'
 import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
+import type { rangeValue } from 'components/Filters/RangeFilter/RangeFilter'
+
+export type currencyRangeField = 'amt_past_due' | 'current_bal'
 
 interface RangeFilterData {
-  field: 'amt_past_due' | 'current_bal'
+  field: currencyRangeField
 }
 
 /**
@@ -27,29 +30,29 @@ export default function EvaluatorRangeFilter({
   field
 }: RangeFilterData): ReactElement {
   const navigate = useNavigate()
-  const minFieldName = `${field}_min`
-  const maxFieldName = `${field}_max`
+  const minField = `${field}_min` // amt_past_due_min or current_bal_min
+  const maxField = `${field}_max` // amt_past_due_max or current_bal_max
 
   const [min, max] = useSearch({
     strict: false,
-    select: (search): (number | '' | undefined)[] => [
-      search[minFieldName as keyof EvaluatorSearch],
-      search[maxFieldName as keyof EvaluatorSearch]
+    select: (search) => [
+      search[minField as keyof EvaluatorSearch],
+      search[maxField as keyof EvaluatorSearch]
     ]
   })
 
-  const filtered = min !== undefined || max !== undefined
+  const isFiltered = min !== undefined || max !== undefined
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = event.currentTarget
     void navigate({
       resetScroll: false,
       to: '.',
-      search: prev => {
+      search: (prev): object  => {
         const params = { ...prev }
         const num = Number(value)
         if (value === '' || typeof num !== 'number') {
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+           
           delete params[name as keyof EvaluatorSearch]
         } else {
           ;(params[name as keyof EvaluatorSearch] as number) = num
@@ -62,11 +65,11 @@ export default function EvaluatorRangeFilter({
   }
 
   return (
-    <Accordion header={<span>{getHeaderName(field)}</span>} openOnLoad={filtered}>
+    <Accordion header={<span>{getHeaderName(field)}</span>} openOnLoad={isFiltered}>
       <RangeFilter
         id={field}
-        initialMin={min}
-        initialMax={max}
+        initialMin={min as rangeValue}
+        initialMax={max as rangeValue}
         onChange={onChange}
       />
     </Accordion>

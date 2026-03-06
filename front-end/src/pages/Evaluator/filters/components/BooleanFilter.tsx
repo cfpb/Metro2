@@ -2,6 +2,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import Accordion from 'components/Accordion/Accordion'
 import BooleanFilter from 'components/Filters/BooleanFilter/BooleanFilter'
 import type { ReactElement } from 'react'
+import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
+import type { booleanFilterValue } from 'components/Filters/BooleanFilter/BooleanFilter'
 
 interface EvaluatorBooleanFilterData {
   field: 'date_closed' | 'dofd'
@@ -18,13 +20,13 @@ export default function EvaluatorBooleanFilter({
 
   const queryStringValue = useSearch({
     strict: false,
-    select: (search): boolean | '' | 'any' | 'false' | 'true' | undefined =>
-      search[field]
+    select: (search) =>
+      search[field as keyof EvaluatorSearch]
   })
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, checked } = event.currentTarget
-    let currentValue: boolean | string | undefined = queryStringValue
+    let currentValue = queryStringValue
 
     if (checked) {
       if (currentValue === undefined) {
@@ -44,7 +46,7 @@ export default function EvaluatorBooleanFilter({
       search: (prev: Record<string, unknown>) => {
         const params = { ...prev }
         if (currentValue === undefined) {
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+           
           if (field in params) delete params[field]
         } else {
           params[field] = currentValue
@@ -62,7 +64,7 @@ export default function EvaluatorBooleanFilter({
       openOnLoad={queryStringValue !== undefined}>
       <BooleanFilter
         id={field}
-        selected={queryStringValue}
+        selected={queryStringValue as booleanFilterValue}
         onChange={onChange}
         label_0={`No ${checkboxLabel}`}
         label_1={`Has a ${checkboxLabel}`}

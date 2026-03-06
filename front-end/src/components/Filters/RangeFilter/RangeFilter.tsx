@@ -3,11 +3,13 @@ import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import './RangeFilter.scss'
 
+export type rangeValue = number | string | undefined
+
 interface RangeFilterData {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
   id: string
-  initialMin?: number | string
-  initialMax?: number | string
+  initialMin?: rangeValue
+  initialMax?: rangeValue
 }
 
 const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {

@@ -9,6 +9,6 @@ import { z } from 'zod'
  * Tanstack router to remove the parameter
  * from the query string if its value is invalid.
  */
-const minMaxValidator = z.union([z.number(), z.enum([''])]).optional().catch('')
+const minMaxValidator = z.union([z.number(), z.enum([''])]).catch('').optional()
 
 export default minMaxValidator

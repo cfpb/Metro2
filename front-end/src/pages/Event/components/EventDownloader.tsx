@@ -34,10 +34,16 @@ export default function EventDownloader({
     setIsOpen(true)
   }
 
-  const onDownload = async (): Promise<void> => {
+  const onDownload = (): void => {
     const csv = generateDownloadData(fields, rows, headerMap)
     const fileName = `${eventName}.csv`
-    downloadData(csv, fileName)
+    try {
+      downloadData(csv, fileName)
+      setIsOpen(false)
+    } catch {
+      // TODO determine if we need to handle errors
+      setIsOpen(false)
+    }
   }
 
   const copy = (

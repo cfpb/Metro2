@@ -36,7 +36,7 @@ export const setCookie = (
  *
  */
 export const getCookie = (cookieName: string): string | undefined =>
-  // eslint-disable-next-line unicorn/no-document-cookie
+   
   document.cookie
     .split('; ')
     .find(item => item.startsWith(`${cookieName}=`))

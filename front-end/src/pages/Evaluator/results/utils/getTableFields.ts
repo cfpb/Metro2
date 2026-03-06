@@ -20,7 +20,7 @@ const defaultFields = [
 ]
 
 const matchListOrder = (list: string[], order: string[]): string[] =>
-  list.sort((a, b) => (order.indexOf(a) > order.indexOf(b) ? 1 : -1))
+  list.toSorted((a, b) => (order.indexOf(a) > order.indexOf(b) ? 1 : -1))
 
 /**
  * getTableFields()

@@ -1,4 +1,5 @@
 import { Icon } from '@cfpb/design-system-react'
+import { JSX } from 'react'
 import './Loader.scss'
 
 interface Properties {

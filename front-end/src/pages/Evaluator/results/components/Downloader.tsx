@@ -54,7 +54,7 @@ export default function EvaluatorDownloader({
     evaluatorId,
     {
       ...query,
-      page_size: currentHits > 1_000_000 ? 1_000_000 : currentHits
+      page_size: Math.min(currentHits, 1_000_000)
     },
     { enabled: false }
   )

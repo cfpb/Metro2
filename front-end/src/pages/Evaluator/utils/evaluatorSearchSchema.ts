@@ -6,9 +6,9 @@ import { listValueValidator } from './listValidator'
 import minMaxValidator from './minMaxValidator'
 
 export const evaluatorSchema = z.object({
-  view: z.enum(['all', 'sample']).catch('sample'),
-  page: z.number().gt(0).int().catch(1),
-  page_size: z.number().gt(0).catch(ITEMS_PER_PAGE),
+  view: z.enum(['all', 'sample']).catch('sample').default('sample'),
+  page: z.number().gt(0).int().catch(1).default(1),
+  page_size: z.number().gt(0).catch(ITEMS_PER_PAGE).default(ITEMS_PER_PAGE),
   amt_past_due_min: minMaxValidator,
   amt_past_due_max: minMaxValidator,
   current_bal_min: minMaxValidator,
@@ -28,9 +28,11 @@ export const evaluatorSchema = z.object({
   date_closed: BooleanStringValidator
 })
 
-export const evaluatorSearchSchema = evaluatorSchema.transform((params): object =>
-  params.view === 'sample' ? { ...params, page: 1 } : { ...params }
-)
+export const evaluatorSearchSchema = evaluatorSchema
 
-// eslint-disable-next-line @typescript-eslint/no-type-alias
-export type EvaluatorSearch = z.infer<typeof evaluatorSearchSchema>
+// .transform((params): object =>
+//   params.view === 'sample' ? { ...params, page: 1 } : { ...params }
+// )
+
+ 
+export type EvaluatorSearch = z.infer<typeof evaluatorSchema>

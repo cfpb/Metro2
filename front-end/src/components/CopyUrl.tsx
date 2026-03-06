@@ -7,7 +7,7 @@ export default function CopyUrl(): ReactElement {
 
   const onClick = async (): Promise<void> => {
     try {
-      await navigator.clipboard.writeText(window.location.href)
+      await navigator.clipboard.writeText(globalThis.location.href)
       setCopySuccess('URL Copied!')
       setTimeout(() => {
         setCopySuccess('Copy URL')

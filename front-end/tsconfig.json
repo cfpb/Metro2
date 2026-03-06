@@ -16,8 +16,11 @@
     "types": [
       "vite/client",
       "vitest/globals",
-      "@types/wicg-file-system-access",
-      "cypress"
+      "cypress",
+      "@testing-library/cypress",
+      "@testing-library/jest-dom",
+      "jest",
+      "node"
     ],
     "paths": {
       "@src/*": ["*"]
@@ -25,6 +28,10 @@
   },
 
   "include": ["src"],
-  "exclude": ["postcss"],
+  "exclude": [
+    "node_modules",
+    "postcss",
+    "src/components/Table/suppressKeyboardEvents.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

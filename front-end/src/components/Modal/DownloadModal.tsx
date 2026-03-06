@@ -6,7 +6,7 @@ import { Modal, ModalFooter } from './Modal'
 interface DownloadModalProperties {
   open: boolean
   onClose: () => void
-  onDownload: () => Promise<void>
+  onDownload: () => Promise<void> | void
   content?: ReactElement | null
   title?: string | null
   copy?: string | null

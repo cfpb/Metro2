@@ -26,7 +26,6 @@ export const evaluatorHitsQueryOptions = (
   const queryCopy = { ...query }
   for (const field of ['dofd', 'date_closed']) {
     if (queryCopy[field as keyof typeof queryCopy] === 'any') {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete queryCopy[field as keyof typeof queryCopy]
     }
   }
