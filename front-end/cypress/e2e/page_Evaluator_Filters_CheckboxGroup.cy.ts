@@ -1,7 +1,3 @@
- 
- 
- 
-
 import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
 import { Metro2Page } from '../helpers/pageHelper'
 import { Metro2Table } from '../helpers/tableHelpers'

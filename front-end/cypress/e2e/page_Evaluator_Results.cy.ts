@@ -254,7 +254,7 @@ describe('Results table', () => {
   it('Should show correct values for each result', () => {
     // verify that the consumer account numbers are displayed for each row
     // in the pinned left column
-    table.verifyAccountTableBodyContent(
+    table.verifyTableBodyContent<AccountRecord>(
       table.getPinnedRows(),
       ['cons_acct_num'],
       hits
@@ -264,6 +264,6 @@ describe('Results table', () => {
     const fields = getTableFields(evaluator.fields_used, evaluator.fields_display)
     // remove consumer account number because it's in a separate section
     fields.shift()
-    table.verifyAccountTableBodyContent(table.getBodyRows(), fields, hits)
+    table.verifyTableBodyContent<AccountRecord>(table.getBodyRows(), fields, hits)
   })
 })

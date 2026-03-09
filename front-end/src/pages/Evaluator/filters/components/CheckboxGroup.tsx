@@ -50,7 +50,7 @@ export const generateCheckboxItem = (
 ): CheckboxItem => ({
   checked: appliedFilters.includes(String(val)),
   key: `${field}_${val}`,
-  name: annotateM2FieldValue(field, val),
+  name: annotateM2FieldValue(field, val) as string,
   onChange
 })
 
@@ -71,7 +71,8 @@ export default function EvaluatorCheckboxGroup({
   /**
    * Gets any groupings for this field's values.
    */
-  const currentFieldGroups = field in fieldGroups ? fieldGroups[field as keyof typeof fieldGroups] : new Map()
+  const currentFieldGroups =
+    field in fieldGroups ? fieldGroups[field as keyof typeof fieldGroups] : new Map()
 
   /**
    * Event handlers
@@ -91,7 +92,6 @@ export default function EvaluatorCheckboxGroup({
         if (fieldValue.length > 0) {
           params[field] = [...new Set(fieldValue)].toSorted()
         } else if (field in params) {
-           
           delete params[field]
         }
         // reset page to 1

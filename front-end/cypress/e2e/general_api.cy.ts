@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable unicorn/prefer-set-has */
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
+import { expect } from 'chai'
 
 xdescribe('API', () => {
   it('Should return only the expected fields for an account record', () => {

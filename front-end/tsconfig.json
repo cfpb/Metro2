@@ -28,8 +28,7 @@
       "@src/*": ["*"]
     }
   },
-
-  "include": ["src"],
+  "include": ["src", "cypress"],
   "exclude": [
     "node_modules",
     "postcss",

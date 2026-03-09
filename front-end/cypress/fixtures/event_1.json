@@ -7,13 +7,6 @@
   "directory": "",
   "date_range_start": "2020-01-30",
   "date_range_end": "2020-11-30",
-  "headers": [
-    "Evaluator",
-    "Description",
-    "Category",
-    "Total instances",
-    "Total accounts"
-  ],
   "evaluators": [
     {
       "hits": 1000,

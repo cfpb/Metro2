@@ -5,8 +5,8 @@ import { Modal, ModalFooter } from './Modal'
 
 interface DownloadModalProperties {
   open: boolean
-  onClose: () => void
-  onDownload: () => Promise<void> | void
+  onClose?: () => void
+  onDownload?: () => Promise<void> | void
   content?: ReactElement | null
   title?: string | null
   copy?: string | null
@@ -42,7 +42,7 @@ export default function DownloadModal({
 
   const onClick = (): void => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    onDownload()
+    onDownload?.()
   }
 
   return (

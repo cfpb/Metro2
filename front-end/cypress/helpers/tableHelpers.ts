@@ -1,5 +1,3 @@
- 
-import AccountRecord from '@src/types/AccountRecord'
 import { getDisplayValue } from './displayValueHelper'
 
 export class Metro2Table {
@@ -26,33 +24,27 @@ export class Metro2Table {
     })
   }
 
-  // given a group of table rows -- accessed via getPinnedRows or getBodyRows methods --
-  // a list of fields that should appear in the rows,
-  // and an array of account records that map to the rows,
-  // verify that each row displays the expected fields' values for its record
-  verifyAccountTableBodyContent(
+  verifyTableBodyContent<Type>(
     rows: Cypress.Chainable<JQuery>,
     fields: string[],
-    expectedData: AccountRecord[]
+    expectedData: Type[]
   ) {
     rows.each((row, rowIndex) => {
-      // get the record that corresponds with this row
-      const rowData: AccountRecord = expectedData[rowIndex]
+      // Get the object that corresponds with this row
+      // from the expected data array
+      const expectedRowData = expectedData[rowIndex]
+
+      // Check the content of each cell in the row against the
+      // value at the corresponding index in the row's expected data object.
+      // Because the fixture data matches what would be returned from the API
+      // and the values for many fields are formatted before they're displayed in tables,
+      // we check to see if we need to apply formatting before comparing the
+      // table value against the fixture value.
       row.find('.ag-cell-value').each((cellIndex, cell) => {
-        // get the field that corresponds with this cell
         const field = fields[cellIndex]
-        // using the field & the record value for that field,
-        // find the value that should be displayed in this cell.
-        // depending on the field type,
-        // this could be a formatted date, a USD formatted number,
-        // a string with parenthetical annotation,
-        // or the raw value from the record.
-         
-        const expectedValue = getDisplayValue(
-          field,
-          rowData[field as keyof AccountRecord]
-        )
-        cy.wrap(cell).should('have.text', expectedValue ?? '')
+        const expectedValue = expectedRowData[field as keyof Type]
+        const formattedValue = getDisplayValue(field, expectedValue)
+        cy.wrap(cell).should('have.text', formattedValue)
       })
     })
   }

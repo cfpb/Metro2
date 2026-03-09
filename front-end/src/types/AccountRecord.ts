@@ -28,7 +28,7 @@ export default interface AccountRecord {
   account_holder__cons_info_ind?: string | null
   account_holder__ecoa?: string | null
   account_holder__cons_info_ind_assoc?: string[] | null
-  account_holder__ecoa_assoc?: [] | null
+  account_holder__ecoa_assoc?: string[] | null
   k2__purch_sold_ind?: string | null
   k2__purch_sold_name?: string | null
   k4__balloon_pmt_amt?: string | null

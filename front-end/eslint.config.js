@@ -15,7 +15,6 @@ import tseslint from 'typescript-eslint'
 export default defineConfig([
   {
     ignores: [
-      // 'cypress',
       'dist',
       'coverage',
       'node_modules',
@@ -86,7 +85,7 @@ export default defineConfig([
     }
   },
 
-  // Overrides for tests
+  // Overrides for unit tests
   {
     files: ['**/*.spec.tsx'],
     plugins: {
