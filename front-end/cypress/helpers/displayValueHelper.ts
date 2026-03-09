@@ -31,7 +31,6 @@ export const getDisplayValue = (
   field: string,
   value: number | string | null | undefined
 ): number | string | null | undefined => {
-  console.log(field, value)
   if (currencyFields.includes(field)) return formatUSD(value)
   if (dateFields.includes(field)) return formatDate(value)
   if (annotatedFields.includes(field)) return annotateM2FieldValue(field, value)

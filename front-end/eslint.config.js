@@ -15,13 +15,13 @@ import tseslint from 'typescript-eslint'
 export default defineConfig([
   {
     ignores: [
+      // 'cypress',
       'dist',
       'coverage',
       'node_modules',
       '.yarn',
       '*.config.js',
       '*.config.ts',
-      'cypress',
       'postcss',
       'src/components/Table/suppressKeyboardEvents.tsx'
     ]
@@ -41,10 +41,7 @@ export default defineConfig([
   // Add this if using React 17+ JSX transform
   reactPlugin.configs.flat['jsx-runtime'],
 
-  // Testing Library
-  testingLibrary.configs['flat/react'],
-
-  // Unicorn & Storybook
+  // Unicorn
   unicorn.configs.recommended,
 
   // Prettier always last
@@ -64,12 +61,11 @@ export default defineConfig([
     },
 
     plugins: {
-      'react-hooks': reactHooks,
-      'testing-library': testingLibrary
+      'react-hooks': reactHooks
     },
+
     settings: {
       react: { version: '19' },
-
       // Tell eslint-plugin-import how to resolve TS/JS files.
       'import/resolver': {
         typescript: {
@@ -77,38 +73,43 @@ export default defineConfig([
         }
       }
     },
+
     rules: {
-      // Add your custom overrides here
+      // General overrides
       'no-console': 'warn',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'unicorn/prevent-abbreviations': 'off', // Airbnb was less strict than Unicorn
       'unicorn/null-data-property': 'off',
       'unicorn/no-null': 'off',
       'react/prop-types': 'off', // Using TypeScript, so don't use PropTypes.
-      // Resolver cannot resolve @cfpb/cfpb-design-system src subpaths (Vite alias + node_modules do at build/runtime).
-      'import/no-unresolved': ['error', { ignore: ['^@cfpb/cfpb-design-system/'] }],
       'unicorn/filename-case': 'off'
     }
   },
-  //Overrides for Tests
+
+  // Overrides for tests
   {
     files: ['**/*.spec.tsx'],
+    plugins: {
+      'testing-library': testingLibrary
+    },
+    extends: [testingLibrary.configs['flat/react']],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off'
     }
   },
 
+  // Overrides for Cypress
   {
     files: ['cypress/**/*.{cy.ts,ts,tsx}'],
+
     plugins: {
       cypress: pluginCypress
     },
-    extends: [
-      pluginCypress.configs.recommended // Enables recommended Cypress rules and globals
-    ],
+
+    extends: [pluginCypress.configs.recommended],
 
     rules: {
-      // Optional: adjust specific Cypress rules
+      '@typescript-eslint/no-explicit-any': 'off',
       'cypress/no-unnecessary-waiting': 'off',
       '@typescript-eslint/require-await': 'off', // Disable the rule
       'cypress/no-async-tests': 'error' // Ensure you use the cypress rule instead

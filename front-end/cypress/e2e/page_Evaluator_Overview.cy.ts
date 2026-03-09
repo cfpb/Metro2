@@ -1,14 +1,8 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable import/extensions */
-/* eslint-disable cypress/require-data-selectors */
 import type Event from 'types/Event'
-import hitsFixture from '../fixtures/evaluatorHits_page1.json'
 import eventFixture from '../fixtures/event_1.json'
 
-import AccountRecord from 'types/AccountRecord'
 import EvaluatorMetadata from 'types/EvaluatorMetadata'
 import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
-import { Metro2Modal } from '../helpers/modalHelpers'
 import { Metro2Page } from '../helpers/pageHelper'
 
 // Get data from event fixture
@@ -21,12 +15,8 @@ const evaluator: EvaluatorMetadata = event.evaluators.find(
   item => item.id == evaluatorName
 )!
 
-// Get data from hits fixture
-const hits: AccountRecord[] = hitsFixture.hits
-
 // Instantiate helpers
 const page = new Metro2Page()
-const modal = new Metro2Modal()
 const evaluatorPage = new EvaluatorPage()
 
 describe('Evaluator page', () => {

@@ -1,5 +1,3 @@
-/* eslint-disable */
-// @ts-nocheck
 import 'cypress-real-events/support'
 
 import { PII_COOKIE_NAME } from '@src/constants/settings'

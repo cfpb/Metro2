@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src", "*.config.ts"],
+  "include": ["src", "*.config.ts", "cypress"],
   "exclude": ["node_modules", "postcss"]
 }

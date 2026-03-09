@@ -1,4 +1,4 @@
-/* eslint-disable cypress/require-data-selectors */
+ 
 import { stringifySearchParams } from 'utils/customStringify'
 
 export class Metro2Page {
@@ -81,15 +81,26 @@ export class Metro2Page {
     label: string,
     state: 'checked' | 'unchecked' | 'indeterminate'
   ) {
-    if (state === 'checked') {
+    switch (state) {
+    case 'checked': {
       this.getInputByLabel(label).should('be.checked')
       cy.contains('label', label).parent().should('not.have.class', 'indeterminate')
-    } else if (state === 'unchecked') {
+    
+    break;
+    }
+    case 'unchecked': {
       this.getInputByLabel(label).should('not.be.checked')
       cy.contains('label', label).parent().should('not.have.class', 'indeterminate')
-    } else if (state === 'indeterminate') {
+    
+    break;
+    }
+    case 'indeterminate': {
       this.getInputByLabel(label).should('not.be.checked')
       cy.contains('label', label).parent().should('have.class', 'indeterminate')
+    
+    break;
+    }
+    // No default
     }
   }
 

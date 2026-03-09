@@ -19,8 +19,10 @@
       "cypress",
       "@testing-library/cypress",
       "@testing-library/jest-dom",
+      "cypress-real-events",
       "jest",
-      "node"
+      "node",
+      "chai"
     ],
     "paths": {
       "@src/*": ["*"]

@@ -62,9 +62,9 @@ describe('Accordion.cy.tsx', () => {
   })
 
   it('down arrow switches to up arrow on click', () => {
+    cy.findByTestId('accordion').find('button').click()
     cy.findByTestId('accordion')
       .find('button')
-      .click()
       .find('svg')
       .should('have.class', 'cf-icon-svg--up')
   })

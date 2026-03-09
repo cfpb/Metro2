@@ -23,6 +23,7 @@ export default function CopyUrl(): ReactElement {
   return (
     <div>
       <Button
+        data-testid='copyButton'
         appearance='primary'
         label={copySuccess}
         size='default'

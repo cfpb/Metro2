@@ -1,5 +1,3 @@
-/* eslint-disable cypress/require-data-selectors */
-
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 import accountData from '../fixtures/account_1.json'
 

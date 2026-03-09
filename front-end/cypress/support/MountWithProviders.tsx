@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
   Outlet,
@@ -17,7 +18,7 @@ const queryClient = new QueryClient({
   }
 })
 
-export const MountWithProviders = (component: ReactNode, options = {}) => {
+export const MountWithProviders = (component: ReactNode) => {
   const rootRoute = createRootRoute({ component: Outlet })
   const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
