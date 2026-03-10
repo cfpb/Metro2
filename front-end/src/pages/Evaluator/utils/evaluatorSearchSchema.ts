@@ -20,9 +20,9 @@ export const evaluatorSchema = z.object({
   spc_com_cd: listValueValidator('spc_com_cd'),
   terms_freq: listValueValidator('terms_freq'),
   l1__change_ind: listValueValidator('l1__change_ind'),
-  account_holder__cons_info_ind: listValueValidator('account_holder__cons_info_ind'),
-  account_holder__cons_info_ind_assoc: listValueValidator(
-    'account_holder__cons_info_ind_assoc'
+  cons_info_ind: listValueValidator('cons_info_ind'),
+  cons_info_ind_assoc: listValueValidator(
+    'cons_info_ind_assoc'
   ),
   dofd: BooleanStringValidator,
   date_closed: BooleanStringValidator

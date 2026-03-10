@@ -25,21 +25,21 @@ export default interface AccountRecord {
   dofd?: string | null
   date_closed?: string | null
   dolp?: string | null
-  account_holder__cons_info_ind?: string | null
-  account_holder__ecoa?: string | null
-  account_holder__cons_info_ind_assoc?: string[] | null
-  account_holder__ecoa_assoc?: [] | null
+  cons_info_ind?: string | null
+  ecoa?: string | null
+  cons_info_ind_assoc?: string[] | null
+  ecoa_assoc?: [] | null
   k2__purch_sold_ind?: string | null
   k2__purch_sold_name?: string | null
   k4__balloon_pmt_amt?: string | null
   l1__change_ind?: string | null
   l1__new_acc_num?: string | null
   l1__new_id_num?: string | null
-  previous_values__account_holder__cons_info_ind?: string | null
-  previous_values__account_holder__cons_info_ind_assoc?: [] | null
-  previous_values__account_holder__ecoa?: string | null
-  previous_values__account_holder__first_name?: string | null
-  previous_values__account_holder__surname?: string | null
+  previous_values__cons_info_ind?: string | null
+  previous_values__cons_info_ind_assoc?: [] | null
+  previous_values__ecoa?: string | null
+  previous_values__first_name?: string | null
+  previous_values__surname?: string | null
   previous_values__l1__change_ind?: string | null
   previous_values__l1__new_acc_num?: string | null
   previous_values__l1__new_id_num?: string | null

@@ -5,7 +5,7 @@ from parse_m2 import fields
 from parse_m2.models import (
     Metro2Event,
     M2DataFile, UnparseableData,
-    AccountHolder, AccountActivity,
+    AccountActivity,
     J1, J2, K1, K2, K3, K4, L1, N1
 )
 from parse_m2 import parse_utils
@@ -14,7 +14,7 @@ from parse_m2 import parse_utils
 class M2FileParser():
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
-    parser_version = "1.7"
+    parser_version = "2.0"
 
     chunk_size = 2000  # TODO: determine a good number for this
     any_non_whitespace = r'\S'
@@ -169,13 +169,13 @@ class M2FileParser():
 
         inputs:
         - line: the line of metro2 data, starting with a base segment
-        - activity_date: date object, to be saved in the AccountHolder and
+        - activity_date: date object, to be saved in the
                         AccountActivity records for this line. If not present,
                         DOAI will be used instead.
 
         output:
         - If the line was a valid Metro2 line, a dict with the following keys:
-        AccountHolder, AccountActivity, and optionally a key for each
+        AccountActivity, and optionally a key for each
         type of extra segment that was present in the line
         (j1, j2, k1, k2, k3, k4, l1, n1)
         - If the line was not valid (i.e. if any part of the parsing process
@@ -190,14 +190,10 @@ class M2FileParser():
             if not activity_date:
                 activity_date = self.get_doai_from_acct_activity(line)
 
-            # parse the base segment into AccountHolder and AccountActivity
+            # parse the base segment into AccountActivity
             acct_activity = AccountActivity.parse_from_segment(
                 line, self.file_record, activity_date)
             parsed["AccountActivity"] = acct_activity
-
-            acct_holder = AccountHolder.parse_from_segment(
-                line, acct_activity, activity_date)
-            parsed["AccountHolder"] = acct_holder
 
             # parse the extra segments
             base_segment_length = fields.seg_length["header"]
@@ -205,11 +201,11 @@ class M2FileParser():
             parsed = self.parse_extra_segments(remaining_chars, parsed)
 
             # Take the fields that are aggregated from the extra segments and
-            # save them to the AccountHolder record
+            # save them to the AccountActivity record
             if "cons_info_ind_assoc" in parsed:
-                acct_holder.cons_info_ind_assoc = parsed["cons_info_ind_assoc"]
+                acct_activity.cons_info_ind_assoc = parsed["cons_info_ind_assoc"]
             if "ecoa_assoc" in parsed:
-                acct_holder.ecoa_assoc = parsed["ecoa_assoc"]
+                acct_activity.ecoa_assoc = parsed["ecoa_assoc"]
 
             return parsed
 
@@ -239,11 +235,11 @@ class M2FileParser():
         inputs:
         - f: filestream of the Metro2 file
         - chunk_size: the number of lines to parse before returning
-        - activity_date: date object, to be saved in the AccountHolder and
+        - activity_date: date object, to be saved in the
                         AccountActivity records for each line
 
         output:
-        - a dict with the following keys: AccountHolder, AccountActivity,
+        - a dict with the following keys: AccountActivity,
         extra segment keys (if any were present), and UnparseableData (if any)
         """
         lines_parsed = 0
@@ -275,7 +271,6 @@ class M2FileParser():
         """
         if not parsed_records:
             parsed_records = {
-                "AccountHolder": [],
                 "AccountActivity": [],
                 "j1": [],
                 "j2": [],
@@ -291,8 +286,6 @@ class M2FileParser():
             parsed_records["UnparseableData"].append(line_results["UnparseableData"])
         if "AccountActivity" in line_results:
             parsed_records["AccountActivity"].append(line_results["AccountActivity"])
-        if "AccountHolder" in line_results:
-            parsed_records["AccountHolder"].append(line_results["AccountHolder"])
         if "j1" in line_results:
             parsed_records["j1"] = parsed_records["j1"] + line_results["j1"]
         if "j2" in line_results:
@@ -315,7 +308,6 @@ class M2FileParser():
     def save_values_bulk(self, values: dict):
         UnparseableData.objects.bulk_create(values["UnparseableData"])
         AccountActivity.objects.bulk_create(values["AccountActivity"])
-        AccountHolder.objects.bulk_create(values["AccountHolder"])
         J1.objects.bulk_create(values["j1"])
         J2.objects.bulk_create(values["j2"])
         K1.objects.bulk_create(values["k1"])

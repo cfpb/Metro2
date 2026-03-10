@@ -1,29 +1,10 @@
 from rest_framework import serializers
 
-from .models import AccountActivity, AccountHolder, Metro2Event
+from .models import AccountActivity, Metro2Event
 
 
 class AccountActivitySerializer(serializers.ModelSerializer):
     inconsistencies = serializers.SerializerMethodField(read_only=True)
-    account_holder__ecoa_assoc = serializers.SerializerMethodField()
-    account_holder__surname = serializers.SerializerMethodField()
-    account_holder__first_name = serializers.SerializerMethodField()
-    account_holder__middle_name = serializers.SerializerMethodField()
-    account_holder__gen_code = serializers.SerializerMethodField()
-    account_holder__ssn = serializers.SerializerMethodField()
-    account_holder__dob = serializers.SerializerMethodField()
-    account_holder__phone_num = serializers.SerializerMethodField()
-    account_holder__ecoa = serializers.SerializerMethodField()
-    account_holder__cons_info_ind = serializers.SerializerMethodField()
-    account_holder__cons_info_ind_assoc = serializers.SerializerMethodField()
-    account_holder__country_cd = serializers.SerializerMethodField()
-    account_holder__addr_line_1 = serializers.SerializerMethodField()
-    account_holder__addr_line_2 = serializers.SerializerMethodField()
-    account_holder__city = serializers.SerializerMethodField()
-    account_holder__state = serializers.SerializerMethodField()
-    account_holder__zip = serializers.SerializerMethodField()
-    account_holder__addr_ind = serializers.SerializerMethodField()
-    account_holder__res_cd = serializers.SerializerMethodField()
     k1__orig_creditor_name = serializers.SerializerMethodField()
     k1__creditor_classification = serializers.SerializerMethodField()
     k2__purch_sold_ind = serializers.SerializerMethodField(read_only=True)
@@ -53,8 +34,8 @@ class AccountActivitySerializer(serializers.ModelSerializer):
             "id",
             "inconsistencies",
             "activity_date",
-            "account_holder__surname",
-            "account_holder__first_name",
+            "surname",
+            "first_name",
             "port_type",
             "acct_type",
             "date_open",
@@ -79,10 +60,10 @@ class AccountActivitySerializer(serializers.ModelSerializer):
             "date_closed",
             "dolp",
             "int_type_ind",
-            "account_holder__cons_info_ind",
-            "account_holder__ecoa",
-            "account_holder__cons_info_ind_assoc",
-            "account_holder__ecoa_assoc",
+            "cons_info_ind",
+            "ecoa",
+            "cons_info_ind_assoc",
+            "ecoa_assoc",
             "k2__purch_sold_ind",
             "k2__purch_sold_name",
             "k4__balloon_pmt_amt",
@@ -110,63 +91,6 @@ class AccountActivitySerializer(serializers.ModelSerializer):
     def get_inconsistencies(self, obj):
         eval_ids = obj.evaluatorresult_set.values_list('result_summary__evaluator__id')
         return [x[0] for x in eval_ids]
-
-    def get_account_holder__ecoa_assoc(self, obj):
-        return obj.account_holder.ecoa_assoc
-
-    def get_account_holder__surname(self, obj):
-        return obj.account_holder.surname
-
-    def get_account_holder__first_name(self, obj):
-        return obj.account_holder.first_name
-
-    def get_account_holder__middle_name(self, obj):
-        return obj.account_holder.middle_name
-
-    def get_account_holder__gen_code(self, obj):
-        return obj.account_holder.gen_code
-
-    def get_account_holder__ssn(self, obj):
-        return obj.account_holder.ssn
-
-    def get_account_holder__dob(self, obj):
-        return obj.account_holder.dob
-
-    def get_account_holder__phone_num(self, obj):
-        return obj.account_holder.phone_num
-
-    def get_account_holder__ecoa(self, obj):
-        return obj.account_holder.ecoa
-
-    def get_account_holder__cons_info_ind(self, obj):
-        return obj.account_holder.cons_info_ind
-
-    def get_account_holder__cons_info_ind_assoc(self, obj):
-        return obj.account_holder.cons_info_ind_assoc
-
-    def get_account_holder__country_cd(self, obj):
-        return obj.account_holder.country_cd
-
-    def get_account_holder__addr_line_1(self, obj):
-        return obj.account_holder.addr_line_1
-
-    def get_account_holder__addr_line_2(self, obj):
-        return obj.account_holder.addr_line_2
-
-    def get_account_holder__city(self, obj):
-        return obj.account_holder.city
-
-    def get_account_holder__state(self, obj):
-        return obj.account_holder.state
-
-    def get_account_holder__zip(self, obj):
-        return obj.account_holder.zip
-
-    def get_account_holder__addr_ind(self, obj):
-        return obj.account_holder.addr_ind
-
-    def get_account_holder__res_cd(self, obj):
-        return obj.account_holder.res_cd
 
     def get_k1__orig_creditor_name(self, obj):
         if hasattr(obj, "k1"):
@@ -255,7 +179,7 @@ class AccountActivitySerializer(serializers.ModelSerializer):
 
 class AccountHolderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = AccountHolder
+        model = AccountActivity
         fields = ['id', 'surname', 'first_name', 'middle_name', 'gen_code',
                   'ssn', 'dob', 'phone_num', 'ecoa', 'cons_info_ind',
                   'country_cd', 'addr_line_1', 'addr_line_2', 'city', 'state',

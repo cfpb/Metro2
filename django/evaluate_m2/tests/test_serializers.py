@@ -42,7 +42,7 @@ class EvalSerializerTestCase(TestCase):
             category="paid/not paid",
             description="desc 1",
             long_description=self.multi_line_text,
-            fields_used=["account_holder__cons_info_ind", "dolp", "id_num"],
+            fields_used=["cons_info_ind", "dolp", "id_num"],
             fields_display=["spc_com_cd", "dofd", "l1__change_ind"],
             crrg_reference="PDF page 3",
         )
@@ -98,7 +98,7 @@ class EvalSerializerTestCase(TestCase):
         self.assertEqual(record.id, "BETSY-NEW")
         self.assertEqual(record.category, 'paid/not paid')
         self.assertEqual(record.description, self.e1_json['description'])
-        self.assertEqual(record.fields_used, ['account_holder__cons_info_ind', 'dolp', 'id_num'])
+        self.assertEqual(record.fields_used, ['cons_info_ind', 'dolp', 'id_num'])
         self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind'])
 
     def test_import_from_json_case_insensitive(self):
@@ -132,9 +132,9 @@ class EvalSerializerTestCase(TestCase):
         record = from_json.save()
         self.assertEqual(record.id, "Test-19")
         self.assertEqual(record.description, self.e1_json['description'])
-        self.assertEqual(record.fields_used, ['account_holder__cons_info_ind', 'dolp', 'id_num'])
+        self.assertEqual(record.fields_used, ['cons_info_ind', 'dolp', 'id_num'])
         self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind',
-                                                 'account_holder__ecoa'])
+                                                 'ecoa'])
 
     def test_import_fails_when_field_names_incorrect(self):
         fields = "\r\n".join([

@@ -33,12 +33,12 @@ code_to_plain_field_map = {
     "id_num": "ID number",
 
     # Account Holder fields
-    "account_holder__ecoa": "ecoa",
-    "account_holder__cons_info_ind": "consumer information indicator",
-    "account_holder__cons_info_ind_assoc": "consumer information indicators for associated consumers",
-    "account_holder__ecoa_assoc": "ECOA for associated consumers",
-    "account_holder__first_name": "first name",
-    "account_holder__surname": "surname",
+    "ecoa": "ecoa",
+    "cons_info_ind": "consumer information indicator",
+    "cons_info_ind_assoc": "consumer information indicators for associated consumers",
+    "ecoa_assoc": "ECOA for associated consumers",
+    "first_name": "first name",
+    "surname": "surname",
 
     # K segments
     "k2__purch_sold_ind": "K2 purchased - sold indicator",
@@ -51,11 +51,11 @@ code_to_plain_field_map = {
     "l1__new_id_num": "L1 new id number",
 
     # Prior record fields
-    "previous_values__account_holder__cons_info_ind": "prior consumer information indicator",
-    "previous_values__account_holder__cons_info_ind_assoc": "prior consumer information indicators for associated consumers",
-    "previous_values__account_holder__ecoa": "prior ecoa",
-    "previous_values__account_holder__first_name": "prior first name",
-    "previous_values__account_holder__surname": "prior surname",
+    "previous_values__cons_info_ind": "prior consumer information indicator",
+    "previous_values__cons_info_ind_assoc": "prior consumer information indicators for associated consumers",
+    "previous_values__ecoa": "prior ecoa",
+    "previous_values__first_name": "prior first name",
+    "previous_values__surname": "prior surname",
 
     "previous_values__l1__change_ind": "prior L1 change indicator",
     "previous_values__l1__new_acc_num": "prior L1 new account number",
