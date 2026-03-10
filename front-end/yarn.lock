@@ -2909,32 +2909,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ag-charts-types@npm:12.3.1":
-  version: 12.3.1
-  resolution: "ag-charts-types@npm:12.3.1"
-  checksum: 10/14ac6a5bab8e26d86615c214a470ccfe4e964ee526aa78d59b83214fa5a94a98f8156ed4fb2b389ef528ed8a0d9fb3c0960b12f4957ad82d9c4fad45b3181a63
+"ag-charts-types@npm:13.1.0":
+  version: 13.1.0
+  resolution: "ag-charts-types@npm:13.1.0"
+  checksum: 10/8f53271a6ef04c45835f0a67ec474a10bfa7dd890d7636c1c564f2c7b6ee813dac13da7dd7800391db8ad260f26e4f249d22597835add9aebfd680479c109c7b
   languageName: node
   linkType: hard
 
-"ag-grid-community@npm:34.3.1, ag-grid-community@npm:^34.0.2":
-  version: 34.3.1
-  resolution: "ag-grid-community@npm:34.3.1"
+"ag-grid-community@npm:35.1.0, ag-grid-community@npm:^35.1.0":
+  version: 35.1.0
+  resolution: "ag-grid-community@npm:35.1.0"
   dependencies:
-    ag-charts-types: "npm:12.3.1"
-  checksum: 10/906dd0eedb295c35b53b2c32686b165ceff2271485bcc86c8b4d3accd46ec09a386ac01f5edcf8fb0d60c1e317ee4f9222f1962e5e43826192dfd6d7b20b740b
+    ag-charts-types: "npm:13.1.0"
+  checksum: 10/5d37ee9d20335f24e44947807c8cc6aaa1d6df0acd7e897203b01e688fa7c5f36594148cca35876d03bd5fffabcffaa91788ff73e217222fbc6a51174dbadf69
   languageName: node
   linkType: hard
 
-"ag-grid-react@npm:^34.0.2":
-  version: 34.3.1
-  resolution: "ag-grid-react@npm:34.3.1"
+"ag-grid-react@npm:^35.1.0":
+  version: 35.1.0
+  resolution: "ag-grid-react@npm:35.1.0"
   dependencies:
-    ag-grid-community: "npm:34.3.1"
+    ag-grid-community: "npm:35.1.0"
     prop-types: "npm:^15.8.1"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/f851ddfdddbb6b41bdcc85dccc8eb8a5895a6a39b4af03e7d79b423f5a301f41bcaf2891bab1fd59cbe2f060e47ebdb9dd7896bc478ed002cbef9ae19610ef39
+  checksum: 10/96ffdc9d5540f306dab6c7be658c08f8ddd1b8cd305180275587755e4ce2b9716adc58c5726dc43d12c6173f2e7a200c0bdd1239ec9c1076584d9b3f56b4afda
   languageName: node
   linkType: hard
 
@@ -5884,8 +5884,8 @@ __metadata:
     "@typescript-eslint/parser": "npm:8.56.1"
     "@vitejs/plugin-react": "npm:^5.1.4"
     "@vitest/coverage-istanbul": "npm:^4.0.18"
-    ag-grid-community: "npm:^34.0.2"
-    ag-grid-react: "npm:^34.0.2"
+    ag-grid-community: "npm:^35.1.0"
+    ag-grid-react: "npm:^35.1.0"
     autoprefixer: "npm:10.4.27"
     css-mediaquery: "npm:0.1.2"
     csstype: "npm:^3.2.3"
