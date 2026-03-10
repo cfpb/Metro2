@@ -30,6 +30,7 @@ const annotatedFields = Object.keys(M2_FIELD_LOOKUPS)
 //    and the raw value for anything else
 export const getDisplayValue = (field: string, value: unknown): unknown => {
   // Numbers and strings can be formatted if of an appropriate field type
+  if (value === null || value === undefined) return ''
   if (typeof value === 'string' || Number.isFinite(value)) {
     const val = value as string | number
     if (currencyFields.includes(field)) return formatUSD(val)

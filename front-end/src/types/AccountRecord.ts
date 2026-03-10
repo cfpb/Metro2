@@ -32,7 +32,7 @@ export default interface AccountRecord {
   cons_info_ind?: string | null
   ecoa?: string | null
   cons_info_ind_assoc?: string[] | null
-  ecoa_assoc?: [] | null
+  ecoa_assoc?: string[] | null
   k2__purch_sold_ind?: string | null
   k2__purch_sold_name?: string | null
   k4__balloon_pmt_amt?: string | null
