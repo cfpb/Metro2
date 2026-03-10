@@ -26,7 +26,7 @@ from evaluate_m2.serializers import (
     EventsViewSerializer,
 )
 from evaluate_m2 import upload_utils
-from parse_m2.models import AccountActivity, AccountHolder, Metro2Event
+from parse_m2.models import AccountActivity, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
 
 from evaluate_m2.filters import EvaluatorResultFilterSet
@@ -99,7 +99,7 @@ def account_summary_view(request, event_id, account_number):
         event_activities=get_list_or_404(
             event.get_all_account_activity().filter(
                 cons_acct_num=account_number).order_by('activity_date') \
-                .select_related('account_holder', 'k2', 'k4', 'l1')
+                .select_related('k2', 'k4', 'l1')
             )
         if not event_activities:
             raise Http404()
@@ -138,14 +138,12 @@ def account_pii_view(request, event_id, account_number):
         latest_acct_activity = AccountActivity.objects.filter(
             data_file__event=event,
             cons_acct_num=account_number) \
-                .select_related('account_holder') \
                 .latest('activity_date')
-        result = latest_acct_activity.account_holder
-        acct_holder_serializer = AccountHolderSerializer(result)
+        acct_holder_serializer = AccountHolderSerializer(latest_acct_activity)
         return JsonResponse(acct_holder_serializer.data)
     except (
         Metro2Event.DoesNotExist,
-        AccountHolder.DoesNotExist
+        AccountActivity.DoesNotExist
     ) as e:
         error = get_evaluate_m2_not_found_exception(
             str(e), event_id, None, request.path, account_number)

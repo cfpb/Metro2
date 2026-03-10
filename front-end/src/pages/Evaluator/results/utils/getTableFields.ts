@@ -14,8 +14,8 @@ const defaultFields = [
   'date_closed',
   'amt_past_due',
   'current_bal',
-  'account_holder__cons_info_ind',
-  'account_holder__cons_info_ind_assoc',
+  'cons_info_ind',
+  'cons_info_ind_assoc',
   'l1__change_ind'
 ]
 

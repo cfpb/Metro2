@@ -6,7 +6,7 @@ from parse_m2 import data_generator
 from parse_m2 import fields
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import (
-    Metro2Event, M2DataFile, AccountActivity, AccountHolder,
+    Metro2Event, M2DataFile, AccountActivity,
     J1, J2, K1, K2, K3, K4, L1, N1, UnparseableData
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
@@ -38,7 +38,6 @@ class GenerateDataTestCase(TestCase):
             self.assertEqual(M2DataFile.objects.first().activity_date, activity_date)
 
             # The file contains the following segments:
-            self.assertEqual(AccountHolder.objects.count(), 10)
             self.assertEqual(AccountActivity.objects.count(), 10)
 
             # The test file may contain some of these:
@@ -77,17 +76,14 @@ class GenerateDataTestCase(TestCase):
 
         # Create a record with default values
         r1_act = acct_record(m2df, {'cons_acct_num': 'ABCDEFGHIJ'})
-        r1_holder = r1_act.account_holder
 
         # Serialize the record into M2 format
-        serialized_r1 = data_generator.base_segment_data(r1_act, r1_holder)
+        serialized_r1 = data_generator.base_segment_data(r1_act)
 
         # Parse the serialized record so we can check that the values serialized correctly
         parsed_r1_act = AccountActivity.parse_from_segment(serialized_r1, m2df, date(2022,1,1))
-        parsed_r1_holder = AccountHolder.parse_from_segment(serialized_r1, parsed_r1_act, date(2022,1,1))
 
         self.assertEqual(parsed_r1_act.acct_stat, r1_act.acct_stat)
-        self.assertEqual(parsed_r1_holder.cons_acct_num, r1_holder.cons_acct_num)
         self.assertEqual(parsed_r1_act.doai, r1_act.doai)
 
     def test_j1(self):

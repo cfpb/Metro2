@@ -6,7 +6,7 @@ from datetime import date
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import (
     Metro2Event,
-    M2DataFile, AccountHolder, AccountActivity,
+    M2DataFile, AccountActivity,
     J1, J2, K1, K2, K3, K4, L1, N1
 )
 
@@ -21,8 +21,6 @@ class ParserModelsTestCase(TestCase):
         self.activity_date = date(2021, 1, 1)
         self.account_activity = AccountActivity(data_file = self.data_file,
                                                 activity_date = self.activity_date)
-        self.account_holder = AccountHolder(account_activity = self.account_activity,
-                                            activity_date = self.activity_date)
 
     def create_exam_activity(self):
         acct_date=date(2019, 12, 31)
@@ -89,12 +87,7 @@ class ParserModelsTestCase(TestCase):
             self.assertEqual(result.php, "222211000000000000010100")
             self.assertEqual(result.date_closed, None)
             self.assertEqual(result.doai, date(2023, 3, 31))
-
-    def test_parse_account_holder(self):
-        with open(self.base_seg) as file:
-            base_segment = file.readline()
-            result = AccountHolder.parse_from_segment(base_segment, self.account_activity, self.activity_date)
-            self.assertIsInstance(result, AccountHolder)
+            # person-related fields
             self.assertEqual(result.first_name, "FIRSTNAME1")
             self.assertEqual(result.country_cd, "US")
             self.assertEqual(result.phone_num, "3333334444")

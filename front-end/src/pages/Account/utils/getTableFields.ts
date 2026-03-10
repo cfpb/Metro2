@@ -11,8 +11,8 @@ const getTableFields = (): string[] => {
     field =>
       ![
         'cons_acct_num',
-        'account_holder__first_name',
-        'account_holder__surname'
+        'first_name',
+        'surname'
       ].includes(field) && !field.startsWith('previous_values')
   )
   fields.splice(1, 0, 'inconsistencies')
