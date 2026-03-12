@@ -2,12 +2,7 @@ import TabbedNavigation from '@src/components/TabbedNavigation/TabbedNavigation'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 
-
-
-// const route = getRouteApi('/events/$eventId/evaluators/$evaluatorId')
-
 export default function EvaluatorResultsTabbedNavigation(): ReactElement {
-
   const view: string | undefined = useSearch({
     strict: false,
     select: search => search.view

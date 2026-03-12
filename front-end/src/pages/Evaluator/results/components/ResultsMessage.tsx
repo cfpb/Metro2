@@ -60,5 +60,5 @@ export default function EvaluatorResultsMessage({
     } results`
   }
 
-  return <h4>{message}</h4>
+  return <h4 className='u-mb0'>{message}</h4>
 }
