@@ -39,6 +39,8 @@ export default defineConfig([
   reactPlugin.configs.flat.recommended,
   // Add this if using React 17+ JSX transform
   reactPlugin.configs.flat['jsx-runtime'],
+  // React hooks
+  reactHooks.configs.flat.recommended,
 
   // Unicorn
   unicorn.configs.recommended,
@@ -57,10 +59,6 @@ export default defineConfig([
         project: './tsconfig.eslint.json',
         tsconfigRootDir: import.meta.dirname
       }
-    },
-
-    plugins: {
-      'react-hooks': reactHooks
     },
 
     settings: {

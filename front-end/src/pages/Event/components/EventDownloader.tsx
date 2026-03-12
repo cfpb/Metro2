@@ -1,6 +1,5 @@
 import { Button } from '@cfpb/design-system-react'
 import DownloadModal from '@src/components/Modal/DownloadModal'
-import CopyUrl from 'components/CopyUrl'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import type EvaluatorMetadata from 'types/EvaluatorMetadata'
@@ -48,12 +47,6 @@ export default function EventDownloader({
 
   const copy = (
     <>
-      <fieldset className='o-form__fieldset block block--sub'>
-        <h3 className='h4'>Save a link for later</h3>
-        <p>Copy the link to this event&apos;s results.</p>
-        <CopyUrl />
-      </fieldset>
-
       <h3 className='h4'>Download a summary</h3>
       <p>
         Choosing to download will create a .csv containing the results in the table
@@ -76,10 +69,11 @@ export default function EventDownloader({
         open={isOpen}
         onClose={onClose}
         onDownload={onDownload}
-        content={copy}
         title='Save summary'
+        copyText="Copy the link to this event's results"
+        content={copy}
+        requirePrivacyAcknowledgment={false}
         buttonText='Download summary'
-        hidePII
       />
     </div>
   )

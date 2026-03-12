@@ -14,8 +14,6 @@ import type AccountRecord from 'types/AccountRecord'
 import { downloadData } from 'utils/downloads'
 import getHeaderName from 'utils/getHeaderName'
 
-import CopyUrl from '@src/components/CopyUrl'
-
 interface AccountDownloadInterface {
   rows: AccountRecord[]
   fields: string[]
@@ -31,15 +29,21 @@ export default function AccountDownloader({
   const queryClient = useQueryClient()
 
   const [isOpen, setIsOpen] = useState(false)
+  const [includeContactInfo, setIncludeContactInfo] = useState('exclude')
 
-  const includeContactInfo = useRef<HTMLInputElement>(null!)
+  const includeContactInfoRadioButton = useRef<HTMLInputElement>(null!)
 
   const onClose = (): void => {
     setIsOpen(false)
+    setIncludeContactInfo('exclude')
   }
 
   const onClick = (): void => {
     setIsOpen(true)
+  }
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setIncludeContactInfo(event.target.value)
   }
 
   const onDownload = async (): Promise<void> => {
@@ -60,7 +64,7 @@ export default function AccountDownloader({
     accountRecordsSheet.addRows(rows)
 
     // include account holder contact info only if user has selected that option
-    if (includeContactInfo.current?.checked) {
+    if (includeContactInfoRadioButton.current?.checked) {
       // add a sheet for the account holder data
       const accountHolderSheet = workbook.addWorksheet('Account holder information')
       // get account holder data
@@ -93,22 +97,15 @@ export default function AccountDownloader({
         `${eventData.name}_${accountId}.xlsx`,
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       )
-
-      setIsOpen(false)
+      onClose()
     } catch {
       // TODO determine if we need to handle errors
-      setIsOpen(false)
+      onClose()
     }
   }
 
   const header = (
     <>
-      <fieldset className='o-form__fieldset block block--sub'>
-        <legend className='h4'>Save a link for later</legend>
-        <p>Copy the link to this account&apos;s data.</p>
-        <CopyUrl />
-      </fieldset>
-
       <fieldset className='o-form__fieldset block block--sub'>
         <legend className='h4'>Choose download options:</legend>
         <p>
@@ -119,20 +116,25 @@ export default function AccountDownloader({
         </p>
         <RadioButton
           id='include'
+          value='include'
           name='contact-info-download'
           label='Include latest contact information for account holder'
           labelClassName=''
           labelInline
           isLarge
-          inputRef={includeContactInfo}
+          checked={includeContactInfo === 'include'}
+          onChange={onChange}
+          inputRef={includeContactInfoRadioButton}
         />
         <RadioButton
           id='exclude'
+          value='exclude'
           name='contact-info-download'
           label='Do not include account holder contact information'
           labelClassName=''
           labelInline
-          defaultChecked
+          checked={includeContactInfo === 'exclude'}
+          onChange={onChange}
           isLarge
         />
       </fieldset>
@@ -152,8 +154,9 @@ export default function AccountDownloader({
         open={isOpen}
         onClose={onClose}
         onDownload={onDownload}
-        content={header}
         title='Save account data'
+        copyText="Copy the link to this account's data."
+        content={header}
       />
     </div>
   )

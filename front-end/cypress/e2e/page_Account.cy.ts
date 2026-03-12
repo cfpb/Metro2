@@ -151,18 +151,41 @@ describe('Account data download', () => {
     modal.verifyPrivacyCheckboxRequired()
   })
   it('Should reset options when closed', () => {
-    const uncheckedOptionLabel =
+    /**
+     * When the account download modal is closed, its form elements
+     * should be reset to initial state:
+     *   - PII acknowledgment checkbox should be unchecked
+     *   - 'Exclude' option should be selected in contact info radio buttons
+     */
+
+    const includeContactInfoLabel =
       'Include latest contact information for account holder'
+    const excludeContactInfoLabel =
+      'Do not include account holder contact information'
+
+    // PII acknowledgment checkbox and include contact info radio
+    // should be unchecked by default when the Account modal is opened
     modal.openModal('Save account data').within(() => {
-      getInputByLabel(uncheckedOptionLabel).should('not.have.attr', 'checked')
-      modal.getPIICheckbox().should('not.have.attr', 'checked')
-      cy.get('label').contains(uncheckedOptionLabel).click()
+      getInputByLabel(excludeContactInfoLabel).should('be.checked')
+      getInputByLabel(includeContactInfoLabel).should('not.be.checked')
+      modal.getPIICheckbox().should('not.be.checked')
+
+      // Clicking PII acknowledgment checkbox and include contact info radio
+      // should update their checked state
+      cy.get('label').contains(includeContactInfoLabel).click()
       modal.checkPIICheckbox()
+      getInputByLabel(excludeContactInfoLabel).should('not.be.checked')
+      getInputByLabel(includeContactInfoLabel).should('be.checked')
+      modal.getPIICheckbox().should('be.checked')
     })
+
+    // Closing the modal should reset the PII acknowledgment checkbox
+    // and include contact info radio to their default unchecked state
     modal.closeModal()
     modal.openModal('Save account data').within(() => {
-      getInputByLabel(uncheckedOptionLabel).should('not.have.attr', 'checked')
-      modal.getPIICheckbox().should('not.have.attr', 'checked')
+      getInputByLabel(includeContactInfoLabel).should('not.be.checked')
+      getInputByLabel(excludeContactInfoLabel).should('be.checked')
+      modal.getPIICheckbox().should('not.be.checked')
     })
   })
 })

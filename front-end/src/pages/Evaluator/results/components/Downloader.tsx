@@ -1,7 +1,6 @@
 import { Button } from '@cfpb/design-system-react'
 import DownloadModal from '@src/components/Modal/DownloadModal'
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
-import CopyUrl from 'components/CopyUrl'
 import { useEvaluatorResults } from 'queries/evaluatorHits'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
@@ -115,17 +114,6 @@ export default function EvaluatorDownloader({
     }
   }
 
-  const modalContent = (
-    <fieldset className='o-form__fieldset block block--sub'>
-      <legend className='h4'>Save a link for later</legend>
-      <p>
-        Copy the link to this evaluator’s results. Any filters you’ve applied will be
-        included.
-      </p>
-      <CopyUrl />
-    </fieldset>
-  )
-
   const resultsMessage =
     view === 'sample' && totalHits > 20
       ? 'Download representative sample of results'
@@ -149,9 +137,9 @@ export default function EvaluatorDownloader({
         open={isOpen}
         onClose={onClose}
         onDownload={onDownload}
-        content={modalContent}
         title='Save results'
-        privacyAuthorizationHeader={resultsMessage}
+        copyText="Copy the link to this evaluator's results. Any filters you've applied will be included."
+        privacyHeader={resultsMessage}
         buttonText={buttonText}
       />
     </div>

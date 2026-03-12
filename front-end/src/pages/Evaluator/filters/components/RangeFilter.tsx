@@ -1,10 +1,10 @@
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import Accordion from 'components/Accordion/Accordion'
+import type { rangeValue } from 'components/Filters/RangeFilter/RangeFilter'
 import RangeFilter from 'components/Filters/RangeFilter/RangeFilter'
 import type { ReactElement } from 'react'
 import getHeaderName from 'utils/getHeaderName'
 import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
-import type { rangeValue } from 'components/Filters/RangeFilter/RangeFilter'
 
 export type currencyRangeField = 'amt_past_due' | 'current_bal'
 
@@ -35,7 +35,7 @@ export default function EvaluatorRangeFilter({
 
   const [min, max] = useSearch({
     strict: false,
-    select: (search) => [
+    select: search => [
       search[minField as keyof EvaluatorSearch],
       search[maxField as keyof EvaluatorSearch]
     ]
@@ -48,11 +48,10 @@ export default function EvaluatorRangeFilter({
     void navigate({
       resetScroll: false,
       to: '.',
-      search: (prev): object  => {
+      search: (prev): object => {
         const params = { ...prev }
         const num = Number(value)
         if (value === '' || typeof num !== 'number') {
-           
           delete params[name as keyof EvaluatorSearch]
         } else {
           ;(params[name as keyof EvaluatorSearch] as number) = num

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { Label, TextInput } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
@@ -27,6 +28,7 @@ export default function RangeFilter({
 }: RangeFilterData): ReactElement {
   const [min, setMin] = useState(initialMin ?? '')
   const [max, setMax] = useState(initialMax ?? '')
+
   useEffect(() => {
     setMin(initialMin ?? '')
     setMax(initialMax ?? '')
