@@ -6,7 +6,7 @@ export default interface EvaluatorMetadata {
   inconsistency_start: string
   inconsistency_end: string
   long_description: string
-  fields_used?: string[]
+  fields_used: string[]
   fields_display?: string[]
   category?: string
   alternate_explanation?: string | null

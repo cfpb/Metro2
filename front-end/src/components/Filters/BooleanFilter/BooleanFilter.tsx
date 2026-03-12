@@ -2,9 +2,11 @@ import type { ReactElement } from 'react'
 
 import { Checkbox } from '@cfpb/design-system-react'
 
+export type booleanFilterValue = boolean | '' | 'any' | 'false' | 'true' | undefined
+
 interface BooleanFilterData {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
-  selected?: boolean | '' | 'any' | 'false' | 'true' | undefined
+  selected?: booleanFilterValue
   id: string
   label_0?: string
   label_1?: string

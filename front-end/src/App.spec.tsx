@@ -4,7 +4,7 @@ import renderWithProviders from 'testUtils'
 
 describe.skip('<App />', () => {
   it('renders', async () => {
-    window.history.pushState({}, 'Home', '/')
+    globalThis.history.pushState({}, 'Home', '/')
     renderWithProviders(<App />)
     expect(await screen.findByText('Metro2 Evaluator Tool')).toBeVisible()
   })

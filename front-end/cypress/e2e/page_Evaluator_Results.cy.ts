@@ -172,16 +172,16 @@ describe('Invalid param handling', () => {
     }).as('getEvaluatorHits')
   })
 
-  Object.entries(invalidParams).forEach(item => {
+  for (const item of Object.entries(invalidParams)) {
     it(`Should replace invalid param value in "${item[0]}"`, () => {
       cy.visit(`/events/1/evaluators/Test-Eval-1/${item[0]}`)
       cy.wait(['@getEvent', '@getUser', '@getEvaluatorHits'])
       cy.location('search').should('not.include', item[0])
-      item[1].forEach(validParam => {
+      for (const validParam of item[1]) {
         cy.location('search').should('include', validParam)
-      })
+      }
     })
-  })
+  }
 })
 
 describe('Error handling', () => {
@@ -254,7 +254,7 @@ describe('Results table', () => {
   it('Should show correct values for each result', () => {
     // verify that the consumer account numbers are displayed for each row
     // in the pinned left column
-    table.verifyAccountTableBodyContent(
+    table.verifyTableBodyContent<AccountRecord>(
       table.getPinnedRows(),
       ['cons_acct_num'],
       hits
@@ -264,6 +264,6 @@ describe('Results table', () => {
     const fields = getTableFields(evaluator.fields_used, evaluator.fields_display)
     // remove consumer account number because it's in a separate section
     fields.shift()
-    table.verifyAccountTableBodyContent(table.getBodyRows(), fields, hits)
+    table.verifyTableBodyContent<AccountRecord>(table.getBodyRows(), fields, hits)
   })
 })

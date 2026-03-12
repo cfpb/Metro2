@@ -56,8 +56,9 @@ export const getM2Definition = (
  */
 export const annotateM2FieldValue = (
   field: string,
-  val: number | string
-): number | string => {
+  val: number | string | null | undefined
+): number | string | null | undefined => {
+  if (val === null && val === undefined && val === '') return val
   const annotation = getM2Definition(field, val)
   return annotation ? `${val} (${annotation})` : val
 }

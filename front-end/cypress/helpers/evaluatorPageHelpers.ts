@@ -13,13 +13,9 @@ export class EvaluatorPage {
    * @param {object} hitsFixture - Optional fixture name.
    * @returns {void} void
    */
-  loadEvaluatorPage(
-    params: object = {},
-    interceptAllHitsPaths: boolean = false
-  ): void {
+  loadEvaluatorPage(params: object = {}, interceptAllHitsPaths = false): void {
     const querystring = this.queryString(params)
     const apiExt = interceptAllHitsPaths ? '**' : `${querystring}`
-    const urlExt = querystring ? `${querystring}` : ''
     const hitsFixture =
       'page' in params && params.page === 2
         ? 'evaluatorHits_page2'
@@ -31,30 +27,27 @@ export class EvaluatorPage {
     cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/${apiExt}`, {
       fixture: hitsFixture
     }).as('getEvaluatorHits')
-    cy.visit(`/events/1/evaluators/Test-Eval-1/${urlExt}`)
+    cy.visit(`/events/1/evaluators/Test-Eval-1/${querystring}`)
     cy.wait(['@getEvent', '@getUser', '@getEvaluatorHits'])
   }
 
   interceptFilteredResults(
     alias: string,
     params: object = {},
-    fixture: string = 'evaluatorHits_page2'
+    fixture = 'evaluatorHits_page2'
   ): void {
     const querystring = this.queryString(params)
-    cy.intercept(
-      'GET',
-      `/api/events/1/evaluator/Test-Eval-1/${querystring ? querystring : ''}`,
-      {
-        fixture: fixture
-      }
-    ).as(alias)
+    cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/${querystring}`, {
+      fixture: fixture
+    }).as(alias)
   }
 
   interceptFilteredResultsWithSpy(alias: string, params: object = {}) {
     const querystring = this.queryString(params)
+
     cy.intercept(
       'GET',
-      `/api/events/1/evaluator/Test-Eval-1/${querystring ? querystring : ''}`,
+      `/api/events/1/evaluator/Test-Eval-1/${querystring}`,
       cy.spy().as(alias)
     )
   }
@@ -62,17 +55,13 @@ export class EvaluatorPage {
   interceptFilteredResultsWithError(
     alias: string,
     params: object = {},
-    statusCode: number = 404
+    statusCode = 404
   ) {
     const querystring = this.queryString(params)
-    cy.intercept(
-      'GET',
-      `/api/events/1/evaluator/Test-Eval-1/${querystring ? querystring : ''}`,
-      {
-        statusCode: statusCode,
-        body: { error: 'Bad Request' }
-      }
-    ).as(alias)
+    cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/${querystring}`, {
+      statusCode: statusCode,
+      body: { error: 'Bad Request' }
+    }).as(alias)
   }
 
   resultsMessage() {

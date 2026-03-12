@@ -1,4 +1,3 @@
-/* eslint-disable cypress/require-data-selectors */
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 import { Metro2Page } from '../helpers/pageHelper'
 const page = new Metro2Page()

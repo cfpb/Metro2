@@ -21,9 +21,6 @@ export const columnTypes = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     valueFormatter: ({ value }: ValueFormatterParams): string => formatDate(value)
   },
-  plainText: {
-    cellDataType: 'text'
-  },
   currency: {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',

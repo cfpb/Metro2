@@ -59,13 +59,13 @@ export const downloadData = (
   fileName: string,
   fileType = 'data:text/csv'
 ): void => {
-  const blob = new Blob([file], { type: fileType })
-  const url = window.URL.createObjectURL(blob)
+  const blob = new Blob([file as BlobPart], { type: fileType })
+  const url = globalThis.URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
   link.download = fileName
   link.click()
-  window.URL.revokeObjectURL(url)
+  globalThis.URL.revokeObjectURL(url)
 }
 
 /**

@@ -2,42 +2,46 @@ import CopyUrl from '@src/components/CopyUrl'
 
 describe('CopyUrl.cy.tsx', () => {
   beforeEach(() => {
-    cy.mount(<CopyUrl/>)
-  });
+    cy.mount(<CopyUrl />)
+  })
 
   it('displays copy url button', () => {
-    cy.contains('button', 'Copy URL')
-    .should('have.class', 'a-btn')
-    .and('be.visible')
-  })  
+    cy.contains('button', 'Copy URL').should('have.class', 'a-btn').and('be.visible')
+  })
 
   it('button displays "Copy URL" after intial call/action', () => {
-    cy.window().then((win) => {
+    cy.window().then(win => {
       cy.stub(win.navigator.clipboard, 'writeText').as('clipboardWrite').resolves()
     })
-    cy.get('button').contains('Copy URL').click().should('contain', 'URL Copied!')
+    cy.findByTestId('copyButton').should('contain', 'Copy URL')
+    cy.findByTestId('copyButton').click()
+    cy.findByTestId('copyButton').should('contain', 'URL Copied!')
     cy.get('@clipboardWrite').should('have.been.calledOnce')
     cy.wait(500)
     cy.get('.a-btn').should('contain', 'Copy URL')
   })
 
   it('should copy URL to the clipboard', () => {
-    cy.window().then((win) => {
+    cy.window().then(win => {
       cy.stub(win.navigator.clipboard, 'writeText').as('clipboardWrite').resolves()
     })
-    cy.url().then((url) => {
-      cy.get('button').contains('Copy URL').click().should('contain', 'URL Copied!')
+    cy.url().then(url => {
+      cy.findByTestId('copyButton').click()
       cy.get('@clipboardWrite').should('have.been.calledOnceWith', url)
     })
-  }) 
-        
+  })
+
   it('button displays "Failed to copy URL" when clipboard copy fails', () => {
-    cy.window().then((win) => {
+    cy.window().then(win => {
       cy.stub(win.navigator.clipboard, 'writeText').as('clipboardWrite').throws()
     })
-    cy.get('button').click()  
+    cy.findByTestId('copyButton').should('contain', 'Copy URL')
+    cy.findByTestId('copyButton').click()
+    cy.findByTestId('copyButton')
       .should('contain', 'Failed to copy URL')
       .and('be.visible')
-      cy.get('@clipboardWrite').should('have.been.calledOnce')
+    cy.get('@clipboardWrite').should('have.been.calledOnce')
+    cy.wait(500)
+    cy.get('.a-btn').should('contain', 'Copy URL')
   })
 })

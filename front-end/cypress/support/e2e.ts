@@ -1,5 +1,5 @@
-/* eslint-disable unicorn/prevent-abbreviations */
 import '@testing-library/cypress/add-commands'
+import 'cypress-real-events/support'
 
 Cypress.on('uncaught:exception', err => {
   // we expect the api to return 401 for unauthorized errors

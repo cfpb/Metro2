@@ -20,7 +20,7 @@ const defaultFields = [
 ]
 
 const matchListOrder = (list: string[], order: string[]): string[] =>
-  list.sort((a, b) => (order.indexOf(a) > order.indexOf(b) ? 1 : -1))
+  list.toSorted((a, b) => (order.indexOf(a) > order.indexOf(b) ? 1 : -1))
 
 /**
  * getTableFields()
@@ -48,12 +48,12 @@ const matchListOrder = (list: string[], order: string[]): string[] =>
 
 const getTableFields = (
   fields_used: string[],
-  fields_display: string[]
+  fields_display: string[] | undefined
 ): string[] => {
   const order = [...M2_FIELD_NAMES.keys()]
   const fieldsUsed = matchListOrder(fields_used, order)
   const additionalFields = matchListOrder(
-    [...fields_display, ...defaultFields],
+    [...(fields_display ?? []), ...defaultFields],
     order
   )
   const tableFields = [

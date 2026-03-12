@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable import/extensions */
-/* eslint-disable cypress/require-data-selectors */
-/* eslint-disable */
-// @ts-nocheck
 import 'cypress-real-events/support'
 
 import { PII_COOKIE_NAME } from '@src/constants/settings'
@@ -68,7 +63,7 @@ describe('Modal accessibility', () => {
 
     it('Should allow keyboard navigation of interactive elements in modal', () => {
       cy.get('body').realClick()
-      modal.getModal().should('not.exist')
+      modal.getModal().should('not.be.visible')
       cy.get('button').contains('Save results').should('be.visible').click()
       modal.getModal().should('be.visible')
       // When the modal opens, its first interactive element should be focused
@@ -94,7 +89,7 @@ describe('Modal accessibility', () => {
 
     it('Modal should close when escape pressed and reopen when launched again', () => {
       cy.get('body').realClick()
-      modal.getModal().should('not.exist')
+      modal.getModal().should('not.be.visible')
       // Clicking download button should open download modal
       cy.get('button').contains('Save results').should('be.visible').click()
       modal.getModal().should('be.visible')
@@ -119,7 +114,7 @@ describe('Modal accessibility', () => {
 
     it('Should not close modal dialog when escape key is pressed', () => {
       cy.get('body').realClick()
-      modal.getModal().should('exist').and('be.visible')
+      modal.getModal().should('be.visible')
       cy.realPress('Escape')
       modal.getModal().should('be.visible')
     })

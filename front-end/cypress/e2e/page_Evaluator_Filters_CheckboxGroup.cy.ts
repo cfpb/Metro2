@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable import/extensions */
-/* eslint-disable cypress/require-data-selectors */
-
 import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
 import { Metro2Page } from '../helpers/pageHelper'
 import { Metro2Table } from '../helpers/tableHelpers'

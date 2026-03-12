@@ -1,8 +1,8 @@
 /// <reference types="vitest" />
+import eslintPlugin from '@nabla/vite-plugin-eslint'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
-import eslint from 'vite-plugin-eslint'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import pluginProcessIcons from './postcss/processIcons'
 
@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => ({
       }
     }
   },
-  plugins: [tsconfigPaths(), react(), ...(mode === 'test' ? [] : [eslint()])],
+  plugins: [tsconfigPaths(), react(), eslintPlugin()],
   server: {
     port: 3000,
     host: true,

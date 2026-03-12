@@ -4,6 +4,7 @@ import EvaluatorBooleanFilter from '../components/BooleanFilter'
 import EvaluatorCheckboxGroup from '../components/CheckboxGroup'
 import EvaluatorRangeFilter from '../components/RangeFilter'
 import './FilterSidebar.scss'
+import type { currencyRangeField } from '../components/RangeFilter'
 
 export default function EvaluatorFilterSidebar(): ReactElement {
   return (
@@ -35,12 +36,12 @@ export default function EvaluatorFilterSidebar(): ReactElement {
         <div className='block block--sub'>
           <h2 className='h3'>Dates</h2>
           <EvaluatorBooleanFilter
-            field={'dofd' as keyof EvaluatorSearch}
+            field='dofd'
             header='Date of first delinquency (DOFD)'
             checkboxLabel='DOFD'
           />
           <EvaluatorBooleanFilter
-            field={'date_closed' as keyof EvaluatorSearch}
+            field='date_closed'
             header='Date closed'
             checkboxLabel='date closed'
           />
@@ -50,7 +51,7 @@ export default function EvaluatorFilterSidebar(): ReactElement {
           {['amt_past_due', 'current_bal'].map(field => (
             <EvaluatorRangeFilter
               key={field}
-              field={field as keyof EvaluatorSearch}
+              field={field as currencyRangeField}
             />
           ))}
         </div>

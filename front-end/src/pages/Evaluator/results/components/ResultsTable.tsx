@@ -1,6 +1,5 @@
 import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
-import { useMemo } from 'react'
 import type AccountRecord from 'types/AccountRecord'
 import type Event from 'types/Event'
 import getEvaluatorColDefs from '../utils/getColDefs'
@@ -21,15 +20,10 @@ export default function EvaluatorResultsTable({
   isLoading,
   isLoadingError
 }: EvaluatorTableData): ReactElement {
-  const columnDefinitions = useMemo(
-    () => getEvaluatorColDefs(fields, String(eventData.id)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
   return (
     <Table
       rows={data}
-      columnDefinitions={columnDefinitions}
+      columnDefinitions={getEvaluatorColDefs(fields, String(eventData.id))}
       NoResultsMessage={NoResultsMessage}
       isLoading={isLoading}
       isLoadingError={isLoadingError}

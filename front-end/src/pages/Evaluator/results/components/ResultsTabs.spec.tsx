@@ -53,9 +53,9 @@ describe('<EvaluatorResultsToggle />', () => {
     // on load, sample button should be checked
     expect(sampleTab).toHaveClass('active')
     expect(allTab).not.toHaveClass('active')
-    expect(mocks.navigate).not.toBeCalled()
+    expect(mocks.navigate).not.toHaveBeenCalled()
     // clicking the all button should call navigate
     allTab.click()
-    expect(mocks.navigate).toBeCalledTimes(1)
+    expect(mocks.navigate).toHaveBeenCalledTimes(1)
   })
 })

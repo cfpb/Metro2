@@ -3,7 +3,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 
 export default function EvaluatorResultsTabbedNavigation(): ReactElement {
-  const view: unknown = useSearch({
+  const view: string | undefined = useSearch({
     strict: false,
     select: search => search.view
   })
@@ -13,7 +13,7 @@ export default function EvaluatorResultsTabbedNavigation(): ReactElement {
     void navigate({
       resetScroll: false,
       to: '.',
-      search: prev =>
+      search: (prev): object =>
         event.currentTarget.id === 'all-results-tab'
           ? { ...prev, view: 'all' }
           : { view: 'sample' }

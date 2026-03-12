@@ -9,6 +9,7 @@ describe('EvaluatorMetadataSection.cy.tsx', () => {
       accounts_affected: 1111,
       inconsistency_start: '1/1/24',
       inconsistency_end: '1/1/25',
+      fields_used: ['acct_stat', 'acct_type'],
       long_description: 'Long description of evaluator',
       rationale: 'This evaluator checks for a mismatch between two fields.',
       potential_harm: 'Description of potential harm.',
@@ -48,6 +49,7 @@ describe('EvaluatorMetadataSection.cy.tsx', () => {
       accounts_affected: 1111,
       inconsistency_start: '1/1/24',
       inconsistency_end: '1/1/25',
+      fields_used: ['acct_stat', 'acct_type'],
       long_description: 'Long description of evaluator',
       rationale: 'This evaluator checks for a mismatch between two fields.',
       crrg_reference: 'Where to look in the CRRG.'
@@ -84,6 +86,7 @@ describe('EvaluatorMetadataSection.cy.tsx', () => {
       accounts_affected: 1111,
       inconsistency_start: '1/1/24',
       inconsistency_end: '1/1/25',
+      fields_used: ['acct_stat', 'acct_type'],
       long_description: 'Long description of evaluator'
     }
     cy.mount(<EvaluatorMetadataSection metadata={metadata} isAdmin />)
@@ -108,6 +111,7 @@ describe('EvaluatorMetadataSection.cy.tsx', () => {
       accounts_affected: 1111,
       inconsistency_start: '1/1/24',
       inconsistency_end: '1/1/25',
+      fields_used: ['acct_stat', 'acct_type'],
       long_description: 'Long description of evaluator',
       rationale: 'This evaluator checks for a mismatch between two fields.',
       crrg_reference: 'Where to look in the CRRG.'
@@ -127,6 +131,7 @@ describe('EvaluatorMetadataSection.cy.tsx', () => {
       accounts_affected: 1111,
       inconsistency_start: '1/1/24',
       inconsistency_end: '1/1/25',
+      fields_used: ['acct_stat', 'acct_type'],
       long_description: 'Long description of evaluator',
       rationale: 'This evaluator checks for a mismatch between two fields.',
       crrg_reference: 'Where to look in the CRRG.'

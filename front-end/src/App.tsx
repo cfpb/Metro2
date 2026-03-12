@@ -1,5 +1,5 @@
 import ErrorComponent from '@src/components/Error/ErrorComponent'
-import NotFound from '@src/components/Error/NotFound'
+import NotFoundMessage from '@src/components/Error/NotFound'
 import WarningModal from '@src/components/Modal/WarningModal'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
@@ -34,10 +34,10 @@ const router = createRouter({
   defaultPendingMs: 0,
   defaultPendingComponent: Loader,
   defaultErrorComponent: ErrorComponent,
-  defaultNotFoundComponent: NotFound,
   stringifySearch: stringifySearchParams,
   parseSearch: parseSearchWith(customParser),
-  getScrollRestorationKey: location => location.pathname
+  getScrollRestorationKey: location => location.pathname,
+  defaultNotFoundComponent: NotFoundMessage
 })
 
 // Register the router instance for type safety

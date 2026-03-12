@@ -26,16 +26,20 @@ const annotatedFields = Object.keys(M2_FIELD_LOOKUPS)
 //    a formatted date for a date field
 //    a USD-formatted number for a currency field
 //    an annotated string for a value with an annotation lookup
-//    and the raw value for any other field
-export const getDisplayValue = (
-  field: string,
-  value: number | string | null | undefined
-): number | string | null | undefined => {
-  console.log(field, value)
-  if (currencyFields.includes(field)) return formatUSD(value)
-  if (dateFields.includes(field)) return formatDate(value)
-  if (annotatedFields.includes(field)) return annotateM2FieldValue(field, value)
-  if (['hits', 'accounts_affected'].includes(field)) return formatNumber(value)
+//    a comma-joined string for an array
+//    and the raw value for anything else
+export const getDisplayValue = (field: string, value: unknown): unknown => {
+  // Numbers and strings can be formatted if of an appropriate field type
+  if (value === null || value === undefined) return ''
+  if (typeof value === 'string' || Number.isFinite(value)) {
+    const val = value as string | number
+    if (currencyFields.includes(field)) return formatUSD(val)
+    if (dateFields.includes(field)) return formatDate(val)
+    if (annotatedFields.includes(field)) return annotateM2FieldValue(field, val)
+    if (['hits', 'accounts_affected'].includes(field)) return formatNumber(val)
+  }
+  // Arrays should be converted to strings
   if (Array.isArray(value)) return value.join('')
+  // Any other value should be returned as is
   return value
 }

@@ -1,7 +1,11 @@
 import { PII_COOKIE_NAME } from '@src/constants/settings'
-import eventData from '../fixtures/event_1.json'
+import EvaluatorMetadata from '@src/types/EvaluatorMetadata'
+import type Event from '@src/types/Event'
+import data from '../fixtures/event_1.json'
 import { Metro2Page } from '../helpers/pageHelper'
 import { Metro2Table } from '../helpers/tableHelpers'
+
+const eventData = data as Event
 
 // Instantiate helpers
 const table = new Metro2Table()
@@ -37,7 +41,13 @@ describe('Event page', () => {
     )
   })
   it('Should show correct headers for evaluator table', () => {
-    const expectedHeaders = eventData.headers
+    const expectedHeaders = [
+      'Evaluator',
+      'Description',
+      'Category',
+      'Total instances',
+      'Total accounts'
+    ]
     table.verifyHeaders(expectedHeaders)
   })
   it('Should show correct number of evaluators', () => {
@@ -45,7 +55,7 @@ describe('Event page', () => {
   })
   it('Should show correct evaluator value per row', () => {
     const fields = ['id', 'description', 'category', 'hits', 'accounts_affected']
-    table.verifyAccountTableBodyContent(
+    table.verifyTableBodyContent<EvaluatorMetadata>(
       table.getBodyRows(),
       fields,
       eventData.evaluators
@@ -56,9 +66,11 @@ describe('Event page', () => {
       const rowEvaluator = eventData.evaluators[rowIndex]
       cy.wrap(row)
         .find('.ag-cell-value')
-        .then(cells => {
+        .then(rowCells => {
           //verifying the URL for each evaluator
-          cy.get(cells[0])
+          cy.wrap(rowCells)
+            .should('have.length', 5)
+            .first()
             .find('a')
             .should('have.attr', 'href')
             .and('include', '/evaluators/' + rowEvaluator.id)
@@ -74,8 +86,6 @@ describe('Event file download', () => {
     cy.visit('/events/1')
   })
   it('Should have "Save summary" button', () => {
-    cy.get('.downloader')
-      .find('button')
-      .should('contain', 'Save summary')
+    cy.get('.downloader').find('button').should('contain', 'Save summary')
   })
 })

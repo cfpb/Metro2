@@ -50,7 +50,7 @@ export const generateCheckboxItem = (
 ): CheckboxItem => ({
   checked: appliedFilters.includes(String(val)),
   key: `${field}_${val}`,
-  name: annotateM2FieldValue(field, val),
+  name: annotateM2FieldValue(field, val) as string,
   onChange
 })
 
@@ -71,8 +71,8 @@ export default function EvaluatorCheckboxGroup({
   /**
    * Gets any groupings for this field's values.
    */
-  const groupedField = field in fieldGroups
-  const currentFieldGroups = groupedField ? fieldGroups[field] : new Map()
+  const currentFieldGroups =
+    field in fieldGroups ? fieldGroups[field as keyof typeof fieldGroups] : new Map()
 
   /**
    * Event handlers
@@ -90,9 +90,8 @@ export default function EvaluatorCheckboxGroup({
       search: (prev: Record<string, unknown>) => {
         const params = { ...prev }
         if (fieldValue.length > 0) {
-          params[field] = [...new Set(fieldValue)].sort()
+          params[field] = [...new Set(fieldValue)].toSorted()
         } else if (field in params) {
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete params[field]
         }
         // reset page to 1
@@ -103,7 +102,7 @@ export default function EvaluatorCheckboxGroup({
   }
 
   /**
-   * When parent checkbox for the field is changed:
+   * When top-level checkbox for the field is changed:
    *   - if checked, update navigation with all possible values
    *     for the field
    *   - if unchecked, update navigation with empty array
@@ -121,7 +120,7 @@ export default function EvaluatorCheckboxGroup({
   }
 
   /**
-   * When a group checkbox is changed:
+   * When a group level checkbox is changed:
    *   - if checked, update navigation with current list of
    *     values for the field + all possible values for group
    *   - if unchecked, remove all group values from current value list
@@ -161,6 +160,7 @@ export default function EvaluatorCheckboxGroup({
   /**
    * Generate list of checkbox items for this field
    */
+  // eslint-disable-next-line no-useless-assignment
   let children: CheckboxItem[] = []
 
   if (field in fieldGroups) {
