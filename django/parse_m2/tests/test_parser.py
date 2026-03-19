@@ -136,7 +136,7 @@ class ParserTestCase(TestCase):
     # Tests for handling unparseable data in the body of the file
     def test_unparseable_data_in_line(self):
         line = "this is a bad line of data"
-        result = self.parser.parse_line(line, self.activity_date)
+        result = self.parser.parse_line(line)
         # result contains an instance of UnparseableData
         unparseable = result["UnparseableData"]
         self.assertEqual(unparseable.unparseable_line, line)
