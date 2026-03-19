@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -153,7 +155,7 @@ class AccountActivity(models.Model):
 
 
     @classmethod
-    def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date):
+    def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date: date):
         # Construct the php1 field from php
         php = get_field_value(fields.base_fields, "php", base_seg)
         php1 = php[0] if php else ""

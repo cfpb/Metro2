@@ -1,5 +1,6 @@
 import io
 import re
+from datetime import date
 
 from parse_m2 import fields
 from parse_m2.models import (
@@ -44,7 +45,7 @@ class M2FileParser():
             file.error_message = msg
         file.save()
 
-    def get_activity_date_from_header(self, line: str):
+    def get_activity_date_from_header(self, line: str) -> date:
         try:
             return parse_utils.get_field_value(
                 fields.header_fields, "activity_date", line,
@@ -57,7 +58,7 @@ class M2FileParser():
             # if the header couldn't be parsed, don't try to parse the rest of the file
             raise parse_utils.UnreadableFileException(error_message)
 
-    def handle_first_line_and_return_activity_date(self, first_line:str):
+    def handle_first_line_and_return_activity_date(self, first_line:str) -> date:
         if parse_utils.is_header_line(first_line):
             # If it's a header, get the activity date
             return self.get_activity_date_from_header(first_line)
@@ -159,7 +160,7 @@ class M2FileParser():
 
         return parsed
 
-    def parse_line(self, line: str, activity_date) -> dict:
+    def parse_line(self, line: str, activity_date: date) -> dict:
         """
         Given a single line of a Metro2 file, parse all of the segments it contains
         into individual model records, and put them all into a dict.
@@ -220,7 +221,7 @@ class M2FileParser():
             error_description=str(error)
         )}
 
-    def parse_chunk(self, f: io.TextIOWrapper, chunk_size: int, activity_date) -> dict:
+    def parse_chunk(self, f: io.TextIOWrapper, chunk_size: int, activity_date: date) -> dict:
         """
         Given a filestream of a Metro2 file, parse chunk_size lines from it and save them
         to a dict.
