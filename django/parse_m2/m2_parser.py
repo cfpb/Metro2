@@ -159,9 +159,6 @@ class M2FileParser():
 
         return parsed
 
-    def get_doai_from_acct_activity(self, line: str):
-        return parse_utils.get_field_value(fields.base_fields, "doai", line)
-
     def parse_line(self, line: str, activity_date) -> dict:
         """
         Given a single line of a Metro2 file, parse all of the segments it contains
@@ -185,10 +182,6 @@ class M2FileParser():
             parsed = {}
             parsed["cons_info_ind_assoc"] = []
             parsed["ecoa_assoc"] = []
-
-            # If activity_date isn't provided, use the DOAI instead
-            if not activity_date:
-                activity_date = self.get_doai_from_acct_activity(line)
 
             # parse the base segment into AccountActivity
             acct_activity = AccountActivity.parse_from_segment(
