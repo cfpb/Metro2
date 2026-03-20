@@ -22,9 +22,15 @@ class Command(BaseCommand):
         event_help = "The ID of the event record"
         argparser.add_argument("-e", "--event_id", nargs="?", required=True, help=event_help)
 
+        collection_help = "A string to differentiate records from different sources " + \
+            "or 'collections'. Used to prevent overlapping account numbers within " + \
+            "a dataset. Will be applied to all files parsed by this run of the parser. (optional)"
+        argparser.add_argument("-c", "--collection", nargs="?", required=False, help=collection_help)
+
     def handle(self, *args, **options):
         logger = logging.getLogger('commands.parse')
         event_id = options["event_id"]
+        collection = options["collection"]
 
         # Fetch the Metro2Event
         try:
@@ -36,9 +42,9 @@ class Command(BaseCommand):
         # Parse the data
         logger.info(f"Parsing files from {event.directory} directory...")
         if settings.S3_ENABLED:
-            parse_files_from_s3_bucket(event, skip_existing=True)
+            parse_files_from_s3_bucket(event, skip_existing=True, collection=collection)
         else:
-            parse_files_from_local_filesystem(event, skip_existing=True)
+            parse_files_from_local_filesystem(event, skip_existing=True, collection=collection)
 
         logger.info(
             self.style.SUCCESS(f"Finished parsing data for event: {event_id}.")
