@@ -262,7 +262,7 @@ class ParserTestCase(TestCase):
             self.assertEqual(N1.objects.count(), 0)
 
     ############################
-    # Tests for adding a collection name to the account number
+    # Tests for prepending a collection name to the account number
     def test_collection_prefix_on_account_number(self):
         event = Metro2Event.objects.create(name='exam_with_collections')
         parser = M2FileParser(event=event, filepath="file.txt", collection="HEALTH.")

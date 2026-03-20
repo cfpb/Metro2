@@ -10,7 +10,7 @@ from parse_m2.models import Metro2Event
 class Command(BaseCommand):
     """
     Run this command by running the following:
-    > python manage.py parse -e [event_id]
+    > python manage.py parse -e [event_id] -c [collection_name]
     """
     help = "Checks all files in the S3 directory for this event, and parses any that " + \
             "haven't already been parsed. " + \
