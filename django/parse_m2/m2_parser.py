@@ -15,11 +15,12 @@ from parse_m2 import parse_utils
 class M2FileParser():
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
-    parser_version = "2.0"
+    parser_version = "2.1"
 
     chunk_size = 2000  # TODO: determine a good number for this
     any_non_whitespace = r'\S'
-    collection = ''
+
+    activity_date = None
 
     def __init__(self, event: Metro2Event, filepath: str) -> None:
         """
@@ -69,7 +70,7 @@ class M2FileParser():
             self.update_file_record(msg=message)
 
             # Next, parse the first line as a tradeline and save the results
-            # (self.activity_date=None signals the parser to use DOAI instead of activity_date)
+            # (self.activity_date=None signals the parser to use DOAI as activity_date)
             line_results = self.parse_line(line=first_line)
             if line_results:
                 parsed_records = self.prepare_results_for_bulk_save(line_results)
