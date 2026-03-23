@@ -12,7 +12,7 @@ from parse_m2.initiate_parsing_utils import (
 
 ############################################
 # Methods for parsing files from the local filesystem
-def parse_local_file(event: Metro2Event, filepath: str, skip_existing: bool):
+def parse_local_file(event: Metro2Event, filepath: str, skip_existing: bool = True, collection: str = None):
     logger = logging.getLogger('parse_m2.parse_local_file')
     full_name = f"local:{filepath}"
 
@@ -25,7 +25,7 @@ def parse_local_file(event: Metro2Event, filepath: str, skip_existing: bool):
             return
 
     # Instantiate a parser
-    parser = M2FileParser(event, full_name)
+    parser = M2FileParser(event, full_name, collection)
 
     logger.debug(f"Parsing local file: {filepath}")
     try:
@@ -37,7 +37,7 @@ def parse_local_file(event: Metro2Event, filepath: str, skip_existing: bool):
     except FileNotFoundError as e:
         logger.error(f"There was an error opening the file: {e}")
 
-def parse_zip_file_contents(zip_path: str, event: Metro2Event, skip_existing: bool):
+def parse_zip_file_contents(zip_path: str, event: Metro2Event, skip_existing: bool, collection: str = None):
     with zipfile.ZipFile(zip_path, 'r') as zipf:
         for f in zipf.filelist:
             full_name = f"local:ZIP:{zip_path}:{f.filename}"
@@ -50,9 +50,9 @@ def parse_zip_file_contents(zip_path: str, event: Metro2Event, skip_existing: bo
                     logger.debug(f"Skipping existing file {full_name}, because skip_existing = True")
                     return
 
-            parse_file_from_zip(f, zipf, full_name, event)
+            parse_file_from_zip(f, zipf, full_name, event, collection)
 
-def parse_files_from_local_filesystem(event: Metro2Event, skip_existing: bool = True):
+def parse_files_from_local_filesystem(event: Metro2Event, skip_existing: bool = True, collection: str = None):
     """
     Parse all files in the local filesystem location indicated by
     event.directory, and save them to event. For any files that look like
@@ -72,8 +72,8 @@ def parse_files_from_local_filesystem(event: Metro2Event, skip_existing: bool = 
 
         if os.path.isfile(filepath):
             if zip_file(filename):
-                parse_zip_file_contents(filepath, event, skip_existing)
+                parse_zip_file_contents(filepath, event, skip_existing, collection)
             elif data_file(filename):
-                parse_local_file(event, filepath, skip_existing)
+                parse_local_file(event, filepath, skip_existing, collection)
             else:
                 log_invalid_file_extension(event, filename, skip_existing, logger)

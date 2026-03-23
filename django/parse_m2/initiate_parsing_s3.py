@@ -21,7 +21,7 @@ from parse_m2.initiate_parsing_utils import (
 # For more on how to set credentials:
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html
 
-def parse_s3_file(file, event: Metro2Event, skip_existing: bool):
+def parse_s3_file(file, event: Metro2Event, skip_existing: bool = True, collection: str = None):
     logger = logging.getLogger('parse_m2.parse_s3_file')
     full_name = f"s3:{file.key}"
 
@@ -34,7 +34,7 @@ def parse_s3_file(file, event: Metro2Event, skip_existing: bool):
             return
 
     # Instantiate a parser
-    parser = M2FileParser(event, full_name)
+    parser = M2FileParser(event, full_name, collection)
 
     # Parse the file
     fstream = file.get()["Body"]
@@ -42,7 +42,7 @@ def parse_s3_file(file, event: Metro2Event, skip_existing: bool):
     parser.parse_file_contents(fstream, file.size)
     logger.info(f'File {full_name} written to database.')
 
-def parse_zip_file_contents_S3(zip_obj, event: Metro2Event, zipfile_name: str, skip_existing: bool):
+def parse_zip_file_contents_S3(zip_obj, event: Metro2Event, zipfile_name: str, skip_existing: bool, collection: str = None):
     # TODO: If the files are large (>2GB), this method of streaming
     # zipfiles might fail. If that happens, we'll have to try another approach
     with io.BytesIO(zip_obj.get()["Body"].read()) as fstream:
@@ -58,9 +58,9 @@ def parse_zip_file_contents_S3(zip_obj, event: Metro2Event, zipfile_name: str, s
                         logger.debug(f"Skipping existing file {full_name}, because skip_existing = True")
                         return
 
-                parse_file_from_zip(f, zipf, full_name, event)
+                parse_file_from_zip(f, zipf, full_name, event, collection)
 
-def parse_files_from_s3_bucket(event: Metro2Event, skip_existing: bool = True):
+def parse_files_from_s3_bucket(event: Metro2Event, skip_existing: bool = True, collection: str = None):
     """
     Parse all files in the folder of the S3 bucket location indicated by
     event.directory, and save them to event. For any files that look like zip
@@ -78,8 +78,8 @@ def parse_files_from_s3_bucket(event: Metro2Event, skip_existing: bool = True):
         # TODO: Handle errors connecting to bucket and opening files
 
         if zip_file(file.key):
-            parse_zip_file_contents_S3(file, event, file.key, skip_existing)
+            parse_zip_file_contents_S3(file, event, file.key, skip_existing, collection)
         elif data_file(file.key):
-            parse_s3_file(file, event, skip_existing)
+            parse_s3_file(file, event, skip_existing, collection)
         else:
             log_invalid_file_extension(event, file.key, skip_existing, logger)

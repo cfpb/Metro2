@@ -16,12 +16,12 @@ def zip_file(filename: str) -> bool:
 def get_extension(filename: str) -> str:
     return filename.split('.')[-1].lower()
 
-def parse_file_from_zip(f: ZipInfo, zip_file: ZipFile, full_name: str, event: Metro2Event):
+def parse_file_from_zip(f: ZipInfo, zip_file: ZipFile, full_name: str, event: Metro2Event, collection: str = None):
     logger = logging.getLogger('parse_m2.parse_file_from_zip')
     filename = f.filename
     logger.info(f"Encountered file in zipfile: {filename}")
     if not f.is_dir():
-        parser = M2FileParser(event, full_name)
+        parser = M2FileParser(event, full_name, collection)
         if data_file(filename):
             try:
                 with zip_file.open(filename) as fstream:

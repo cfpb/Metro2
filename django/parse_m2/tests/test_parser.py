@@ -260,3 +260,17 @@ class ParserTestCase(TestCase):
             self.assertEqual(K3.objects.count(), 0)
             self.assertEqual(K4.objects.count(), 0)
             self.assertEqual(N1.objects.count(), 0)
+
+    ############################
+    # Tests for prepending a collection name to the account number
+    def test_collection_prefix_on_account_number(self):
+        event = Metro2Event.objects.create(name='exam_with_collections')
+        parser = M2FileParser(event=event, filepath="file.txt", collection="HEALTH.")
+
+        file_size = os.path.getsize(self.tiny_file)
+        with open(self.tiny_file, mode='r') as filestream:
+            parser.parse_file_contents(filestream, file_size)
+
+        self.assertIsNotNone(AccountActivity.objects.get(cons_acct_num='HEALTH.ACCTNUMBER1'))
+        self.assertIsNotNone(AccountActivity.objects.get(cons_acct_num='HEALTH.ACCTNUMBER2'))
+        self.assertIsNotNone(AccountActivity.objects.get(cons_acct_num='HEALTH.ACCTNUMBER3'))

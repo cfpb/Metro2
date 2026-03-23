@@ -155,7 +155,7 @@ class AccountActivity(models.Model):
 
 
     @classmethod
-    def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date: date):
+    def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date: date, collection: str = None):
         # Construct the php1 field from php
         php = get_field_value(fields.base_fields, "php", base_seg)
         php1 = php[0] if php else ""
@@ -165,11 +165,16 @@ class AccountActivity(models.Model):
         if not activity_date:
             activity_date = doai
 
+        # If 'collection' is provided, prepend to account number
+        account_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg)
+        if collection:
+            account_num = f"{collection}{account_num}"
+
         return cls(
             data_file = m2_data_file,
             event = m2_data_file.event,
             activity_date = activity_date,
-            cons_acct_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg),
+            cons_acct_num = account_num,
 
             # account activity fields
             port_type = get_field_value(fields.base_fields, "port_type", base_seg),
