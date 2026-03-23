@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -153,10 +155,15 @@ class AccountActivity(models.Model):
 
 
     @classmethod
-    def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date):
+    def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date: date):
         # Construct the php1 field from php
         php = get_field_value(fields.base_fields, "php", base_seg)
         php1 = php[0] if php else ""
+
+        # If activity_date isn't provided, use the DOAI instead
+        doai = get_field_value(fields.base_fields, "doai", base_seg)
+        if not activity_date:
+            activity_date = doai
 
         return cls(
             data_file = m2_data_file,
@@ -184,7 +191,7 @@ class AccountActivity(models.Model):
             current_bal = get_field_value(fields.base_fields, "current_bal", base_seg),
             amt_past_due = get_field_value(fields.base_fields, "amt_past_due", base_seg),
             orig_chg_off_amt = get_field_value(fields.base_fields, "orig_chg_off_amt", base_seg),
-            doai = get_field_value(fields.base_fields, "doai", base_seg),
+            doai = doai,
             dofd = get_field_value(fields.base_fields, "dofd", base_seg),
             date_closed = get_field_value(fields.base_fields, "date_closed", base_seg),
             dolp = get_field_value(fields.base_fields, "dolp", base_seg),

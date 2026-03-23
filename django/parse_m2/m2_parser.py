@@ -1,5 +1,6 @@
 import io
 import re
+from datetime import date
 
 from parse_m2 import fields
 from parse_m2.models import (
@@ -14,10 +15,12 @@ from parse_m2 import parse_utils
 class M2FileParser():
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
-    parser_version = "2.0"
+    parser_version = "2.1"
 
     chunk_size = 2000  # TODO: determine a good number for this
     any_non_whitespace = r'\S'
+
+    activity_date = None
 
     def __init__(self, event: Metro2Event, filepath: str) -> None:
         """
@@ -44,7 +47,7 @@ class M2FileParser():
             file.error_message = msg
         file.save()
 
-    def get_activity_date_from_header(self, line: str):
+    def get_activity_date_from_header(self, line: str) -> date:
         try:
             return parse_utils.get_field_value(
                 fields.header_fields, "activity_date", line,
@@ -57,7 +60,7 @@ class M2FileParser():
             # if the header couldn't be parsed, don't try to parse the rest of the file
             raise parse_utils.UnreadableFileException(error_message)
 
-    def handle_first_line_and_return_activity_date(self, first_line:str):
+    def handle_first_line_and_return_activity_date(self, first_line:str) -> date:
         if parse_utils.is_header_line(first_line):
             # If it's a header, get the activity date
             return self.get_activity_date_from_header(first_line)
@@ -67,8 +70,8 @@ class M2FileParser():
             self.update_file_record(msg=message)
 
             # Next, parse the first line as a tradeline and save the results
-            # (activity_date=None signals the parser to use DOAI instead of activity_date)
-            line_results = self.parse_line(line=first_line, activity_date=None)
+            # (self.activity_date=None signals the parser to use DOAI as activity_date)
+            line_results = self.parse_line(line=first_line)
             if line_results:
                 parsed_records = self.prepare_results_for_bulk_save(line_results)
                 self.save_values_bulk(parsed_records)
@@ -159,19 +162,13 @@ class M2FileParser():
 
         return parsed
 
-    def get_doai_from_acct_activity(self, line: str):
-        return parse_utils.get_field_value(fields.base_fields, "doai", line)
-
-    def parse_line(self, line: str, activity_date) -> dict:
+    def parse_line(self, line: str) -> dict:
         """
         Given a single line of a Metro2 file, parse all of the segments it contains
         into individual model records, and put them all into a dict.
 
         inputs:
         - line: the line of metro2 data, starting with a base segment
-        - activity_date: date object, to be saved in the
-                        AccountActivity records for this line. If not present,
-                        DOAI will be used instead.
 
         output:
         - If the line was a valid Metro2 line, a dict with the following keys:
@@ -186,13 +183,9 @@ class M2FileParser():
             parsed["cons_info_ind_assoc"] = []
             parsed["ecoa_assoc"] = []
 
-            # If activity_date isn't provided, use the DOAI instead
-            if not activity_date:
-                activity_date = self.get_doai_from_acct_activity(line)
-
             # parse the base segment into AccountActivity
             acct_activity = AccountActivity.parse_from_segment(
-                line, self.file_record, activity_date)
+                line, self.file_record, self.activity_date)
             parsed["AccountActivity"] = acct_activity
 
             # parse the extra segments
@@ -227,7 +220,7 @@ class M2FileParser():
             error_description=str(error)
         )}
 
-    def parse_chunk(self, f: io.TextIOWrapper, chunk_size: int, activity_date) -> dict:
+    def parse_chunk(self, f: io.TextIOWrapper, chunk_size: int) -> dict:
         """
         Given a filestream of a Metro2 file, parse chunk_size lines from it and save them
         to a dict.
@@ -235,8 +228,6 @@ class M2FileParser():
         inputs:
         - f: filestream of the Metro2 file
         - chunk_size: the number of lines to parse before returning
-        - activity_date: date object, to be saved in the
-                        AccountActivity records for each line
 
         output:
         - a dict with the following keys: AccountActivity,
@@ -251,7 +242,7 @@ class M2FileParser():
                 if not line:
                     # If the file has ended, exit the parser
                     break
-                line_results = self.parse_line(line, activity_date)
+                line_results = self.parse_line(line)
             except parse_utils.UnreadableLineException as e:
                 # if get_next_line fails, save as unparseable
                 line_results = self.unparseable_data("", e)
@@ -331,8 +322,8 @@ class M2FileParser():
         # handle the first line of the file
         try:
             first_line = parse_utils.get_next_line(f)
-            activity_date = self.handle_first_line_and_return_activity_date(first_line)
-            self.file_record.activity_date = activity_date
+            self.activity_date = self.handle_first_line_and_return_activity_date(first_line)
+            self.file_record.activity_date = self.activity_date
         except (parse_utils.UnreadableFileException,
                 parse_utils.UnreadableLineException) as e:
             # If it fails to parse, record the failure, and
@@ -342,7 +333,7 @@ class M2FileParser():
 
         # parse the rest of the file until it is done
         while f.tell() < file_size:
-            values = self.parse_chunk(f, self.chunk_size, activity_date)
+            values = self.parse_chunk(f, self.chunk_size)
             if values:
                 self.save_values_bulk(values)
 
