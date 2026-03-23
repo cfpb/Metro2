@@ -73,6 +73,49 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
         field_name="source_record__smpa",
     )
 
+    # Sort ordering filter for all the relevant fields from AccountActivity
+    # This just maps sortable fields from the source_record on EvaluatorResult
+    # to the field name on AccountActivity.
+    sort = django_filters.OrderingFilter(
+        fields=(
+            ("source_record__activity_date", "activity_date"),
+            ("source_record__port_type", "port_type"),
+            ("source_record__acct_type", "acct_type"),
+            ("source_record__date_open", "date_open"),
+            ("source_record__credit_limit", "credit_limit"),
+            ("source_record__hcola", "hcola"),
+            ("source_record__id_num", "id_num"),
+            ("source_record__terms_dur", "terms_dur"),
+            ("source_record__terms_freq", "terms_freq"),
+            ("source_record__smpa", "smpa"),
+            ("source_record__actual_pmt_amt", "actual_pmt_amt"),
+            ("source_record__acct_stat", "acct_stat"),
+            ("source_record__pmt_rating", "pmt_rating"),
+            ("source_record__php", "php"),
+            ("source_record__php1", "php1"),
+            ("source_record__spc_com_cd", "spc_com_cd"),
+            ("source_record__compl_cond_cd", "compl_cond_cd"),
+            ("source_record__current_bal", "current_bal"),
+            ("source_record__amt_past_due", "amt_past_due"),
+            ("source_record__orig_chg_off_amt", "orig_chg_off_amt"),
+            ("source_record__doai", "doai"),
+            ("source_record__dofd", "dofd"),
+            ("source_record__date_closed", "date_closed"),
+            ("source_record__dolp", "dolp"),
+            ("source_record__int_type_ind", "int_type_ind"),
+            ("source_record__account_holder__cons_info_ind", "account_holder__cons_info_ind"),
+            ("source_record__account_holder__ecoa", "account_holder__ecoa"),
+            ("source_record__account_holder__cons_info_ind_assoc", "account_holder__cons_info_ind_assoc"),
+            ("source_record__account_holder__ecoa_assoc", "account_holder__ecoa_assoc"),
+            ("source_record__k2__purch_sold_ind", "k2__purch_sold_ind"),
+            ("source_record__k2__purch_sold_name", "k2__purch_sold_name"),
+            ("source_record__k4__balloon_pmt_amt", "k4__balloon_pmt_amt"),
+            ("source_record__l1__change_ind", "l1__change_ind"),
+            ("source_record__l1__new_id_num", "l1__new_id_num"),
+            ("source_record__l1__new_acc_num", "l1__new_acc_num"),
+        )
+    )
+
     class Meta:
         model = EvaluatorResult
         fields = [
@@ -90,4 +133,5 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
             "amt_past_due",
             "current_bal",
             "smpa",
+            "sort",
         ]
