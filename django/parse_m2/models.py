@@ -64,6 +64,7 @@ class M2DataFile(models.Model):
     error_message = models.CharField(max_length=2000, blank=True)
     parser_version = models.CharField(max_length=200, blank=True)
     activity_date = models.DateField(null=True)
+    collection = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self) -> str:
         return self.file_name
@@ -155,7 +156,7 @@ class AccountActivity(models.Model):
 
 
     @classmethod
-    def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date: date, collection: str = None):
+    def parse_from_segment(cls, base_seg: str, m2_data_file: M2DataFile, activity_date: date):
         # Construct the php1 field from php
         php = get_field_value(fields.base_fields, "php", base_seg)
         php1 = php[0] if php else ""
@@ -167,8 +168,8 @@ class AccountActivity(models.Model):
 
         # If 'collection' is provided, prepend to account number
         account_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg)
-        if collection:
-            account_num = f"{collection}{account_num}"
+        if m2_data_file.collection:
+            account_num = f"{m2_data_file.collection}{account_num}"
 
         return cls(
             data_file = m2_data_file,

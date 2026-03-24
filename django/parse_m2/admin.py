@@ -69,7 +69,7 @@ class Metro2EventAdmin(admin.ModelAdmin):
 class M2DataFileAdmin(admin.ModelAdmin):
     list_display = ['id', 'event', 'file_name', 'parsing_status',
                     'parsed_lines', 'unparseable_lines', 'timestamp',
-                    'error_message', 'parser_version']
+                    'error_message', 'collection', 'parser_version']
 
     def parsed_lines(self, obj):
         return obj.accountactivity_set.count()
