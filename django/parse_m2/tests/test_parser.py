@@ -265,7 +265,7 @@ class ParserTestCase(TestCase):
     # Tests for prepending a collection name to the account number
     def test_collection_prefix_on_account_number(self):
         event = Metro2Event.objects.create(name='exam_with_collections')
-        parser = M2FileParser(event=event, filepath="file.txt", collection="HEALTH.")
+        parser = M2FileParser(event=event, filepath="file.txt", collection="HEALTH")
 
         file_size = os.path.getsize(self.tiny_file)
         with open(self.tiny_file, mode='r') as filestream:

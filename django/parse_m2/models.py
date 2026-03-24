@@ -169,7 +169,7 @@ class AccountActivity(models.Model):
         # If 'collection' is provided, prepend to account number
         account_num = get_field_value(fields.base_fields, "cons_acct_num", base_seg)
         if m2_data_file.collection:
-            account_num = f"{m2_data_file.collection}{account_num}"
+            account_num = f"{m2_data_file.collection}.{account_num}"
 
         return cls(
             data_file = m2_data_file,
