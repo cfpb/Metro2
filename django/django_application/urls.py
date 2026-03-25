@@ -14,6 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from contextlib import suppress
+
 from django.contrib import admin
 from django.core.exceptions import ImproperlyConfigured
 from django.urls import include, path, re_path
@@ -33,16 +35,16 @@ urlpatterns = [
     path('api/users/<int:user_id>/', views.users_view)
 ]
 
-try:
+with suppress(ImproperlyConfigured):
     # If the SSO library is installed, include auth-related URLs
     urlpatterns += [
         path('oauth2/', include('django_auth_adfs.urls')),
     ]
-except ImproperlyConfigured:
-    pass
 
 # All erroneous API calls to return 400: bad request
 urlpatterns.append(re_path(r'api(?:.*)?', error_view.bad_request_view ))
 
 # Fall through route: Handle all other URLs through the front end
-urlpatterns.append(re_path(r'^(?:.*)?', TemplateView.as_view(template_name='m2/index.html')))
+urlpatterns.append(
+    re_path(r'^(?:.*)?', TemplateView.as_view(template_name='m2/index.html'))
+)

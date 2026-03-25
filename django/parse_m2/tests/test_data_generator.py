@@ -90,8 +90,13 @@ class GenerateDataTestCase(TestCase):
         # Serialize the record into M2 format
         serialized_r1 = data_generator.base_segment_data(r1_act)
 
-        # Parse the serialized record so we can check that the values serialized correctly
-        parsed_r1_act = AccountActivity.parse_from_segment(serialized_r1, m2df, date(2022,1,1))
+        # Parse the serialized record so we can check that the values serialized
+        # correctly
+        parsed_r1_act = AccountActivity.parse_from_segment(
+            serialized_r1,
+            m2df,
+            date(2022,1,1)
+        )
 
         self.assertEqual(parsed_r1_act.acct_stat, r1_act.acct_stat)
         self.assertEqual(parsed_r1_act.doai, r1_act.doai)
@@ -148,27 +153,49 @@ class GenerateDataTestCase(TestCase):
         self.assertEqual(data_generator.format_str_value("hello", 5), "hello")
 
     def test_format_value_numeric(self):
-        self.assertEqual(data_generator.format_num_value(123456, 10), "0000123456")
-        self.assertEqual(data_generator.format_num_value(123456, 6), "123456")
-        with self.assertRaises(Exception):
+        self.assertEqual(
+            data_generator.format_num_value(123456, 10),
+            "0000123456"
+        )
+        self.assertEqual(
+            data_generator.format_num_value(123456, 6),
+            "123456"
+        )
+        with self.assertRaises(Exception):  # noqa: B017, Exception is what it raises
             data_generator.format_num_value(123456, 5)
 
     def test_format_value_date(self):
-        self.assertEqual(data_generator.format_date_value(date(2011,1,1), 8), "01012011")
-        self.assertEqual(data_generator.format_date_value(date(1980,4,29), 8), "04291980")
-        with self.assertRaises(Exception):
+        self.assertEqual(
+            data_generator.format_date_value(date(2011,1,1), 8),
+            "01012011"
+        )
+        self.assertEqual(
+            data_generator.format_date_value(date(1980,4,29), 8),
+            "04291980"
+        )
+        with self.assertRaises(Exception):  # noqa: B017, Exception is what it raises
             data_generator.format_date_value(date(2022,2,2), 5)
 
     def test_set_field_value_str(self):
         starting_seg = "......................."
         self.assertEqual(
             ".....timestam..........",
-            data_generator.set_field_value(fields.base_fields, 'time_stamp', "timestamp", starting_seg)
+            data_generator.set_field_value(
+                fields.base_fields,
+                'time_stamp',
+                "timestamp",
+                starting_seg
+            )
         )
 
     def test_set_field_value_num(self):
-        start_seg_2 = ".............................................................................................."
+        start_seg_2 = ".............................................................................................."  # noqa: E501
         self.assertEqual(
-            "...................................................................................000000999..",
-            data_generator.set_field_value(fields.base_fields, 'credit_limit', "999", start_seg_2)
+            "...................................................................................000000999..",  # noqa: E501
+            data_generator.set_field_value(
+                fields.base_fields,
+                'credit_limit',
+                "999",
+                start_seg_2
+            )
         )

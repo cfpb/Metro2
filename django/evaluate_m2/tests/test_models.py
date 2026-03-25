@@ -14,17 +14,41 @@ from parse_m2.models import M2DataFile, Metro2Event
 class ResultSampleTestCase(TestCase):
     def setUp(self):
         event = Metro2Event.objects.create(name="MyeVent")
-        eval = EvaluatorMetadata.objects.create(id="my-eval-3", fields_used=["amt_past_due"], fields_display=["doai"])
+        eval = EvaluatorMetadata.objects.create(
+            id="my-eval-3",
+            fields_used=["amt_past_due"],
+            fields_display=["doai"]
+        )
         f = M2DataFile.objects.create(event=event)
         r1 = acct_record(f, {"id": 31})
         r2 = acct_record(f, {"id": 32})
         r3 = acct_record(f, {"id": 33})
         r4 = acct_record(f, {"id": 34})
-        self.ers = EvaluatorResultSummary.objects.create(event=event, evaluator=eval, hits=4)
-        EvaluatorResult.objects.create(date=r1.activity_date, result_summary=self.ers, source_record=r1)
-        EvaluatorResult.objects.create(date=r2.activity_date, result_summary=self.ers, source_record=r2)
-        EvaluatorResult.objects.create(date=r3.activity_date, result_summary=self.ers, source_record=r3)
-        EvaluatorResult.objects.create(date=r4.activity_date, result_summary=self.ers, source_record=r4)
+        self.ers = EvaluatorResultSummary.objects.create(
+            event=event,
+            evaluator=eval,
+            hits=4
+        )
+        EvaluatorResult.objects.create(
+            date=r1.activity_date,
+            result_summary=self.ers,
+            source_record=r1
+        )
+        EvaluatorResult.objects.create(
+            date=r2.activity_date,
+            result_summary=self.ers,
+            source_record=r2
+        )
+        EvaluatorResult.objects.create(
+            date=r3.activity_date,
+            result_summary=self.ers,
+            source_record=r3
+        )
+        EvaluatorResult.objects.create(
+            date=r4.activity_date,
+            result_summary=self.ers,
+            source_record=r4
+        )
 
     def test_sample_randomize(self):
         result = self.ers.sample_of_results(sample_size=2)

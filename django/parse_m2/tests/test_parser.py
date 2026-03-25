@@ -27,12 +27,16 @@ class ParserTestCase(TestCase):
         self.header_seg = os.path.join(self.sample_files_dir, 'header_segment_1.txt')
         self.base_seg = os.path.join(self.sample_files_dir, 'base_segment_1.txt')
         self.tiny_file = os.path.join(self.sample_files_dir, 'm2_file_small.txt')
-        self.missing_header = os.path.join(self.sample_files_dir, 'm2_file_small_no_header.txt')
-        self.error_file = os.path.join(self.sample_files_dir, 'm2_file_small_with_error.txt')
+        self.missing_header = os.path.join(
+            self.sample_files_dir, 'm2_file_small_no_header.txt'
+        )
+        self.error_file = os.path.join(
+            self.sample_files_dir, 'm2_file_small_with_error.txt'
+        )
 
-        self.extras_str = "K1ORIGNALCREDITORNAME           03K22SOLDTONAME                     L12NEWACCTNUMBER                                      "
+        self.extras_str = "K1ORIGNALCREDITORNAME           03K22SOLDTONAME                     L12NEWACCTNUMBER                                      "  # noqa: E501
 
-        self.j1_seg = "J1 SURNAMEJ1                FIRSTNAMEJ1         MIDDLENAMEJ1        S3332244440411200120255598765   "
+        self.j1_seg = "J1 SURNAMEJ1                FIRSTNAMEJ1         MIDDLENAMEJ1        S3332244440411200120255598765   "  # noqa: E501
 
         event = Metro2Event.objects.create(name='test_exam')
         self.parser = M2FileParser(event=event, filepath="file.txt")
@@ -122,7 +126,9 @@ class ParserTestCase(TestCase):
             self.assertEqual(K2.objects.count(), 1)
 
     def test_disregard_empty_extra_segments(self):
-        extra_segs_file = os.path.join(self.sample_files_dir, 'm2_extra_extra_segments.txt')
+        extra_segs_file = os.path.join(
+            self.sample_files_dir, 'm2_extra_extra_segments.txt'
+        )
         file_size = os.path.getsize(extra_segs_file)
 
         with open(extra_segs_file) as filestream:
@@ -247,7 +253,9 @@ class ParserTestCase(TestCase):
     def test_parser_saves_header_as_unparseable(self):
         # First line of bad_header_file matches the header format, but doesn't
         # have a valid activity_date
-        bad_header_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_bad_header.txt')
+        bad_header_file = os.path.join(
+            'parse_m2', 'tests','sample_files', 'm2_file_bad_header.txt'
+        )
         file_size = os.path.getsize(bad_header_file)
 
         with open(bad_header_file) as filestream:

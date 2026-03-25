@@ -172,7 +172,10 @@ class AccountHolderSerializerTestCase(TestCase):
 class Metro2EventSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.event = Metro2Event.objects.create(id=1, name='test_exam')
-        self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
+        self.data_file = M2DataFile.objects.create(
+            event=self.event,
+            file_name='file.txt'
+        )
         self.json_representation = {
             'id': 1, 'name': 'test_exam', 'portfolio': '',
             'eid_or_matter_num': '', 'other_descriptor': '',

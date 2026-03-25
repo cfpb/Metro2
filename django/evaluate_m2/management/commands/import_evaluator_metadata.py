@@ -12,20 +12,30 @@ class Command(BaseCommand):
     Run this command by running the following:
     > python manage.py import_evaluator_metadata -f [file_path]
     """
-    help =  "Imports the evaluator metadata in the given CSV " + \
-            "and saves it in the EvaluatorMetadata table in the database. " + \
-            "For each row in the CSV, if the 'id' column matches the name of " + \
-            "an existing EvaluatorMetadata in the database, that record will " + \
-            "be updated with new values from the CSV. Otherwise, a new record " + \
-            "will be created."
+    help =  (
+        "Imports the evaluator metadata in the given CSV "
+        "and saves it in the EvaluatorMetadata table in the database. "
+        "For each row in the CSV, if the 'id' column matches the name of "
+        "an existing EvaluatorMetadata in the database, that record will "
+        "be updated with new values from the CSV. Otherwise, a new record "
+        "will be created."
+    )
 
     default_directory = "cfpb_evaluators/eval_metadata.csv"
 
     def add_arguments(self, argparser):
-        dir_help = "Location of the evaluator metadata file relative to " + \
+        dir_help = (
+            "Location of the evaluator metadata file relative to "
             f"the `/django` directory. Defaults to {self.default_directory}."
+        )
 
-        argparser.add_argument("-f", "--file_path", nargs="?", required=False, help=dir_help)
+        argparser.add_argument(
+            "-f",
+            "--file_path",
+            nargs="?",
+            required=False,
+            help=dir_help
+        )
 
     def handle(self, *args, **options):
         logger = logging.getLogger('commands.import_evaluator_metadata')
@@ -51,7 +61,9 @@ class Command(BaseCommand):
                         from_json.save()
                         updated += 1
                     else:
-                        logger.warning(f"Error prevented updating {id}: {from_json.errors}")
+                        logger.warning(
+                            f"Error prevented updating {id}: {from_json.errors}"
+                        )
                         skipped += 1
                 except EvaluatorMetadata.DoesNotExist:
                     from_json = EvaluatorMetadataSerializer(data=row)
@@ -59,9 +71,14 @@ class Command(BaseCommand):
                         from_json.save()
                         new += 1
                     else:
-                        logger.warning(f"Error prevented creating {id}: {from_json.errors}")
+                        logger.warning(
+                            f"Error prevented creating {id}: {from_json.errors}"
+                        )
                         skipped += 1
 
         logger.info(f"Read all {rows_count} rows of the CSV.")
-        logger.info(f"Created {new} and updated {updated} existing evaluators. Skipped {skipped}.")
+        logger.info(
+            f"Created {new} and updated {updated} existing evaluators. "
+            f"Skipped {skipped}."
+        )
         logger.info(f"{EvaluatorMetadata.objects.count()} total evaluators now exist.")

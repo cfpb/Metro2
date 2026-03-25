@@ -21,18 +21,26 @@ class UserViewSerializerTestCase(TestCase):
         )
         event = Metro2Event.objects.create(id=1, name='test_exam')
         event.members.add(self.user)
-        event2 = Metro2Event.objects.create(id=2, name='another_exam',
-                                            eid_or_matter_num='123-345667', portfolio="mortgage loans",
-                                            other_descriptor="exam")
+        event2 = Metro2Event.objects.create(
+            id=2,
+            name='another_exam',
+            eid_or_matter_num='123-345667',
+            portfolio="mortgage loans",
+            other_descriptor="exam"
+        )
         event2.members.add(self.user)
         self.data_file = M2DataFile.objects.create(event=event, file_name='file.txt')
 
         # Create account records for event 1
-        [acct_record(self.data_file, item) for item in [
+        records = [
             { 'id': 32, 'activity_date': date(2011, 7, 31), 'cons_acct_num': '0032', },
             { 'id': 33, 'activity_date': date(2012, 10, 31), 'cons_acct_num': '0033', },
             { 'id': 34, 'activity_date': date(2013, 11, 30), 'cons_acct_num': '0034', },
-            { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', }]]
+            { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', },
+        ]
+        for item in records:
+            acct_record(self.data_file, item)
+
         post_parse(event)  # Ensure the event record has the date range saved
 
         self.json_representation = {

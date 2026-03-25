@@ -13,7 +13,11 @@ class EvaluatorUtilsTestCase(TestCase):
     def setUp(self) -> None:
         self.event = Metro2Event.objects.create(name = "test")
         eval = EvaluatorMetadata.objects.create(id="Sample-1")
-        self.result_summary = EvaluatorResultSummary.objects.create(event=self.event, evaluator=eval, hits=0)
+        self.result_summary = EvaluatorResultSummary.objects.create(
+            event=self.event,
+            evaluator=eval,
+            hits=0
+        )
 
     def test_get_activity_date_range(self):
         # Create test records
@@ -42,7 +46,8 @@ class EvaluatorUtilsTestCase(TestCase):
         self.assertEqual(output, expected)
 
     def test_insert_query_creates_expected_sql(self):
-        # A query on the AccountActivity table matches the expected format of an evaluator
+        # A query on the AccountActivity table matches the expected format of an
+        # evaluator.
         # The exact query doesn't matter, it just needs to follow the evaluator pattern
         account_query = AccountActivity.objects.filter(port_type="A")
         # Get the SQL of the query the same way we do in the evaluator
@@ -54,7 +59,7 @@ class EvaluatorUtilsTestCase(TestCase):
         # Ensure sql matches expected pattern:
         #    INSERT into evaluate_m2_evaluatorresult [specific fields]
         #    SELECT [specific fields] FROM parse_m2_accountactivity
-        regex_check = re.compile('^\s*INSERT INTO evaluate_m2_evaluatorresult\s* \(source_record_id, date, acct_num, result_summary_id\)\s*SELECT\s*parse_m2_accountactivity\.id,\s*parse_m2_accountactivity\.activity_date,\s*parse_m2_accountactivity\.cons_acct_num,\s*\d?\d FROM parse_m2.accountactivity')
+        regex_check = re.compile('^\s*INSERT INTO evaluate_m2_evaluatorresult\s* \(source_record_id, date, acct_num, result_summary_id\)\s*SELECT\s*parse_m2_accountactivity\.id,\s*parse_m2_accountactivity\.activity_date,\s*parse_m2_accountactivity\.cons_acct_num,\s*\d?\d FROM parse_m2.accountactivity')  # noqa: E501
         self.assertRegex(result_sql, regex_check)
 
     def test_insert_query_errors_with_bad_input(self):

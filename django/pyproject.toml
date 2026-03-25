@@ -9,9 +9,7 @@ exclude = [
     "/templates",
 
     # Generated migration files will throw errors.
-    "users/migrations/*.py",
-    "parse_m2/migrations/*.py",
-    "evaulate_m2/migrations/*.py",
+    "*/migrations/*.py",
 
     # Our settings files might need to conform to different readability
     # standards

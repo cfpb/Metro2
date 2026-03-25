@@ -33,13 +33,31 @@ class EventParseEvalView(DetailView):
 
 
 class Metro2EventAdmin(admin.ModelAdmin):
-    fields = ['name', 'portfolio', 'eid_or_matter_num', 'other_descriptor', 'directory', 'members']
-    list_display = ['name', 'portfolio', 'eid_or_matter_num', 'import_data', 'date_range_start', 'date_range_end']
+    fields = [
+        'name',
+        'portfolio',
+        'eid_or_matter_num',
+        'other_descriptor',
+        'directory',
+        'members'
+    ]
+    list_display = [
+        'name',
+        'portfolio',
+        'eid_or_matter_num',
+        'import_data',
+        'date_range_start',
+        'date_range_end'
+    ]
     filter_horizontal = ['members']
 
     def get_urls(self):
         return [
-            path("<pk>/parse_evaluate", self.admin_site.admin_view(EventParseEvalView.as_view()), name="parse_evaluate_event"),
+            path(
+                "<pk>/parse_evaluate",
+                self.admin_site.admin_view(EventParseEvalView.as_view()),
+                name="parse_evaluate_event"
+            ),
             *super().get_urls(),
         ]
 
@@ -49,7 +67,9 @@ class Metro2EventAdmin(admin.ModelAdmin):
         url = reverse("admin:parse_evaluate_event", args=[obj.pk])
         return format_html(f"<a href='{url}'>Data import info</a>")
 
-    def get_form(self, request, obj: Metro2Event = None, change: bool = False, **kwargs):
+    def get_form(
+        self, request, obj: Metro2Event = None, change: bool = False, **kwargs
+    ):
         form =  super().get_form(request, obj, change, **kwargs)
         name_field = form.base_fields['name']
         name_field.label = "Institution name"
@@ -61,7 +81,10 @@ class Metro2EventAdmin(admin.ModelAdmin):
         if settings.S3_ENABLED:
             help_msg = "The location of the raw data files in the data directory."
         else:
-            help_msg = f"The location of the raw data files in the local filesystem (S3 not enabled). If in doubt, use: {settings.LOCAL_EVENT_DATA}."
+            help_msg = (
+                "The location of the raw data files in the local filesystem "
+                f"(S3 not enabled). If in doubt, use: {settings.LOCAL_EVENT_DATA}."
+            )
         directory_field.help_text = help_msg
         return form
 
@@ -113,7 +136,7 @@ class AccountActivityAdmin(admin.ModelAdmin):
                     'php', 'spc_com_cd', 'compl_cond_cd', 'current_bal', 'amt_past_due',
                     'orig_chg_off_amt', 'doai', 'dofd', 'date_closed', 'dolp',
                     'int_type_ind'] + \
-                    ['surname', 'first_name', 'middle_name', 
+                    ['surname', 'first_name', 'middle_name',
                     'ecoa', 'cons_info_ind', 'country_cd', 'city', 'state', 'zip',
                     'res_cd', 'cons_info_ind_assoc', 'ecoa_assoc']
                     # Some Account Holder information is not included in Admin list view

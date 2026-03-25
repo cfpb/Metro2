@@ -52,7 +52,7 @@ code_to_plain_field_map = {
 
     # Prior record fields
     "previous_values__cons_info_ind": "prior consumer information indicator",
-    "previous_values__cons_info_ind_assoc": "prior consumer information indicators for associated consumers",
+    "previous_values__cons_info_ind_assoc": "prior consumer information indicators for associated consumers",  # noqa: E501
     "previous_values__ecoa": "prior ecoa",
     "previous_values__first_name": "prior first name",
     "previous_values__surname": "prior surname",

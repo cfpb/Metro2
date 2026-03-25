@@ -25,12 +25,12 @@ class Evaluate:
         for eval_id, eval_import_str in evaluators_dict.items():
             try:
                 eval_callable = import_string(eval_import_str)
-            except ImportError:
+            except ImportError as e:
                 raise ImproperlyConfigured(
                     f"Unable to import {eval_import_str} for evaluator "
                     f"{eval_id}. Are you sure the package and evaluator "
                     "callable exist?"
-                )
+                ) from e
             self.evaluators[eval_id] = eval_callable
 
     # runs evaluators to produce results
@@ -80,7 +80,9 @@ class Evaluate:
         with connection.cursor() as cursor:
             cursor.execute(full_query, query_params)
 
-    def prepare_result_summary(self, event: Metro2Event, eval_id: str) -> EvaluatorResultSummary:
+    def prepare_result_summary(
+        self, event: Metro2Event, eval_id: str
+    ) -> EvaluatorResultSummary:
         """
         Create an EvaluatorResultSummary object so we can associate results with it.
         Later, we will update the values related to eval hits.
@@ -100,7 +102,9 @@ class Evaluate:
             evaluator_version = self.evaluator_version,
         )
 
-    def update_result_summary_with_actual_results(self, result_summary: EvaluatorResultSummary):
+    def update_result_summary_with_actual_results(
+        self, result_summary: EvaluatorResultSummary
+    ):
         """
         If the evaluator had any hits, update the information about the hits
         in the EvaluatorResultSummary record.

@@ -34,7 +34,10 @@ def update_S3_directory_files_format(source_dir: str, destination_dir: str):
             logger.debug("processing...")
             source_fstream = file.get()["Body"]
             destination = destination_path(file.key, destination_dir)
-            with open(destination, 'w', transport_params={'client': s3_session()}) as dest_file:
+            with (
+                open(destination, 'w', transport_params={'client': s3_session()})
+                as dest_file
+            ):
                 normalize_file_format(source_fstream, dest_file)
 
         else:

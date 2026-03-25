@@ -28,8 +28,10 @@ class ParserModelsTestCase(TestCase):
         event = Metro2Event(name='test_exam')
         self.data_file = M2DataFile(event=event, file_name='file.txt')
         self.activity_date = date(2021, 1, 1)
-        self.account_activity = AccountActivity(data_file = self.data_file,
-                                                activity_date = self.activity_date)
+        self.account_activity = AccountActivity(
+            data_file = self.data_file,
+            activity_date = self.activity_date
+        )
 
     def create_exam_activity(self):
         acct_date=date(2019, 12, 31)
@@ -90,7 +92,11 @@ class ParserModelsTestCase(TestCase):
     def test_parse_account_activity(self):
         with open(self.base_seg) as file:
             base_segment = file.readline()
-            result = AccountActivity.parse_from_segment(base_segment, self.data_file, self.activity_date)
+            result = AccountActivity.parse_from_segment(
+                base_segment,
+                self.data_file,
+                self.activity_date
+            )
             self.assertIsInstance(result, AccountActivity)
             self.assertEqual(result.credit_limit, 210000)
             self.assertEqual(result.php, "222211000000000000010100")

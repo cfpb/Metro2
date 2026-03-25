@@ -243,7 +243,9 @@ def create_bulk_JSegments(j_type: str, value_list: dict, size: int):
 class EvaluatorTestHelper:
     evaluators = evaluator.evaluators
 
-    def assert_evaluator_correct(self, event: Metro2Event, eval_name: str, expected_result: list[dict]):
+    def assert_evaluator_correct(
+        self, event: Metro2Event, eval_name: str, expected_result: list[dict]
+    ):
         # Test that the evaluator:
         # 1. Name matches an evaluator in evaluators.py
         # 2. Is included in the list of evaluators to run

@@ -17,18 +17,33 @@ class Command(BaseCommand):
     database. Then will call the command to run the evaluators.
     """
     default_location = settings.LOCAL_EVENT_DATA
-    help = "This command is used to add sample data in local development " + \
-           "environments. It will create a new Metro2Event record with the " + \
-           "provided event name if it does not exist or will quit if it exists."
+    help = (
+        "This command is used to add sample data in local development "
+        "environments. It will create a new Metro2Event record with the "
+        "provided event name if it does not exist or will quit if it exists."
+    )
 
     def add_arguments(self, argparser):
         event_help = "A name to identify this event record"
-        argparser.add_argument("-e", "--event_name", nargs="?", required=True, help=event_help)
+        argparser.add_argument(
+            "-e",
+            "--event_name",
+            nargs="?",
+            required=True,
+            help=event_help
+        )
 
-        dir_help = "Location is relative to the `/django` directory. " + \
-            "Defaults to the LOCAL_EVENT_DATA setting in this environment: " + \
-            str(self.default_location)
-        argparser.add_argument("-d", "--data_directory", nargs="?", required=False, help=dir_help)
+        dir_help = (
+            "Location is relative to the `/django` directory. "
+            "Defaults to the LOCAL_EVENT_DATA setting in this environment: "
+        ) + str(self.default_location)
+        argparser.add_argument(
+            "-d",
+            "--data_directory",
+            nargs="?",
+            required=False,
+            help=dir_help
+        )
 
     def handle(self, *args, **options):
         logger = logging.getLogger('commands.single_evaluator')
@@ -36,16 +51,24 @@ class Command(BaseCommand):
         data_directory = options["data_directory"]
 
         if not data_directory:
-            logger.info(f"Using default file location for Metro2 files: `{self.default_location}`.")
+            logger.info(
+                "Using default file location for Metro2 files: "
+                f"`{self.default_location}`."
+            )
             data_directory = self.default_location
 
         if not Metro2Event.objects.filter(name=event_name).exists():
-            # Create a new Metro2Event. All records parsed will be associated with this Event.
+            # Create a new Metro2Event. All records parsed will be associated with this
+            # Event.
             event = Metro2Event(name=event_name, directory=data_directory)
             event.save()
-            logger.info( f"Created an event record with name {event_name}. ID: {event.id}")
+            logger.info(
+                f"Created an event record with name {event_name}. ID: {event.id}"
+            )
 
-            logger.info(f"Parsing files from local filesystem in `{data_directory}` directory.")
+            logger.info(
+                f"Parsing files from local filesystem in `{data_directory}` directory."
+            )
             parse_files_from_local_filesystem(event)
 
             logger.info(f"Beginning post parsing process for event: {event.name}.")
@@ -56,4 +79,7 @@ class Command(BaseCommand):
                 self.style.SUCCESS("Finished running evaluators and saving results."))
 
         else:
-            logger.info(f"An event record already exists for event name: {event_name}. No changes will be made.")
+            logger.info(
+                f"An event record already exists for event name: {event_name}. No "
+                "changes will be made."
+            )

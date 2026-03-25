@@ -18,7 +18,9 @@ class Command(BaseCommand):
 
         try:
             usr = User.objects.get(username=username)
-            logger.info(f"An existing user account was found for username `{username}`.")
+            logger.info(
+                f"An existing user account was found for username `{username}`."
+            )
             logger.info("Ensuring the user account has admin permissions... ")
             usr.is_active = True
             usr.is_staff = True

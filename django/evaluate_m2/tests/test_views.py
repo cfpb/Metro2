@@ -33,7 +33,7 @@ class EvaluateViewsTestCase(TestCase):
             fields_used=['placeholder', 'dofd', 'php'],
             fields_display= ['orig_chg_off_amt'],
             crrg_reference='41',
-            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',  # noqa: E501
         )
         self.stat_dofd_4 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-4',
@@ -42,7 +42,7 @@ class EvaluateViewsTestCase(TestCase):
             fields_used= ['smpa'],
             fields_display= ['orig_chg_off_amt', 'terms_freq'],
             crrg_reference='410',
-            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',  # noqa: E501
         )
         self.stat_dofd_6 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-6',
@@ -52,27 +52,59 @@ class EvaluateViewsTestCase(TestCase):
             fields_used= ['smpa'],
             fields_display= ['orig_chg_off_amt', 'terms_freq'],
             crrg_reference='410',
-            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+            alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',  # noqa: E501
         )
 
     def get_account_activity(
-        self, id: int, inconsistencies: list[str], cons_info_ind: str, ecoa: str, first_name: str, activity_date: str = '2023-12-31'):
-        return { 'id': id, 'inconsistencies': inconsistencies,
-                 'activity_date': activity_date, 'surname': 'Doe',
-                 'first_name': first_name, 'port_type': 'A',
-                 'acct_type': '', 'date_open': '2018-02-28', 'credit_limit': 0,
-                 'hcola': 0, 'id_num': '', 'terms_dur': '00', 'terms_freq': '00',
-                 'smpa': 0, 'actual_pmt_amt': 0, 'acct_stat': '00', 'pmt_rating': '0',
-                 'php': '', 'php1': '', 'spc_com_cd': '', 'compl_cond_cd': '', 'current_bal': 0,
-                 'amt_past_due': 0, 'orig_chg_off_amt': 0, 'doai': '2022-05-01',
-                 'dofd': None, 'date_closed': None, 'dolp': None,
-                 'int_type_ind': '', 'cons_info_ind': cons_info_ind,
-                 'ecoa': ecoa,
-                 'cons_info_ind_assoc': ['1A', 'B'],
-                 'ecoa_assoc': ['2', '1'],
-                 'k2__purch_sold_ind': None, 'k2__purch_sold_name': None,
-                 'k4__balloon_pmt_amt': None, 'l1__change_ind': None,
-                 'l1__new_id_num': None, 'l1__new_acc_num': None}
+        self,
+        id: int,
+        inconsistencies: list[str],
+        cons_info_ind: str,
+        ecoa: str,
+        first_name: str,
+        activity_date: str = '2023-12-31'
+    ):
+        return {
+            'id': id,
+            'inconsistencies': inconsistencies,
+            'activity_date': activity_date,
+            'surname': 'Doe',
+            'first_name': first_name,
+            'port_type': 'A',
+            'acct_type': '',
+            'date_open': '2018-02-28',
+            'credit_limit': 0,
+            'hcola': 0,
+            'id_num': '',
+            'terms_dur': '00',
+            'terms_freq': '00',
+            'smpa': 0,
+            'actual_pmt_amt': 0,
+            'acct_stat': '00',
+            'pmt_rating': '0',
+            'php': '',
+            'php1': '',
+            'spc_com_cd': '',
+            'compl_cond_cd': '',
+            'current_bal': 0,
+            'amt_past_due': 0,
+            'orig_chg_off_amt': 0,
+            'doai': '2022-05-01',
+            'dofd': None,
+            'date_closed': None,
+            'dolp': None,
+            'int_type_ind': '',
+            'cons_info_ind': cons_info_ind,
+            'ecoa': ecoa,
+            'cons_info_ind_assoc': ['1A', 'B'],
+            'ecoa_assoc': ['2', '1'],
+            'k2__purch_sold_ind': None,
+            'k2__purch_sold_name': None,
+            'k4__balloon_pmt_amt': None,
+            'l1__change_ind': None,
+            'l1__new_id_num': None,
+            'l1__new_acc_num': None
+        }
 
     def create_activity_data(self, create_zero_hit:bool=False):
         # Create the parent records for the AccountActivity data
@@ -81,19 +113,37 @@ class EvaluateViewsTestCase(TestCase):
             directory='Enforcement/Huyndai2025', eid_or_matter_num='123-456789',
             other_descriptor='',date_range_start='2023-11-30',
             date_range_end='2023-12-31')
-        self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
+        self.data_file = M2DataFile.objects.create(
+            event=self.event, file_name='file.txt'
+        )
 
         # Create the Account Activities data
         acct_date=date(2023, 12, 31)
         activities = [
             {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_stat':'00', 'pmt_rating':'0', 'amt_past_due': 0, 'surname':'Doe',
-                'cons_info_ind': 'Z', 'first_name': 'Jane', 'ecoa_assoc': ['2', '1'],'cons_info_ind_assoc':['1A', 'B']
+                'id': 32,
+                'activity_date': acct_date,
+                'cons_acct_num': '0032',
+                'acct_stat':'00',
+                'pmt_rating':'0',
+                'amt_past_due': 0,
+                'surname':'Doe',
+                'cons_info_ind': 'Z',
+                'first_name': 'Jane',
+                'ecoa_assoc': ['2', '1'],
+                'cons_info_ind_assoc':['1A', 'B']
             }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-                'acct_stat':'00', 'pmt_rating':'0', 'amt_past_due': 0, 'surname':'Doe',
-                'cons_info_ind': 'Y', 'first_name': 'John', 'ecoa_assoc': ['2', '1'],'cons_info_ind_assoc':['1A', 'B']
+                'id': 33,
+                'activity_date': acct_date,
+                'cons_acct_num': '0033',
+                'acct_stat':'00',
+                'pmt_rating':'0',
+                'amt_past_due': 0,
+                'surname':'Doe',
+                'cons_info_ind': 'Y',
+                'first_name': 'John',
+                'ecoa_assoc': ['2', '1'],
+                'cons_info_ind_assoc':['1A', 'B']
             }]
         acct_actvities = []
         for item in activities:
@@ -123,8 +173,13 @@ class EvaluateViewsTestCase(TestCase):
         if create_zero_hit:
         # EvaluatorResultSummary for Status-DOFD-2
             self.eval_rs2 = EvaluatorResultSummary.objects.create(
-                event=self.event, evaluator=self.stat_dofd_2, hits=0, accounts_affected=0,
-                inconsistency_start=acct_date, inconsistency_end=acct_date)
+                event=self.event,
+                evaluator=self.stat_dofd_2,
+                hits=0,
+                accounts_affected=0,
+                inconsistency_start=acct_date,
+                inconsistency_end=acct_date
+            )
 
     ########################################
     # Tests for Eval Metadata download
@@ -255,7 +310,9 @@ class EvaluateViewsTestCase(TestCase):
         expected = {
             'cons_acct_num': '0033',
             'inconsistencies': inconsistencies,
-            'account_activity': [self.get_account_activity(33, inconsistencies, 'Y', '', 'John')]
+            'account_activity': [
+                self.get_account_activity(33, inconsistencies, 'Y', '', 'John')
+            ]
         }
         response = self.client.get('/api/events/1/account/0033/')
 
@@ -272,9 +329,17 @@ class EvaluateViewsTestCase(TestCase):
         prev_file = M2DataFile.objects.create(event=self.event, file_name='prev.txt')
         prev_date=date(2023, 11, 30)
         acct_record(prev_file, {
-                'id': 22, 'activity_date': prev_date, 'cons_acct_num': '0032',
-                'acct_stat':'00', 'pmt_rating':'0', 'amt_past_due': 0, 'surname':'Doe',
-                'cons_info_ind': 'A', 'first_name': 'Jane', 'ecoa_assoc': ['2', '1'],'cons_info_ind_assoc':['1A', 'B']
+                'id': 22,
+                'activity_date': prev_date,
+                'cons_acct_num': '0032',
+                'acct_stat':'00',
+                'pmt_rating':'0',
+                'amt_past_due': 0,
+                'surname':'Doe',
+                'cons_info_ind': 'A',
+                'first_name': 'Jane',
+                'ecoa_assoc': ['2', '1'],
+                'cons_info_ind_assoc':['1A', 'B']
         })
         inconsistencies = ['Status-DOFD-1', 'Status-DOFD-4']
         expected = {
@@ -360,7 +425,7 @@ class EvaluateViewsTestCase(TestCase):
                 'fields_used': ['smpa'],
                 'fields_display': ['orig_chg_off_amt', 'terms_freq'],
                 'crrg_reference': '410', 'potential_harm': '',
-                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',
+                'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',  # noqa: E501
             }, {
                 'hits': 25,
                 'accounts_affected': 1,
@@ -368,13 +433,13 @@ class EvaluateViewsTestCase(TestCase):
                 'inconsistency_end': '2023-12-31',
                 'id': 'Status-DOFD-6',
                 'category': 'account terms',
-                'description': 'description for a fourth status-dofd eval', 'long_description': '',
+                'description': 'description for a fourth status-dofd eval', 'long_description': '',  # noqa: E501
                 'fields_used': ['smpa'],
                 'fields_display': ['orig_chg_off_amt', 'terms_freq'],
                 'crrg_reference': '410',
                 'potential_harm': '',
                 'rationale': '',
-                'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+                'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'  # noqa: E501
         }]}
 
         response = self.client.get('/api/events/1/')
@@ -387,5 +452,3 @@ class EvaluateViewsTestCase(TestCase):
         # the response should include the evaluator field as a list sorted by the id,
         # evaluators with a hits field greater than 0 will be returned
         self.assertEqual(response.json(), expected)
-
-

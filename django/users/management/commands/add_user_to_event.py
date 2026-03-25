@@ -30,4 +30,8 @@ class Command(BaseCommand):
         # Add the user to the event
         evt.members.add(usr)
 
-        logger.info(self.style.SUCCESS(f"User {username_input} is now a member of event {event_name}"))
+        logger.info(
+            self.style.SUCCESS(
+                f"User {username_input} is now a member of event {event_name}"
+            )
+        )
