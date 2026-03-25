@@ -1,12 +1,12 @@
 import logging
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from users.exception_utils import get_users_not_found_exception
 from users.serializers import UserViewSerializer

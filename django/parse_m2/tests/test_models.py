@@ -1,13 +1,22 @@
-from django.contrib.auth.models import User
-from django.test import TestCase
 import os
 from datetime import date
 
+from django.contrib.auth.models import User
+from django.test import TestCase
+
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import (
+    J1,
+    J2,
+    K1,
+    K2,
+    K3,
+    K4,
+    L1,
+    N1,
+    AccountActivity,
+    M2DataFile,
     Metro2Event,
-    M2DataFile, AccountActivity,
-    J1, J2, K1, K2, K3, K4, L1, N1
 )
 
 

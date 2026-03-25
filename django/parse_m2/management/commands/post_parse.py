@@ -1,6 +1,7 @@
 import logging
 
 from django.core.management.base import BaseCommand, CommandError
+
 from parse_m2.initiate_post_parsing import post_parse
 from parse_m2.models import Metro2Event
 

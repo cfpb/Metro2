@@ -1,11 +1,8 @@
 import random
-
-from datetime import datetime, date, timedelta
+from datetime import date, datetime, timedelta
 
 from parse_m2 import fields
-from parse_m2.models import (
-    AccountActivity, J1, J2, K4
-)
+from parse_m2.models import J1, J2, K4, AccountActivity
 
 
 def save_m2_file(filename: str, size: int, activity_date: date):

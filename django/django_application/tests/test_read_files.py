@@ -1,6 +1,8 @@
-from django.conf import settings
 from os import path
+
+from django.conf import settings
 from django.test import TestCase
+
 from django_application.file_utils import get_file_contents, get_json_file_contents
 
 

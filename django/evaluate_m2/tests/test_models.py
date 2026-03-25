@@ -1,7 +1,12 @@
 from datetime import date
+
 from django.test import TestCase
 
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResult,
+    EvaluatorResultSummary,
+)
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
 

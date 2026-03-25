@@ -2,17 +2,24 @@ import io
 import re
 from datetime import date
 
-from parse_m2 import fields
+from parse_m2 import fields, parse_utils
 from parse_m2.models import (
-    Metro2Event,
-    M2DataFile, UnparseableData,
+    J1,
+    J2,
+    K1,
+    K2,
+    K3,
+    K4,
+    L1,
+    N1,
     AccountActivity,
-    J1, J2, K1, K2, K3, K4, L1, N1
+    M2DataFile,
+    Metro2Event,
+    UnparseableData,
 )
-from parse_m2 import parse_utils
 
 
-class M2FileParser():
+class M2FileParser:
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
     parser_version = "3.1"

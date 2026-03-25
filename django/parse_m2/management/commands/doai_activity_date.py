@@ -2,6 +2,7 @@ import logging
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import F
+
 from parse_m2.models import Metro2Event
 
 

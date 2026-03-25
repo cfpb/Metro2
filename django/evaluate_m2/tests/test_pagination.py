@@ -1,6 +1,7 @@
 from django.test import SimpleTestCase
-from rest_framework.test import APIRequestFactory
+
 from rest_framework.request import Request
+from rest_framework.test import APIRequestFactory
 
 from evaluate_m2.pagination import EvaluatorResultsPaginator
 

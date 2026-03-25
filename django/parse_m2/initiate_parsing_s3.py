@@ -1,14 +1,18 @@
-import zipfile
 import io
 import logging
+import zipfile
 
 from django_application.s3_utils import s3_bucket_files
+from parse_m2.initiate_parsing_utils import (
+    data_file,
+    log_invalid_file_extension,
+    parse_file_from_zip,
+    parsed_file_exists,
+    zip_file,
+)
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
-from parse_m2.initiate_parsing_utils import (
-    data_file, zip_file, log_invalid_file_extension,
-    parse_file_from_zip, parsed_file_exists
-)
+
 
 ############################################
 # Methods for parsing files from the S3 bucket

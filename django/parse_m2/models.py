@@ -1,15 +1,15 @@
 from datetime import date
 
 from django.contrib.auth.models import User
+from django.core.management import call_command
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import JSONField
-from django.core.management import call_command
 
-from parse_m2.parse_utils import get_field_value
-from parse_m2 import fields
-from evaluate_m2.managers import AccountActivityQuerySet
 from evaluate_m2.evaluate_utils import get_activity_date_range
+from evaluate_m2.managers import AccountActivityQuerySet
+from parse_m2 import fields
+from parse_m2.parse_utils import get_field_value
 
 
 class Metro2Event(models.Model):

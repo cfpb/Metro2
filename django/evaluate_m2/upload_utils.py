@@ -1,14 +1,15 @@
-import logging
 import csv
 import json
+import logging
 
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from django_application.s3_utils import s3_session
 
 from smart_open import open
 
+from django_application.s3_utils import s3_session
 from evaluate_m2.models import EvaluatorResultSummary
+
 
 def stream_results_files_to_s3(result_summary: EvaluatorResultSummary, record_set):
     stream_full_results_csv_to_s3(result_summary)

@@ -1,15 +1,25 @@
 import os
-from django.test import TestCase
 from datetime import date
 
-from parse_m2 import data_generator
-from parse_m2 import fields
+from django.test import TestCase
+
+from evaluate_m2.tests.evaluator_test_helper import acct_record
+from parse_m2 import data_generator, fields
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import (
-    Metro2Event, M2DataFile, AccountActivity,
-    J1, J2, K1, K2, K3, K4, L1, N1, UnparseableData
+    J1,
+    J2,
+    K1,
+    K2,
+    K3,
+    K4,
+    L1,
+    N1,
+    AccountActivity,
+    M2DataFile,
+    Metro2Event,
+    UnparseableData,
 )
-from evaluate_m2.tests.evaluator_test_helper import acct_record
 
 
 class GenerateDataTestCase(TestCase):
@@ -32,7 +42,7 @@ class GenerateDataTestCase(TestCase):
         parser = M2FileParser(event=event, filepath="file.txt")
 
         file_size = os.path.getsize(data_file)
-        with open(data_file, mode='r') as filestream:
+        with open(data_file) as filestream:
             parser.parse_file_contents(filestream, file_size)
 
             self.assertEqual(M2DataFile.objects.first().activity_date, activity_date)

@@ -1,5 +1,6 @@
-from django.test import TestCase
 from datetime import date
+
+from django.test import TestCase
 
 from parse_m2 import parse_utils
 

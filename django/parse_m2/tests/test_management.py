@@ -1,13 +1,14 @@
 from datetime import date
 from io import StringIO
 
-from django.core.management import call_command
 from django.contrib.auth.models import User
+from django.core.management import call_command
 from django.db.models import F
 from django.test import TestCase
 
 from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import Metro2Event, M2DataFile, AccountActivity
+from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
+
 
 class AddAuthToEventCommandTestCase(TestCase):
     def setUp(self) -> None:

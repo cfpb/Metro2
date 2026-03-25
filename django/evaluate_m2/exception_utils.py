@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from rest_framework import status
+
 
 def get_evaluate_m2_not_found_exception(
         error_string:str, event_id: str, evaluator_id: str, path: str, acct_num=''):

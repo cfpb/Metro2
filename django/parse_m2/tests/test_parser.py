@@ -1,14 +1,24 @@
-from django.test import TestCase
 import os
 from datetime import date
 
-from parse_m2.m2_parser import M2FileParser
+from django.test import TestCase
+
 from parse_m2 import parse_utils
+from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import (
-    Metro2Event, UnparseableData,
+    J1,
+    J2,
+    K1,
+    K2,
+    K3,
+    K4,
+    L1,
+    N1,
     AccountActivity,
-    J1, J2, K1, K2, K3, K4, L1, N1
+    Metro2Event,
+    UnparseableData,
 )
+
 
 class ParserTestCase(TestCase):
     def setUp(self):
@@ -36,7 +46,7 @@ class ParserTestCase(TestCase):
         # Test the whole parsing process for a file
         file_size = os.path.getsize(self.tiny_file)
 
-        with open(self.tiny_file, mode='r') as filestream:
+        with open(self.tiny_file) as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
@@ -55,7 +65,7 @@ class ParserTestCase(TestCase):
 
     def test_parse_file_without_header_line(self):
         file_size = os.path.getsize(self.missing_header)
-        with open(self.missing_header, mode='r') as filestream:
+        with open(self.missing_header) as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
             # Because the file is missing a header, the parser
@@ -67,7 +77,7 @@ class ParserTestCase(TestCase):
     def test_aggregate_fields(self):
         # Test the whole parsing process for a file
         file_size = os.path.getsize(self.tiny_file)
-        with open(self.tiny_file, mode='r') as filestream:
+        with open(self.tiny_file) as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
@@ -93,7 +103,7 @@ class ParserTestCase(TestCase):
     def test_report_file_outcome(self):
         file_size = os.path.getsize(self.tiny_file)
 
-        with open(self.tiny_file, mode='r') as filestream:
+        with open(self.tiny_file) as filestream:
             self.parser.parse_file_contents(filestream, file_size)
             file = self.parser.file_record
             self.assertEqual(file.parsing_status, "Finished")
@@ -102,7 +112,7 @@ class ParserTestCase(TestCase):
         # error_file is identical to _tiny_file except that one line was modified
         # to make it unparseable
         file_size = os.path.getsize(self.error_file)
-        with open(self.error_file, mode='r') as filestream:
+        with open(self.error_file) as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
@@ -115,7 +125,7 @@ class ParserTestCase(TestCase):
         extra_segs_file = os.path.join(self.sample_files_dir, 'm2_extra_extra_segments.txt')
         file_size = os.path.getsize(extra_segs_file)
 
-        with open(extra_segs_file, mode='r') as filestream:
+        with open(extra_segs_file) as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
             # The test file contains the following segments:
@@ -229,7 +239,7 @@ class ParserTestCase(TestCase):
             self.parser.get_activity_date_from_header(bad_str)
 
     def test_get_activity_date_from_header(self):
-        with open(self.header_seg, mode='r') as file:
+        with open(self.header_seg) as file:
             header_row = file.readline()
             activity_date = self.parser.get_activity_date_from_header(header_row)
             self.assertEqual(activity_date, date(2023, 12, 31))
@@ -240,7 +250,7 @@ class ParserTestCase(TestCase):
         bad_header_file = os.path.join('parse_m2', 'tests','sample_files', 'm2_file_bad_header.txt')
         file_size = os.path.getsize(bad_header_file)
 
-        with open(bad_header_file, mode='r') as filestream:
+        with open(bad_header_file) as filestream:
             self.parser.parse_file_contents(filestream, file_size)
 
             # The file record should show that the parsing failed
@@ -268,7 +278,7 @@ class ParserTestCase(TestCase):
         parser = M2FileParser(event=event, filepath="file.txt", collection="HEALTH")
 
         file_size = os.path.getsize(self.tiny_file)
-        with open(self.tiny_file, mode='r') as filestream:
+        with open(self.tiny_file) as filestream:
             parser.parse_file_contents(filestream, file_size)
 
         self.assertIsNotNone(AccountActivity.objects.get(cons_acct_num='HEALTH.ACCTNUMBER1'))

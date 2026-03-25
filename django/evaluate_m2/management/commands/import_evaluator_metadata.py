@@ -2,8 +2,10 @@ import csv
 import logging
 
 from django.core.management.base import BaseCommand
+
 from evaluate_m2.models import EvaluatorMetadata
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
+
 
 class Command(BaseCommand):
     """
@@ -33,7 +35,7 @@ class Command(BaseCommand):
         if not file_path:
             file_path = self.default_directory
 
-        with open(file_path, mode='r', encoding='utf-8-sig') as f:
+        with open(file_path, encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
             new = 0
             updated = 0

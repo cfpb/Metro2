@@ -1,6 +1,6 @@
-from evaluate_m2.models import EvaluatorResult
-
 import django_filters.rest_framework
+
+from evaluate_m2.models import EvaluatorResult
 
 
 class AnyCharFilter(django_filters.BaseInFilter, django_filters.CharFilter):

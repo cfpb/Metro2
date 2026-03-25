@@ -1,11 +1,12 @@
 import os
-from django.test import TestCase
 from unittest.mock import patch
+
+from django.test import TestCase
 
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
 from parse_m2.initiate_parsing_utils import parsed_file_exists
-from parse_m2.models import Metro2Event, M2DataFile, AccountActivity, UnparseableData
+from parse_m2.models import AccountActivity, M2DataFile, Metro2Event, UnparseableData
 
 
 class InitiateLocalParsingTestCase(TestCase):

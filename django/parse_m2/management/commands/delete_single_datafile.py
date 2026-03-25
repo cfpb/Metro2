@@ -1,7 +1,8 @@
 import logging
 
 from django.core.management.base import BaseCommand, CommandError
-from parse_m2.models import Metro2Event, M2DataFile
+
+from parse_m2.models import M2DataFile, Metro2Event
 
 
 class Command(BaseCommand):

@@ -2,8 +2,9 @@ import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
+
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
+from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
 from parse_m2.models import Metro2Event
 
 

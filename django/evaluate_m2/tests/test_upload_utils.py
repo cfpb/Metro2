@@ -1,22 +1,27 @@
-import io
 import datetime
+import io
+
 from django.test import TestCase
 
-from evaluate_m2.upload_utils import (
-    generate_full_csv, generate_json_sample,
-    full_s3_url, s3_bucket_key, s3_filename
-)
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
     EvaluatorResultSummary,
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
+from evaluate_m2.upload_utils import (
+    full_s3_url,
+    generate_full_csv,
+    generate_json_sample,
+    s3_bucket_key,
+    s3_filename,
+)
 from parse_m2.models import (
     AccountActivity,
-    Metro2Event,
     M2DataFile,
+    Metro2Event,
 )
+
 
 class UploadUtilsTestCase(TestCase):
     def setUp(self):

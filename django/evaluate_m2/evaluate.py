@@ -5,15 +5,13 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import connection
 from django.utils.module_loading import import_string
 
-from evaluate_m2.evaluate_utils import  create_eval_insert_query
-from evaluate_m2.upload_utils import stream_results_files_to_s3
-
+from evaluate_m2.evaluate_utils import create_eval_insert_query
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
-
+from evaluate_m2.upload_utils import stream_results_files_to_s3
 from parse_m2.models import Metro2Event
 
 
-class Evaluate():
+class Evaluate:
     # Evaluator version is saved on each evaluator result summary.
     # Increment this version for all updates to evaluator functionality.
     evaluator_version = "1.3"

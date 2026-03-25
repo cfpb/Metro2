@@ -1,15 +1,13 @@
 from rest_framework import serializers
 
-from .models import (
-    EvaluatorMetadata,
-    EvaluatorResultSummary
-)
 from evaluate_m2.metadata_utils import (
     code_to_plain_field_map,
-    plain_to_code_field_map,
     format_fields_for_csv,
-    parse_fields_from_csv
+    parse_fields_from_csv,
+    plain_to_code_field_map,
 )
+
+from .models import EvaluatorMetadata, EvaluatorResultSummary
 
 
 class EventsViewSerializer(serializers.ModelSerializer):

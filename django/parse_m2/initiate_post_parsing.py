@@ -1,6 +1,9 @@
 import logging
-from parse_m2.models import Metro2Event
+
 from django.db import connection
+
+from parse_m2.models import Metro2Event
+
 
 ############################################
 # Methods to update existing M2Event activity records

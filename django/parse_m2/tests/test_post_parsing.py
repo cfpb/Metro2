@@ -1,10 +1,10 @@
-from datetime import date
 import os
+from datetime import date
+
 from django.test import TestCase
 
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
-from parse_m2.initiate_post_parsing import post_parse, associate_previous_records
-
+from parse_m2.initiate_post_parsing import associate_previous_records, post_parse
 from parse_m2.models import AccountActivity, Metro2Event
 
 

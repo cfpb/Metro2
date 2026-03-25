@@ -1,11 +1,12 @@
 from datetime import date
+
 from django.test import TestCase
 
 from evaluate_m2.tests.evaluator_test_helper import (
     EvaluatorTestHelper,
     acct_record,
 )
-from parse_m2.models import Metro2Event, M2DataFile
+from parse_m2.models import M2DataFile, Metro2Event
 
 
 class PortfolioEvalsTestCase(TestCase, EvaluatorTestHelper):

@@ -3,6 +3,7 @@ import logging
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
+
 class Command(BaseCommand):
     help = "Updates a user's is_active flag to True. Use this when " + \
         "an administrator's account has been deactivated, so they can't " + \

@@ -1,5 +1,7 @@
 from datetime import date
+
 from django.test import TestCase
+
 from rest_framework.renderers import JSONRenderer
 
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary

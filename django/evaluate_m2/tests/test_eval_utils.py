@@ -1,10 +1,12 @@
-from datetime import date
-from django.test import TestCase
 import re
-from evaluate_m2.evaluate_utils import get_activity_date_range, create_eval_insert_query
-from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import Metro2Event, M2DataFile, AccountActivity
+from datetime import date
+
+from django.test import TestCase
+
+from evaluate_m2.evaluate_utils import create_eval_insert_query, get_activity_date_range
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
+from evaluate_m2.tests.evaluator_test_helper import acct_record
+from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
 
 
 class EvaluatorUtilsTestCase(TestCase):

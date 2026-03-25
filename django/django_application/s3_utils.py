@@ -1,5 +1,6 @@
-import boto3
 from django.conf import settings
+
+import boto3
 
 
 def s3_bucket_files(bucket_directory: str):

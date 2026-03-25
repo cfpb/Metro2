@@ -1,8 +1,9 @@
 import logging
 
 from django.core.management.base import BaseCommand, CommandError
-from evaluate_m2.models import EvaluatorResultSummary
+
 from evaluate_m2.evaluate import Evaluate
+from evaluate_m2.models import EvaluatorResultSummary
 from parse_m2.models import Metro2Event
 
 

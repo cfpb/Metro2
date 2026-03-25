@@ -1,12 +1,13 @@
 import logging
 
-from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
 from evaluate_m2.evaluate import evaluator
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_post_parsing import post_parse
 from parse_m2.models import Metro2Event
+
 
 class Command(BaseCommand):
     """

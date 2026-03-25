@@ -1,11 +1,13 @@
 import logging
-
-from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import timedelta
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.utils import timezone
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
 
 def disable_non_privileged_inactive_users():
     logger = logging.getLogger('users.tasks.disable_non_privileged_inactive_users')

@@ -1,35 +1,38 @@
 import csv
 import json
 import logging
-import botocore
-
 from datetime import date
+
 from django.conf import settings
 from django.http import Http404, HttpResponse, JsonResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
+
+import botocore
+import django_filters.rest_framework
+from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import generics
-import django_filters.rest_framework
 
 from django_application.s3_utils import s3_session
-from evaluate_m2.views_utils import (
-    get_object,
-    has_permissions_for_request,
-)
+from evaluate_m2 import upload_utils
 from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
+from evaluate_m2.filters import EvaluatorResultFilterSet
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResult,
+    EvaluatorResultSummary,
+)
 from evaluate_m2.pagination import EvaluatorResultsPaginator
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
     EventsViewSerializer,
 )
-from evaluate_m2 import upload_utils
+from evaluate_m2.views_utils import (
+    get_object,
+    has_permissions_for_request,
+)
 from parse_m2.models import AccountActivity, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
-
-from evaluate_m2.filters import EvaluatorResultFilterSet
 
 
 @api_view(('GET',))

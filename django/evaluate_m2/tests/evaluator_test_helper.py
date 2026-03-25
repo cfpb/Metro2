@@ -1,10 +1,7 @@
 from datetime import date
-from evaluate_m2.evaluate import evaluator
 
-from parse_m2.models import (
-    AccountActivity,  J1,
-    J2, K2, K4, L1, M2DataFile, Metro2Event
-)
+from evaluate_m2.evaluate import evaluator
+from parse_m2.models import J1, J2, K2, K4, L1, AccountActivity, M2DataFile, Metro2Event
 
 
 def acct_record(file: M2DataFile, custom_values: dict) -> AccountActivity:
@@ -243,7 +240,7 @@ def create_bulk_JSegments(j_type: str, value_list: dict, size: int):
         return J2.objects.bulk_create(j_segments)
 
 
-class EvaluatorTestHelper():
+class EvaluatorTestHelper:
     evaluators = evaluator.evaluators
 
     def assert_evaluator_correct(self, event: Metro2Event, eval_name: str, expected_result: list[dict]):

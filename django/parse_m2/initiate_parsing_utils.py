@@ -1,8 +1,8 @@
 import logging
-from zipfile import ZipInfo, ZipFile
+from zipfile import ZipFile, ZipInfo
 
-from parse_m2.models import Metro2Event
 from parse_m2.m2_parser import M2FileParser
+from parse_m2.models import Metro2Event
 
 
 def data_file(filename: str) -> bool:

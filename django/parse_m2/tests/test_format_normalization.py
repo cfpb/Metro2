@@ -1,12 +1,12 @@
-import os
 import io
+import os
 
 from django.test import TestCase
 
 from parse_m2.normalize_format import (
     get_filename,
     modify_individual_line,
-    normalize_file_format
+    normalize_file_format,
 )
 
 
@@ -29,9 +29,8 @@ class TestFormatNormalization(TestCase):
         expected_output = os.path.join(sample_files_dir, 'test_normalize_format',
                                    'small_after_normalization.txt')
 
-        with open(input_file, 'r') as input:
-            with open(expected_output, 'r') as expected:
-                with io.StringIO() as output:
-                    normalize_file_format(input, output)
-                    output.seek(0)
-                    self.assertEqual(output.read(), expected.read())
+        with open(input_file) as input, open(expected_output) as expected:
+            with io.StringIO() as output:
+                normalize_file_format(input, output)
+                output.seek(0)
+                self.assertEqual(output.read(), expected.read())

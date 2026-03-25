@@ -1,14 +1,15 @@
 from django.contrib.admin.sites import AdminSite
 from django.test import TestCase
+
 from evaluate_m2.admin import (
     EvaluatorMetadataAdmin,
+    EvaluatorResultAdmin,
     EvaluatorResultSummaryAdmin,
-    EvaluatorResultAdmin
 )
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
-    EvaluatorResultSummary
+    EvaluatorResultSummary,
 )
 
 

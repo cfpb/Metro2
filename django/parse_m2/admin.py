@@ -1,15 +1,23 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin import AdminSite
-from django.views.generic.detail import DetailView
 from django.urls import path, reverse
 from django.utils.html import format_html
+from django.views.generic.detail import DetailView
 
 from parse_m2.models import (
+    J1,
+    J2,
+    K1,
+    K2,
+    K3,
+    K4,
+    L1,
+    N1,
     AccountActivity,
-    J1, J2, K1, K2, K3, K4, L1, N1,
-    Metro2Event, M2DataFile,
-    UnparseableData
+    M2DataFile,
+    Metro2Event,
+    UnparseableData,
 )
 
 

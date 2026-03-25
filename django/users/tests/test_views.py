@@ -4,10 +4,9 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 
-
 from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import M2DataFile, Metro2Event
 from parse_m2.initiate_post_parsing import post_parse
+from parse_m2.models import M2DataFile, Metro2Event
 from users.views import users_view
 
 

@@ -1,11 +1,16 @@
+from datetime import date
+
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 
-from datetime import date
 from evaluate_m2.evaluate import Evaluate, evaluator
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
-from parse_m2.models import M2DataFile, Metro2Event
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResult,
+    EvaluatorResultSummary,
+)
 from evaluate_m2.tests.evaluator_test_helper import acct_record
+from parse_m2.models import M2DataFile, Metro2Event
 
 
 def sample_eval_always_hits(record_set):
