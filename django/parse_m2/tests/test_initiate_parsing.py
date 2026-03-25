@@ -54,7 +54,7 @@ class InitiateLocalParsingTestCase(TestCase):
         self.assertEqual(AccountActivity.objects.count(), 1997)
 
     def test_prepend_collection_onto_account_num(self):
-        parse_files_from_local_filesystem(self.event, collection="HEALTH.")
+        parse_files_from_local_filesystem(self.event, collection="HEALTH")
 
         # one M2DataFile object for each file
         self.assertEqual(M2DataFile.objects.count(), 3)

@@ -15,12 +15,11 @@ from parse_m2 import parse_utils
 class M2FileParser():
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
-    parser_version = "3.0"
+    parser_version = "3.1"
 
     chunk_size = 2000  # TODO: determine a good number for this
     any_non_whitespace = r'\S'
 
-    collection = None
     activity_date = None
 
     def __init__(self, event: Metro2Event, filepath: str, collection: str = None) -> None:
@@ -34,12 +33,11 @@ class M2FileParser():
             file_name=filepath,
             parsing_status="In progress",
             parser_version=self.parser_version,
+            # Collection, if present, will be prepended to consumer account number
+            # for all records in this file
+            collection=collection,
         )
         self.file_record.save()
-
-        # Collection, if present, will be prepended to consumer account number
-        # for all records in this file
-        self.collection = collection
 
     def update_file_record(self, status=None, msg=None) -> None:
         """
@@ -190,7 +188,7 @@ class M2FileParser():
 
             # parse the base segment into AccountActivity
             acct_activity = AccountActivity.parse_from_segment(
-                line, self.file_record, self.activity_date, self.collection)
+                line, self.file_record, self.activity_date)
             parsed["AccountActivity"] = acct_activity
 
             # parse the extra segments
