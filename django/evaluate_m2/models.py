@@ -95,7 +95,10 @@ class EvaluatorResultSummary(models.Model):
         csv_header.insert(0, 'event_name')
         return csv_header
 
-    def sample_of_results(self, sample_size: int = settings.M2_RESULT_SAMPLE_SIZE) -> list[int]:
+    def sample_of_results(
+        self,
+        sample_size: int = settings.M2_RESULT_SAMPLE_SIZE
+    ) -> list[int]:
         """
         Return a list of IDs of AccountActivity records that are hits
         for this evaluator.

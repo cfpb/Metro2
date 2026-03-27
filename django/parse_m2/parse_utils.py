@@ -32,10 +32,10 @@ def cast_to_type(input: str, type_str: str):
     if type_str == "numeric" or type_str == "numeric optional":
         try:
             return int(input)
-        except ValueError:
+        except ValueError as e:
             if type_str == "numeric":
                 msg = f"Numeric value `{input}` could not be parsed as int"
-                raise UnreadableLineException(msg)
+                raise UnreadableLineException(msg) from e
             else:
                 return None
 
@@ -45,10 +45,10 @@ def cast_to_type(input: str, type_str: str):
             raise UnreadableLineException(msg)
         try:
             return datetime.strptime(input, date_format).date()
-        except (ValueError, TypeError):
+        except (ValueError, TypeError) as e:
             if type_str == "date":
                 msg = f"Date value `{input}` could not be parsed as date"
-                raise UnreadableLineException(msg)
+                raise UnreadableLineException(msg) from e
             else:
                 return None
 
@@ -99,7 +99,7 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
         # Add context to the error message that comes out of cast_to_type
         msg = f"Field name: `{field_name}`. Indices: {field_start}-{field_end}. " \
                + f"Field_type `{field_type}`. Issue detail: " + str(e)
-        raise UnreadableLineException(msg)
+        raise UnreadableLineException(msg) from e
 
     return result
 
@@ -119,10 +119,12 @@ def decode_if_needed(input: any) -> str:
         try:
             return input.decode('utf-8', errors='replace').replace('\x00', '\uFFFD')
         except (UnicodeDecodeError, AttributeError) as e:
-            raise UnreadableLineException(f"Decode failed: {e}")
+            raise UnreadableLineException(f"Decode failed: {e}") from e
     else:
         # We don't know what this is
-        raise UnreadableLineException(f"Input type: {type(input)} is neither string nor bytes")
+        raise UnreadableLineException(
+            f"Input type: {type(input)} is neither string nor bytes"
+        )
 
 def segment_has_contents(line: str) -> bool:
     """

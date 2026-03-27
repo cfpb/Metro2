@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 from parse_m2.models import Metro2Event
 
+
 def has_permissions_for_request(request, event: Metro2Event) -> bool:
     if settings.SSO_ENABLED:
         user = User.objects.get(username=request.user.username)
@@ -33,7 +34,9 @@ def get_object_range(s3, total_bytes, bucket_name, bucket_key):
     while total_bytes > 0:
         end = offset + 99999 if total_bytes > 100000 else ""
         total_bytes -= 100000
-        byte_range = 'bytes={offset}-{end}'.format(offset=offset, end=end)
+        byte_range = f'bytes={offset}-{end}'
         logger.debug(f"\tBytes Range: {byte_range}")
         offset = end + 1 if not isinstance(end, str) else None
-        yield s3.get_object(Bucket=bucket_name, Key=bucket_key, Range=byte_range)['Body'].read()
+        yield s3.get_object(
+            Bucket=bucket_name, Key=bucket_key, Range=byte_range
+        )['Body'].read()

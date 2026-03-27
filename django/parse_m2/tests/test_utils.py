@@ -1,5 +1,6 @@
-from django.test import TestCase
 from datetime import date
+
+from django.test import TestCase
 
 from parse_m2 import parse_utils
 
@@ -99,11 +100,19 @@ class ParserUtilsTestCase(TestCase):
     # ========================
     def test_get_field_value_gives_informative_error_msg(self):
         with self.assertRaises(parse_utils.UnreadableLineException)as e:
-            parse_utils.get_field_value({"account_plan": (1,30)}, "account_plan", "string")
+            parse_utils.get_field_value(
+                {"account_plan": (1,30)},
+                "account_plan",
+                "string"
+            )
         self.assertIn("segment length is 6", str(e.exception))
 
         with self.assertRaises(parse_utils.UnreadableLineException)as e1:
-            parse_utils.get_field_value({"test_date": (1,8, "date")}, "test_date", "33334444")
+            parse_utils.get_field_value(
+                {"test_date": (1,8, "date")},
+                "test_date",
+                "33334444"
+            )
         self.assertIn("Indices: 1-8", str(e1.exception))
 
         with self.assertRaises(parse_utils.UnreadableLineException)as e2:

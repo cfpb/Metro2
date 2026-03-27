@@ -1,17 +1,19 @@
 import os
-from django.test import TestCase
 from unittest.mock import patch
+
+from django.test import TestCase
 
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
 from parse_m2.initiate_parsing_utils import parsed_file_exists
-from parse_m2.models import Metro2Event, M2DataFile, AccountActivity, UnparseableData
+from parse_m2.models import AccountActivity, M2DataFile, Metro2Event, UnparseableData
 
 
 class InitiateLocalParsingTestCase(TestCase):
     def setUp(self):
-        # this directory has two Metro2 files: m2_file_small and m2_file_small_with_error
-        # and one file that doesn't end in .txt, so it won't get parsed
+        # this directory has two Metro2 files: m2_file_small and
+        # m2_file_small_with_error and one file that doesn't end in .txt, so it won't
+        # get parsed
         self.test_local_data_directory = os.path.join(
             'parse_m2', 'tests','sample_files', 'test_local_data'
             )
@@ -37,7 +39,10 @@ class InitiateLocalParsingTestCase(TestCase):
     def test_directory_does_not_exist(self):
         # If the user enters a bad directory, they get an error.
         # TODO: How can we message this issue to the user more clearly?
-        exam_with_typo = Metro2Event.objects.create(name="x", directory="/directory/that/does/not/exist")
+        exam_with_typo = Metro2Event.objects.create(
+            name="x",
+            directory="/directory/that/does/not/exist"
+        )
         with self.assertRaises(FileNotFoundError):
             parse_files_from_local_filesystem(exam_with_typo)
 
@@ -59,7 +64,12 @@ class InitiateLocalParsingTestCase(TestCase):
         # one M2DataFile object for each file
         self.assertEqual(M2DataFile.objects.count(), 3)
         # 3 records in the first file, 2 in the second
-        self.assertEqual(AccountActivity.objects.filter(cons_acct_num__startswith="HEALTH.").count(), 5)
+        self.assertEqual(
+            AccountActivity.objects.filter(
+                cons_acct_num__startswith="HEALTH."
+            ).count(),
+            5
+        )
 
     def test_prepend_collection_on_zipfile(self):
         test_zip_location = os.path.join(
@@ -71,7 +81,12 @@ class InitiateLocalParsingTestCase(TestCase):
         # the zip contained 1 file
         self.assertEqual(M2DataFile.objects.count(), 1)
         # the file contained 1997 parseable records
-        self.assertEqual(AccountActivity.objects.filter(cons_acct_num__startswith="ZIP_EVENT").count(), 1997)
+        self.assertEqual(
+            AccountActivity.objects.filter(
+                cons_acct_num__startswith="ZIP_EVENT"
+            ).count(),
+            1997
+        )
 
 
 class InitiateS3ParsingTestCase(TestCase):
@@ -86,20 +101,26 @@ class InitiateS3ParsingTestCase(TestCase):
             # The test directory in S3 should contain one file
             self.assertEqual(M2DataFile.objects.count(), 1)
             file = M2DataFile.objects.first()
-            self.assertEqual(file.file_name, "s3:test-tiny/m2_2k_lines_deidentified.TXT")
+            self.assertEqual(
+                file.file_name,
+                "s3:test-tiny/m2_2k_lines_deidentified.TXT"
+            )
 
             # The test file should contain 1998 base segments
             self.assertEqual(AccountActivity.objects.count(), 1998)
 
     def xtest_fetch_s3_zip(self):
         with patch.dict('os.environ', {'AWS_PROFILE': 'prof'}):
-            exam_s3 = Metro2Event.objects.create(name="other s3 exam", directory="test-zipped/")
+            exam_s3 = Metro2Event.objects.create(
+                name="other s3 exam",
+                directory="test-zipped/"
+            )
             parse_files_from_s3_bucket(exam_s3)
 
             # The test directory in S3 should contain one file
             self.assertEqual(M2DataFile.objects.count(), 1)
             file = M2DataFile.objects.first()
-            expected_name = "s3:test-zipped/one_small_file.zip:m2_2k_lines_deidentified.TXT"
+            expected_name = "s3:test-zipped/one_small_file.zip:m2_2k_lines_deidentified.TXT"  # noqa: E501
             self.assertEqual(file.file_name, expected_name)
 
             # The test file should contain 1997 valid base segments and one unparseable

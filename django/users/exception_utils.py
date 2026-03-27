@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from rest_framework import status
+
 
 def get_users_not_found_exception(user_id: str, path: str):
     msg = f'User ID: {user_id} does not exist.'

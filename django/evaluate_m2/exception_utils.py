@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from rest_framework import status
+
 
 def get_evaluate_m2_not_found_exception(
         error_string:str, event_id: str, evaluator_id: str, path: str, acct_num=''):
@@ -16,7 +18,10 @@ def get_evaluate_m2_not_found_exception(
     elif 'EvaluatorResultSummary' in error_string:
         msg = f'EvaluatorResultSummary record(s) not found for event ID {event_id}.'
     else:
-        msg = f'Evaluator result does not exist for event ID {event_id} or evaluator ID {evaluator_id}.'
+        msg = (
+            f'Evaluator result does not exist for event ID {event_id} or '
+            f'evaluator ID {evaluator_id}.'
+        )
     error= {
         'timestamp': datetime.now(),
         'status': status.HTTP_404_NOT_FOUND,

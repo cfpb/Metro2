@@ -1,14 +1,15 @@
-import logging
 import csv
 import json
+import logging
 
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
-from django_application.s3_utils import s3_session
 
 from smart_open import open
 
+from django_application.s3_utils import s3_session
 from evaluate_m2.models import EvaluatorResultSummary
+
 
 def stream_results_files_to_s3(result_summary: EvaluatorResultSummary, record_set):
     stream_full_results_csv_to_s3(result_summary)
@@ -16,7 +17,9 @@ def stream_results_files_to_s3(result_summary: EvaluatorResultSummary, record_se
 
 ##############
 # Methods for generating and uploading full CSV
-def stream_full_results_csv_to_s3(result_summary: EvaluatorResultSummary, url: str = None):
+def stream_full_results_csv_to_s3(
+    result_summary: EvaluatorResultSummary, url: str = None
+):
     """
     If the EvaluatorResultSummary record has accounts affected,
     save the evaluator results files to an S3 bucket.
@@ -24,7 +27,10 @@ def stream_full_results_csv_to_s3(result_summary: EvaluatorResultSummary, url: s
     logger = logging.getLogger('evaluate.stream_full_results_csv_to_s3')
     if not url:
         url = full_s3_url(result_summary.event_id, result_summary.evaluator_id, 'csv')
-    logger.info(f"Saving CSV for event {result_summary.event_id}, evaluator {result_summary.evaluator_id}")
+    logger.info(
+        f"Saving CSV for event {result_summary.event_id}, evaluator "
+        f"{result_summary.evaluator_id}"
+    )
 
     with open(url, 'w', transport_params={'client': s3_session()}) as fout:
         generate_full_csv(result_summary, fout)
@@ -58,14 +64,19 @@ def generate_full_csv(result_summary: EvaluatorResultSummary, fout):
 
 ##############
 # Methods for generating and uploading JSON sample
-def stream_sample_results_json_to_s3(result_summary: EvaluatorResultSummary, record_set, url: str = None):
+def stream_sample_results_json_to_s3(
+    result_summary: EvaluatorResultSummary, record_set, url: str = None
+):
     """
     Save the set of sample of evaluator results as JSON to an S3 bucket.
     """
     logger = logging.getLogger('evaluate.stream_sample_results_json_to_s3')
     if not url:
         url = full_s3_url(result_summary.event_id, result_summary.evaluator_id, 'json')
-    logger.info(f"Saving JSON for event {result_summary.event_id}, evaluator {result_summary.evaluator_id}")
+    logger.info(
+        f"Saving JSON for event {result_summary.event_id}, evaluator "
+        f"{result_summary.evaluator_id}"
+    )
 
     with open(url, 'w', transport_params={'client': s3_session()}) as jsonFile:
         response = generate_json_sample(result_summary, record_set)

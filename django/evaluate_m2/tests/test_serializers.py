@@ -1,5 +1,7 @@
 from datetime import date
+
 from django.test import TestCase
+
 from rest_framework.renderers import JSONRenderer
 
 from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
@@ -99,7 +101,10 @@ class EvalSerializerTestCase(TestCase):
         self.assertEqual(record.category, 'paid/not paid')
         self.assertEqual(record.description, self.e1_json['description'])
         self.assertEqual(record.fields_used, ['cons_info_ind', 'dolp', 'id_num'])
-        self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind'])
+        self.assertEqual(
+            record.fields_display,
+            ['spc_com_cd', 'dofd', 'l1__change_ind']
+        )
 
     def test_import_from_json_case_insensitive(self):
         fields_used = "\r\n".join([
@@ -185,31 +190,55 @@ class EventsViewSerializerTestCase(TestCase):
         acct_record(file, activity)
 
         self.eval_rs = EvaluatorResultSummary.objects.create(
-            event=self.event, evaluator=self.eval, hits=2, accounts_affected=1,
-            inconsistency_start=date(2021, 1, 1), inconsistency_end=date(2021, 2, 1))
+            event=self.event,
+            evaluator=self.eval,
+            hits=2,
+            accounts_affected=1,
+            inconsistency_start=date(2021, 1, 1),
+            inconsistency_end=date(2021, 2, 1)
+        )
 
         self.json_representation = {
-            'hits': 2, 'accounts_affected': 1, 'inconsistency_start':date(2021, 1, 1),
-            'inconsistency_end': date(2021, 2, 1), 'id': 'Sample-Eval-1',
+            'hits': 2,
+            'accounts_affected': 1,
+            'inconsistency_start':date(2021, 1, 1),
+            'inconsistency_end': date(2021, 2, 1),
+            'id': 'Sample-Eval-1',
             'category': 'paid/not paid',
-            'description': 'description of Sample-Eval-1', 'long_description': '',
+            'description': 'description of Sample-Eval-1',
+            'long_description': '',
             'fields_used': ['hcola', 'smpa', 'date of first delinquency'],
-            'fields_display': ['amount past due', 'compliance condition code',
-                'current balance', 'date closed', 'original charge-off amount',
-                'terms frequency'],
-            'crrg_reference': '400', 'potential_harm': '',
-            'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet',
-            }
+            'fields_display': [
+                'amount past due',
+                'compliance condition code',
+                'current balance',
+                'date closed',
+                'original charge-off amount',
+                'terms frequency'
+            ],
+            'crrg_reference': '400',
+            'potential_harm': '',
+            'rationale': '',
+            'alternate_explanation': 'Lorem ipsum dolor sit amet',
+        }
 
     def test_evaluator_metadata_serializer(self):
-        serializer = EventsViewSerializer(self.eval_rs, many=False, context={'event': self.event})
+        serializer = EventsViewSerializer(
+            self.eval_rs,
+            many=False,
+            context={'event': self.event}
+        )
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render(self.json_representation)
         self.assertEqual(json_output, expected)
 
     def test_group_serializer_many_true(self):
         evals = [self.eval_rs]
-        serializer = EventsViewSerializer(evals, many=True, context={'event': self.event})
+        serializer = EventsViewSerializer(
+            evals,
+            many=True,
+            context={'event': self.event}
+        )
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render([self.json_representation])
         self.assertEqual(json_output, expected)

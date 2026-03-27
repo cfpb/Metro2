@@ -1,14 +1,18 @@
 from datetime import date
+
 from django.test import TestCase
-from parse_m2.initiate_post_parsing import post_parse
-from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import K2, K4, L1, Metro2Event, M2DataFile, AccountActivity
+
 from rest_framework.renderers import JSONRenderer
+
+from evaluate_m2.tests.evaluator_test_helper import acct_record
+from parse_m2.initiate_post_parsing import post_parse
+from parse_m2.models import K2, K4, L1, AccountActivity, M2DataFile, Metro2Event
 from parse_m2.serializers import (
     AccountActivitySerializer,
     AccountHolderSerializer,
-    Metro2EventSerializer
+    Metro2EventSerializer,
 )
+
 
 class AccountActivitySerializerTestCase(TestCase):
     def setUp(self) -> None:
@@ -168,7 +172,10 @@ class AccountHolderSerializerTestCase(TestCase):
 class Metro2EventSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.event = Metro2Event.objects.create(id=1, name='test_exam')
-        self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
+        self.data_file = M2DataFile.objects.create(
+            event=self.event,
+            file_name='file.txt'
+        )
         self.json_representation = {
             'id': 1, 'name': 'test_exam', 'portfolio': '',
             'eid_or_matter_num': '', 'other_descriptor': '',

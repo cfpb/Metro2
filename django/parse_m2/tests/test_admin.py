@@ -4,15 +4,31 @@ from django.test import TestCase
 
 from parse_m2.admin import (
     AccountActivityAdmin,
-    J1Admin, J2Admin, K1Admin, K2Admin, K3Admin,
-    K4Admin, L1Admin, N1Admin, Metro2EventAdmin,
-    M2DataFileAdmin, UnparseableDataAdmin
+    J1Admin,
+    J2Admin,
+    K1Admin,
+    K2Admin,
+    K3Admin,
+    K4Admin,
+    L1Admin,
+    M2DataFileAdmin,
+    Metro2EventAdmin,
+    N1Admin,
+    UnparseableDataAdmin,
 )
 from parse_m2.models import (
+    J1,
+    J2,
+    K1,
+    K2,
+    K3,
+    K4,
+    L1,
+    N1,
     AccountActivity,
-    J1, J2, K1, K2, K3, K4, L1, N1,
-    Metro2Event, M2DataFile,
-    UnparseableData
+    M2DataFile,
+    Metro2Event,
+    UnparseableData,
 )
 
 

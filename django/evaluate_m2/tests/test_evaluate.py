@@ -1,11 +1,16 @@
+from datetime import date
+
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 
-from datetime import date
 from evaluate_m2.evaluate import Evaluate, evaluator
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResult, EvaluatorResultSummary
-from parse_m2.models import M2DataFile, Metro2Event
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResult,
+    EvaluatorResultSummary,
+)
 from evaluate_m2.tests.evaluator_test_helper import acct_record
+from parse_m2.models import M2DataFile, Metro2Event
 
 
 def sample_eval_always_hits(record_set):
@@ -22,7 +27,10 @@ class EvaluateTestCase(TestCase):
     def setUp(self):
         # Create the parent records for the AccountActivity data
         self.event = Metro2Event.objects.create(name='test_exam')
-        self.data_file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
+        self.data_file = M2DataFile.objects.create(
+            event=self.event,
+            file_name='file.txt'
+        )
         # Create AccountActivity records
         # activity_date defaults to 2022-05-30
         acct_record(self.data_file, {'id': 44, 'cons_acct_num': '1044'})
@@ -80,8 +88,10 @@ class EvaluateTestCase(TestCase):
         self.assertEqual(1, EvaluatorResultSummary.objects.count())
 
         # Creates correct EvaluatorResult records
-        results = EvaluatorResultSummary.objects.get(event=self.event, evaluator__id='Sample-1') \
-            .evaluatorresult_set.order_by('acct_num')
+        results = EvaluatorResultSummary.objects.get(
+            event=self.event,
+            evaluator__id='Sample-1'
+        ).evaluatorresult_set.order_by('acct_num')
 
         # Test that results match AccountActivity records for the event
         self.assertEqual(results[0].source_record_id, 44)
@@ -118,7 +128,10 @@ class EvaluateTestCase(TestCase):
         act_date = date(2022, 5, 30)
         evaluator.evaluators = {"Sample-1": sample_eval_always_hits}
         evaluator.run_evaluators(self.event)
-        result_summary = EvaluatorResultSummary.objects.get(event=self.event, evaluator__id='Sample-1')
+        result_summary = EvaluatorResultSummary.objects.get(
+            event=self.event,
+            evaluator__id='Sample-1'
+        )
         self.assertEqual(result_summary.hits, 4)
         self.assertEqual(result_summary.accounts_affected, 4)
         self.assertEqual(result_summary.inconsistency_start, act_date)

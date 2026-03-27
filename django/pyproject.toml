@@ -1,4 +1,5 @@
 [tool.ruff]
+# Exclude common paths
 exclude = [
     # These are directories that it's a waste of time to traverse
     ".git",
@@ -8,11 +9,53 @@ exclude = [
     "/templates",
 
     # Generated migration files will throw errors.
-    "users/migrations/*.py",
-    "parse_m2/migrations/*.py",
-    "evaulate_m2/migrations/*.py",
+    "*/migrations/*.py",
 
     # Our settings files might need to conform to different readability
     # standards
     "django_application/settings",
+]
+
+[tool.ruff.lint]
+ignore = [
+    # Assigned Lambdas are fine.
+    "E731",
+]
+select = [
+    # pycodestyle
+    "E",
+    # pyflakes
+    "F",
+    # flake8-bugbear
+    "B",
+    # pyupgrade
+    "UP",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+
+[tool.ruff.lint.isort.sections]
+"django" = ["django"]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+section-order = [
+    "future",
+    "standard-library",
+    "django",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.bandit]
+exclude_dirs = [
+    "*/tests/*",
+    "django_application/settings/*",
+]
+skips = [
+    "B308",
+    "B703",
 ]

@@ -2,17 +2,24 @@ import io
 import re
 from datetime import date
 
-from parse_m2 import fields
+from parse_m2 import fields, parse_utils
 from parse_m2.models import (
-    Metro2Event,
-    M2DataFile, UnparseableData,
+    J1,
+    J2,
+    K1,
+    K2,
+    K3,
+    K4,
+    L1,
+    N1,
     AccountActivity,
-    J1, J2, K1, K2, K3, K4, L1, N1
+    M2DataFile,
+    Metro2Event,
+    UnparseableData,
 )
-from parse_m2 import parse_utils
 
 
-class M2FileParser():
+class M2FileParser:
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
     parser_version = "3.1"
@@ -22,7 +29,9 @@ class M2FileParser():
 
     activity_date = None
 
-    def __init__(self, event: Metro2Event, filepath: str, collection: str = None) -> None:
+    def __init__(
+        self, event: Metro2Event, filepath: str, collection: str = None
+    ) -> None:
         """
         - file_record: the M2DataFile that represents the file that the
                     line of data came from. Used as a foreign key when
@@ -61,7 +70,7 @@ class M2FileParser():
                 line = line[:1500] + "..."
             error_message = f"{message}. {e}. Source line: `{line}`"
             # if the header couldn't be parsed, don't try to parse the rest of the file
-            raise parse_utils.UnreadableFileException(error_message)
+            raise parse_utils.UnreadableFileException(error_message) from e
 
     def handle_first_line_and_return_activity_date(self, first_line:str) -> date:
         if parse_utils.is_header_line(first_line):
@@ -69,7 +78,10 @@ class M2FileParser():
             return self.get_activity_date_from_header(first_line)
         else:
             # If header is missing, first save a message to inform users
-            message = "First line of file isn't a header. Using DOAI in place of activity date."
+            message = (
+                "First line of file isn't a header. Using DOAI in place of activity "
+                "date."
+            )
             self.update_file_record(msg=message)
 
             # Next, parse the first line as a tradeline and save the results
@@ -225,8 +237,8 @@ class M2FileParser():
 
     def parse_chunk(self, f: io.TextIOWrapper, chunk_size: int) -> dict:
         """
-        Given a filestream of a Metro2 file, parse chunk_size lines from it and save them
-        to a dict.
+        Given a filestream of a Metro2 file, parse chunk_size lines from it and save
+        them to a dict.
 
         inputs:
         - f: filestream of the Metro2 file
@@ -251,13 +263,17 @@ class M2FileParser():
                 line_results = self.unparseable_data("", e)
 
             if line_results:
-                parsed_records = self.prepare_results_for_bulk_save(line_results, parsed_records)
+                parsed_records = self.prepare_results_for_bulk_save(
+                    line_results, parsed_records
+                )
 
             lines_parsed += 1
 
         return parsed_records
 
-    def prepare_results_for_bulk_save(self, line_results: dict, parsed_records: dict = None) -> dict:
+    def prepare_results_for_bulk_save(
+        self, line_results: dict, parsed_records: dict = None
+    ) -> dict:
         """
         Take the results of parsing a single line (with the parse_line method) and
         add them to a dict of parser results organized by model, so we can use the
@@ -325,7 +341,9 @@ class M2FileParser():
         # handle the first line of the file
         try:
             first_line = parse_utils.get_next_line(f)
-            self.activity_date = self.handle_first_line_and_return_activity_date(first_line)
+            self.activity_date = self.handle_first_line_and_return_activity_date(
+                first_line
+            )
             self.file_record.activity_date = self.activity_date
         except (parse_utils.UnreadableFileException,
                 parse_utils.UnreadableLineException) as e:

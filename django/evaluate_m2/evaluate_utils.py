@@ -40,7 +40,9 @@ def create_eval_insert_query(eval_query: str, result_summary) -> str:
                       "parse_m2_accountactivity.cons_acct_num",
                       str(result_summary.id)])
 
-    select_query, success = rx.subn(f"SELECT {desired_fields} FROM parse_m2_accountactivity", eval_query)
+    select_query, success = rx.subn(
+        f"SELECT {desired_fields} FROM parse_m2_accountactivity", eval_query
+    )
     if success != 1:
         raise TypeError("Query does not match expected evaluator query pattern")
 

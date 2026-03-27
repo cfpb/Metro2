@@ -3,6 +3,7 @@ import logging
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
+
 class Command(BaseCommand):
     help = "Creates an admin user non-interactively if it doesn't exist. "
 
@@ -17,7 +18,9 @@ class Command(BaseCommand):
 
         try:
             usr = User.objects.get(username=username)
-            logger.info(f"An existing user account was found for username `{username}`.")
+            logger.info(
+                f"An existing user account was found for username `{username}`."
+            )
             logger.info("Ensuring the user account has admin permissions... ")
             usr.is_active = True
             usr.is_staff = True

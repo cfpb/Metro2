@@ -1,35 +1,44 @@
-import zipfile
-import os
 import logging
+import os
+import zipfile
 
+from parse_m2.initiate_parsing_utils import (
+    data_file,
+    log_invalid_file_extension,
+    parse_file_from_zip,
+    parsed_file_exists,
+    zip_file,
+)
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
-from parse_m2.initiate_parsing_utils import (
-    data_file, zip_file, log_invalid_file_extension,
-    parse_file_from_zip, parsed_file_exists
-)
 
 
 ############################################
 # Methods for parsing files from the local filesystem
-def parse_local_file(event: Metro2Event, filepath: str, skip_existing: bool = True, collection: str = None):
+def parse_local_file(
+    event: Metro2Event,
+    filepath: str,
+    skip_existing: bool = True,
+    collection: str = None
+):
     logger = logging.getLogger('parse_m2.parse_local_file')
     full_name = f"local:{filepath}"
 
-    if skip_existing:
-        # If the skip_existing flag is set to True, and this file
-        # already exists on this event, don't parse it again.
-        if parsed_file_exists(event, full_name):
-            logger = logging.getLogger('parse_m2.parse_local_file')
-            logger.debug(f"Skipping existing file {full_name}, because skip_existing = True")
-            return
+    # If the skip_existing flag is set to True, and this file
+    # already exists on this event, don't parse it again.
+    if skip_existing and parsed_file_exists(event, full_name):
+        logger = logging.getLogger('parse_m2.parse_local_file')
+        logger.debug(
+            f"Skipping existing file {full_name}, because skip_existing = True"
+        )
+        return
 
     # Instantiate a parser
     parser = M2FileParser(event, full_name, collection)
 
     logger.debug(f"Parsing local file: {filepath}")
     try:
-        with open(filepath, 'r') as fstream:
+        with open(filepath) as fstream:
             file_size = os.path.getsize(filepath)
             # Parse the file
             parser.parse_file_contents(fstream, file_size)
@@ -37,22 +46,27 @@ def parse_local_file(event: Metro2Event, filepath: str, skip_existing: bool = Tr
     except FileNotFoundError as e:
         logger.error(f"There was an error opening the file: {e}")
 
-def parse_zip_file_contents(zip_path: str, event: Metro2Event, skip_existing: bool, collection: str = None):
+def parse_zip_file_contents(
+    zip_path: str, event: Metro2Event, skip_existing: bool, collection: str = None
+):
     with zipfile.ZipFile(zip_path, 'r') as zipf:
         for f in zipf.filelist:
             full_name = f"local:ZIP:{zip_path}:{f.filename}"
 
-            if skip_existing:
-                # If the skip_existing flag is set to True, and this file
-                # already exists on this event, don't parse it again.
-                if parsed_file_exists(event, full_name):
-                    logger = logging.getLogger('parse_m2.local.parse_zip_file_contents')
-                    logger.debug(f"Skipping existing file {full_name}, because skip_existing = True")
-                    return
+            # If the skip_existing flag is set to True, and this file
+            # already exists on this event, don't parse it again.
+            if skip_existing and parsed_file_exists(event, full_name):
+                logger = logging.getLogger('parse_m2.local.parse_zip_file_contents')
+                logger.debug(
+                    f"Skipping existing file {full_name}, because skip_existing = True"
+                )
+                return
 
             parse_file_from_zip(f, zipf, full_name, event, collection)
 
-def parse_files_from_local_filesystem(event: Metro2Event, skip_existing: bool = True, collection: str = None):
+def parse_files_from_local_filesystem(
+    event: Metro2Event, skip_existing: bool = True, collection: str = None
+):
     """
     Parse all files in the local filesystem location indicated by
     event.directory, and save them to event. For any files that look like

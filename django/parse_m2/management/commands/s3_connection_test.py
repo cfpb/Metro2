@@ -1,8 +1,9 @@
 import logging
 
-from django.core.management.base import BaseCommand
-from parse_m2.initiate_parsing_s3 import s3_bucket_files
 from django.conf import settings
+from django.core.management.base import BaseCommand
+
+from parse_m2.initiate_parsing_s3 import s3_bucket_files
 
 
 class Command(BaseCommand):
@@ -10,13 +11,22 @@ class Command(BaseCommand):
     Run this command by running the following:
     > python manage.py s3_connection_test -d [s3_folder]
     """
-    help = "This command will use the S3 connection variables provided in this " + \
-    "environment's settings file. It will list the files from the given directory " + \
-    "of this environment's S3 bucket, or error if the connection is not set up correctly."
+    help = (
+        "This command will use the S3 connection variables provided in this "
+        "environment's settings file. It will list the files from the given directory "
+        "of this environment's S3 bucket, or error if the connection is not set up "
+        "correctly."
+    )
 
     def add_arguments(self, argparser):
         dir_help = "The directory within the S3 bucket, defaults to 'test-tiny'"
-        argparser.add_argument("-d", "--s3_directory", nargs="?", required=False, help=dir_help)
+        argparser.add_argument(
+            "-d",
+            "--s3_directory",
+            nargs="?",
+            required=False,
+            help=dir_help
+        )
 
     def handle(self, *args, **options):
         logger = logging.getLogger('commands.s3_connection_test')

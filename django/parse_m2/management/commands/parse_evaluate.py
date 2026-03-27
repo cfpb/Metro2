@@ -2,12 +2,13 @@ import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+
 from evaluate_m2.evaluate import evaluator
+from evaluate_m2.models import EvaluatorResultSummary
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_parsing_s3 import parse_files_from_s3_bucket
 from parse_m2.initiate_post_parsing import post_parse
-from parse_m2.models import Metro2Event, M2DataFile
-from evaluate_m2.models import EvaluatorResultSummary
+from parse_m2.models import M2DataFile, Metro2Event
 
 
 class Command(BaseCommand):
@@ -15,15 +16,23 @@ class Command(BaseCommand):
     Run this command by running the following:
     > python manage.py parse_evaluate -e [event_id]
     """
-    help = "Starts the parse and evaluate process on Metro2 files for the given " + \
-            "Metro2Event record. Deletes all results of previous parse and " + \
-            "evaluate runs for this event. Checks the SSO_ENABLED setting to determine " + \
-            "whether to use local or S3 files. Once parsing is finished, run all " + \
-            "evaluators and save their results."
+    help = (
+        "Starts the parse and evaluate process on Metro2 files for the given "
+        "Metro2Event record. Deletes all results of previous parse and "
+        "evaluate runs for this event. Checks the SSO_ENABLED setting to determine "
+        "whether to use local or S3 files. Once parsing is finished, run all "
+        "evaluators and save their results."
+    )
 
     def add_arguments(self, argparser):
         event_help = "The ID of the event record in the database"
-        argparser.add_argument("-e", "--event_id", nargs="?", required=True, help=event_help)
+        argparser.add_argument(
+            "-e",
+            "--event_id",
+            nargs="?",
+            required=True,
+            help=event_help
+        )
 
     def handle(self, *args, **options):
         logger = logging.getLogger('commands.parse_evaluate')
@@ -32,14 +41,17 @@ class Command(BaseCommand):
         # Fetch the Metro2Event
         try:
             event = Metro2Event.objects.get(id=event_id)
-        except Metro2Event.DoesNotExist:
+        except Metro2Event.DoesNotExist as e:
             # If the event doesn't exist, exit
-            raise CommandError(f"No event found with id {event_id}. Exiting.")
+            raise CommandError(f"No event found with id {event_id}. Exiting.") from e
 
         # Delete results of previous parse
         parsed_files = M2DataFile.objects.filter(event=event)
         if parsed_files.exists():
-            logger.info(f"Deleting {parsed_files.count()} existing M2DataFile records for this event.")
+            logger.info(
+                f"Deleting {parsed_files.count()} existing M2DataFile records for this "
+                "event."
+            )
             parsed_files.delete()
         else:
             logger.info("No existing parsed files.")
@@ -47,7 +59,10 @@ class Command(BaseCommand):
         # Delete results of previous evaluator run
         eval_results = EvaluatorResultSummary.objects.filter(event=event)
         if eval_results.exists():
-            logger.info(f"Deleting results of {eval_results.count()} evaluators from previous run of this event.")
+            logger.info(
+                f"Deleting results of {eval_results.count()} evaluators from previous "
+                "run of this event."
+            )
             eval_results.delete()
         else:
             logger.info("No existing evaluator results.")
@@ -68,5 +83,8 @@ class Command(BaseCommand):
         logger.info(f"Beginning evaluators for event: {event_id}...")
         evaluator.run_evaluators(event)
         logger.info(
-            self.style.SUCCESS(f"Finished running evaluators for event ID: {event_id} and saving results.")
+            self.style.SUCCESS(
+                f"Finished running evaluators for event ID: {event_id} "
+                "and saving results."
+            )
         )

@@ -4,10 +4,9 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 
-
 from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.models import M2DataFile, Metro2Event
 from parse_m2.initiate_post_parsing import post_parse
+from parse_m2.models import M2DataFile, Metro2Event
 from users.views import users_view
 
 
@@ -24,15 +23,24 @@ class TestUsersView(TestCase):
         data_file = M2DataFile.objects.create(event=event, file_name='file.txt')
 
         # Create account activity records for Event 1
-        [acct_record(data_file, item) for item in [
+        records = [
             { 'id': 32, 'activity_date': date(2019, 7, 31), 'cons_acct_num': '0032', },
             { 'id': 33, 'activity_date': date(2019, 10, 31), 'cons_acct_num': '0033', },
             { 'id': 34, 'activity_date': date(2019, 11, 30), 'cons_acct_num': '0034', },
-            { 'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035', }]]
+            { 'id': 35, 'activity_date': date(2019, 12, 31), 'cons_acct_num': '0035', }
+        ]
+        for item in records:
+            acct_record(data_file, item)
+
         post_parse(event)  # Ensure the event record has the date range saved
 
-        e2 = Metro2Event.objects.create(id=2, name='test_exam2', eid_or_matter_num='887-656565',
-                                   portfolio="credit cards", other_descriptor="2025")
+        e2 = Metro2Event.objects.create(
+            id=2,
+            name='test_exam2',
+            eid_or_matter_num='887-656565',
+            portfolio="credit cards",
+            other_descriptor="2025"
+        )
         e2.members.add(self.user)
 
     def test_users_view(self):

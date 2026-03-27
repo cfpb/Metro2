@@ -1,7 +1,8 @@
 import logging
 
 from django.core.management.base import BaseCommand, CommandError
-from parse_m2.models import Metro2Event, M2DataFile
+
+from parse_m2.models import M2DataFile, Metro2Event
 
 
 class Command(BaseCommand):
@@ -10,22 +11,42 @@ class Command(BaseCommand):
     > python manage.py delete_single_datafile -e [event_id] -f [file_name]
     > python manage.py delete_single_datafile -e [event_id] -i [file_id]
     """
-    help = "Delete one Metro2 data file, by filename, for a specific event record. " + \
-            "Do this when the parser failed or errored on a single file and you " + \
-            "want to remove it and try again. " + \
-            "WARNING: This shouldn't be used after evals have run, since it makes " + \
-            "eval results invalid. WARNING: This can't be used after post_parse " + \
-            "has been run, since prior_values prevent deleting a file."
+    help = (
+        "Delete one Metro2 data file, by filename, for a specific event record. "
+        "Do this when the parser failed or errored on a single file and you "
+        "want to remove it and try again. "
+        "WARNING: This shouldn't be used after evals have run, since it makes "
+        "eval results invalid. WARNING: This can't be used after post_parse "
+        "has been run, since prior_values prevent deleting a file."
+    )
 
     def add_arguments(self, argparser):
         event_help = "The ID of the event record"
-        argparser.add_argument("-e", "--event_id", nargs="?", required=True, help=event_help)
+        argparser.add_argument(
+            "-e",
+            "--event_id",
+            nargs="?",
+            required=True,
+            help=event_help
+        )
 
         filename_help = "The file_name value of the file to delete"
-        argparser.add_argument("-f", "--file_name", nargs="?", required=False, help=filename_help)
+        argparser.add_argument(
+            "-f",
+            "--file_name",
+            nargs="?",
+            required=False,
+            help=filename_help
+        )
 
         file_id_help = "The ID of the file to delete"
-        argparser.add_argument("-i", "--file_id", nargs="?", required=False, help=file_id_help)
+        argparser.add_argument(
+            "-i",
+            "--file_id",
+            nargs="?",
+            required=False,
+            help=file_id_help
+        )
 
 
     def handle(self, *args, **options):
@@ -36,16 +57,18 @@ class Command(BaseCommand):
 
         # Check params for validity
         if file_name and file_id:
-            raise CommandError("Either file name or file ID must be provided, not both. Exiting.")
+            raise CommandError(
+                "Either file name or file ID must be provided, not both. Exiting."
+            )
         if not file_name and not file_id:
             raise CommandError("Either file name or file ID must be provided. Exiting.")
 
         # Fetch the Metro2Event
         try:
             event = Metro2Event.objects.get(id=event_id)
-        except Metro2Event.DoesNotExist:
+        except Metro2Event.DoesNotExist as e:
             # If the event doesn't exist, exit
-            raise CommandError(f"No event found with id {event_id}. Exiting.")
+            raise CommandError(f"No event found with id {event_id}. Exiting.") from e
 
         # Fetch the M2DataFile record
         try:
@@ -53,16 +76,15 @@ class Command(BaseCommand):
                 datafile =  M2DataFile.objects.get(event=event, id=file_id)
             elif file_name:
                 datafile =  M2DataFile.objects.get(event=event, file_name=file_name)
-        except M2DataFile.DoesNotExist:
-            if file_id:
-                msg = f"file ID `{file_id}`"
-            else:
-                msg = f"file name `{file_name}`"
-            raise CommandError(f"No file found with {msg}. Exiting.")
+        except M2DataFile.DoesNotExist as e:
+            msg = f"file ID `{file_id}`" if file_id else f"file name `{file_name}`"
+            raise CommandError(f"No file found with {msg}. Exiting.") from e
 
         # Delete the file
         datafile.delete()
 
         logger.info(
-            self.style.SUCCESS(f"Successfully deleted file {datafile.file_name} for event: {event_id}.")
+            self.style.SUCCESS(
+                f"Successfully deleted file {datafile.file_name} for event: {event_id}."
+            )
         )

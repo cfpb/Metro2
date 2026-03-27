@@ -1,11 +1,8 @@
 import random
-
-from datetime import datetime, date, timedelta
+from datetime import date, datetime, timedelta
 
 from parse_m2 import fields
-from parse_m2.models import (
-    AccountActivity, J1, J2, K4
-)
+from parse_m2.models import J1, J2, K4, AccountActivity
 
 
 def save_m2_file(filename: str, size: int, activity_date: date):
@@ -57,25 +54,31 @@ def generate_acct_activity(activity_date: date, acct_num: int) -> AccountActivit
         id_num = 'FURNISHER ID',
         port_type = 'C',  # Line of credit
         acct_type = random.choice(acct_types),
-        date_open = random_date(date(2000,1,1), date(2010,1,1)),  # accts opened in the oughts
+        # accts opened in the oughts
+        date_open = random_date(date(2000,1,1), date(2010,1,1)),
         credit_limit = credit_limit,  # credit limits btw 1k and 100k
-        hcola = random.randrange(credit_limit),  # highest credit used is a num less than credit_limit
+        # highest credit used is a num less than credit_limit
+        hcola = random.randrange(credit_limit),
         terms_dur = "LOC",  # Port type "C" always uses "LOC"
         terms_freq = "M",  # Assume monthly billing
         smpa = 100,  # unsure
-        actual_pmt_amt = random.randrange(int(credit_limit/20)),  # pay up to 5% of credit limit per cycle
+        # pay up to 5% of credit limit per cycle
+        actual_pmt_amt = random.randrange(int(credit_limit/20)),
         acct_stat = acct_stat,  # any acct status
-        pmt_rating = pmt_rating_pick(acct_stat),  # pick a pmt rating only if acct_stat indicates it should be present
+        # pick a pmt rating only if acct_stat indicates it should be present
+        pmt_rating = pmt_rating_pick(acct_stat),
         php = '',  # TODO
         spc_com_cd = random.choice(spc_com_cds),
         compl_cond_cd = random.choice(compl_cond_cds),
-        current_bal = random.randrange(credit_limit + int(credit_limit*0.1)),  # can be higher than credit limit
+        # can be higher than credit limit
+        current_bal = random.randrange(credit_limit + int(credit_limit*0.1)),
         amt_past_due = '',  # TODO
         orig_chg_off_amt = ocoa_pick(acct_stat, credit_limit),
         doai = activity_date,
         dofd = dofd_pick(acct_stat),  # a date after date_open, or None
         date_closed = None,  # assuming not closed (for now)
-        dolp = random_date(activity_date - timedelta(days=90), activity_date),  # a date in the 3 months before activity_date
+        # a date in the 3 months before activity_date
+        dolp = random_date(activity_date - timedelta(days=90), activity_date),
         int_type_ind = 'F',  # fixed interest
 
         # Person-related fields
@@ -140,7 +143,8 @@ def generate_k4() -> K4:
         balloon_pmt_amt = random.randrange(300, 900, 25)
     )
 
-# acct types acceptable for port_type 'C', plus an invalid one to trigger evaluator Portfolio-Type-1
+# acct types acceptable for port_type 'C', plus an invalid one to trigger evaluator
+# Portfolio-Type-1
 acct_types = ['9A', '7A', '47', '15']
 
 acct_statuses = ['05','11','13','61','62','63','64','65',

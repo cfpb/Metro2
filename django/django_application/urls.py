@@ -14,15 +14,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.core.exceptions import ImproperlyConfigured
+from contextlib import suppress
+
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.core.exceptions import ImproperlyConfigured
+from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 
-from users import views
-from evaluate_m2 import views as eval_views
-from evaluate_m2 import urls as evaluate_m2_urls
 from django_application import views as error_view
+from evaluate_m2 import urls as evaluate_m2_urls
+from evaluate_m2 import views as eval_views
+from users import views
 
 
 urlpatterns = [
@@ -33,16 +35,16 @@ urlpatterns = [
     path('api/users/<int:user_id>/', views.users_view)
 ]
 
-try:
+with suppress(ImproperlyConfigured):
     # If the SSO library is installed, include auth-related URLs
     urlpatterns += [
         path('oauth2/', include('django_auth_adfs.urls')),
     ]
-except ImproperlyConfigured:
-    pass
 
 # All erroneous API calls to return 400: bad request
 urlpatterns.append(re_path(r'api(?:.*)?', error_view.bad_request_view ))
 
 # Fall through route: Handle all other URLs through the front end
-urlpatterns.append(re_path(r'^(?:.*)?', TemplateView.as_view(template_name='m2/index.html')))
+urlpatterns.append(
+    re_path(r'^(?:.*)?', TemplateView.as_view(template_name='m2/index.html'))
+)

@@ -1,5 +1,11 @@
 from django.contrib import admin
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary, EvaluatorResult
+
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResult,
+    EvaluatorResultSummary,
+)
+
 
 # Register your models here.
 class EvaluatorMetadataAdmin(admin.ModelAdmin):

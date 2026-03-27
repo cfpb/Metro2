@@ -1,37 +1,66 @@
-import io
 import datetime
+import io
+
 from django.test import TestCase
 
-from evaluate_m2.upload_utils import (
-    generate_full_csv, generate_json_sample,
-    full_s3_url, s3_bucket_key, s3_filename
-)
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
     EvaluatorResultSummary,
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
+from evaluate_m2.upload_utils import (
+    full_s3_url,
+    generate_full_csv,
+    generate_json_sample,
+    s3_bucket_key,
+    s3_filename,
+)
 from parse_m2.models import (
     AccountActivity,
-    Metro2Event,
     M2DataFile,
+    Metro2Event,
 )
+
 
 class UploadUtilsTestCase(TestCase):
     def setUp(self):
         event = Metro2Event.objects.create(name="MyEVENT")
-        self.eval = EvaluatorMetadata.objects.create(id="my-eval-3", fields_used=["amt_past_due", "ecoa"], fields_display=["doai"])
+        self.eval = EvaluatorMetadata.objects.create(
+            id="my-eval-3",
+            fields_used=["amt_past_due", "ecoa"],
+            fields_display=["doai"]
+        )
         f = M2DataFile.objects.create(event=event)
         r1 = acct_record(f, {"id": 1, "cons_acct_num": "41", "ecoa": "AB"})
         r2 = acct_record(f, {"id": 2, "cons_acct_num": "42", "ecoa": "AC"})
         r3 = acct_record(f, {"id": 3, "cons_acct_num": "43", "ecoa": ""})
         r4 = acct_record(f, {"id": 4, "cons_acct_num": "44", "ecoa": "AE"})
-        self.ers = EvaluatorResultSummary.objects.create(event=event, evaluator=self.eval, hits=4)
-        EvaluatorResult.objects.create(date=r1.activity_date, result_summary=self.ers, source_record=r1)
-        EvaluatorResult.objects.create(date=r2.activity_date, result_summary=self.ers, source_record=r2)
-        EvaluatorResult.objects.create(date=r3.activity_date, result_summary=self.ers, source_record=r3)
-        EvaluatorResult.objects.create(date=r4.activity_date, result_summary=self.ers, source_record=r4)
+        self.ers = EvaluatorResultSummary.objects.create(
+            event=event,
+            evaluator=self.eval,
+            hits=4
+        )
+        EvaluatorResult.objects.create(
+            date=r1.activity_date,
+            result_summary=self.ers,
+            source_record=r1
+        )
+        EvaluatorResult.objects.create(
+            date=r2.activity_date,
+            result_summary=self.ers,
+            source_record=r2
+        )
+        EvaluatorResult.objects.create(
+            date=r3.activity_date,
+            result_summary=self.ers,
+            source_record=r3
+        )
+        EvaluatorResult.objects.create(
+            date=r4.activity_date,
+            result_summary=self.ers,
+            source_record=r4
+        )
         return super().setUp()
 
     def test_generate_results_csv(self):
@@ -41,7 +70,7 @@ class UploadUtilsTestCase(TestCase):
             result = f.read().splitlines()
 
         expected = [
-            'event_name,id,activity_date,cons_acct_num,doai,amt_past_due,ecoa,acct_stat,compl_cond_cd,php,php1,pmt_rating,spc_com_cd,terms_freq,cons_info_ind,cons_info_ind_assoc,l1__change_ind,dofd,date_closed,current_bal',
+            'event_name,id,activity_date,cons_acct_num,doai,amt_past_due,ecoa,acct_stat,compl_cond_cd,php,php1,pmt_rating,spc_com_cd,terms_freq,cons_info_ind,cons_info_ind_assoc,l1__change_ind,dofd,date_closed,current_bal',  # noqa: E501
             'MyEVENT,1,2022-05-30,41,2022-05-01,0,AB,,,,,,,00,,,,,,0',
             'MyEVENT,2,2022-05-30,42,2022-05-01,0,AC,,,,,,,00,,,,,,0',
             'MyEVENT,3,2022-05-30,43,2022-05-01,0,,,,,,,,00,,,,,,0',
@@ -55,8 +84,48 @@ class UploadUtilsTestCase(TestCase):
         self.ers.sample_ids=[2, 4]
         expected = {
             'hits': [
-                {'id': 2, 'activity_date': datetime.date(2022, 5, 30), 'cons_acct_num': '42', 'doai': datetime.date(2022, 5, 1), 'amt_past_due': 0, 'ecoa': 'AC', 'acct_stat': '', 'compl_cond_cd': '', 'php': '', 'php1': '','pmt_rating': '', 'spc_com_cd': '', 'terms_freq': '00', 'cons_info_ind': '', 'cons_info_ind_assoc': None, 'l1__change_ind': None, 'dofd': None, 'date_closed': None, 'current_bal': 0},
-                {'id': 4, 'activity_date': datetime.date(2022, 5, 30), 'cons_acct_num': '44', 'doai': datetime.date(2022, 5, 1), 'amt_past_due': 0, 'ecoa': 'AE', 'acct_stat': '', 'compl_cond_cd': '', 'php': '', 'php1': '','pmt_rating': '', 'spc_com_cd': '', 'terms_freq': '00', 'cons_info_ind': '', 'cons_info_ind_assoc': None, 'l1__change_ind': None, 'dofd': None, 'date_closed': None, 'current_bal': 0}
+                {
+                    'id': 2,
+                    'activity_date': datetime.date(2022, 5, 30),
+                    'cons_acct_num': '42',
+                    'doai': datetime.date(2022, 5, 1),
+                    'amt_past_due': 0,
+                    'ecoa': 'AC',
+                    'acct_stat': '',
+                    'compl_cond_cd': '',
+                    'php': '',
+                    'php1': '',
+                    'pmt_rating': '',
+                    'spc_com_cd': '',
+                    'terms_freq': '00',
+                    'cons_info_ind': '',
+                    'cons_info_ind_assoc': None,
+                    'l1__change_ind': None,
+                    'dofd': None,
+                    'date_closed': None,
+                    'current_bal': 0
+                },
+                {
+                    'id': 4,
+                    'activity_date': datetime.date(2022, 5, 30),
+                    'cons_acct_num': '44',
+                    'doai': datetime.date(2022, 5, 1),
+                    'amt_past_due': 0,
+                    'ecoa': 'AE',
+                    'acct_stat': '',
+                    'compl_cond_cd': '',
+                    'php': '',
+                    'php1': '',
+                    'pmt_rating': '',
+                    'spc_com_cd': '',
+                    'terms_freq': '00',
+                    'cons_info_ind': '',
+                    'cons_info_ind_assoc': None,
+                    'l1__change_ind': None,
+                    'dofd': None,
+                    'date_closed': None,
+                    'current_bal': 0
+                }
             ]
         }
         result = generate_json_sample(self.ers, AccountActivity.objects)
@@ -76,7 +145,11 @@ class UploadUtilsTestCase(TestCase):
 
     def test_get_url(self):
         with self.settings(S3_BUCKET_NAME = 'sample-bucket'):
-            result = full_s3_url(event_id=5, evaluator_id='sample-eval-3', file_ext='json')
+            result = full_s3_url(
+                event_id=5,
+                evaluator_id='sample-eval-3',
+                file_ext='json'
+            )
             expected = "s3://sample-bucket/eval_results/event_5/sample-eval-3.json"
             self.assertEqual(result, expected)
 

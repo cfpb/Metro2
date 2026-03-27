@@ -1,8 +1,10 @@
 import logging
 
-from parse_m2.models import Metro2Event
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
+
+from parse_m2.models import Metro2Event
+
 
 class Command(BaseCommand):
     help = "Adds a user as a member to an existing event. " + \
@@ -28,4 +30,8 @@ class Command(BaseCommand):
         # Add the user to the event
         evt.members.add(usr)
 
-        logger.info(self.style.SUCCESS(f"User {username_input} is now a member of event {event_name}"))
+        logger.info(
+            self.style.SUCCESS(
+                f"User {username_input} is now a member of event {event_name}"
+            )
+        )
