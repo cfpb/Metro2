@@ -79,6 +79,7 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     sort = django_filters.OrderingFilter(
         fields=(
             ("source_record__activity_date", "activity_date"),
+            ("source_record__cons_acct_num", "cons_acct_num"),
             ("source_record__port_type", "port_type"),
             ("source_record__acct_type", "acct_type"),
             ("source_record__date_open", "date_open"),
