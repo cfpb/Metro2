@@ -26,22 +26,27 @@ export default function EvaluatorResultsTable({
   data,
   fields,
   isLoading,
-  isLoadingError,
-  sortOnServer = false
+  isLoadingError
 }: EvaluatorTableData): ReactElement {
   const navigate = useNavigate()
 
-  console.log('sort on', sortOnServer)
   const sort = useSearch({
     strict: false,
     select: search => search.sort
   })
 
+  const sortedCols = generateColumnStateFromSortArray(sort)
+  const columnState =
+    JSON.stringify(sort) === '["activity_date"]' || sort === undefined
+      ? {
+          state: sortedCols,
+          defaultState: { sort: null }
+        }
+      : { state: sortedCols }
+
   const sortHandler = (columnState: ColumnState[] | undefined): void => {
-    console.log('here')
     const currentSort = generateSortArrayFromColumnState(columnState)
     if (JSON.stringify(currentSort) !== JSON.stringify(sort)) {
-      console.log('nav')
       void navigate({
         to: '.',
         resetScroll: false,
@@ -58,11 +63,12 @@ export default function EvaluatorResultsTable({
       })
     }
   }
+
   return (
     <Table
       sortExternally
       sortHandler={sortHandler}
-      sortedColumns={generateColumnStateFromSortArray(sort)}
+      columnState={columnState}
       rows={data}
       columnDefinitions={getEvaluatorColDefs(fields, String(eventData.id))}
       NoResultsMessage={NoResultsMessage}

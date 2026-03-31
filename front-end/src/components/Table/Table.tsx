@@ -1,10 +1,9 @@
-import type { ColDef, ColumnState } from 'ag-grid-community'
+import type { ApplyColumnStateParams, ColDef, ColumnState } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import type { ComponentType, ReactElement } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import './Table.scss'
-
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
 
 // Register all Community features
@@ -42,17 +41,18 @@ interface TableProperties<T> {
   height?: 'fixed' | 'full'
   resizableColumns?: boolean
   sortExternally?: boolean
-  sortedColumns?: ColumnState[] | undefined
+  columnState?: ApplyColumnStateParams | undefined
   sortHandler?: (columnState: ColumnState[] | undefined) => void
   NoResultsMessage?: ComponentType
   isLoading?: boolean
   isLoadingError?: boolean
+  resetState?: boolean
 }
 export default function Table<T extends object>({
   height = 'fixed',
   resizableColumns = true,
   sortExternally = false,
-  sortedColumns = [],
+  columnState,
   sortHandler,
   rows,
   columnDefinitions,
@@ -73,29 +73,23 @@ export default function Table<T extends object>({
 
   /* onDataChanged
    *
-   * When new data is passed in, if we're handling sorting
-   * on the server then we apply the sort state from
-   * props to the table.
+   * When new data is passed in, we apply columnState
+   * if present on props.
    *
    */
   const onDataChanged = (): void => {
-    if (sortExternally) {
-      gridRef.current?.api.applyColumnState({
-        state: sortedColumns
-      })
+    if (columnState) {
+      gridRef.current?.api.applyColumnState(columnState)
     }
   }
 
   /* onSortChanged
    *
-   * When sort changes, if we're handling sorting on the server,
-   * we get the column state, generate an array of sort query params,
+   * When sort changes, generate an array of sort query params
    * and pass the array to the sort change handler.
    */
   const onSortChanged = (): void => {
-    if (sortExternally) {
-      sortHandler?.(gridRef.current?.api.getColumnState())
-    }
+    sortHandler?.(gridRef.current?.api.getColumnState())
   }
 
   return (

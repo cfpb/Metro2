@@ -17,6 +17,13 @@ const getEvaluatorColDefs = (fields: string[], eventId: string): ColDef[] => {
     )
   }
   const colDefObj = { ...COL_DEF_CONSTANTS, cons_acct_num: accountColDef }
+  // Add default sort to activity date col
+  // const activityDateCol = {
+  //   ...colDefObj.activity_date,
+  //   sort: 'asc',
+  //   initialSortIndex: 0
+  // }
+  // colDefObj.activity_date = activityDateCol
   return generateColumnDefinitions(fields, colDefObj)
 }
 
