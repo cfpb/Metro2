@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { Fragment } from 'react'
 
 /**
  * EvaluatorLongDescription
@@ -31,20 +32,19 @@ export default function EvaluatorLongDescription({
 }: LongDescriptionData): ReactElement {
   return (
     <>
-      {content.split('\n\n').map(segment => (
-        <>
-          {' '}
-          {segment.split('\n').map((line, lineIndex) =>
-            lineIndex === 0 &&
-            !pseudoCodeSymbols.some(char => line.includes(char)) ? (
-               
-              <h4 key={lineIndex}>{line}</h4>
-            ) : (
-               
-              <p key={lineIndex}>{line}</p>
-            )
-          )}
-        </>
+      {content.split('\n\n').map((segment, segmentIndex) => (
+        <Fragment key={segmentIndex}>
+          {segment
+            .split('\n')
+            .map((line, lineIndex) =>
+              lineIndex === 0 &&
+              !pseudoCodeSymbols.some(char => line.includes(char)) ? (
+                <h4 key={`${segmentIndex}_${lineIndex}`}>{line}</h4>
+              ) : (
+                <p key={`${segmentIndex}_${lineIndex}`}>{line}</p>
+              )
+            )}
+        </Fragment>
       ))}
     </>
   )

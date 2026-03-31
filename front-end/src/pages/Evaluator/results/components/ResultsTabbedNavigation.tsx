@@ -13,10 +13,12 @@ export default function EvaluatorResultsTabbedNavigation(): ReactElement {
     void navigate({
       resetScroll: false,
       to: '.',
-      search: (prev): object =>
-        event.currentTarget.id === 'all-results-tab'
-          ? { ...prev, view: 'all' }
-          : { view: 'sample' }
+      search: (prev): object => {
+        if (event.currentTarget.id === 'all-results-tab') {
+          return { ...prev, view: 'all', page: 1, sort: 'activity_date' }
+        }
+        return { view: 'sample', page: 1, sort: 'activity_date' }
+      }
     })
   }
 

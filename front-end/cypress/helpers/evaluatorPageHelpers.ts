@@ -1,9 +1,32 @@
 import { PII_COOKIE_NAME } from '@src/constants/settings'
+import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
 import { stringifySearchParams } from 'utils/customStringify'
 
+type EvaluatorSearchOptionalParams = Partial<EvaluatorSearch>
+
 export class EvaluatorPage {
-  queryString(params: object) {
-    const defaults = { page: 1, page_size: 20, view: 'sample' }
+  queryString(params: EvaluatorSearchOptionalParams) {
+    const defaults = {
+      page: 1,
+      page_size: 20,
+      view: 'sample',
+      sort: 'activity_date'
+    }
+    return stringifySearchParams({ ...defaults, ...params })
+  }
+
+  apiExt(params: EvaluatorSearchOptionalParams) {
+    const allDefaults = {
+      page: 1,
+      page_size: 20,
+      view: 'all',
+      sort: 'activity_date'
+    }
+    const sampleDefaults = {
+      view: 'sample'
+    }
+    const defaults = params.view === 'all' ? allDefaults : sampleDefaults
+
     return stringifySearchParams({ ...defaults, ...params })
   }
 
@@ -13,9 +36,12 @@ export class EvaluatorPage {
    * @param {object} hitsFixture - Optional fixture name.
    * @returns {void} void
    */
-  loadEvaluatorPage(params: object = {}, interceptAllHitsPaths = false): void {
+  loadEvaluatorPage(
+    params: EvaluatorSearchOptionalParams = {},
+    interceptAllHitsPaths = false
+  ): void {
     const querystring = this.queryString(params)
-    const apiExt = interceptAllHitsPaths ? '**' : `${querystring}`
+    const apiExt = interceptAllHitsPaths ? '**' : this.apiExt(params)
     const hitsFixture =
       'page' in params && params.page === 2
         ? 'evaluatorHits_page2'
@@ -33,32 +59,35 @@ export class EvaluatorPage {
 
   interceptFilteredResults(
     alias: string,
-    params: object = {},
+    params: EvaluatorSearchOptionalParams = {},
     fixture = 'evaluatorHits_page2'
   ): void {
-    const querystring = this.queryString(params)
-    cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/${querystring}`, {
+    const apiExt = this.apiExt(params)
+    cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/${apiExt}`, {
       fixture: fixture
     }).as(alias)
   }
 
-  interceptFilteredResultsWithSpy(alias: string, params: object = {}) {
-    const querystring = this.queryString(params)
+  interceptFilteredResultsWithSpy(
+    alias: string,
+    params: EvaluatorSearchOptionalParams = {}
+  ) {
+    const apiExt = this.apiExt(params)
 
     cy.intercept(
       'GET',
-      `/api/events/1/evaluator/Test-Eval-1/${querystring}`,
+      `/api/events/1/evaluator/Test-Eval-1/${apiExt}`,
       cy.spy().as(alias)
     )
   }
 
   interceptFilteredResultsWithError(
     alias: string,
-    params: object = {},
+    params: EvaluatorSearchOptionalParams = {},
     statusCode = 404
   ) {
-    const querystring = this.queryString(params)
-    cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/${querystring}`, {
+    const apiExt = this.apiExt(params)
+    cy.intercept('GET', `/api/events/1/evaluator/Test-Eval-1/${apiExt}`, {
       statusCode: statusCode,
       body: { error: 'Bad Request' }
     }).as(alias)

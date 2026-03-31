@@ -1,4 +1,3 @@
- 
 import { stringifySearchParams } from 'utils/customStringify'
 
 export class Metro2Page {
@@ -65,7 +64,12 @@ export class Metro2Page {
   }
 
   queryString(params: object) {
-    const defaults = { page: 1, page_size: 20, view: 'sample' }
+    const defaults = {
+      page: 1,
+      page_size: 20,
+      view: 'sample',
+      sort: 'activity_date'
+    }
     return stringifySearchParams({ ...defaults, ...params })
   }
 
@@ -82,25 +86,29 @@ export class Metro2Page {
     state: 'checked' | 'unchecked' | 'indeterminate'
   ) {
     switch (state) {
-    case 'checked': {
-      this.getInputByLabel(label).should('be.checked')
-      cy.contains('label', label).parent().should('not.have.class', 'indeterminate')
-    
-    break;
-    }
-    case 'unchecked': {
-      this.getInputByLabel(label).should('not.be.checked')
-      cy.contains('label', label).parent().should('not.have.class', 'indeterminate')
-    
-    break;
-    }
-    case 'indeterminate': {
-      this.getInputByLabel(label).should('not.be.checked')
-      cy.contains('label', label).parent().should('have.class', 'indeterminate')
-    
-    break;
-    }
-    // No default
+      case 'checked': {
+        this.getInputByLabel(label).should('be.checked')
+        cy.contains('label', label)
+          .parent()
+          .should('not.have.class', 'indeterminate')
+
+        break
+      }
+      case 'unchecked': {
+        this.getInputByLabel(label).should('not.be.checked')
+        cy.contains('label', label)
+          .parent()
+          .should('not.have.class', 'indeterminate')
+
+        break
+      }
+      case 'indeterminate': {
+        this.getInputByLabel(label).should('not.be.checked')
+        cy.contains('label', label).parent().should('have.class', 'indeterminate')
+
+        break
+      }
+      // No default
     }
   }
 

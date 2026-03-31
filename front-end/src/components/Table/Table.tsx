@@ -1,9 +1,10 @@
-import type { ColDef } from 'ag-grid-community'
+import type { ColDef, ColumnState } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import type { ComponentType, ReactElement } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './Table.scss'
+
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
 
 // Register all Community features
@@ -40,6 +41,9 @@ interface TableProperties<T> {
   columnDefinitions: ColDef[]
   height?: 'fixed' | 'full'
   resizableColumns?: boolean
+  sortExternally?: boolean
+  sortedColumns?: ColumnState[] | undefined
+  sortHandler?: (columnState: ColumnState[] | undefined) => void
   NoResultsMessage?: ComponentType
   isLoading?: boolean
   isLoadingError?: boolean
@@ -47,6 +51,9 @@ interface TableProperties<T> {
 export default function Table<T extends object>({
   height = 'fixed',
   resizableColumns = true,
+  sortExternally = false,
+  sortedColumns = [],
+  sortHandler,
   rows,
   columnDefinitions,
   NoResultsMessage,
@@ -55,6 +62,7 @@ export default function Table<T extends object>({
 }: TableProperties<T>): ReactElement {
   // store row data in state
   const [rowData, setRowData] = useState(rows)
+  const gridRef = useRef<AgGridReact<T>>(null)
 
   const tableHeight = rows.length <= 20 ? 'full' : height
 
@@ -63,6 +71,33 @@ export default function Table<T extends object>({
     setRowData(rows)
   }, [rows])
 
+  /* onDataChanged
+   *
+   * When new data is passed in, if we're handling sorting
+   * on the server then we apply the sort state from
+   * props to the table.
+   *
+   */
+  const onDataChanged = (): void => {
+    if (sortExternally) {
+      gridRef.current?.api.applyColumnState({
+        state: sortedColumns
+      })
+    }
+  }
+
+  /* onSortChanged
+   *
+   * When sort changes, if we're handling sorting on the server,
+   * we get the column state, generate an array of sort query params,
+   * and pass the array to the sort change handler.
+   */
+  const onSortChanged = (): void => {
+    if (sortExternally) {
+      sortHandler?.(gridRef.current?.api.getColumnState())
+    }
+  }
+
   return (
     <div
       className={`ag-theme-alpine data-grid-container data-grid-container--${tableHeight}-height ${
@@ -70,7 +105,11 @@ export default function Table<T extends object>({
       }`}
       data-testid='data-grid-container'>
       <AgGridReact
+        ref={gridRef}
         rowData={rowData}
+        onGridReady={onDataChanged}
+        onSortChanged={onSortChanged}
+        onRowDataUpdated={onDataChanged}
         columnDefs={columnDefinitions}
         defaultColDef={{ resizable: resizableColumns, ...columnDefaults }}
         domLayout={tableHeight === 'fixed' ? 'normal' : 'autoHeight'}
@@ -80,7 +119,6 @@ export default function Table<T extends object>({
         noRowsOverlayComponentParams={{ isError: isLoadingError }}
         // Update to use new Ag-Grid theming approach
         theme='legacy'
-        reactiveCustomComponents
         loading={isLoading}
         {...gridOptionDefaults}
       />
