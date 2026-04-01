@@ -40,14 +40,13 @@ interface TableProperties<T> {
   columnDefinitions: ColDef[]
   height?: 'fixed' | 'full'
   resizableColumns?: boolean
-  sortExternally?: boolean
   columnState?: ApplyColumnStateParams | undefined
   sortHandler?: (columnState: ColumnState[] | undefined) => void
   NoResultsMessage?: ComponentType
   isLoading?: boolean
   isLoadingError?: boolean
-  resetState?: boolean
 }
+
 export default function Table<T extends object>({
   height = 'fixed',
   resizableColumns = true,
