@@ -38,10 +38,9 @@ import type { ColumnState } from 'ag-grid-community'
  *
  * Sorting a table
  *
- * When a user updates sorting on a table whose data needs to be
- * sorted on the server (indicated by the `externalSort` prop),
- * the Table component accesses the current column state and passes
- * it to the function provided in the `sortHandler` prop.
+ * When a user updates sorting on a table, the Table component
+ * accesses the current column state and passes it
+ * to the function provided in the `sortHandler` prop.
  *
  * In the sortHandler, the 'generateSortArrayFromColumnState' function
  * can be used to convert the table's sort state into an array
@@ -66,7 +65,7 @@ import type { ColumnState } from 'ag-grid-community'
  * but we need to show which columns are sorted in the table component's header.
  * To do so, we can use the router's `useSearch` hook to get the validated sort array,
  * convert it into a column state object with `generateColumnStateFromSortArray`,
- * and then pass it to the table via the `sortedColumns` prop.
+ * and then pass it to the table via the `columnState` prop.
  *
  */
 

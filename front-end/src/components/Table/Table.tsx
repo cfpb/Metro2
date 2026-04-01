@@ -71,8 +71,8 @@ export default function Table<T extends object>({
 
   /* onDataChanged
    *
-   * When new data is passed in, we apply columnState
-   * if present on props.
+   * When table data is updated, apply columnState object
+   * to table if it was passed in on props.
    *
    */
   const onDataChanged = (): void => {
@@ -83,8 +83,7 @@ export default function Table<T extends object>({
 
   /* onSortChanged
    *
-   * When sort changes, generate an array of sort query params
-   * and pass the array to the sort change handler.
+   * When sort changes, pass column state to the sort change handler.
    */
   const onSortChanged = (): void => {
     sortHandler?.(gridRef.current?.api.getColumnState())
