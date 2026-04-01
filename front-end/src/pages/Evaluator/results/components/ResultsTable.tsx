@@ -35,14 +35,20 @@ export default function EvaluatorResultsTable({
     select: search => search.sort
   })
 
-  const sortedCols = generateColumnStateFromSortArray(sort)
+  // Generate a column state object for the table that reflects
+  // the sort state from the URL.
+  // If we're in a default sort situation, where sort = activity_date
+  // ascending OR there's no sort param, we also tell the table to
+  // clear all other sorting because this may mean we just switched
+  // tabs and we don't want to carry over sort state from one view
+  // to the other.
   const columnState =
     JSON.stringify(sort) === '["activity_date"]' || sort === undefined
       ? {
-          state: sortedCols,
+          state: generateColumnStateFromSortArray(sort),
           defaultState: { sort: null }
         }
-      : { state: sortedCols }
+      : { state: generateColumnStateFromSortArray(sort) }
 
   const sortHandler = (columnState: ColumnState[] | undefined): void => {
     const currentSort = generateSortArrayFromColumnState(columnState)
@@ -66,7 +72,6 @@ export default function EvaluatorResultsTable({
 
   return (
     <Table
-      sortExternally
       sortHandler={sortHandler}
       columnState={columnState}
       rows={data}

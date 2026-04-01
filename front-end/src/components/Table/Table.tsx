@@ -51,7 +51,6 @@ interface TableProperties<T> {
 export default function Table<T extends object>({
   height = 'fixed',
   resizableColumns = true,
-  sortExternally = false,
   columnState,
   sortHandler,
   rows,

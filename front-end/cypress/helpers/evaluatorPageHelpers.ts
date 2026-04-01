@@ -125,4 +125,54 @@ export class EvaluatorPage {
   dofdTrueCheckbox() {
     return cy.get('#dofd_true')
   }
+
+  shouldShowSortIcon(field: string, direction: 'ascending' | 'descending') {
+    return cy
+      .get(`.ag-header-cell[col-id="${field}"]`)
+      .find(`.ag-sort-${direction}-icon`)
+      .should('not.have.class', 'ag-hidden')
+  }
+
+  shouldShowUnsortedIcon(field: string) {
+    return cy
+      .get(`.ag-header-cell[col-id="${field}"]`)
+      .find('.ag-sort-indicator-icon.ag-sort-none-icon')
+      .should('not.have.class', 'ag-hidden')
+  }
+
+  shouldNotShowSortOrder(field: string) {
+    cy.get(`.ag-header-cell[col-id="${field}"]`)
+      .find('.ag-sort-order')
+      .should('have.class', 'ag-hidden')
+  }
+
+  shouldShowSortOrder(field: string, order: number) {
+    cy.get(`.ag-header-cell[col-id="${field}"]`)
+      .find('.ag-sort-order')
+      .should('not.have.class', 'ag-hidden')
+      .and('have.text', order)
+  }
+
+  otherColumnsShouldBeUnsorted(field: string) {
+    cy.get(`.ag-header-cell:not([col-id="${field}"])`).each(cell => {
+      cy.wrap(cell).find('.ag-sort-ascending-icon').and('have.class', 'ag-hidden')
+      cy.wrap(cell).find('.ag-sort-descending-icon').and('have.class', 'ag-hidden')
+      cy.wrap(cell).find('.ag-sort-order').should('have.class', 'ag-hidden')
+      cy.wrap(cell)
+        .find('.ag-sort-indicator-icon.ag-sort-none-icon')
+        .should('not.have.class', 'ag-hidden')
+    })
+  }
+
+  clickSortButton(field: string) {
+    cy.get(`.ag-header-cell[col-id="${field}"]`)
+      .find('.ag-sort-indicator-container')
+      .click({ shiftKey: false })
+  }
+
+  clickSortButtonWithShift(field: string) {
+    cy.get(`.ag-header-cell[col-id="${field}"]`)
+      .find('.ag-sort-indicator-container')
+      .click({ shiftKey: true })
+  }
 }

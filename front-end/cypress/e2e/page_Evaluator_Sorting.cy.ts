@@ -3,8 +3,6 @@ import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
 // Instantiate helpers
 const page = new EvaluatorPage()
 
-// TODO: standardize icon checks to handle content clipping
-
 describe('Sorting evaluator results table', () => {
   it('Should show default sorting when there are no sort params in URL', () => {
     // Navigate to the evaluator page all results tab
@@ -14,33 +12,10 @@ describe('Sorting evaluator results table', () => {
     cy.location('search').should('include', 'sort=activity_date')
 
     // Activity date column shows ascending sort icon
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-ascending-icon')
-      .should('be.visible')
-      .and('not.have.class', 'ag-hidden')
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-descending-icon')
-      .should('not.be.visible')
-      .and('have.class', 'ag-hidden')
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-indicator-icon.ag-sort-none-icon')
-      .should('not.be.visible')
-      .and('have.class', 'ag-hidden')
+    page.shouldShowSortIcon('activity_date', 'ascending')
 
     // Other columns show 'no sort' icon
-    cy.get('.ag-header-cell:not([col-id="activity_date"])').each(cell => {
-      cy.wrap(cell)
-        .find('.ag-sort-ascending-icon')
-        .should('not.be.visible')
-        .and('have.class', 'ag-hidden')
-      cy.wrap(cell)
-        .find('.ag-sort-descending-icon')
-        .should('not.be.visible')
-        .and('have.class', 'ag-hidden')
-      cy.wrap(cell)
-        .find('.ag-sort-indicator-icon.ag-sort-none-icon')
-        .should('not.have.class', 'ag-hidden')
-    })
+    page.otherColumnsShouldBeUnsorted('activity_date')
   })
 
   it('Should update sort direction and fetch new data when sort button clicked', () => {
@@ -51,15 +26,9 @@ describe('Sorting evaluator results table', () => {
     cy.location('search').should('include', 'sort=activity_date')
 
     // Activity date column shows ascending sort icon
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-ascending-icon')
-      .should('be.visible')
-      .and('not.have.class', 'ag-hidden')
+    page.shouldShowSortIcon('activity_date', 'ascending')
 
-    // Clicking another column should change the sort to that column
-    // and request new data
-
-    // Intercept requests for results with sort params
+    // Intercept requests
     page.interceptFilteredResults(
       'sccAscending',
       { view: 'all', sort: ['spc_com_cd'] },
@@ -71,109 +40,37 @@ describe('Sorting evaluator results table', () => {
       'evaluatorHits_page2'
     )
 
-    // Click the spc_com_cd sort button and verify
-    // that new page data is loaded and scc header shows sort
-    cy.get('.ag-header-cell[col-id="spc_com_cd"]')
-      .find('.ag-sort-indicator-container')
-      .click()
+    // Clicking the spc_com_cd sort button applies ascending sort
+    // to the spc_com_cd column and removes sort from activity_date
+    page.clickSortButton('spc_com_cd')
 
     cy.wait(['@sccAscending'])
 
     cy.location('search').should('include', 'sort=spc_com_cd')
 
-    cy.get('.ag-header-cell[col-id="spc_com_cd"]')
-      .find('.ag-sort-ascending-icon')
-      .should('be.visible')
+    page.shouldShowSortIcon('spc_com_cd', 'ascending')
+    page.shouldShowUnsortedIcon('activity_date')
 
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-ascending-icon')
-      .should('not.be.visible')
-
-    // Click the button again and descending sort should be applied
-    cy.get('.ag-header-cell[col-id="spc_com_cd"]')
-      .find('.ag-sort-indicator-container')
-      .click()
+    // Clicking the spc_com_cd button again applies descending sort
+    // to thtat column
+    page.clickSortButton('spc_com_cd')
 
     cy.wait(['@sccDescending'])
 
     cy.location('search').should('include', 'sort=-spc_com_cd')
 
-    cy.get('.ag-header-cell[col-id="spc_com_cd"]')
-      .find('.ag-sort-descending-icon')
-      .should('be.visible')
+    page.shouldShowSortIcon('spc_com_cd', 'descending')
 
-    // Click the button a third time and default sort should be back
-    cy.get('.ag-header-cell[col-id="spc_com_cd"]')
-      .find('.ag-sort-indicator-container')
-      .click()
+    // Clicking the button a third time removes sort from spc_com_cd
+    // and reapplies default sort to activity_date column
+    page.clickSortButton('spc_com_cd')
 
     // Data is fetched from cache, so no request
     cy.location('search').should('include', 'sort=activity_date')
 
-    cy.get('.ag-header-cell[col-id="spc_com_cd"]')
-      .find('.ag-sort-descending-icon')
-      .should('have.class', 'ag-hidden')
+    page.shouldShowSortIcon('activity_date', 'ascending')
 
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-ascending-icon')
-      .should('not.have.class', 'ag-hidden')
-  })
-
-  it('Should reset sort when sample results tab clicked', () => {
-    // Navigate to the evaluator page all results tab
-    page.loadEvaluatorPage({ view: 'all' })
-
-    // sort=activity_date is added to URL
-    cy.location('search').should('include', 'sort=activity_date')
-
-    // Activity date column shows ascending sort icon
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-ascending-icon')
-      .should('be.visible')
-      .and('not.have.class', 'ag-hidden')
-
-    // Clicking that column should update sort direction
-    // and request new data
-
-    // Intercept requests for results with sort params
-    page.interceptFilteredResults(
-      'activityDateDescending',
-      { view: 'all', sort: ['-activity_date'] },
-      'evaluatorHits_page1'
-    )
-    page.interceptFilteredResults(
-      'sampleView',
-      { view: 'sample' },
-      'evaluatorHits_page2'
-    )
-
-    // Click to sort activity date descending
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-indicator-container')
-      .click()
-
-    cy.wait(['@activityDateDescending'])
-
-    cy.location('search').should('include', 'sort=-activity_date')
-
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-descending-icon')
-      .should('be.visible')
-      .and('not.have.class', 'ag-hidden')
-
-    //Click sample results tab button
-    cy.findByTestId('sample-results-tab').click({ force: true })
-
-    cy.wait(['@sampleView'])
-
-    cy.location('search')
-      .should('include', 'sort=activity_date')
-      .and('include', 'view=sample')
-
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-ascending-icon')
-      .should('be.visible')
-      .and('not.have.class', 'ag-hidden')
+    page.shouldShowUnsortedIcon('spc_com_cd')
   })
 
   it('Should allow multisort', () => {
@@ -184,13 +81,7 @@ describe('Sorting evaluator results table', () => {
     cy.location('search').should('include', 'sort=activity_date')
 
     // Activity date column shows ascending sort icon
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-ascending-icon')
-      .should('be.visible')
-      .and('not.have.class', 'ag-hidden')
-
-    // Clicking another column while holding the shift key
-    // should multisort
+    page.shouldShowSortIcon('activity_date', 'ascending')
 
     // Intercept requests for results with multisort params
     page.interceptFilteredResults(
@@ -199,29 +90,75 @@ describe('Sorting evaluator results table', () => {
       'evaluatorHits_page1'
     )
 
-    cy.get('.ag-header-cell[col-id="current_bal"]')
-      .find('.ag-sort-indicator-container')
-      .click({ shiftKey: true })
+    // Clicking another column while holding the shift key
+    // should multisort
+    page.clickSortButtonWithShift('current_bal')
 
     cy.wait(['@multisort'])
 
     cy.location('search').should('include', 'sort=activity_date,current_bal')
 
-    cy.get('.ag-header-cell[col-id="current_bal"]')
-      .find('.ag-sort-ascending-icon')
-      .should('be.visible')
-    cy.get('.ag-header-cell[col-id="current_bal"]')
-      .find('.ag-sort-order')
-      .should('be.visible')
-      .and('have.text', '2')
+    page.shouldShowSortIcon('activity_date', 'ascending')
+    page.shouldShowSortOrder('activity_date', 1)
 
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-ascending-icon')
-      .should('be.visible')
+    page.shouldShowSortIcon('current_bal', 'ascending')
+    page.shouldShowSortOrder('current_bal', 2)
+  })
 
-    cy.get('.ag-header-cell[col-id="activity_date"]')
-      .find('.ag-sort-order')
-      .should('be.visible')
-      .and('have.text', '1')
+  it('Should reset sort when sample results tab clicked', () => {
+    // Navigate to the evaluator page all results tab
+    page.loadEvaluatorPage({ view: 'all' })
+
+    // sort=activity_date is added to URL
+    cy.location('search').should('include', 'sort=activity_date')
+
+    // Only activity date column is sorted
+    page.shouldShowSortIcon('activity_date', 'ascending')
+    page.shouldNotShowSortOrder('activity_date')
+
+    // Intercept requests
+    page.interceptFilteredResults(
+      'multisort',
+      { view: 'all', sort: ['activity_date', 'current_bal'] },
+      'evaluatorHits_page1'
+    )
+    page.interceptFilteredResults(
+      'sampleView',
+      { view: 'sample' },
+      'evaluatorHits_16'
+    )
+
+    // Clicking the current_bal column sort button should multisort
+    page.clickSortButtonWithShift('current_bal')
+
+    cy.wait(['@multisort'])
+
+    cy.location('search').should('include', 'sort=activity_date,current_bal')
+
+    page.shouldShowSortIcon('current_bal', 'ascending')
+    page.shouldShowSortOrder('current_bal', 2)
+
+    page.shouldShowSortIcon('activity_date', 'ascending')
+    page.shouldShowSortOrder('activity_date', 1)
+
+    // Clicking sample results tab button should reset to default sort
+    cy.findByTestId('sample-results-tab').click({ force: true })
+
+    cy.wait(['@sampleView'])
+
+    // URL should reflect sample view and default sort
+    cy.location('search')
+      .should('include', 'sort=activity_date')
+      .and('include', 'view=sample')
+
+    // Ascending sort icon should show in activity_date column
+    page.shouldShowSortIcon('activity_date', 'ascending')
+
+    // but all other columns should show the unsorted icon
+    page.otherColumnsShouldBeUnsorted('activity_date')
+
+    // and neither activity_date nor current_bal should show sort order
+    page.shouldNotShowSortOrder('activity_date')
+    page.shouldNotShowSortOrder('current_bal')
   })
 })
