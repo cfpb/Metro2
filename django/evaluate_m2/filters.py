@@ -42,12 +42,8 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     pmt_rating = AnyCharFilter(field_name="source_record__pmt_rating")
     spc_com_cd = AnyCharFilter(field_name="source_record__spc_com_cd")
     terms_freq = AnyCharFilter(field_name="source_record__terms_freq")
-    cons_info_ind = AnyCharFilter(
-        field_name="source_record__cons_info_ind"
-    )
-    cons_info_ind_assoc = AnyCharFilter(
-        field_name="source_record__cons_info_ind_assoc"
-    )
+    cons_info_ind = AnyCharFilter(field_name="source_record__cons_info_ind")
+    cons_info_ind_assoc = AnyCharFilter(field_name="source_record__cons_info_ind_assoc")
     l1__change_ind = AnyCharFilter(field_name="source_record__l1__change_ind")
 
     # Dates, as a boolean where the date either exists or does not
@@ -116,24 +112,57 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
             ("source_record__l1__change_ind", "l1__change_ind"),
             ("source_record__l1__new_id_num", "l1__new_id_num"),
             ("source_record__l1__new_acc_num", "l1__new_acc_num"),
-            ("source_record__previous_values__cons_info_ind", "previous_values__cons_info_ind"),
-            ("source_record__previous_values__cons_info_ind_assoc", "previous_values__cons_info_ind_assoc"),
+            (
+                "source_record__previous_values__cons_info_ind",
+                "previous_values__cons_info_ind",
+            ),
+            (
+                "source_record__previous_values__cons_info_ind_assoc",
+                "previous_values__cons_info_ind_assoc",
+            ),
             ("source_record__previous_values__ecoa", "previous_values__ecoa"),
-            ("source_record__previous_values__first_name", "previous_values__first_name"),
+            (
+                "source_record__previous_values__first_name",
+                "previous_values__first_name",
+            ),
             ("source_record__previous_values__surname", "previous_values__surname"),
-            ("source_record__previous_values__l1__change_ind", "previous_values__l1__change_ind"),
-            ("source_record__previous_values__l1__new_acc_num", "previous_values__l1__new_acc_num"),
-            ("source_record__previous_values__l1__new_id_num", "previous_values__l1__new_id_num"),
-            ("source_record__previous_values__activity_date", "previous_values__activity_date"),
+            (
+                "source_record__previous_values__l1__change_ind",
+                "previous_values__l1__change_ind",
+            ),
+            (
+                "source_record__previous_values__l1__new_acc_num",
+                "previous_values__l1__new_acc_num",
+            ),
+            (
+                "source_record__previous_values__l1__new_id_num",
+                "previous_values__l1__new_id_num",
+            ),
+            (
+                "source_record__previous_values__activity_date",
+                "previous_values__activity_date",
+            ),
             ("source_record__previous_values__port_type", "previous_values__port_type"),
             ("source_record__previous_values__acct_type", "previous_values__acct_type"),
             ("source_record__previous_values__date_open", "previous_values__date_open"),
             ("source_record__previous_values__acct_stat", "previous_values__acct_stat"),
-            ("source_record__previous_values__pmt_rating", "previous_values__pmt_rating"),
-            ("source_record__previous_values__current_bal", "previous_values__current_bal"),
-            ("source_record__previous_values__orig_chg_off_amt", "previous_values__orig_chg_off_amt"),
+            (
+                "source_record__previous_values__pmt_rating",
+                "previous_values__pmt_rating",
+            ),
+            (
+                "source_record__previous_values__current_bal",
+                "previous_values__current_bal",
+            ),
+            (
+                "source_record__previous_values__orig_chg_off_amt",
+                "previous_values__orig_chg_off_amt",
+            ),
             ("source_record__previous_values__dofd", "previous_values__dofd"),
-            ("source_record__previous_values__date_closed", "previous_values__date_closed"),
+            (
+                "source_record__previous_values__date_closed",
+                "previous_values__date_closed",
+            ),
             ("source_record__previous_values__id_num", "previous_values__id_num"),
         )
     )
