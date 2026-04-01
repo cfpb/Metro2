@@ -61,9 +61,11 @@ import type { ColumnState } from 'ag-grid-community'
  * using the `validateSortQueryParams` function to screen out any values
  * from the sort array that aren't in a whitelist of field names.
  *
- * The data passed to the table has already been sorted on the server,
- * but we need to show which columns are sorted in the table component's header.
- * To do so, we can use the router's `useSearch` hook to get the validated sort array,
+ * Data received from the API for a route may need to be sorted by the table component,
+ * or it may have already been sorted on the server,
+ * but in either case we need to send the sort state to the table so it can
+ * show which columns are sorted in the header and apply sort if necessary.
+ * We can use the router's `useSearch` hook to get the validated sort array,
  * convert it into a column state object with `generateColumnStateFromSortArray`,
  * and then pass it to the table via the `columnState` prop.
  *

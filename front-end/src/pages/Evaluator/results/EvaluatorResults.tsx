@@ -142,7 +142,6 @@ export default function EvaluatorResults({
                       eventData={eventData}
                       isLoading={isFetching}
                       isLoadingError={isLoadingError}
-                      sortOnServer={view === 'all'}
                     />
                     {view === 'all' && currentHits > 0 ? (
                       <div className='results__pagination'>

@@ -18,7 +18,6 @@ interface EvaluatorTableData {
   fields: string[]
   isLoading?: boolean
   isLoadingError?: boolean
-  sortOnServer?: boolean
 }
 
 export default function EvaluatorResultsTable({
@@ -39,8 +38,8 @@ export default function EvaluatorResultsTable({
   // the sort state from the URL.
   // If we're in a default sort situation, where sort = activity_date
   // ascending OR there's no sort param, we also tell the table to
-  // clear all other sorting because this may mean we just switched
-  // tabs and we don't want to carry over sort state from one view
+  // clear all other sorting because this could mean we just switched
+  // tabs and we want to ensure we don't carry over sort state from one view
   // to the other.
   const columnState =
     JSON.stringify(sort) === '["activity_date"]' || sort === undefined
