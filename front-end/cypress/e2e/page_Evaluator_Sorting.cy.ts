@@ -52,7 +52,7 @@ describe('Sorting evaluator results table', () => {
     page.shouldShowUnsortedIcon('activity_date')
 
     // Clicking the spc_com_cd button again applies descending sort
-    // to thtat column
+    // to that column
     page.clickSortButton('spc_com_cd')
 
     cy.wait(['@sccDescending'])
