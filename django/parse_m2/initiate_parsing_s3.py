@@ -78,11 +78,13 @@ def parse_zip_file_contents_S3(
             parse_file_from_zip(f, zipf, full_name, event, collection)
 
 def parse_files_from_s3_bucket(
-    event: Metro2Event, skip_existing: bool = True, collection: str = None
+    event: Metro2Event, skip_existing: bool = True,
+    directory: str = None, collection: str = None
 ):
     """
     Parse all files in the folder of the S3 bucket location indicated by
-    event.directory, and save them to event. For any files that look like zip
+    event.directory, (or directory arg if present) and save them to event.
+    For any files that look like zip
     files, iterate through each file in the zip and parse each one.
 
     If skip_existing is True, the parser will not parse a file if one with
@@ -90,9 +92,11 @@ def parse_files_from_s3_bucket(
     """
     logger = logging.getLogger('parse_m2.parse_files_from_s3_bucket')
 
+    # Directory argument overrides event.directory if present
+    parse_directory = directory if directory else event.directory
 
-    logger.info(f"Finding all files in S3 bucket with prefix: {event.directory}")
-    for file in s3_bucket_files(event.directory):
+    logger.info(f"Finding all files in S3 bucket with prefix: {parse_directory}")
+    for file in s3_bucket_files(parse_directory):
         logger.info(f"Encountered file: {file.key}")
         # TODO: Handle errors connecting to bucket and opening files
 

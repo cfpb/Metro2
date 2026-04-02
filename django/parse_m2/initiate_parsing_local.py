@@ -65,7 +65,8 @@ def parse_zip_file_contents(
             parse_file_from_zip(f, zipf, full_name, event, collection)
 
 def parse_files_from_local_filesystem(
-    event: Metro2Event, skip_existing: bool = True, collection: str = None
+    event: Metro2Event, skip_existing: bool = True,
+    directory: str = None, collection: str = None
 ):
     """
     Parse all files in the local filesystem location indicated by
