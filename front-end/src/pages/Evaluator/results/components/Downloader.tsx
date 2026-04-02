@@ -12,6 +12,7 @@ import {
   generateDownloadData
 } from 'utils/downloads'
 import { formatNumber } from 'utils/formatNumbers'
+import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
 
 interface EvaluatorDownloadInterface {
   rows: AccountRecord[]
@@ -22,7 +23,7 @@ interface EvaluatorDownloadInterface {
   isFiltered: boolean
   totalHits: number
   currentHits: number
-  query: object
+  query: EvaluatorSearch
 }
 
 export default function EvaluatorDownloader({

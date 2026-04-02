@@ -18,6 +18,17 @@ describe('customStringify', () => {
     expect(customStringify(['red', 'blue', 3, 1])).toEqual('1,3,blue,red')
   })
 
+  it('returns sort arrays as comma-separated strings', () => {
+    expect(customStringify(['red', 'blue', 'green'], 'sort')).toEqual(
+      'red,blue,green'
+    )
+    expect(customStringify([3, 1, 2], 'sort')).toEqual('3,1,2')
+    expect(customStringify(['red', 'blue', 3, 1], 'sort')).toEqual('red,blue,3,1')
+    expect(customStringify(['date', '-name', '-color'], 'sort')).toEqual(
+      'date,-name,-color'
+    )
+  })
+
   it('returns JSON.stringified objects', () => {
     expect(customStringify({ color: 'red', border: 'green' })).toEqual(
       '{"color":"red","border":"green"}'

@@ -2,12 +2,12 @@ import { Icon } from '@cfpb/design-system-react'
 import { ITEMS_PER_PAGE } from '@src/constants/settings'
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import Loader from 'components/Loader/Loader'
-
 import { useEvaluatorResults } from 'queries/evaluatorHits'
 import type { ReactElement } from 'react'
 import type EvaluatorMetadata from 'types/EvaluatorMetadata'
 import type Event from 'types/Event'
 import EvaluatorFilterSidebar from '../filters/EvaluatorFilterSidebar/FilterSidebar'
+import type { EvaluatorSearch } from '../utils/evaluatorSearchSchema'
 import './EvaluatorResults.scss'
 import EvaluatorDownloader from './components/Downloader'
 import EvaluatorResultsMessage from './components/ResultsMessage'
@@ -29,7 +29,7 @@ export default function EvaluatorResults({
 }: EvaluatorResultsData): ReactElement {
   const navigate = useNavigate()
 
-  const query = useSearch({ strict: false })
+  const query: EvaluatorSearch = useSearch({ strict: false })
 
   const { page, view, page_size, ...others } = query
 

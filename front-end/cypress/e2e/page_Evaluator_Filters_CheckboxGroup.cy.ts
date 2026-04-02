@@ -26,7 +26,7 @@ describe('Checkbox group filters', () => {
     // Intercept '?acct_stat=11' with 16-result fixture
     evaluatorPage.interceptFilteredResults(
       'currentAccounts', // alias,
-      { acct_stat: 11, view: 'all' }, // query params
+      { acct_stat: ['11'], view: 'all' }, // query params
       'evaluatorHits_16' // fixture to return
     )
 
@@ -100,7 +100,7 @@ describe('Checkbox group filters', () => {
     // Intercept '?spc_com_cd=blank' with 16-result fixture
     evaluatorPage.interceptFilteredResults(
       'blankSCC', // alias,
-      { spc_com_cd: 'blank', view: 'all' }, // query params
+      { spc_com_cd: ['blank'], view: 'all' }, // query params
       'evaluatorHits_16' // fixture to return
     )
 

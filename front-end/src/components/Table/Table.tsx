@@ -1,8 +1,8 @@
-import type { ColDef } from 'ag-grid-community'
+import type { ApplyColumnStateParams, ColDef, ColumnState } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import type { ComponentType, ReactElement } from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './Table.scss'
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
 
@@ -40,13 +40,18 @@ interface TableProperties<T> {
   columnDefinitions: ColDef[]
   height?: 'fixed' | 'full'
   resizableColumns?: boolean
+  columnState?: ApplyColumnStateParams | undefined
+  sortHandler?: (columnState: ColumnState[] | undefined) => void
   NoResultsMessage?: ComponentType
   isLoading?: boolean
   isLoadingError?: boolean
 }
+
 export default function Table<T extends object>({
   height = 'fixed',
   resizableColumns = true,
+  columnState,
+  sortHandler,
   rows,
   columnDefinitions,
   NoResultsMessage,
@@ -55,6 +60,7 @@ export default function Table<T extends object>({
 }: TableProperties<T>): ReactElement {
   // store row data in state
   const [rowData, setRowData] = useState(rows)
+  const gridRef = useRef<AgGridReact<T>>(null)
 
   const tableHeight = rows.length <= 20 ? 'full' : height
 
@@ -63,6 +69,26 @@ export default function Table<T extends object>({
     setRowData(rows)
   }, [rows])
 
+  /* onDataChanged
+   *
+   * When table data is updated, apply columnState object
+   * to table if it was passed in on props.
+   *
+   */
+  const onDataChanged = (): void => {
+    if (columnState) {
+      gridRef.current?.api.applyColumnState(columnState)
+    }
+  }
+
+  /* onSortChanged
+   *
+   * When sort changes, pass column state to the sort change handler.
+   */
+  const onSortChanged = (): void => {
+    sortHandler?.(gridRef.current?.api.getColumnState())
+  }
+
   return (
     <div
       className={`ag-theme-alpine data-grid-container data-grid-container--${tableHeight}-height ${
@@ -70,7 +96,11 @@ export default function Table<T extends object>({
       }`}
       data-testid='data-grid-container'>
       <AgGridReact
+        ref={gridRef}
         rowData={rowData}
+        onGridReady={onDataChanged}
+        onSortChanged={onSortChanged}
+        onRowDataUpdated={onDataChanged}
         columnDefs={columnDefinitions}
         defaultColDef={{ resizable: resizableColumns, ...columnDefaults }}
         domLayout={tableHeight === 'fixed' ? 'normal' : 'autoHeight'}
@@ -80,7 +110,6 @@ export default function Table<T extends object>({
         noRowsOverlayComponentParams={{ isError: isLoadingError }}
         // Update to use new Ag-Grid theming approach
         theme='legacy'
-        reactiveCustomComponents
         loading={isLoading}
         {...gridOptionDefaults}
       />

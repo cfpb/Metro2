@@ -1,3 +1,4 @@
+import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
 import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 import { keepPreviousData, queryOptions, useQuery } from '@tanstack/react-query'
 import type EvaluatorHits from 'types/EvaluatorHits'
@@ -18,18 +19,27 @@ export const fetchEvaluatorHits = async (
 export const evaluatorHitsQueryOptions = (
   eventId: string,
   evaluatorId: string,
-  query: object = {},
+  query: EvaluatorSearch,
   additionalParams: object = {}
 ): UseQueryOptions<EvaluatorHits, Error, EvaluatorHits, string[]> => {
-  // Strip boolean filter 'any' values from query
-  // since this is functionally equivalent to applying no filter
-  const queryCopy = { ...query }
-  for (const field of ['dofd', 'date_closed']) {
-    if (queryCopy[field as keyof typeof queryCopy] === 'any') {
-      delete queryCopy[field as keyof typeof queryCopy]
+  let queryObj
+  if (query.view === 'all') {
+    // In the all results view, we need to update the results data
+    // any time a query param changes, so we copy the full query to use as part
+    // of the queryKey.
+    // If the 'dofd' or 'date_closed' filter value is set to 'any', though, we
+    // strip that param since it's functionally equivalent to applying no filter.
+    queryObj = { ...query }
+    for (const field of ['dofd', 'date_closed']) {
+      if (queryObj[field] === 'any') delete queryObj[field]
     }
+  } else {
+    // Filters aren't available on the sample view and we don't want to refetch
+    // data when sort values are applied, so we only need to use the view param
+    // in the queryKey.
+    queryObj = { view: 'sample' }
   }
-  const searchParams = stringifySearchParams(queryCopy)
+  const searchParams = stringifySearchParams(queryObj)
   const key = ['event', eventId, 'evaluator', evaluatorId, 'query', searchParams]
   return queryOptions({
     queryKey: key,
@@ -48,7 +58,7 @@ export const evaluatorHitsQueryOptions = (
 export const useEvaluatorResults = (
   eventId: number | string,
   evaluatorId: number | string,
-  query: object,
+  query: EvaluatorSearch,
   additionalParams?: object
 ): UseQueryResult<EvaluatorHits> =>
   useQuery<EvaluatorHits, Error, EvaluatorHits, string[]>(

@@ -4,11 +4,13 @@ import { z } from 'zod'
 import BooleanStringValidator from './booleanValidator'
 import { listValueValidator } from './listValidator'
 import minMaxValidator from './minMaxValidator'
+import sortValidator from './sortValidator'
 
 export const evaluatorSchema = z.object({
   view: z.enum(['all', 'sample']).catch('sample').default('sample'),
   page: z.number().gt(0).int().catch(1).default(1),
   page_size: z.number().gt(0).catch(ITEMS_PER_PAGE).default(ITEMS_PER_PAGE),
+  sort: sortValidator,
   amt_past_due_min: minMaxValidator,
   amt_past_due_max: minMaxValidator,
   current_bal_min: minMaxValidator,
@@ -21,11 +23,9 @@ export const evaluatorSchema = z.object({
   terms_freq: listValueValidator('terms_freq'),
   l1__change_ind: listValueValidator('l1__change_ind'),
   cons_info_ind: listValueValidator('cons_info_ind'),
-  cons_info_ind_assoc: listValueValidator(
-    'cons_info_ind_assoc'
-  ),
+  cons_info_ind_assoc: listValueValidator('cons_info_ind_assoc'),
   dofd: BooleanStringValidator,
   date_closed: BooleanStringValidator
 })
- 
+
 export type EvaluatorSearch = z.infer<typeof evaluatorSchema>
