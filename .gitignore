@@ -42,3 +42,7 @@
 helm/metro2/charts/
 django/static
 htmlcov/
+
+# And ignore any internal files that aren't committed here
+django/django_application/settings/*.py
+django/*.sh
