@@ -1,6 +1,6 @@
-import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
-import renderWithProviders from '@src/testUtils'
 import { screen, within } from '@testing-library/react'
+import M2_FIELD_NAMES from 'constants/m2FieldNames'
+import renderWithProviders from 'testUtils'
 import getHeaderName from 'utils/getHeaderName'
 import AccountSummary from './Overview'
 

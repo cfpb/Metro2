@@ -1,6 +1,6 @@
-import { ITEMS_PER_PAGE } from '@src/constants/settings'
 import { Link } from '@tanstack/react-router'
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community'
+import { ITEMS_PER_PAGE } from 'constants/settings'
 import type { ReactElement } from 'react'
 import type EvaluatorMetadata from 'types/EvaluatorMetadata'
 

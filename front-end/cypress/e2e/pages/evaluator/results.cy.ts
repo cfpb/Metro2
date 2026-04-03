@@ -1,13 +1,12 @@
+import hitsFixture from '@cypress/fixtures/evaluatorHits_page1.json'
+import eventFixture from '@cypress/fixtures/event_1.json'
+import { EvaluatorPage } from '@cypress/helpers/evaluatorPageHelpers'
+import { Metro2Table } from '@cypress/helpers/tableHelpers'
+import { PII_COOKIE_NAME } from '@src/constants/settings'
 import getTableFields from 'pages/Evaluator/results/utils/getTableFields'
 import type AccountRecord from 'types/AccountRecord'
 import type EvaluatorMetadata from 'types/EvaluatorMetadata'
 import type Event from 'types/Event'
-
-import { PII_COOKIE_NAME } from '@src/constants/settings'
-import hitsFixture from '../fixtures/evaluatorHits_page1.json'
-import eventFixture from '../fixtures/event_1.json'
-import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
-import { Metro2Table } from '../helpers/tableHelpers'
 
 const evaluatorName = 'Test-Eval-1'
 

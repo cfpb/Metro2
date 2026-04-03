@@ -1,9 +1,8 @@
-import type Event from 'types/Event'
-import eventFixture from '../fixtures/event_1.json'
-
+import eventFixture from '@cypress/fixtures/event_1.json'
+import { EvaluatorPage } from '@cypress/helpers/evaluatorPageHelpers'
+import { Metro2Page } from '@cypress/helpers/pageHelper'
 import EvaluatorMetadata from 'types/EvaluatorMetadata'
-import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
-import { Metro2Page } from '../helpers/pageHelper'
+import type Event from 'types/Event'
 
 // Get data from event fixture
 const event: Event = eventFixture

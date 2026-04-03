@@ -1,4 +1,4 @@
-import { PII_COOKIE_NAME } from '@src/constants/settings'
+import { PII_COOKIE_NAME } from 'constants/settings'
 
 /**
  * setCookie
@@ -36,7 +36,6 @@ export const setCookie = (
  *
  */
 export const getCookie = (cookieName: string): string | undefined =>
-   
   document.cookie
     .split('; ')
     .find(item => item.startsWith(`${cookieName}=`))

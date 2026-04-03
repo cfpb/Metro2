@@ -1,10 +1,9 @@
+import accountData from '@cypress/fixtures/account_1.json'
+import { getInputByLabel, Metro2Modal } from '@cypress/helpers/modalHelpers'
+import { Metro2Page } from '@cypress/helpers/pageHelper'
+import { Metro2Table } from '@cypress/helpers/tableHelpers'
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 import type AccountRecord from '@src/types/AccountRecord'
-import accountData from '../fixtures/account_1.json'
-
-import { getInputByLabel, Metro2Modal } from '../helpers/modalHelpers'
-import { Metro2Page } from '../helpers/pageHelper'
-import { Metro2Table } from '../helpers/tableHelpers'
 
 // Instantiate helpers
 const table = new Metro2Table()

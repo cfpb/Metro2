@@ -1,6 +1,6 @@
-import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
-import { Metro2Page } from '../helpers/pageHelper'
-import { Metro2Table } from '../helpers/tableHelpers'
+import { EvaluatorPage } from '@cypress/helpers/evaluatorPageHelpers'
+import { Metro2Page } from '@cypress/helpers/pageHelper'
+import { Metro2Table } from '@cypress/helpers/tableHelpers'
 
 // Instantiate helpers
 const page = new Metro2Page()
@@ -61,12 +61,21 @@ describe('Evaluator page range amount filters', () => {
     evaluatorPage.hasResultsMessage('Showing 1 - 8 of 8 filtered results')
     table.hasRowCount(8)
 
-    // Deleting values in both fields should show original results
-    cy.get('#current_bal_max').clear()
-    cy.get('#current_bal_min').clear()
-    cy.get('#current_bal_max').type('{enter}')
-    cy.get('#current_bal_min').should('have.value', '')
+    // Deleting value in current_bal_max should reload the 16 results for the min filter
+    cy.get('#current_bal_max').type('{selectall}{backspace}{enter}')
+    page.hasURL('events/1/evaluators/Test-Eval-1', {
+      current_bal_min: '100',
+      view: 'all'
+    })
+    cy.get('#current_bal_min').should('have.value', 100)
     cy.get('#current_bal_max').should('have.value', '')
+    evaluatorPage.hasResultsMessage('Showing 1 - 16 of 16 filtered results')
+    table.hasRowCount(16)
+
+    // Deleting the current_bal_min value too should reload the original results
+    cy.get('#current_bal_min').type('{selectall}{backspace}{enter}')
+    page.hasURL('events/1/evaluators/Test-Eval-1', { view: 'all' })
+    cy.get('#current_bal_min').should('have.value', '')
     evaluatorPage.hasResultsMessage('Showing 1 - 20 of 30')
     table.hasRowCount(20)
   })

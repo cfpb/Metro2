@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Checkbox } from '@cfpb/design-system-react'
-import { downloadAcknowledgment } from '@src/constants/privacyText'
+import { downloadAcknowledgment } from 'constants/privacyText'
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import CopyUrl from '../CopyUrl'

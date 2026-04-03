@@ -8,6 +8,11 @@ import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
 
 export type currencyRangeField = 'amt_past_due' | 'current_bal'
 
+type currencyRangeParams = Pick<
+  EvaluatorSearch,
+  'amt_past_due_min' | 'amt_past_due_max' | 'current_bal_min' | 'current_bal_max'
+>
+
 interface RangeFilterData {
   field: currencyRangeField
 }
@@ -36,8 +41,8 @@ export default function EvaluatorRangeFilter({
   const [min, max] = useSearch({
     strict: false,
     select: search => [
-      search[minField as keyof EvaluatorSearch],
-      search[maxField as keyof EvaluatorSearch]
+      search[minField as keyof currencyRangeParams],
+      search[maxField as keyof currencyRangeParams]
     ]
   })
 
@@ -70,6 +75,7 @@ export default function EvaluatorRangeFilter({
         initialMin={min as rangeValue}
         initialMax={max as rangeValue}
         onChange={onChange}
+        key={`${field}_${min ?? ''}_${max ?? ''}`}
       />
     </Accordion>
   )

@@ -3,8 +3,8 @@ import type { CheckboxItem } from 'components/Filters/NestedCheckboxGroup/Checkb
 import NestedCheckboxGroup from 'components/Filters/NestedCheckboxGroup/NestedCheckboxGroup'
 import type { ReactElement } from 'react'
 
-import { M2_FIELD_LOOKUPS } from '@src/constants/annotationLookups'
-import fieldGroups from '@src/constants/filterFieldGroups'
+import { M2_FIELD_LOOKUPS } from 'constants/annotationLookups'
+import fieldGroups from 'constants/filterFieldGroups'
 import { annotateM2FieldValue } from 'utils/annotations'
 import getHeaderName from 'utils/getHeaderName'
 import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'

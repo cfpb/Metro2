@@ -1,5 +1,5 @@
-import TabbedNavigation from '@src/components/TabbedNavigation/TabbedNavigation'
 import { useNavigate, useSearch } from '@tanstack/react-router'
+import TabbedNavigation from 'components/TabbedNavigation/TabbedNavigation'
 import type { ReactElement } from 'react'
 
 export default function EvaluatorResultsTabbedNavigation(): ReactElement {

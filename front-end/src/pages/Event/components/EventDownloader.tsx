@@ -1,5 +1,5 @@
 import { Button } from '@cfpb/design-system-react'
-import DownloadModal from '@src/components/Modal/DownloadModal'
+import DownloadModal from 'components/Modal/DownloadModal'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import type EvaluatorMetadata from 'types/EvaluatorMetadata'

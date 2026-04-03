@@ -1,4 +1,5 @@
 import LocatorBar from '@src/components/LocatorBar/LocatorBar'
+
 describe('LocatorBar.cy.tsx', () => {
   it('displays a single heading', () => {
     cy.mount(<LocatorBar icon='bank-round' heading='Home page' />)

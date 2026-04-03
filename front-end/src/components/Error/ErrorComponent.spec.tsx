@@ -1,5 +1,5 @@
 import { screen, within } from '@testing-library/react'
-import renderWithProviders from '../../testUtils'
+import renderWithProviders from 'testUtils'
 import ErrorComponent from './ErrorComponent'
 
 describe('<ErrorComponent />', () => {

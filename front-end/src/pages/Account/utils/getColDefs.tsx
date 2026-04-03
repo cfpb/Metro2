@@ -1,5 +1,5 @@
-import COL_DEF_CONSTANTS from '@src/constants/colDefConstants'
 import type { ColDef } from 'ag-grid-community'
+import COL_DEF_CONSTANTS from 'constants/colDefConstants'
 import type { ReactElement } from 'react'
 import generateColumnDefinitions from 'utils/generateColDefs'
 

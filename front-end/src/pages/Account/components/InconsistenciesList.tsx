@@ -1,8 +1,8 @@
-import type Event from '@src/types/Event'
 import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
+import type Event from 'types/Event'
 
-import { ITEMS_PER_PAGE } from '@src/constants/settings'
+import { ITEMS_PER_PAGE } from 'constants/settings'
 import getEvaluatorDataFromEvent from 'utils/getEvaluatorFromEvent'
 
 interface InconsistenciesListProperties {

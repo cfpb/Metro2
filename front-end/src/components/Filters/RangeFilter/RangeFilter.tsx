@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import { Label, TextInput } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './RangeFilter.scss'
 
 export type rangeValue = number | string | undefined
@@ -29,11 +28,6 @@ export default function RangeFilter({
   const [min, setMin] = useState(initialMin ?? '')
   const [max, setMax] = useState(initialMax ?? '')
 
-  useEffect(() => {
-    setMin(initialMin ?? '')
-    setMax(initialMax ?? '')
-  }, [initialMin, initialMax])
-
   const onMinChange = (event: React.ChangeEvent<HTMLInputElement>): void =>
     setMin(event.target.value)
 
@@ -52,6 +46,8 @@ export default function RangeFilter({
           name={`${id}_min`}
           id={`${id}_min`}
           type='number'
+          min='0'
+          step='1'
           value={min}
           onBlur={onBlur}
           onChange={onMinChange}
@@ -64,6 +60,8 @@ export default function RangeFilter({
           name={`${id}_max`}
           id={`${id}_max`}
           type='number'
+          min='0'
+          step='1'
           value={max}
           onBlur={onBlur}
           onChange={onMaxChange}

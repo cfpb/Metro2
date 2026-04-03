@@ -1,4 +1,4 @@
-import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
+import M2_FIELD_NAMES from 'constants/m2FieldNames'
 
 // Get fields from M2_FIELD_NAMES
 // remove cons_acct_num since we're not currently getting it on each record
@@ -9,11 +9,8 @@ import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 const getTableFields = (): string[] => {
   const fields = [...M2_FIELD_NAMES.keys()].filter(
     field =>
-      ![
-        'cons_acct_num',
-        'first_name',
-        'surname'
-      ].includes(field) && !field.startsWith('previous_values')
+      !['cons_acct_num', 'first_name', 'surname'].includes(field) &&
+      !field.startsWith('previous_values')
   )
   fields.splice(1, 0, 'inconsistencies')
   return fields

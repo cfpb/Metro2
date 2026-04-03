@@ -1,5 +1,5 @@
-import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
-import { Metro2Modal } from '../helpers/modalHelpers'
+import { EvaluatorPage } from '@cypress/helpers/evaluatorPageHelpers'
+import { Metro2Modal } from '@cypress/helpers/modalHelpers'
 
 // Instantiate helpers
 const modal = new Metro2Modal()

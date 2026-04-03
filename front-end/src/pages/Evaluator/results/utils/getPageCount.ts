@@ -1,4 +1,4 @@
-import { ITEMS_PER_PAGE } from '@src/constants/settings'
+import { ITEMS_PER_PAGE } from 'constants/settings'
 
 /**
  * getPageCount()

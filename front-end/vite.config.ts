@@ -4,14 +4,8 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import pluginProcessIcons from './postcss/processIcons'
 
 export default defineConfig(({ mode }) => ({
-  css: {
-    postcss: {
-      plugins: [pluginProcessIcons()]
-    }
-  },
   resolve: {
     alias: {
       // Catch-all for internal library paths to bypass restrictive "exports" in package.json

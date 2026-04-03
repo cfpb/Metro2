@@ -1,9 +1,9 @@
+import data from '@cypress/fixtures/event_1.json'
+import { Metro2Page } from '@cypress/helpers/pageHelper'
+import { Metro2Table } from '@cypress/helpers/tableHelpers'
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 import EvaluatorMetadata from '@src/types/EvaluatorMetadata'
 import type Event from '@src/types/Event'
-import data from '../fixtures/event_1.json'
-import { Metro2Page } from '../helpers/pageHelper'
-import { Metro2Table } from '../helpers/tableHelpers'
 
 const eventData = data as Event
 
