@@ -4,12 +4,14 @@ import type Event from '@src/types/Event'
 import data from '../fixtures/event_1.json'
 import { Metro2Page } from '../helpers/pageHelper'
 import { Metro2Table } from '../helpers/tableHelpers'
-
 const eventData = data as Event
 
 // Instantiate helpers
 const table = new Metro2Table()
 const eventPage = new Metro2Page()
+
+import { Metro2Modal } from '../helpers/modalHelpers'
+const modal = new Metro2Modal()
 
 describe('Event page loader', () => {
   it('Should show a loading view while event data fetched', () => {
@@ -85,7 +87,29 @@ describe('Event file download', () => {
     cy.intercept('GET', 'api/events/1', { fixture: 'event_1' }).as('getEvent')
     cy.visit('/events/1')
   })
-  it('Should have "Save summary" button', () => {
-    cy.get('.downloader').find('button').should('contain', 'Save summary')
+
+  it('Should open download modal with active download button', () => {
+    modal.openModal('Save summary')
+    modal.getModal().within(() => {
+      cy.findByTestId('download-acknowledgment').should('not.exist')
+      modal.getPIICheckboxLabel().should('not.exist')
+      modal.getSaveButton().should('not.have.attr', 'disabled')
+    })
+  })
+
+  it('Should download event data', () => {
+    const eventDownloadData =
+      'ID,DESCRIPTION,CATEGORY,HITS,ACCOUNTS AFFECTED\nTest-Eval-1,This is a test evaluator.,Delinquency,1000,450\nTest-Eval-2,Test evaluator.,Bankruptcy,85,17'
+
+    modal.openModal('Save summary')
+
+    modal.getModal().within(() => {
+      modal.getSaveButton().click()
+      cy.readFile('cypress/downloads/Browser-testing-event.csv')
+        .should('exist')
+        .and('contain', eventDownloadData)
+    })
+
+    modal.getModal().should('not.be.visible')
   })
 })

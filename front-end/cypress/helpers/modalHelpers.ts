@@ -1,4 +1,8 @@
- 
+import {
+  downloadAcknowledgmentLabelText,
+  downloadAcknowledgmentText
+} from '@src/constants/privacyText'
+
 export const getInputByLabel = (label: string) => {
   return cy
     .contains('label', label)
@@ -7,9 +11,6 @@ export const getInputByLabel = (label: string) => {
       cy.get(`#${String(id)}`)
     })
 }
-
-const piiCheckboxLabel =
-  'I confirm that I am knowingly downloading PII or CI and understand that I am responsible for safeguarding this data'
 
 export class Metro2Modal {
   getModal() {
@@ -27,19 +28,20 @@ export class Metro2Modal {
     })
   }
 
+  getDownloadAcknowledgment() {
+    return cy.findByTestId('download-acknowledgment')
+  }
+
   verifyPrivacyMessage() {
-    // This is just an excerpt; could test the whole thing
-    cy.contains(
-      'I understand that by downloading data from this system, I will be accessing Personally Identifiable Information (PII) and Confidential Information (CI)'
-    ).should('be.visible')
+    cy.contains(downloadAcknowledgmentText).should('be.visible')
   }
 
   getPIICheckboxLabel() {
-    return cy.get('label').contains(piiCheckboxLabel)
+    return cy.contains(downloadAcknowledgmentLabelText)
   }
 
   getPIICheckbox() {
-    return getInputByLabel(piiCheckboxLabel)
+    return getInputByLabel(downloadAcknowledgmentLabelText)
   }
 
   checkPIICheckbox() {
