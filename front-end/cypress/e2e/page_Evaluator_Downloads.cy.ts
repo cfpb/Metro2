@@ -38,5 +38,14 @@ describe('Evaluator page', () => {
       modal.openModal('Save results')
       modal.verifyPrivacyCheckboxRequired()
     })
+
+    it('Should download sample evaluator results when download button clicked', () => {
+      modal.openModal('Save results')
+      modal.checkPIICheckbox()
+      modal.getSaveButton().click()
+      cy.readFile(
+        'cypress/downloads/Browser-testing-event_Test-Eval-1_sample.csv'
+      ).should('exist')
+    })
   })
 })

@@ -1,5 +1,8 @@
 import { Button, ButtonGroup, Checkbox } from '@cfpb/design-system-react'
-import { downloadAcknowledgment } from '@src/constants/privacyText'
+import {
+  downloadAcknowledgmentLabelText,
+  downloadAcknowledgmentText
+} from '@src/constants/privacyText'
 import type { ReactElement } from 'react'
 import { useEffect, useState } from 'react'
 import CopyUrl from '../CopyUrl'
@@ -82,16 +85,18 @@ export default function DownloadModal({
       </div>
       <div className='block block--sub'>{content}</div>
       {requirePrivacyAcknowledgment && (
-        <fieldset className='o-form__fieldset block block--sub'>
+        <fieldset
+          className='o-form__fieldset block block--sub'
+          data-test-id='download-acknowledgment'>
           <legend className='h4'>{privacyHeader}</legend>
-          <p>{downloadAcknowledgment}</p>
+          <p>{downloadAcknowledgmentText}</p>
           <div className='u-mt15'>
             <Checkbox
               id='confirmPII'
               isLarge
               checked={isChecked}
               data-testid='pii-checkbox'
-              label='I confirm that I am knowingly downloading PII or CI and understand that I am responsible for safeguarding this data.'
+              label={downloadAcknowledgmentLabelText}
               onChange={onChange}
             />
           </div>
@@ -104,7 +109,7 @@ export default function DownloadModal({
             appearance='primary'
             id='downloadCSV'
             iconRight='download'
-            disabled={!isChecked}
+            disabled={requirePrivacyAcknowledgment && !isChecked}
             label={buttonText}
             data-testid='csv-download-button'
             className='a-btn a-btn--full-on-xs'

@@ -44,6 +44,17 @@ export const generateDownloadData = <T>(
 }
 
 /**
+ * replaceSpaces()
+ *
+ * Formats a string by replacing spaces with hyphens.
+ *
+ * @param {string} str -String to format
+ * @returns {string} - Formatted string
+ *
+ */
+export const replaceSpaces = (str: string): string => str.split(' ').join('-')
+
+/**
  * downloadData()
  *
  * Initiates a download for a locally-generated file as a blob.
@@ -53,17 +64,17 @@ export const generateDownloadData = <T>(
  * @param {string} fileType - Type for the file
  *
  */
-//
 export const downloadData = (
   file: Buffer | string,
   fileName: string,
   fileType = 'data:text/csv'
 ): void => {
+  const formattedFileName = replaceSpaces(fileName)
   const blob = new Blob([file as BlobPart], { type: fileType })
   const url = globalThis.URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = fileName
+  link.download = formattedFileName
   link.click()
   globalThis.URL.revokeObjectURL(url)
 }

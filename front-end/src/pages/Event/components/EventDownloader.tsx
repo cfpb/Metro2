@@ -63,6 +63,7 @@ export default function EventDownloader({
         iconRight='download'
         onClick={onClick}
         size='default'
+        data-testid='download-event-summary'
       />
       <div id='portal' />
       <DownloadModal
