@@ -1,7 +1,7 @@
 import { Button } from '@cfpb/design-system-react'
+import { acceptPIIWarning, hasAcceptedPIIWarning } from '@src/utils/cookies'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
-import { acceptPIIWarning, hasAcceptedPIIWarning } from 'utils/cookies'
 import { Modal, ModalFooter } from './Modal'
 
 export default function WarningModal(): ReactElement | null {

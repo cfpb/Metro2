@@ -1,5 +1,5 @@
+import { Metro2Page } from '@cypress/helpers/pageHelper'
 import { PII_COOKIE_NAME } from '@src/constants/settings'
-import { Metro2Page } from '../helpers/pageHelper'
 const page = new Metro2Page()
 
 describe('Landing page loader', () => {

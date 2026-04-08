@@ -1,6 +1,6 @@
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
-import { stringifySearchParams } from 'utils/customStringify'
+import { stringifySearchParams } from '@src/utils/customStringify'
 
 type EvaluatorSearchOptionalParams = Partial<EvaluatorSearch>
 

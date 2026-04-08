@@ -1,7 +1,7 @@
+import LocatorBar from '@src/components/LocatorBar/LocatorBar'
+import type User from '@src/types/User'
 import { useLoaderData } from '@tanstack/react-router'
-import LocatorBar from 'components/LocatorBar/LocatorBar'
 import type { ReactElement } from 'react'
-import type User from 'types/User'
 import EventList from './components/EventList/EventList'
 
 export default function LandingPage(): ReactElement {

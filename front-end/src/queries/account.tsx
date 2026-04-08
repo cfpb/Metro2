@@ -1,8 +1,8 @@
+import type Account from '@src/types/Account'
+import { annotateAccountRecords } from '@src/utils/annotations'
+import fetchData from '@src/utils/fetchData'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { queryOptions } from '@tanstack/react-query'
-import type Account from 'types/Account'
-import { annotateAccountRecords } from 'utils/annotations'
-import fetchData from 'utils/fetchData'
 
 export const fetchAccount = async (
   eventId: string,

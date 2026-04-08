@@ -1,8 +1,8 @@
 import { Button } from '@cfpb/design-system-react'
 import DownloadModal from '@src/components/Modal/DownloadModal'
+import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
-import type EvaluatorMetadata from 'types/EvaluatorMetadata'
 import { downloadData, generateDownloadData } from 'utils/downloads'
 
 interface EventDownloaderProperties {

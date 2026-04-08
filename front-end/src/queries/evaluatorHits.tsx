@@ -1,10 +1,10 @@
 import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
+import type EvaluatorHits from '@src/types/EvaluatorHits'
+import { annotateAccountRecords } from '@src/utils/annotations'
+import { stringifySearchParams } from '@src/utils/customStringify'
+import fetchData from '@src/utils/fetchData'
 import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 import { keepPreviousData, queryOptions, useQuery } from '@tanstack/react-query'
-import type EvaluatorHits from 'types/EvaluatorHits'
-import { annotateAccountRecords } from 'utils/annotations'
-import { stringifySearchParams } from 'utils/customStringify'
-import fetchData from 'utils/fetchData'
 
 export const fetchEvaluatorHits = async (
   eventId: string,

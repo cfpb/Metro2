@@ -1,6 +1,6 @@
-import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
-import { Metro2Page } from '../helpers/pageHelper'
-import { Metro2Table } from '../helpers/tableHelpers'
+import { EvaluatorPage } from '@cypress/helpers/evaluatorPageHelpers'
+import { Metro2Page } from '@cypress/helpers/pageHelper'
+import { Metro2Table } from '@cypress/helpers/tableHelpers'
 
 // Instantiate helpers
 const page = new Metro2Page()

@@ -1,6 +1,6 @@
-import accountRoute from 'pages/Account/route'
-import evaluatorRoute from 'pages/Evaluator/route'
-import { eventIndexRoute, eventRoute } from 'pages/Event/route'
+import accountRoute from '@src/pages/Account/route'
+import evaluatorRoute from '@src/pages/Evaluator/route'
+import { eventIndexRoute, eventRoute } from '@src/pages/Event/route'
 import {
   adminRoute,
   contributeRoute,
@@ -9,19 +9,15 @@ import {
   helpusRoute,
   overviewRoute,
   tableRoute
-} from 'pages/Guide/route'
-import indexRoute from 'pages/Landing/route'
-import rootRoute from 'pages/rootRoute'
+} from '@src/pages/Guide/route'
+import indexRoute from '@src/pages/Landing/route'
+import rootRoute from '@src/pages/rootRoute'
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
 
-  eventRoute.addChildren([
-    eventIndexRoute,
-    evaluatorRoute,
-    accountRoute,
-  ]),
-  
+  eventRoute.addChildren([eventIndexRoute, evaluatorRoute, accountRoute]),
+
   guideRoute,
   overviewRoute,
   exploreRoute,

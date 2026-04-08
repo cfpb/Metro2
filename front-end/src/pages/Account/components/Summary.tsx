@@ -1,12 +1,12 @@
-import type { Definition } from 'components/DefinitionList/DefinitionList'
-import DefinitionList from 'components/DefinitionList/DefinitionList'
+import type { Definition } from '@src/components/DefinitionList/DefinitionList'
+import DefinitionList from '@src/components/DefinitionList/DefinitionList'
 import type { ReactElement } from 'react'
 
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
-import type AccountRecord from 'types/AccountRecord'
-import { getM2Definition } from 'utils/annotations'
-import { formatDate } from 'utils/formatDates'
-import getHeaderName from 'utils/getHeaderName'
+import type AccountRecord from '@src/types/AccountRecord'
+import { getM2Definition } from '@src/utils/annotations'
+import { formatDate } from '@src/utils/formatDates'
+import getHeaderName from '@src/utils/getHeaderName'
 import AccountContactInformation from './ContactInformation'
 
 interface AccountSummaryProperties {

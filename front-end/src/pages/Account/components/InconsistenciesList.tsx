@@ -3,7 +3,7 @@ import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 
 import { ITEMS_PER_PAGE } from '@src/constants/settings'
-import getEvaluatorDataFromEvent from 'utils/getEvaluatorFromEvent'
+import getEvaluatorDataFromEvent from '@src/utils/getEvaluatorFromEvent'
 
 interface InconsistenciesListProperties {
   inconsistencies: string[]

@@ -1,4 +1,4 @@
-import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
+import { EvaluatorPage } from '@cypress/helpers/evaluatorPageHelpers'
 
 // Instantiate helpers
 const page = new EvaluatorPage()

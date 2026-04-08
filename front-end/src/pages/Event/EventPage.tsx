@@ -1,9 +1,9 @@
+import LocatorBar from '@src/components/LocatorBar/LocatorBar'
+import Table from '@src/components/Table/Table'
+import type Event from '@src/types/Event'
+import { formatDateRange } from '@src/utils/formatDates'
 import { useLoaderData } from '@tanstack/react-router'
-import LocatorBar from 'components/LocatorBar/LocatorBar'
-import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
-import type Event from 'types/Event'
-import { formatDateRange } from 'utils/formatDates'
 import EventDownloader from './components/EventDownloader'
 import getColumnDefinitions from './utils/getColDefs'
 

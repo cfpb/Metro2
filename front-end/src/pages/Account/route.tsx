@@ -1,6 +1,6 @@
+import { eventRoute } from '@src/pages/Event/route'
+import { accountQueryOptions } from '@src/queries/account'
 import { createRoute } from '@tanstack/react-router'
-import { accountQueryOptions } from 'queries/account'
-import { eventRoute } from '../Event/route'
 import AccountPage from './AccountPage'
 
 const accountRoute = createRoute({

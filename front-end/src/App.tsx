@@ -1,5 +1,6 @@
 import ErrorComponent from '@src/components/Error/ErrorComponent'
 import NotFoundMessage from '@src/components/Error/NotFound'
+import Loader from '@src/components/Loader/Loader'
 import WarningModal from '@src/components/Modal/WarningModal'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
@@ -7,11 +8,10 @@ import {
   createRouter,
   parseSearchWith
 } from '@tanstack/react-router'
-import Loader from 'components/Loader/Loader'
 import type { ReactElement } from 'react'
 
-import customParser from 'utils/customParser'
-import { stringifySearchParams } from 'utils/customStringify'
+import customParser from '@src/utils/customParser'
+import { stringifySearchParams } from '@src/utils/customStringify'
 import './App.scss'
 import routeTree from './router'
 

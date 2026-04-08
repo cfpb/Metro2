@@ -1,5 +1,5 @@
+import { userQueryOptions } from '@src/queries/user'
 import { createRoute } from '@tanstack/react-router'
-import { userQueryOptions } from 'queries/user'
 import rootRoute from '../rootRoute'
 import LandingPage from './LandingPage'
 

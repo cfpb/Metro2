@@ -7,7 +7,7 @@
     "jsx": "react-jsx",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -25,10 +25,11 @@
       "chai"
     ],
     "paths": {
-      "@src/*": ["*"]
+      "@src/*": ["*"],
+      "@cypress/*": ["../cypress/*"]
     }
   },
-  "include": ["src", "cypress"],
+  "include": ["src", "postcss", "cypress"],
   "exclude": [
     "node_modules",
     "postcss",
