@@ -1,4 +1,4 @@
-APScheduler==3.11.0
+django-apscheduler
 asgiref==3.8.1
 coverage==7.8.0
 Django==4.2.30
