@@ -29,11 +29,3 @@ def clear_expired_sessions():
     logger = logging.getLogger('users.tasks.clear_expired_sessions')
     logger.info("Removing expired session records from the database.")
     call_command('clearsessions')
-
-def start():
-        scheduler = BackgroundScheduler()
-        if settings.SSO_ENABLED:
-            scheduler.add_job(disable_non_privileged_inactive_users, 'interval', days=1)
-            scheduler.add_job(disable_privileged_inactive_users, 'interval', days=1)
-        scheduler.add_job(clear_expired_sessions, 'interval', weeks=1)
-        scheduler.start()
