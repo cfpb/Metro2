@@ -2,19 +2,20 @@
 import logging
 
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
-from django.core.management.base import BaseCommand
+from django_apscheduler import util
 from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
-from django_apscheduler import util
 
 from users.task import (
-    clear_expired_sessions,
-    disable_non_privileged_inactive_users,
-    disable_privileged_inactive_users
+  clear_expired_sessions,
+  disable_non_privileged_inactive_users,
+  disable_privileged_inactive_users,
 )
+
 
 logger = logging.getLogger(__name__)
 
