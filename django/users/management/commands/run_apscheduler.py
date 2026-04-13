@@ -11,6 +11,7 @@ from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
 
 from users.task import (
+    clear_expired_sessions,
     disable_non_privileged_inactive_users,
     disable_privileged_inactive_users
 )
@@ -42,39 +43,51 @@ class Command(BaseCommand):
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
     scheduler.add_job(
-      disable_non_privileged_inactive_users,
-      trigger=CronTrigger(
-        hour="00", minute="00"
-      ),  # daily at Midnight
-      id="non_privileged_users",
-      max_instances=1,
-      replace_existing=True,
+        disable_non_privileged_inactive_users,
+        trigger=CronTrigger(
+            hour="00", minute="00"
+        ),  # daily at Midnight
+        id="non_privileged_users",
+        max_instances=1,
+        replace_existing=True,
     )
     logger.info("Added job 'non_privileged_users'.")
 
     scheduler.add_job(
-      disable_privileged_inactive_users,
-      trigger=CronTrigger(
-        hour="00", minute="05"
-      ),  # daily at 12:05am
-      id="privileged_users",
-      max_instances=1,
-      replace_existing=True,
+        disable_privileged_inactive_users,
+        trigger=CronTrigger(
+            hour="00", minute="05"
+        ),  # daily at 12:05am
+        id="privileged_users",
+        max_instances=1,
+        replace_existing=True,
     )
     logger.info("Added job 'privileged_users'.")
 
     scheduler.add_job(
-      delete_old_job_executions,
-      trigger=CronTrigger(
-        day_of_week="mon", hour="00", minute="00"
-      ),  # Midnight on Monday, before start of the next work week.
-      id="delete_old_job_executions",
-      max_instances=1,
-      replace_existing=True,
+        clear_expired_sessions,
+        trigger=CronTrigger(
+            day_of_week="mon", hour="02", minute="00"
+        ),  # 2:00am on Monday
+        id="clear_expired_sessions",
+        replace_existing=True,
+    )
+    logger.info("Added job 'clear_expired_sessions'.")
+
+    scheduler.add_job(
+        delete_old_job_executions,
+        trigger=CronTrigger(
+            day_of_week="mon", hour="01", minute="00"
+        ),  # 1:00am on Monday
+        id="delete_old_job_executions",
+        max_instances=1,
+        replace_existing=True,
     )
     logger.info(
       "Added weekly job: 'delete_old_job_executions'."
     )
+
+    # Todo: should it remove the jobs when it's not running?
 
     try:
       logger.info("Starting scheduler...")
