@@ -1,5 +1,5 @@
-import type EvaluatorMetadata from 'types/EvaluatorMetadata'
-import type Event from 'types/Event'
+import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
+import type Event from '@src/types/Event'
 
 /**
  * getEvaluatorFromEvent()

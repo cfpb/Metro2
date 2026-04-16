@@ -1,7 +1,7 @@
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 import { expect } from 'chai'
 
-import { EvaluatorPage } from '../helpers/evaluatorPageHelpers'
+import { EvaluatorPage } from '@cypress/helpers/evaluatorPageHelpers'
 
 const evalPage = new EvaluatorPage()
 

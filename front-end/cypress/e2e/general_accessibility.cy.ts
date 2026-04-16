@@ -2,10 +2,10 @@ import 'cypress-real-events/support'
 
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 
-import { Metro2Modal } from '../helpers/modalHelpers'
+import { Metro2Modal } from '@cypress/helpers/modalHelpers'
 
-import type Event from 'types/Event'
-import eventFixture from '../fixtures/event_1.json'
+import eventFixture from '@cypress/fixtures/event_1.json'
+import type Event from '@src/types/Event'
 
 // Get data from event fixture
 const event: Event = eventFixture

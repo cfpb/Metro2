@@ -1,10 +1,10 @@
+import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
 import type { ReactElement } from 'react'
-import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
-import EvaluatorBooleanFilter from '../components/BooleanFilter'
-import EvaluatorCheckboxGroup from '../components/CheckboxGroup'
-import EvaluatorRangeFilter from '../components/RangeFilter'
+import EvaluatorBooleanFilter from './components/BooleanFilter'
+import EvaluatorCheckboxGroup from './components/CheckboxGroup'
+import type { currencyRangeField } from './components/RangeFilter'
+import EvaluatorRangeFilter from './components/RangeFilter'
 import './FilterSidebar.scss'
-import type { currencyRangeField } from '../components/RangeFilter'
 
 export default function EvaluatorFilterSidebar(): ReactElement {
   return (
@@ -49,10 +49,7 @@ export default function EvaluatorFilterSidebar(): ReactElement {
         <div className='block block--sub'>
           <h2 className='h3'>Amounts</h2>
           {['amt_past_due', 'current_bal'].map(field => (
-            <EvaluatorRangeFilter
-              key={field}
-              field={field as currencyRangeField}
-            />
+            <EvaluatorRangeFilter key={field} field={field as currencyRangeField} />
           ))}
         </div>
       </div>

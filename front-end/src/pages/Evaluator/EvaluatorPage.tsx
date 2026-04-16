@@ -1,9 +1,9 @@
+import LocatorBar from '@src/components/LocatorBar/LocatorBar'
+import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
+import type Event from '@src/types/Event'
+import type User from '@src/types/User'
 import { useLoaderData } from '@tanstack/react-router'
-import LocatorBar from 'components/LocatorBar/LocatorBar'
 import type { ReactElement } from 'react'
-import type EvaluatorMetadata from 'types/EvaluatorMetadata'
-import type Event from 'types/Event'
-import type User from 'types/User'
 import EvaluatorOverview from './overview/EvaluatorOverview'
 import EvaluatorResults from './results/EvaluatorResults'
 

@@ -1,6 +1,6 @@
+import rootRoute from '@src/pages/rootRoute'
+import { eventQueryOptions } from '@src/queries/event'
 import { createRoute } from '@tanstack/react-router'
-import { eventQueryOptions } from 'queries/event'
-import rootRoute from '../rootRoute'
 import EventPage from './EventPage'
 
 export const eventRoute = createRoute({

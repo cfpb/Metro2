@@ -1,6 +1,6 @@
-import Accordion from '../../src/components/Accordion/Accordion'
-import '../../src/components/Accordion/Accordion.scss'
-import '../fixtures/event_1.json'
+import '@cypress/fixtures/event_1.json'
+import Accordion from '@src/components/Accordion/Accordion'
+import '@src/components/Accordion/Accordion.scss'
 
 describe('Accordion.cy.tsx', () => {
   beforeEach(() => {

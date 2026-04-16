@@ -1,5 +1,5 @@
+import rootRoute from '@src/pages/rootRoute'
 import { createRoute } from '@tanstack/react-router'
-import rootRoute from '../rootRoute'
 import GuidePage from './GuidePage/GuidePage'
 import Admin from './sections/Admin'
 import Contribute from './sections/Contribute'

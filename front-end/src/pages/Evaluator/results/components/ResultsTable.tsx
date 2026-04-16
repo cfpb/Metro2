@@ -1,12 +1,12 @@
+import Table from '@src/components/Table/Table'
+import type AccountRecord from '@src/types/AccountRecord'
+import type Event from '@src/types/Event'
 import {
   generateColumnStateFromSortArray,
   generateSortArrayFromColumnState
 } from '@src/utils/sortState'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import Table from 'components/Table/Table'
 import type { ReactElement } from 'react'
-import type AccountRecord from 'types/AccountRecord'
-import type Event from 'types/Event'
 import getEvaluatorColDefs from '../utils/getColDefs'
 import NoResultsMessage from './NoResultsMessage/NoResultsMessage'
 

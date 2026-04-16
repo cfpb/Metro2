@@ -1,6 +1,4 @@
- 
-
-import Accordion from 'components/Accordion/Accordion'
+import Accordion from '@src/components/Accordion/Accordion'
 import type { ReactElement } from 'react'
 import { IndeterminateCheckbox } from '../IndeterminateCheckbox/IndeterminateCheckbox'
 import type { CheckboxItem } from './CheckboxItem'

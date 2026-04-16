@@ -1,18 +1,18 @@
 import { Button } from '@cfpb/design-system-react'
 import DownloadModal from '@src/components/Modal/DownloadModal'
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
-import { useEvaluatorResults } from 'queries/evaluatorHits'
-import type { ReactElement } from 'react'
-import { useState } from 'react'
-import type AccountRecord from 'types/AccountRecord'
-import type Event from 'types/Event'
+import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
+import { useEvaluatorResults } from '@src/queries/evaluatorHits'
+import type AccountRecord from '@src/types/AccountRecord'
+import type Event from '@src/types/Event'
 import {
   downloadData,
   downloadFileFromURL,
   generateDownloadData
-} from 'utils/downloads'
-import { formatNumber } from 'utils/formatNumbers'
-import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
+} from '@src/utils/downloads'
+import { formatNumber } from '@src/utils/formatNumbers'
+import type { ReactElement } from 'react'
+import { useState } from 'react'
 
 interface EvaluatorDownloadInterface {
   rows: AccountRecord[]

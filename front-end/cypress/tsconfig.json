@@ -1,4 +1,5 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
@@ -11,11 +12,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ESNext",
-    "types": ["cypress", "@testing-library/cypress"],
-    "baseUrl": "../src",
-    "paths": {
-      "@src/*": ["*"]
-    }
+    "types": ["cypress", "@testing-library/cypress"]
   },
   "include": ["."]
 }

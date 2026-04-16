@@ -1,7 +1,7 @@
+import type Event from '@src/types/Event'
 import type { ReactElement } from 'react'
-import type Event from 'types/Event'
 
-import type Account from 'types/Account'
+import type Account from '@src/types/Account'
 import AccountInconsistenciesList from './InconsistenciesList'
 import AccountSummary from './Summary'
 

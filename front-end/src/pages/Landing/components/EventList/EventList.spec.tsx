@@ -1,5 +1,5 @@
+import renderWithProviders from '@src/testUtils'
 import { screen, within } from '@testing-library/react'
-import renderWithProviders from '../../../../testUtils'
 import EventList from './EventList'
 
 const events = [

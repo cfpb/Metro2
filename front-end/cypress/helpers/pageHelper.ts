@@ -1,4 +1,4 @@
-import { stringifySearchParams } from 'utils/customStringify'
+import { stringifySearchParams } from '@src/utils/customStringify'
 
 export class Metro2Page {
   verifyLocatorBarContent(eyebrow: string, heading: string) {

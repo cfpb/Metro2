@@ -1,4 +1,4 @@
-import { evaluatorSchema } from '../../utils/evaluatorSearchSchema'
+import { evaluatorSchema } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
 
 // List of filters that can be applied to evaluator results
 const filterableFields: string[] = evaluatorSchema

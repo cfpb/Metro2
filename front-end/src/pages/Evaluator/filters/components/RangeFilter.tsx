@@ -1,10 +1,10 @@
+import Accordion from '@src/components/Accordion/Accordion'
+import type { rangeValue } from '@src/components/Filters/RangeFilter/RangeFilter'
+import RangeFilter from '@src/components/Filters/RangeFilter/RangeFilter'
+import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
+import getHeaderName from '@src/utils/getHeaderName'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import Accordion from 'components/Accordion/Accordion'
-import type { rangeValue } from 'components/Filters/RangeFilter/RangeFilter'
-import RangeFilter from 'components/Filters/RangeFilter/RangeFilter'
 import type { ReactElement } from 'react'
-import getHeaderName from 'utils/getHeaderName'
-import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
 
 export type currencyRangeField = 'amt_past_due' | 'current_bal'
 

@@ -1,7 +1,7 @@
 import COL_DEF_CONSTANTS from '@src/constants/colDefConstants'
+import generateColumnDefinitions from '@src/utils/generateColDefs'
 import type { ColDef } from 'ag-grid-community'
 import type { ReactElement } from 'react'
-import generateColumnDefinitions from 'utils/generateColDefs'
 
 // Generate a column definition for the inconsistencies column
 // Pass the inconsistencies legend for this account in cellRendererParams

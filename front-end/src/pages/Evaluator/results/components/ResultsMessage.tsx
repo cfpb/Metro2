@@ -1,5 +1,5 @@
+import { formatNumber } from '@src/utils/formatNumbers'
 import type { ReactElement } from 'react'
-import { formatNumber } from 'utils/formatNumbers'
 
 /**
  * EvaluatorResultsMessage

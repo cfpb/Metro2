@@ -1,9 +1,9 @@
 /* eslint-disable unicorn/prefer-set-has */
-import { M2_FIELD_LOOKUPS } from 'constants/annotationLookups'
-import COL_DEF_CONSTANTS from 'constants/colDefConstants'
-import { annotateM2FieldValue } from 'utils/annotations'
-import { formatDate } from 'utils/formatDates'
-import { formatNumber, formatUSD } from 'utils/formatNumbers'
+import { M2_FIELD_LOOKUPS } from '@src/constants/annotationLookups'
+import COL_DEF_CONSTANTS from '@src/constants/colDefConstants'
+import { annotateM2FieldValue } from '@src/utils/annotations'
+import { formatDate } from '@src/utils/formatDates'
+import { formatNumber, formatUSD } from '@src/utils/formatNumbers'
 
 // TODO: maybe generate the col definitions from a list of date and currency fields
 // Derive a list of date fields from the account record column definitions

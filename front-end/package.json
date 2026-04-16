@@ -90,6 +90,7 @@
     "stylelint": "^17.4.0",
     "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-standard-scss": "^17.0.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.58.1",
     "vite": "^7.3.1",

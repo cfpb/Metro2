@@ -1,13 +1,13 @@
+import type { CheckboxItem } from '@src/components/Filters/NestedCheckboxGroup/CheckboxItem'
+import NestedCheckboxGroup from '@src/components/Filters/NestedCheckboxGroup/NestedCheckboxGroup'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import type { CheckboxItem } from 'components/Filters/NestedCheckboxGroup/CheckboxItem'
-import NestedCheckboxGroup from 'components/Filters/NestedCheckboxGroup/NestedCheckboxGroup'
 import type { ReactElement } from 'react'
 
 import { M2_FIELD_LOOKUPS } from '@src/constants/annotationLookups'
 import fieldGroups from '@src/constants/filterFieldGroups'
-import { annotateM2FieldValue } from 'utils/annotations'
-import getHeaderName from 'utils/getHeaderName'
-import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
+import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
+import { annotateM2FieldValue } from '@src/utils/annotations'
+import getHeaderName from '@src/utils/getHeaderName'
 
 /**
  * EvaluatorCheckboxGroup

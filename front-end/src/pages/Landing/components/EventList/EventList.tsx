@@ -1,7 +1,7 @@
+import type EventMetadata from '@src/types/EventMetadata'
+import { formatDateRange } from '@src/utils/formatDates'
 import { Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
-import type EventMetadata from 'types/EventMetadata'
-import { formatDateRange } from 'utils/formatDates'
 import './EventList.scss'
 
 interface EventListProperties {

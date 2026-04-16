@@ -1,7 +1,7 @@
+import type AccountHolder from '@src/types/AccountHolder'
+import fetchData from '@src/utils/fetchData'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { queryOptions } from '@tanstack/react-query'
-import type AccountHolder from 'types/AccountHolder'
-import fetchData from 'utils/fetchData'
 
 export const fetchAccountHolderData = async (
   eventId: number,

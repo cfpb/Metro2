@@ -1,9 +1,9 @@
+import Accordion from '@src/components/Accordion/Accordion'
+import type { booleanFilterValue } from '@src/components/Filters/BooleanFilter/BooleanFilter'
+import BooleanFilter from '@src/components/Filters/BooleanFilter/BooleanFilter'
+import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import Accordion from 'components/Accordion/Accordion'
-import BooleanFilter from 'components/Filters/BooleanFilter/BooleanFilter'
 import type { ReactElement } from 'react'
-import type { EvaluatorSearch } from '../../utils/evaluatorSearchSchema'
-import type { booleanFilterValue } from 'components/Filters/BooleanFilter/BooleanFilter'
 
 interface EvaluatorBooleanFilterData {
   field: 'date_closed' | 'dofd'
@@ -20,8 +20,7 @@ export default function EvaluatorBooleanFilter({
 
   const queryStringValue = useSearch({
     strict: false,
-    select: (search) =>
-      search[field as keyof EvaluatorSearch]
+    select: search => search[field as keyof EvaluatorSearch]
   })
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -46,7 +45,6 @@ export default function EvaluatorBooleanFilter({
       search: (prev: Record<string, unknown>) => {
         const params = { ...prev }
         if (currentValue === undefined) {
-           
           if (field in params) delete params[field]
         } else {
           params[field] = currentValue

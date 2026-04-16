@@ -1,5 +1,5 @@
+import renderWithProviders from '@src/testUtils'
 import { screen } from '@testing-library/react'
-import renderWithProviders from '../../testUtils'
 import EvaluatorPage from './EvaluatorPage'
 
 describe.skip('<EvaluatorPage />', () => {

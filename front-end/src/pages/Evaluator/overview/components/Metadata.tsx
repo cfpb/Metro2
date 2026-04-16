@@ -1,5 +1,5 @@
+import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
 import type { ReactElement } from 'react'
-import type EvaluatorMetadata from 'types/EvaluatorMetadata'
 
 export const adminUrlPrefix = import.meta.env.DEV ? 'http://localhost:8000' : ''
 

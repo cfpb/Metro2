@@ -1,10 +1,10 @@
-import type { Definition } from 'components/DefinitionList/DefinitionList'
-import DefinitionList from 'components/DefinitionList/DefinitionList'
+import type { Definition } from '@src/components/DefinitionList/DefinitionList'
+import DefinitionList from '@src/components/DefinitionList/DefinitionList'
+import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
+import type Event from '@src/types/Event'
+import { formatDateRange } from '@src/utils/formatDates'
+import { formatNumber } from '@src/utils/formatNumbers'
 import type { ReactElement } from 'react'
-import type EvaluatorMetadata from 'types/EvaluatorMetadata'
-import type Event from 'types/Event'
-import { formatDateRange } from 'utils/formatDates'
-import { formatNumber } from 'utils/formatNumbers'
 
 interface EvaluatorSummaryProperties {
   metadata: EvaluatorMetadata

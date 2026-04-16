@@ -1,18 +1,18 @@
 import { Button, RadioButton } from '@cfpb/design-system-react'
 import DownloadModal from '@src/components/Modal/DownloadModal'
+import type Event from '@src/types/Event'
 import { useQueryClient } from '@tanstack/react-query'
 import { Workbook } from 'exceljs'
 import type { ReactElement } from 'react'
 import { useRef, useState } from 'react'
-import type Event from 'types/Event'
 
 import ACCOUNT_HOLDER_FIELDS from '@src/constants/accountHolderFields'
 import EVENT_FIELDS from '@src/constants/eventFields'
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
-import { accountHolderQueryOptions } from 'queries/accountHolder'
-import type AccountRecord from 'types/AccountRecord'
-import { downloadData } from 'utils/downloads'
-import getHeaderName from 'utils/getHeaderName'
+import { accountHolderQueryOptions } from '@src/queries/accountHolder'
+import type AccountRecord from '@src/types/AccountRecord'
+import { downloadData } from '@src/utils/downloads'
+import getHeaderName from '@src/utils/getHeaderName'
 
 interface AccountDownloadInterface {
   rows: AccountRecord[]
