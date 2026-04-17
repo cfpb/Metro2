@@ -1,4 +1,3 @@
-# runapscheduler.py
 import logging
 
 from django.conf import settings
@@ -11,9 +10,9 @@ from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 
 from users.task import (
-  clear_expired_sessions,
-  disable_non_privileged_inactive_users,
-  disable_privileged_inactive_users,
+    clear_expired_sessions,
+    disable_non_privileged_inactive_users,
+    disable_privileged_inactive_users,
 )
 
 
@@ -26,19 +25,23 @@ logger = logging.getLogger(__name__)
 # that access the Django database in any way.
 @util.close_old_connections
 def delete_old_job_executions(max_age=1_209_600):
-  """
-  This job deletes APScheduler job execution entries older than `max_age`
-  from the database. It helps to prevent the database from filling up with
-  old historical records that are no longer useful.
+    """
+    This job deletes APScheduler job execution entries older than `max_age`
+    from the database. It helps to prevent the database from filling up with
+    old historical records that are no longer useful.
 
-  :param max_age: The maximum length of time to retain historical job execution
-                  records. Defaults to 14 days.
-  """
-  DjangoJobExecution.objects.delete_old_job_executions(max_age)
+    :param max_age: The maximum length of time to retain historical job execution
+                    records. Defaults to 14 days.
+    """
+    DjangoJobExecution.objects.delete_old_job_executions(max_age)
 
 
 class Command(BaseCommand):
-  help = "Runs APScheduler."
+  help = "Runs APScheduler with 4 recurring jobs:\n" + \
+            " - Deactivate inactive users (privileged)\n" + \
+            " - Deactivate inactive users (non-privileged)\n" + \
+            " - Clear expired Django sessions\n" + \
+            " - Delete old job executions"
 
   def handle(self, *args, **options):
     scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
@@ -86,15 +89,15 @@ class Command(BaseCommand):
         replace_existing=True,
     )
     logger.info(
-      "Added weekly job: 'delete_old_job_executions'."
+        "Added weekly job: 'delete_old_job_executions'."
     )
 
     # Todo: should it remove the jobs when it's not running?
 
     try:
-      logger.info("Starting scheduler...")
-      scheduler.start()
+        logger.info("Starting scheduler...")
+        scheduler.start()
     except KeyboardInterrupt:
-      logger.info("Stopping scheduler...")
-      scheduler.shutdown()
-      logger.info("Scheduler shut down successfully!")
+        logger.info("Stopping scheduler...")
+        scheduler.shutdown()
+        logger.info("Scheduler shut down successfully!")
