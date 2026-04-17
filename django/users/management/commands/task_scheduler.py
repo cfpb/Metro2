@@ -75,6 +75,7 @@ class Command(BaseCommand):
             day_of_week="mon", hour="02", minute="00"
         ),  # 2:00am on Monday
         id="clear_expired_sessions",
+        max_instances=1,
         replace_existing=True,
     )
     logger.info("Added job 'clear_expired_sessions'.")
@@ -91,8 +92,6 @@ class Command(BaseCommand):
     logger.info(
         "Added weekly job: 'delete_old_job_executions'."
     )
-
-    # Todo: should it remove the jobs when it's not running?
 
     try:
         logger.info("Starting scheduler...")
