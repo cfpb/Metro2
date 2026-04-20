@@ -33,7 +33,7 @@
       "description": "Test evaluator.",
       "long_description": "Consumer information indicator indicates bankruptcy\nConsumer information indicator: A (Petition for Chapter 7 Bankruptcy), B (Petition for Chapter 11 Bankruptcy), C (Petition for Chapter 12 Bankruptcy), D (Petition for Chapter 13 Bankruptcy), E (Discharged through Bankruptcy Chapter 7), F (Discharged through Bankruptcy Chapter 11), G (Discharged through Bankruptcy Chapter 12), H (Discharged/Completed through Bankruptcy Chapter 13)",
       "fields_used": ["cons_info_ind", "cons_info_ind_assoc"],
-      "fields_display": ["amt_past_due", "current_bal"],
+      "fields_display": [],
       "crrg_reference": "",
       "potential_harm": "",
       "rationale": "",

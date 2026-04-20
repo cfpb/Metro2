@@ -6,8 +6,8 @@ import { useLoaderData } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 import AccountDownloader from './components/Downloader'
 import AccountOverview from './components/Overview'
+import { accountTableFields } from './utils/accountTableFields'
 import { getColDefs } from './utils/getColDefs'
-import getTableFields from './utils/getTableFields'
 
 export default function AccountPage(): ReactElement {
   // Get event and account data from loaders
@@ -17,8 +17,7 @@ export default function AccountPage(): ReactElement {
   })
 
   // Generate list of fields and column definitions for the account records table
-  const fields = getTableFields()
-  const colDefs = getColDefs(fields, accountData.inconsistencies)
+  const colDefs = getColDefs(accountTableFields, accountData.inconsistencies)
 
   // Get all records for this account to show in the table
   const rows = accountData.account_activity
@@ -42,13 +41,17 @@ export default function AccountPage(): ReactElement {
       <div className='row row--right u-mt0 u-mb0'>
         <AccountDownloader
           rows={rows}
-          fields={fields}
+          fields={accountTableFields}
           accountId={accountData.cons_acct_num}
           eventData={eventData}
         />
       </div>
       <div className='row row--content'>
-        <Table rows={rows} columnDefinitions={colDefs} />
+        <Table
+          rows={rows}
+          columnDefinitions={colDefs}
+          defaultSort={['activity_date']}
+        />
       </div>
     </>
   )

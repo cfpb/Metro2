@@ -1,10 +1,10 @@
+import { getInputByLabel, Metro2Modal } from '@cypress/helpers/modalHelpers'
 import { PII_COOKIE_NAME } from '@src/constants/settings'
-import type AccountRecord from '@src/types/AccountRecord'
-import accountData from '../fixtures/account_1.json'
+import { accountTableFields } from '@src/pages/Account/utils/accountTableFields'
 
-import { getInputByLabel, Metro2Modal } from '../helpers/modalHelpers'
-import { Metro2Page } from '../helpers/pageHelper'
-import { Metro2Table } from '../helpers/tableHelpers'
+import accountData from '@cypress/fixtures/account_1.json'
+import { Metro2Page } from '@cypress/helpers/pageHelper'
+import { Metro2Table } from '@cypress/helpers/tableHelpers'
 
 // Instantiate helpers
 const table = new Metro2Table()
@@ -17,7 +17,8 @@ describe('Account page loader', () => {
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
     cy.intercept('GET', 'api/events/1/account/111111/', {
-      fixture: 'account_1'
+      fixture: 'account_1',
+      delay: 2000
     }).as('getAccount')
     cy.visit('/events/1/accounts/111111')
     cy.get('.loader').should('be.visible')
@@ -32,7 +33,6 @@ describe('Account page', () => {
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
     cy.intercept('GET', 'api/events/1/account/111111/', {
-      delay: 2000,
       fixture: 'account_1'
     }).as('getAccount')
     cy.visit('/events/1/accounts/111111')
@@ -91,20 +91,6 @@ describe('Account page', () => {
   //   const expectedHeaders = accountData.header_title
   //   table.verifyHeaders(expectedHeaders)
   // })
-
-  it('Should show correct account data per column/cell', () => {
-    table.verifyTableBodyContent<AccountRecord>(
-      table.getPinnedRows(),
-      ['activity_date'],
-      accountData.account_activity as AccountRecord[]
-    )
-    // TODO: test rest of table
-    // table.verifyTableBodyContent<AccountRecord>(
-    //   table.getBodyRows(),
-    //   [],
-    //   accountData.account_activity
-    // )
-  })
 })
 
 // ******** Account data download ******//
@@ -112,11 +98,8 @@ describe('Account data download', () => {
   beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.setCookie(PII_COOKIE_NAME, 'true')
-
     cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
-
     cy.intercept('GET', 'api/events/1/account/11111/', {
-      delay: 2000,
       fixture: 'account_1'
     }).as('getAccount')
     cy.visit('/events/1/accounts/11111')
@@ -133,8 +116,6 @@ describe('Account data download', () => {
       .getModal()
       .should('be.visible')
       .within(() => {
-        // This is a partial check of some of the modal content
-        // Might want to consider what content we check as a smoke test
         cy.get('h1').should('have.text', 'Save account data')
         modal.verifyPrivacyMessage()
       })
@@ -180,12 +161,262 @@ describe('Account data download', () => {
     })
 
     // Closing the modal should reset the PII acknowledgment checkbox
-    // and include contact info radio to their default unchecked state
+    // and 'include contact info' radio to their default unchecked state
     modal.closeModal()
     modal.openModal('Save account data').within(() => {
       getInputByLabel(includeContactInfoLabel).should('not.be.checked')
       getInputByLabel(excludeContactInfoLabel).should('be.checked')
       modal.getPIICheckbox().should('not.be.checked')
     })
+  })
+})
+
+/**
+ * Table sorting
+ *
+ * 1. When account page is loaded without a sort param in the URL,
+ *      URL & table sort should be updated to reflect default sort (activity_date ascending)
+ * 2. Clicking another column's sort indicator three times should update sort state,
+ *      cycling through ascending sort, descending sort, and then sort removal / return to default sort
+ * 3. Clicking one column's sort indicator and then shift-clicking the sort indicator in an
+ *      additional column should update row order and URL to include the additional sort param
+ * 4. Navigating to page with sort state in URL should apply that state
+ * 
+ *
+ * Excerpt of fields for the four records in the account data fixture
+ * 
+ *  [
+      {
+        activity_date: '2018-07-30',
+        actual_pmt_amt: 50,
+        current_bal: 300
+      },
+      {
+        activity_date: '2018-08-30',
+        actual_pmt_amt: 100,
+        current_bal: 1000
+      },
+      {
+        activity_date: '2018-09-30',
+        actual_pmt_amt: 50,
+        current_bal: 500
+      },
+      {
+        activity_date: '2018-10-30',
+        actual_pmt_amt: 50,
+        current_bal: 1000
+      }
+    ]
+ */
+
+describe('Account page sorting', () => {
+  beforeEach(() => {
+    cy.viewport(1920, 1080)
+    cy.setCookie(PII_COOKIE_NAME, 'true')
+    cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
+    cy.intercept('GET', 'api/events/1/account/111111/', {
+      fixture: 'account_1'
+    }).as('getAccount')
+    cy.visit('/events/1/accounts/111111')
+    cy.wait(['@getEvent', '@getAccount'])
+  })
+
+  it('Should default to sorting by activity_date when there is no sort param in URL', () => {
+    // A sort param of activity_date is added to the URL
+    cy.location('search').should('include', 'sort=activity_date')
+
+    // The activity date column should show the sort ascending icon,
+    // and all other columns should show the unsorted icon
+    table.shouldShowSortIcon('activity_date', 'ascending')
+    table.otherColumnsShouldBeUnsorted('activity_date')
+
+    // The data in the table should be sorted by activity_date ascending
+    table.verifyColumnContent('activity_date', [
+      '2018-07-30',
+      '2018-08-30',
+      '2018-09-30',
+      '2018-10-30'
+    ])
+    table.verifyColumnContent('current_bal', [300, 1000, 500, 1000])
+  })
+
+  it('Should update sort state when a column sort button is clicked repeatedly', () => {
+    // URL and table show sorting by default column activity_date
+    // when page is loaded without sort param
+    cy.location('search').should('include', 'sort=activity_date')
+    table.shouldShowSortIcon('activity_date', 'ascending')
+    table.otherColumnsShouldBeUnsorted('activity_date')
+    table.verifyColumnContent('activity_date', [
+      '2018-07-30',
+      '2018-08-30',
+      '2018-09-30',
+      '2018-010-30'
+    ])
+    table.verifyColumnContent('current_bal', [300, 1000, 500, 1000])
+
+    // Click the sort icon in the current balance column
+    table.clickSortButton('current_bal')
+
+    // Table and URL should be updated to show sorting by current balance
+    cy.location('search').should('include', 'sort=current_bal')
+    table.shouldShowSortIcon('current_bal', 'ascending')
+    table.shouldShowUnsortedIcon('activity_date')
+    table.verifyColumnContent('current_bal', [300, 500, 1000, 1000])
+    table.verifyColumnContent('activity_date', [
+      '2018-07-30',
+      '2018-09-30',
+      '2018-08-30',
+      '2018-10-30'
+    ])
+
+    // Click the current balance sort button again to sort descending
+    table.clickSortButton('current_bal')
+
+    // Table and URL should be updated to show sorting by current balance
+    cy.location('search').should('include', 'sort=-current_bal')
+    table.shouldShowSortIcon('current_bal', 'descending')
+    table.shouldShowUnsortedIcon('activity_date')
+    table.verifyColumnContent('current_bal', [1000, 1000, 500, 300])
+    table.verifyColumnContent('activity_date', [
+      '2018-08-30',
+      '2018-10-30',
+      '2018-09-30',
+      '2018-07-30'
+    ])
+
+    // Clicking the current balance sort button a third time removes
+    // the current balance sorting and restores default sort
+    table.clickSortButton('current_bal')
+
+    cy.location('search').should('include', 'sort=activity_date')
+    table.shouldShowSortIcon('activity_date', 'ascending')
+    table.shouldShowUnsortedIcon('current_bal')
+    table.verifyColumnContent('activity_date', [
+      '2018-07-30',
+      '2018-08-30',
+      '2018-09-30',
+      '2018-010-30'
+    ])
+    table.verifyColumnContent('current_bal', [300, 1000, 500, 1000])
+  })
+
+  it('Should multisort', () => {
+    // URL and table show sorting by default column activity_date
+    cy.location('search').should('include', 'sort=activity_date')
+    table.shouldShowSortIcon('activity_date', 'ascending')
+    table.otherColumnsShouldBeUnsorted('activity_date')
+    table.verifyColumnContent('activity_date', [
+      '2018-07-30',
+      '2018-08-30',
+      '2018-09-30',
+      '2018-010-30'
+    ])
+    table.verifyColumnContent('current_bal', [300, 1000, 500, 1000])
+
+    // Click the sort icon in the current balance column
+    table.clickSortButton('current_bal')
+
+    // Table and URL should be updated to show sorting by current balance
+    cy.location('search').should('include', 'sort=current_bal')
+    table.shouldShowSortIcon('current_bal', 'ascending')
+    table.shouldShowUnsortedIcon('activity_date')
+    table.verifyColumnContent('current_bal', [300, 500, 1000, 1000])
+    table.verifyColumnContent('activity_date', [
+      '2018-07-30',
+      '2018-09-30',
+      '2018-08-30',
+      '2018-10-30'
+    ])
+
+    // Shift-click the actual payment amount sort button with
+    table.clickSortButtonWithShift('actual_pmt_amt')
+
+    // Table and URL should be updated to show sorting by both
+    // current balance and actual payment amount
+    cy.location('search').should('include', 'sort=current_bal,actual_pmt_amt')
+
+    table.shouldShowUnsortedIcon('activity_date')
+    table.shouldShowSortIcon('current_bal', 'ascending')
+    table.shouldShowSortOrder('current_bal', 1)
+    table.shouldShowSortIcon('actual_pmt_amt', 'ascending')
+    table.shouldShowSortOrder('actual_pmt_amt', 2)
+
+    table.verifyColumnContent('current_bal', [300, 500, 1000, 1000])
+    table.verifyColumnContent('actual_pmt_amt', [50, 50, 50, 100])
+    table.verifyColumnContent('activity_date', [
+      '2018-07-30',
+      '2018-09-30',
+      '2018-10-30',
+      '2018-08-30'
+    ])
+  })
+})
+
+describe('Sorting is applied from query params', () => {
+  it('Should apply sort state from url', () => {
+    cy.viewport(1920, 1080)
+    cy.setCookie(PII_COOKIE_NAME, 'true')
+    cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
+    cy.intercept('GET', 'api/events/1/account/11111/', {
+      fixture: 'account_1'
+    }).as('getAccount')
+    cy.visit(`/events/1/accounts/11111/?sort=current_bal`)
+    cy.wait(['@getEvent', '@getAccount'])
+
+    // only current_bal column shows sorted icon
+    table.shouldShowSortIcon('current_bal', 'ascending')
+    table.otherColumnsShouldBeUnsorted('current_bal')
+
+    // current_bal column data is sorted ascending, and other columns are unsorted
+    table.verifyColumnContent('current_bal', [300, 500, 1000, 1000])
+    table.verifyColumnContent('activity_date', [
+      '2018-07-30',
+      '2018-09-30',
+      '2018-08-30',
+      '2018-10-30'
+    ])
+  })
+})
+
+describe('Querystring validation', () => {
+  beforeEach(() => {
+    cy.viewport(1920, 1080)
+    cy.setCookie(PII_COOKIE_NAME, 'true')
+    cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
+    cy.intercept('GET', 'api/events/1/account/111111/', {
+      fixture: 'account_1'
+    }).as('getAccount')
+  })
+
+  describe('Should accept valid sort params', () => {
+    // It takes a while to check all the fields, so
+    // get a few random values to check from account table fields.
+    const validFields = accountTableFields
+      .toSorted(() => 0.5 - Math.random())
+      .slice(0, 5)
+    for (const field of validFields) {
+      it(`Should accept "${field}" as sort param`, () => {
+        cy.visit(`/events/1/accounts/111111/?sort=${field}`)
+        cy.wait(['@getEvent', '@getAccount'])
+        cy.location('search').should('include', `sort=${field}`)
+        table.shouldShowSortIcon(field, 'ascending')
+
+        cy.visit(`/events/1/accounts/111111/?sort=-${field}`)
+        cy.wait(['@getEvent', '@getAccount'])
+        cy.location('search').should('include', `sort=-${field}`)
+        table.shouldShowSortIcon(field, 'descending')
+      })
+    }
+  })
+
+  describe('Should replace invalid sort params', () => {
+    const invalidValues = ['', 'random_value']
+    for (const val of invalidValues) {
+      it(`Should replace invalid sort param "${val}" with default`, () => {
+        cy.visit(`/events/1/accounts/111111/?sort=${val}`)
+        cy.wait(['@getEvent', '@getAccount'])
+        cy.location('search').should('include', 'sort=activity_date')
+      })
+    }
   })
 })
