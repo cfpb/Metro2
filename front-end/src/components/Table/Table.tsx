@@ -110,8 +110,7 @@ export default function Table<T extends object>({
     if (JSON.stringify(currentSort) === JSON.stringify(sort)) return
 
     // If there aren't any sorted columns, use the default sort array instead.
-    // Update column state to show default sort in the table because navigating
-    //
+    // Update column state to ensure table displays appropriate sort icons
     if (currentSort === undefined) {
       gridRef.current?.api.applyColumnState({
         state: generateColumnStateFromSortArray(defaultSort)
