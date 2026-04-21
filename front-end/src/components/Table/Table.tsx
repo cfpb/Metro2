@@ -1,11 +1,15 @@
-import type { ApplyColumnStateParams, ColDef, ColumnState } from 'ag-grid-community'
+import {
+  generateColumnStateFromSortArray,
+  generateSortArrayFromColumnState
+} from '@src/utils/sortState'
+import { useNavigate, useSearch } from '@tanstack/react-router'
+import type { ColDef } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import type { ComponentType, ReactElement } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import './Table.scss'
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
-
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule])
 
@@ -40,29 +44,34 @@ interface TableProperties<T> {
   columnDefinitions: ColDef[]
   height?: 'fixed' | 'full'
   resizableColumns?: boolean
-  columnState?: ApplyColumnStateParams | undefined
-  sortHandler?: (columnState: ColumnState[] | undefined) => void
   NoResultsMessage?: ComponentType
   isLoading?: boolean
   isLoadingError?: boolean
+  defaultSort: string[]
 }
 
 export default function Table<T extends object>({
   height = 'fixed',
   resizableColumns = true,
-  columnState,
-  sortHandler,
   rows,
   columnDefinitions,
   NoResultsMessage,
   isLoading = false,
-  isLoadingError
+  isLoadingError,
+  defaultSort
 }: TableProperties<T>): ReactElement {
   // store row data in state
   const [rowData, setRowData] = useState(rows)
   const gridRef = useRef<AgGridReact<T>>(null)
 
   const tableHeight = rows.length <= 20 ? 'full' : height
+
+  const navigate = useNavigate()
+
+  const sort = useSearch({
+    strict: false,
+    select: search => search.sort ?? defaultSort
+  })
 
   // Update table when new row data loads
   useEffect(() => {
@@ -71,22 +80,60 @@ export default function Table<T extends object>({
 
   /* onDataChanged
    *
-   * When table data is updated, apply columnState object
-   * to table if it was passed in on props.
+   * When new data is loaded in the table,
+   * apply sort params from the URL & clear any other sorting
+   * to ensure the sort state in the table matches the sort state in the URL.
    *
    */
   const onDataChanged = (): void => {
-    if (columnState) {
-      gridRef.current?.api.applyColumnState(columnState)
-    }
+    gridRef.current?.api.applyColumnState({
+      state: generateColumnStateFromSortArray(sort),
+      defaultState: { sort: null } // clear any other sort state in the table
+    })
   }
 
   /* onSortChanged
    *
-   * When sort changes, pass column state to the sort change handler.
+   * Handle updates to column sort state.
+   * 1. If sort has been removed, restore default sort.
+   * 2. If sort has changed, navigate with new sort params.
+   *
    */
   const onSortChanged = (): void => {
-    sortHandler?.(gridRef.current?.api.getColumnState())
+    // Generate a list of the currently sorted columns.
+    const columnState = gridRef.current?.api.getColumnState()
+    let currentSort = generateSortArrayFromColumnState(columnState)
+
+    // If the current sort state matches the URL sort state,
+    // onSortChanged was triggered programmatically when sorting was applied
+    // in onDataChanged, so we don't need to do anything.
+    if (JSON.stringify(currentSort) === JSON.stringify(sort)) return
+
+    // If there aren't any sorted columns, use the default sort array instead.
+    // Update column state to ensure table displays appropriate sort icons
+    if (currentSort === undefined) {
+      gridRef.current?.api.applyColumnState({
+        state: generateColumnStateFromSortArray(defaultSort)
+      })
+      currentSort = defaultSort
+    }
+
+    // Navigate to the current page with the new sort params.
+    // If data is paginated, reset to page 1 because we always
+    // want to show the first page of a new set of results.
+    if (JSON.stringify(currentSort) !== JSON.stringify(sort)) {
+      void navigate({
+        to: '.',
+        resetScroll: false,
+        search: (prev: Record<string, unknown>) => {
+          const newSearch = { ...prev, sort: currentSort }
+          if ('page' in newSearch) {
+            newSearch.page = 1
+          }
+          return newSearch
+        }
+      })
+    }
   }
 
   return (
@@ -98,7 +145,6 @@ export default function Table<T extends object>({
       <AgGridReact
         ref={gridRef}
         rowData={rowData}
-        onGridReady={onDataChanged}
         onSortChanged={onSortChanged}
         onRowDataUpdated={onDataChanged}
         columnDefs={columnDefinitions}

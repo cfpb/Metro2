@@ -1,6 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import Table from '@src/components/Table/Table'
 import type { ColDef } from 'ag-grid-community'
-import Table from './Table'
 
 interface CarManufacturer {
   company: string
@@ -59,11 +58,15 @@ const colDefs: ColDef<CarManufacturer>[] = [
   }
 ]
 
-describe('<Table />', () => {
-  it('renders with default props', () => {
-    render(<Table<CarManufacturer> rows={data} columnDefinitions={colDefs} />)
-    const container = screen.getByTestId('data-grid-container')
-    expect(container).toBeVisible()
-    // expect(container).toHaveClass('data-grid-container--full-height')
+describe('Table.cy.tsx', () => {
+  it('renders', () => {
+    cy.mountWithProviders(
+      <Table<CarManufacturer>
+        rows={data}
+        columnDefinitions={colDefs}
+        defaultSort={['company']}
+      />
+    )
+    cy.findByTestId('data-grid-container').should('be.visible')
   })
 })

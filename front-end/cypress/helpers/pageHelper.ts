@@ -1,4 +1,5 @@
-import { stringifySearchParams } from '@src/utils/customStringify'
+import { PII_COOKIE_NAME } from '@src/constants/settings'
+import { stringifySearchParams } from 'utils/customStringify'
 
 export class Metro2Page {
   verifyLocatorBarContent(eyebrow: string, heading: string) {
@@ -117,5 +118,14 @@ export class Metro2Page {
       const inputId = $label.attr('for')
       cy.get(`#${inputId}`)
     })
+  }
+
+  loadEventPage(sortParams: string | string[] | null = null) {
+    const queryString = sortParams ? stringifySearchParams({ sort: sortParams }) : ''
+    cy.viewport(1920, 1080)
+    cy.setCookie(PII_COOKIE_NAME, 'true')
+    cy.intercept('GET', 'api/events/1', { fixture: 'event_1' }).as('getEvent')
+    cy.visit(`/events/1/${queryString}`)
+    cy.wait(['@getEvent'])
   }
 }

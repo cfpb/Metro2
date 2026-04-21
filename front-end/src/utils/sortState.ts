@@ -39,12 +39,9 @@ import type { ColumnState } from 'ag-grid-community'
  * Sorting a table
  *
  * When a user updates sorting on a table, the Table component
- * accesses the current column state and passes it
- * to the function provided in the `sortHandler` prop.
- *
- * In the sortHandler, the 'generateSortArrayFromColumnState' function
- * can be used to convert the table's sort state into an array
- * that can be passed to the router's navigate function.
+ * accesses the current column state, uses 'generateSortArrayFromColumnState'
+ * to convert the table's sort state into an array, and calls the
+ * router's navigate function with the array as the sort search param.
  *
  * On navigation, the router will generate a new URL with updated
  * querystring, using `customStringify` to convert the sort array
@@ -61,13 +58,11 @@ import type { ColumnState } from 'ag-grid-community'
  * using the `validateSortQueryParams` function to screen out any values
  * from the sort array that aren't in a whitelist of field names.
  *
- * Data received from the API for a route may need to be sorted by the table component,
- * or it may have already been sorted on the server,
- * but in either case we need to send the sort state to the table so it can
- * show which columns are sorted in the header and apply sort if necessary.
- * We can use the router's `useSearch` hook to get the validated sort array,
- * convert it into a column state object with `generateColumnStateFromSortArray`,
- * and then pass it to the table via the `columnState` prop.
+ * The table component uses the router's `useSearch` hook to get the validated sort array,
+ * converts it to a column state object with `generateColumnStateFromSortArray`,
+ * and applies the updated column state to the table so the header shows which
+ * columns are sorted and sort is applied to the table contents if the data is being
+ * sorted locally instead of on the server.
  *
  */
 

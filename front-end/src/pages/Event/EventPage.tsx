@@ -27,6 +27,7 @@ export default function EventPage(): ReactElement {
         </div>
         <div className='row row--content'>
           <Table
+            defaultSort={['id']}
             rows={eventData.evaluators}
             columnDefinitions={getColumnDefinitions(String(eventData.id))}
             height='full'

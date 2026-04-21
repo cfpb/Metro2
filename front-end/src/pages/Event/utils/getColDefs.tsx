@@ -42,13 +42,15 @@ const getColumnDefinitions = (eventId: string): ColDef<EvaluatorMetadata>[] => [
     field: 'hits',
     headerName: 'Total instances',
     type: 'formattedNumber',
-    flex: 1
+    flex: 1,
+    sortingOrder: ['desc', 'asc', null]
   },
   {
     field: 'accounts_affected',
     headerName: 'Total accounts',
     type: 'formattedNumber',
-    flex: 1
+    flex: 1,
+    sortingOrder: ['desc', 'asc', null]
   }
 ]
 export default getColumnDefinitions

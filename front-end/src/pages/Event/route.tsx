@@ -2,6 +2,7 @@ import rootRoute from '@src/pages/rootRoute'
 import { eventQueryOptions } from '@src/queries/event'
 import { createRoute } from '@tanstack/react-router'
 import EventPage from './EventPage'
+import { eventSchema } from './utils/eventSearchSchema'
 
 export const eventRoute = createRoute({
   path: 'events/$eventId',
@@ -12,6 +13,7 @@ export const eventRoute = createRoute({
 
 export const eventIndexRoute = createRoute({
   path: '/',
+  validateSearch: eventSchema,
   getParentRoute: () => eventRoute,
   component: EventPage
 })

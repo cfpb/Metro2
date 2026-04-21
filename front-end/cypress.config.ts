@@ -2,7 +2,7 @@ import { defineConfig } from 'cypress'
 
 export default defineConfig({
   // Set to false to disable deprecated Cypress.env()
-  allowCypressEnv: false, 
+  allowCypressEnv: false,
   fileServerFolder: 'dist',
   projectId: 'etow1b',
 
