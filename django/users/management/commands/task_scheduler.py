@@ -1,9 +1,10 @@
 import logging
+import time
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from apscheduler.schedulers.blocking import BlockingScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from django_apscheduler import util
 from django_apscheduler.jobstores import DjangoJobStore
@@ -37,21 +38,22 @@ def delete_old_job_executions(max_age=1_209_600):
 
 
 class Command(BaseCommand):
-  help = "Runs APScheduler with 4 recurring jobs:\n" + \
+  help = "Runs APScheduler for 30 minutes. Intended to be run daily at " +\
+            "midnight to complete 4 recurring jobs, then shut down:\n" + \
             " - Deactivate inactive users (privileged)\n" + \
             " - Deactivate inactive users (non-privileged)\n" + \
             " - Clear expired Django sessions\n" + \
             " - Delete old job executions"
 
   def handle(self, *args, **options):
-    scheduler = BlockingScheduler(timezone=settings.TIME_ZONE)
+    scheduler = BackgroundScheduler(timezone=settings.TIME_ZONE)
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
     scheduler.add_job(
         disable_non_privileged_inactive_users,
         trigger=CronTrigger(
-            hour="00", minute="00"
-        ),  # daily at Midnight
+            hour="00", minute="10"
+        ),  # daily at 12:10am
         id="non_privileged_users",
         max_instances=1,
         replace_existing=True,
@@ -61,8 +63,8 @@ class Command(BaseCommand):
     scheduler.add_job(
         disable_privileged_inactive_users,
         trigger=CronTrigger(
-            hour="00", minute="05"
-        ),  # daily at 12:05am
+            hour="00", minute="15"
+        ),  # daily at 12:15am
         id="privileged_users",
         max_instances=1,
         replace_existing=True,
@@ -72,8 +74,8 @@ class Command(BaseCommand):
     scheduler.add_job(
         clear_expired_sessions,
         trigger=CronTrigger(
-            day_of_week="mon", hour="02", minute="00"
-        ),  # 2:00am on Monday
+            day_of_week="mon", hour="00", minute="20"
+        ),  # 12:20am on Monday
         id="clear_expired_sessions",
         max_instances=1,
         replace_existing=True,
@@ -83,8 +85,8 @@ class Command(BaseCommand):
     scheduler.add_job(
         delete_old_job_executions,
         trigger=CronTrigger(
-            day_of_week="mon", hour="01", minute="00"
-        ),  # 1:00am on Monday
+            day_of_week="mon", hour="00", minute="25"
+        ),  # 12:25am on Monday
         id="delete_old_job_executions",
         max_instances=1,
         replace_existing=True,
@@ -96,6 +98,12 @@ class Command(BaseCommand):
     try:
         logger.info("Starting scheduler...")
         scheduler.start()
+        half_hour_in_seconds = 60 * 30
+        time.sleep(half_hour_in_seconds)
+        logger.info("Stopping scheduler...")
+        scheduler.shutdown()
+        logger.info("Scheduler shut down successfully!")
+
     except KeyboardInterrupt:
         logger.info("Stopping scheduler...")
         scheduler.shutdown()
