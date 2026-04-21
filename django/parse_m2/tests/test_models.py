@@ -84,7 +84,7 @@ class ParserModelsTestCase(TestCase):
 
     def test_get_all_account_activity_returns_no_results(self):
         self.create_exam_activity()
-        event = Metro2Event(name="test_exam")
+        event = Metro2Event.objects.create(name="test_exam")
         result = event.get_all_account_activity()
 
         self.assertEqual(0, len(result))
