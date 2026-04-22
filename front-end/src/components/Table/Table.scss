@@ -1,8 +1,6 @@
 @use 'sass:math';
 @use '@cfpb/cfpb-design-system/src/elements/abstracts' as *;
 @use '@cfpb/cfpb-design-system/src/utilities' as *;
-@import 'ag-grid-community/styles/ag-grid.css';
-@import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 .ag-theme-alpine {
   // Override defaults to approximate Design System table styles
@@ -16,9 +14,9 @@
   // --ag-row-height: 2em;
   --ag-header-height: 2.5em;
 
-  .ag-icon {
-    font-family: var(--ag-icon-font-family) !important;
-  }
+  // .ag-icon {
+  //   font-family: var(--ag-icon-font-family) !important;
+  // }
 
   .ag-root-wrapper {
     margin: math.div(5px, $base-font-size-px) + em 0
@@ -26,7 +24,7 @@
   }
 
   .ag-cell {
-    font-size: math.div(14px, $base-font-size-px) + em;
+    // font-size: math.div(14px, $base-font-size-px) + em;
   }
 
   .ag-cell-value {
@@ -40,19 +38,34 @@
     line-height: 1.25em !important;
     word-break: normal;
 
-    // padding-top: math.div(10px, $base-font-size-px) + em;
-    // padding-bottom: math.div(10px, $base-font-size-px) + em;
+    padding-top: math.div(5px, $base-font-size-px) + em;
+    padding-bottom: math.div(5px, $base-font-size-px) + em;
+  }
+
+  .ag-header-cell-text {
+    word-break: normal;
+  }
+
+  .ag-header-row {
+    font-weight: 600;
   }
 
   .ag-header {
-    text-transform: uppercase;
-    font-size: math.div(13px, $base-font-size-px) + em;
+    // text-transform: uppercase;
+    // font-size: math.div(13px, $base-font-size-px) + em;
   }
 
   .ag-sort-indicator-container {
-    .ag-icon {
-      font-size-adjust: 1;
-    }
+    // .ag-icon {
+    //   font-size-adjust: 1;
+    // }
+    gap: 0;
+  }
+
+  .ag-sort-ascending-icon,
+  .ag-sort-descending-icon,
+  .ag-sort-none-icon {
+    padding-left: 5px;
   }
 
   &.data-grid-container--message .ag-center-cols-viewport {

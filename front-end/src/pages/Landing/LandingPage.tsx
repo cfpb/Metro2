@@ -1,4 +1,4 @@
-import LocatorBar from '@src/components/LocatorBar/LocatorBar'
+import { Hero } from '@cfpb/design-system-react'
 import type User from '@src/types/User'
 import { useLoaderData } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
@@ -10,10 +10,11 @@ export default function LandingPage(): ReactElement {
 
   return (
     <>
-      <LocatorBar
-        eyebrow={`Welcome, ${userData.username}`}
-        heading='Here are your assigned events'
-        icon='bank-round'
+      <Hero
+        backgroundColor='#eff8fd'
+        heading='Find credit reporting inconsistencies with the Metro 2 Evaluator tool'
+        subheading='Run error and consistency checks to find inaccuracies in Metro 2 credit reporting data, and share or download results for further analysis.'
+        data-testid='landing-page-hero'
       />
 
       {userData.assigned_events.length > 0 ? (

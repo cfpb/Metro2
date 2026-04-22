@@ -22,7 +22,8 @@
       "cypress-real-events",
       "jest",
       "node",
-      "chai"
+      "chai",
+      "dompurify"
     ],
     "paths": {
       "@src/*": ["*"],

@@ -1,10 +1,11 @@
 import { Button, ButtonGroup, Checkbox } from '@cfpb/design-system-react'
 import {
-  downloadAcknowledgmentLabelText,
-  downloadAcknowledgmentText
-} from '@src/constants/privacyText'
+  DOWNLOAD_ACKNOWLEDGMENT_LABEL,
+  DOWNLOAD_ACKNOWLEDGMENT_TEXT
+} from '@src/config'
+import DOMPurify from 'dompurify'
 import type { ReactElement } from 'react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import CopyUrl from '../CopyUrl'
 import { Modal, ModalFooter } from './Modal'
 
@@ -19,6 +20,8 @@ interface DownloadModalProperties {
   privacyHeader?: string
   buttonText?: string
 }
+
+const downloadText = DOMPurify.sanitize(DOWNLOAD_ACKNOWLEDGMENT_TEXT)
 
 /**
  * DownloadModal()
@@ -54,25 +57,19 @@ export default function DownloadModal({
   privacyHeader = 'Confirmation of ability to download PII or CI',
   buttonText = 'Download file'
 }: DownloadModalProperties): ReactElement | null {
-  const [isChecked, setIsChecked] = useState(false)
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setIsChecked(false)
-  }, [open])
+  const [privacyMessageAcknowledged, setPrivacyMessageAcknowledged] = useState(false)
 
   const onChange = (): void => {
-    setIsChecked(!isChecked)
+    setPrivacyMessageAcknowledged(!privacyMessageAcknowledged)
   }
 
-  const onClick = (): void => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    onDownload?.()
+  const onClickDownloadButton = (): void => {
+    void onDownload?.()
   }
 
   const onCloseModal = (): void => {
     onClose?.()
-    setIsChecked(false)
+    setPrivacyMessageAcknowledged(false)
   }
 
   return (
@@ -89,14 +86,14 @@ export default function DownloadModal({
           className='o-form__fieldset block block--sub'
           data-test-id='download-acknowledgment'>
           <legend className='h4'>{privacyHeader}</legend>
-          <p>{downloadAcknowledgmentText}</p>
+          <p dangerouslySetInnerHTML={{ __html: downloadText }}></p>
           <div className='u-mt15'>
             <Checkbox
               id='confirmPII'
               isLarge
-              checked={isChecked}
+              checked={privacyMessageAcknowledged}
               data-testid='pii-checkbox'
-              label={downloadAcknowledgmentLabelText}
+              label={DOWNLOAD_ACKNOWLEDGMENT_LABEL}
               onChange={onChange}
             />
           </div>
@@ -109,11 +106,11 @@ export default function DownloadModal({
             appearance='primary'
             id='downloadCSV'
             iconRight='download'
-            disabled={requirePrivacyAcknowledgment && !isChecked}
+            disabled={requirePrivacyAcknowledgment && !privacyMessageAcknowledged}
             label={buttonText}
             data-testid='csv-download-button'
             className='a-btn a-btn--full-on-xs'
-            onClick={onClick}
+            onClick={onClickDownloadButton}
             size='default'
           />
 
@@ -122,7 +119,7 @@ export default function DownloadModal({
             asLink
             label='Cancel'
             className='a-btn a-btn--link a-btn--full-on-xs'
-            onClick={onClose}
+            onClick={onCloseModal}
             size='default'
           />
         </ButtonGroup>

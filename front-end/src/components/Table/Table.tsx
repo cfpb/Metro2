@@ -4,7 +4,7 @@ import {
 } from '@src/utils/sortState'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import type { ColDef } from 'ag-grid-community'
-import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community'
+import { AllCommunityModule, ModuleRegistry, themeAlpine } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import type { ComponentType, ReactElement } from 'react'
 import { useEffect, useRef, useState } from 'react'
@@ -154,8 +154,7 @@ export default function Table<T extends object>({
         columnTypes={columnTypes}
         noRowsOverlayComponent={NoResultsMessage}
         noRowsOverlayComponentParams={{ isError: isLoadingError }}
-        // Update to use new Ag-Grid theming approach
-        theme='legacy'
+        theme={themeAlpine}
         loading={isLoading}
         {...gridOptionDefaults}
       />
