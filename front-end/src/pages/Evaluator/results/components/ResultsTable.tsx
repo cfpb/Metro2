@@ -28,6 +28,7 @@ export default function EvaluatorResultsTable({
       NoResultsMessage={NoResultsMessage}
       isLoading={isLoading}
       isLoadingError={isLoadingError}
+      isSortedOnServer={true}
     />
   )
 }
