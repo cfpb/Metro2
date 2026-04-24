@@ -1,5 +1,5 @@
-import logging
 import datetime
+import logging
 
 from django.core.management.base import BaseCommand
 
@@ -8,6 +8,7 @@ from users.task import (
     disable_non_privileged_inactive_users,
     disable_privileged_inactive_users,
 )
+
 
 logger = logging.getLogger(__name__)
 
