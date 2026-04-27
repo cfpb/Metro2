@@ -1,8 +1,12 @@
 import { Button } from '@cfpb/design-system-react'
+import { PII_WARNING_TEXT } from '@src/config'
 import { acceptPIIWarning, hasAcceptedPIIWarning } from '@src/utils/cookies'
+import DOMPurify from 'dompurify'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import { Modal, ModalFooter } from './Modal'
+
+const warningText = DOMPurify.sanitize(PII_WARNING_TEXT)
 
 export default function WarningModal(): ReactElement | null {
   const [isOpen, setIsOpen] = useState(!hasAcceptedPIIWarning())
@@ -17,11 +21,7 @@ export default function WarningModal(): ReactElement | null {
   return (
     <Modal open={isOpen} interactionRequired>
       <h1 className='h3 u-mb30'>Warning</h1>
-      <p>
-        I understand that by using this system, I will be accessing Personally
-        Identifiable Information (PII) and Confidential Information (CI) and I
-        understand my responsibilities to safeguard all this information.
-      </p>
+      <div dangerouslySetInnerHTML={{ __html: warningText }}></div>
       <ModalFooter>
         <Button
           appearance='primary'

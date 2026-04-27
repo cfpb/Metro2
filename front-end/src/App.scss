@@ -4,6 +4,8 @@
 @import '@cfpb/design-system-react/index.css';
 @include licensed-font('/static/fonts');
 
+$content-margin-width: math.div($grid-gutter-width * 3, $base-font-size-px) + rem;
+
 // Set heights & layout so the loader can cover
 // a section of the page to bottom of viewport.
 html,
@@ -19,8 +21,15 @@ body,
 
 // Design system overrides needed for full-width layout.
 .wrapper,
-.grid {
+.grid,
+.m-hero__wrapper {
   max-width: none !important;
+  padding-left: $content-margin-width !important;
+  padding-right: $content-margin-width !important;
+}
+
+.m-hero__wrapper .m-hero__text {
+  padding-left: 0;
 }
 
 // Metro 2 header is a link but doesn't need link styling
@@ -37,8 +46,8 @@ header h1 {
 // so 'row' class provides left / right padding for individual content sections
 // as well as flex layout for the loader.
 .row {
-  margin: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + em
-    math.div($grid_gutter-width, $base-font-size-px) + em;
+  margin: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + rem
+    $content-margin-width;
   display: flex;
 }
 

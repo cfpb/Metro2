@@ -1,6 +1,4 @@
-import { Metro2Page } from '@cypress/helpers/pageHelper'
 import { PII_COOKIE_NAME } from '@src/constants/settings'
-const page = new Metro2Page()
 
 describe('Landing page loader', () => {
   it('Should show a loading view while the user data is being fetched', () => {
@@ -24,11 +22,8 @@ describe('Landing page', () => {
     cy.wait('@getUser')
   })
 
-  it('Should show a welcome message including username', () => {
-    page.verifyLocatorBarContent(
-      'Welcome, Test user',
-      'Here are your assigned events'
-    )
+  it('Should show a hero', () => {
+    cy.findByTestId('landing-page-hero').should('be.visible')
   })
 
   it('Should show a list of events assigned to user', () => {
@@ -37,32 +32,24 @@ describe('Landing page', () => {
       .then(events => {
         // Basic event
         cy.wrap(events[0]).within(() => {
-          cy.findByTestId('event-header').should(
-            'have.text',
-            'Browser testing event'
-          )
+          cy.findByTestId('event-link')
+            .should('have.text', 'Browser testing event')
+            .and('have.attr', 'href', '/events/1')
           cy.findByTestId('event-date-range').should(
             'have.text',
             'Data from: Jan 2020 - Nov 2020'
           )
-          cy.findByTestId('event-link')
-            .should('have.text', 'Open evaluator results')
-            .and('have.attr', 'href', '/events/1')
         })
 
         // Event with more metadata
         cy.wrap(events[1]).within(() => {
-          cy.findByTestId('event-header').should(
-            'have.text',
-            'Event two: EID/Matter #123456789'
-          )
+          cy.findByTestId('event-link')
+            .should('have.text', 'Event two: EID/Matter #123456789')
+            .and('have.attr', 'href', '/events/2')
           cy.findByTestId('event-date-range').should(
             'have.text',
             'Data from: Nov 2019 - Nov 2020'
           )
-          cy.findByTestId('event-link')
-            .should('have.text', 'Open evaluator results')
-            .and('have.attr', 'href', '/events/2')
         })
       })
   })

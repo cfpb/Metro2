@@ -20,16 +20,13 @@ const events = [
 
 describe('<EventList />', () => {
   it('renders an event list', async () => {
-    renderWithProviders(<EventList heading='Test events' events={events} />)
-    const eventHeading = await screen.findByTestId('event-heading')
-
+    renderWithProviders(<EventList events={events} />)
     const eventItems = await screen.findAllByTestId('event-item')
-    expect(eventHeading).toHaveTextContent('Test events')
     expect(eventItems).toHaveLength(2)
   })
 
   it('renders an event with dates and eid', async () => {
-    renderWithProviders(<EventList heading='Test events' events={events} />)
+    renderWithProviders(<EventList events={events} />)
     const eventItems = await screen.findAllByTestId('event-item')
     expect(eventItems).toHaveLength(2)
     const header = within(eventItems[0]).queryByTestId('event-header')
@@ -45,7 +42,7 @@ describe('<EventList />', () => {
   })
 
   it('renders an event without eid', async () => {
-    renderWithProviders(<EventList heading='Test events' events={events} />)
+    renderWithProviders(<EventList events={events} />)
     const eventItems = await screen.findAllByTestId('event-item')
     const header = within(eventItems[1]).queryByTestId('event-header')
     expect(header).toBeVisible()

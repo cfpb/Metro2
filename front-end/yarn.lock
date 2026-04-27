@@ -2414,6 +2414,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/dompurify@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "@types/dompurify@npm:3.2.0"
+  dependencies:
+    dompurify: "npm:*"
+  checksum: 10/0194dd9024e76e856f3373e8b080c7a5ac9910543ac1ee85db45277efbbea820b2f27fe22c8a6f02bb51833e0a8540d732be0d11d156efd16cb0b97f88e41ebf
+  languageName: node
+  linkType: hard
+
 "@types/eslint@npm:*":
   version: 9.6.1
   resolution: "@types/eslint@npm:9.6.1"
@@ -2652,6 +2661,13 @@ __metadata:
   version: 0.2.6
   resolution: "@types/tmp@npm:0.2.6"
   checksum: 10/e14a094c10569d3b56805552b21417860ef21060d969000d5d5b53604a78c2bdac216f064b03797d4b07a081e0141dd3ab22bc36923e75300eb1c023f7252cc7
+  languageName: node
+  linkType: hard
+
+"@types/trusted-types@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@types/trusted-types@npm:2.0.7"
+  checksum: 10/8e4202766a65877efcf5d5a41b7dd458480b36195e580a3b1085ad21e948bc417d55d6f8af1fd2a7ad008015d4117d5fdfe432731157da3c68678487174e4ba3
   languageName: node
   linkType: hard
 
@@ -4892,6 +4908,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dompurify@npm:*, dompurify@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "dompurify@npm:3.4.1"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10/dcaf945376eff2a61841b205501b163b2c8ae9afe7251e68276b561d9fcf943cefc67e2631fdeae080b52a8b37c96e6beb7e6ae80ad8a83692ff67965dd6b4db
+  languageName: node
+  linkType: hard
+
 "dunder-proto@npm:^1.0.0, dunder-proto@npm:^1.0.1":
   version: 1.0.1
   resolution: "dunder-proto@npm:1.0.1"
@@ -6289,6 +6317,7 @@ __metadata:
     "@types/chai": "npm:^5.2.3"
     "@types/css-mediaquery": "npm:0.1.4"
     "@types/cypress": "npm:^1.1.6"
+    "@types/dompurify": "npm:^3.2.0"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^25.3.0"
     "@types/react": "npm:^19.2.14"
@@ -6306,6 +6335,7 @@ __metadata:
     csstype: "npm:^3.2.3"
     cypress: "npm:^15.11.0"
     cypress-real-events: "npm:^1.15.0"
+    dompurify: "npm:^3.4.1"
     eslint: "npm:^10.0.2"
     eslint-config-prettier: "npm:10.1.8"
     eslint-import-resolver-typescript: "npm:^4.4.4"

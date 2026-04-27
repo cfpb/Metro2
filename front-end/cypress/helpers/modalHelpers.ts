@@ -1,7 +1,7 @@
 import {
-  downloadAcknowledgmentLabelText,
-  downloadAcknowledgmentText
-} from '@src/constants/privacyText'
+  DOWNLOAD_ACKNOWLEDGMENT_LABEL,
+  DOWNLOAD_ACKNOWLEDGMENT_TEXT
+} from '@src/config'
 
 export const getInputByLabel = (label: string) => {
   return cy
@@ -33,15 +33,15 @@ export class Metro2Modal {
   }
 
   verifyPrivacyMessage() {
-    cy.contains(downloadAcknowledgmentText).should('be.visible')
+    cy.contains(DOWNLOAD_ACKNOWLEDGMENT_TEXT).should('be.visible')
   }
 
   getPIICheckboxLabel() {
-    return cy.contains(downloadAcknowledgmentLabelText)
+    return cy.contains(DOWNLOAD_ACKNOWLEDGMENT_LABEL)
   }
 
   getPIICheckbox() {
-    return getInputByLabel(downloadAcknowledgmentLabelText)
+    return getInputByLabel(DOWNLOAD_ACKNOWLEDGMENT_LABEL)
   }
 
   checkPIICheckbox() {
