@@ -36,6 +36,9 @@ services:
     image: django-m2:local
     build:
       context: ./django
+      args:
+        # Set the VERSION env var and run compose build to set this
+        VERSION: ${VERSION:-unknown}
     depends_on:
       postgres:
         condition: service_healthy
