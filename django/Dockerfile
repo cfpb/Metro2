@@ -29,7 +29,6 @@ RUN apk update --no-cache && \
     apk add libffi-dev && \
     pip install --upgrade pip
 
-
 # Add `$HOME/.local/bin` to PATH
 RUN echo 'export PATH=$HOME/.local/bin:$PATH' >> /etc/profile
 
@@ -40,7 +39,12 @@ RUN pip install -r ./requirements.txt
 # Delete build dependencies
 RUN apk del .build-deps
 
+# Write the VERSION arg to a file in the parent of APP_HOME
+ARG VERSION=unknown
+RUN echo "$VERSION" > $APP_HOME/../version.txt
+
 RUN chown -R $USERNAME:$USERNAME $APP_HOME
+
 # Create the user
 USER $USERNAME
 

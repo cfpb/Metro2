@@ -17,6 +17,10 @@ import logging
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+# Load the version string from a file, if that file exists in the parent dir.
+VERSION_FILE = BASE_DIR.parent / "version.txt"
+VERSION = VERSION_FILE.read_text().strip() if VERSION_FILE.exists() else "unknown"
+
 FRONT_END_DIR = BASE_DIR.parent / 'front-end'
 
 

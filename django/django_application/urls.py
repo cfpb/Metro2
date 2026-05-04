@@ -21,7 +21,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
 
-from django_application import views as error_view
+from django_application import views as app_views
 from evaluate_m2 import urls as evaluate_m2_urls
 from evaluate_m2 import views as eval_views
 from users import views
@@ -32,7 +32,8 @@ urlpatterns = [
     path('api/all-evaluator-metadata/', eval_views.download_evaluator_metadata_csv),
     path('api/events/', include(evaluate_m2_urls)),
     path('api/users/', views.users_view),
-    path('api/users/<int:user_id>/', views.users_view)
+    path('api/users/<int:user_id>/', views.users_view),
+    path('api/version/', app_views.version),
 ]
 
 with suppress(ImproperlyConfigured):
@@ -42,7 +43,7 @@ with suppress(ImproperlyConfigured):
     ]
 
 # All erroneous API calls to return 400: bad request
-urlpatterns.append(re_path(r'api(?:.*)?', error_view.bad_request_view ))
+urlpatterns.append(re_path(r'api(?:.*)?', app_views.bad_request_view ))
 
 # Fall through route: Handle all other URLs through the front end
 urlpatterns.append(
