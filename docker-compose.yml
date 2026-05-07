@@ -41,6 +41,7 @@ services:
       args:
         # Set the VERSION env var and run compose build to set this
         VERSION: ${VERSION:-unknown}
+      target: dev
     depends_on:
       postgres:
         condition: service_healthy
