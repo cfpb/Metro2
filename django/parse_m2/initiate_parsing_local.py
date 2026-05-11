@@ -4,10 +4,10 @@ import zipfile
 
 from parse_m2.initiate_parsing_utils import (
     is_data_file,
+    is_zip_file,
     log_invalid_file_extension,
     parse_file_from_zip,
     parsed_file_exists,
-    is_zip_file,
 )
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
@@ -79,15 +79,20 @@ def parse_files_from_local_filesystem(
 
         if os.path.isfile(filepath):
             if is_zip_file(filename):
-                parse_zip_file_contents(filepath, event, skip_existing, collection)
-            if skip_existing and parsed_file_exists(event, file_name_local(filepath)):
+                parse_zip_file_contents(
+                    filepath, event, skip_existing, collection
+                )
+            elif skip_existing and \
+                parsed_file_exists(event, file_name_local(filepath)):
                 # If the skip_existing flag is set to True and this file
                 # already exists on this event, don't parse it again.
                 logger.debug(
-                    f"Skipping existing file {file_name_local(filepath)}, because skip_existing = True"
+                    f"Skipping existing file {file_name_local(filepath)}, ",
+                    "because skip_existing = True"
                 )
             elif is_data_file(filename):
                 parse_local_file(event, filepath, collection)
             else:
+                # If the file is neither zip nor datafile, log the error and skip.
                 logger.info("Skipping. Does not match an allowed file type.")
-                log_invalid_file_extension(event, filename, skip_existing,)
+                log_invalid_file_extension(event, filename)

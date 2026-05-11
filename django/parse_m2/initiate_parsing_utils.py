@@ -61,6 +61,11 @@ def parsed_file_exists(event: Metro2Event, filename: str) -> bool:
 def log_invalid_file_extension(
     event: Metro2Event, filename: str,
 ):
+    """
+    For the given file, create a M2DataFile record with status
+    'Not parsed' and informative error message, which will show
+    up in the list of files for the event.
+    """
     error_message = (
         "File skipped because of invalid file extension: "
         f".{get_extension(filename)}"

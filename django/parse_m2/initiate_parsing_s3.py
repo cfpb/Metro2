@@ -5,10 +5,10 @@ import zipfile
 from django_application.s3_utils import s3_bucket_files
 from parse_m2.initiate_parsing_utils import (
     is_data_file,
+    is_zip_file,
     log_invalid_file_extension,
     parse_file_from_zip,
     parsed_file_exists,
-    is_zip_file,
 )
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
@@ -100,10 +100,12 @@ def parse_files_from_s3_bucket(
             # If the skip_existing flag is set to True, and this file
             # already exists on this event, don't parse it again.
             logger.debug(
-                f"Skipping existing file {file_name_s3(file)}, because skip_existing = True"
+                f"Skipping existing file {file_name_s3(file)}, ",
+                "because skip_existing = True"
             )
         elif is_data_file(file.key):
-            parse_s3_file(file, event, skip_existing, collection)
+            parse_s3_file(file, event, collection)
         else:
+            # If the file is neither zip nor datafile, log the error and skip.
             logger.info("Skipping. Does not match an allowed file type.")
-            log_invalid_file_extension(event, file.key, skip_existing)
+            log_invalid_file_extension(event, file.key)
