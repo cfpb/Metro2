@@ -3,11 +3,11 @@ import os
 import zipfile
 
 from parse_m2.initiate_parsing_utils import (
-    data_file,
+    is_data_file,
     log_invalid_file_extension,
     parse_file_from_zip,
     parsed_file_exists,
-    zip_file,
+    is_zip_file,
 )
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
@@ -15,26 +15,18 @@ from parse_m2.models import Metro2Event
 
 ############################################
 # Methods for parsing files from the local filesystem
+def file_name_local(filepath) -> str:
+    return f"local:{filepath}"
+
 def parse_local_file(
     event: Metro2Event,
     filepath: str,
-    skip_existing: bool = True,
     collection: str = None
 ):
     logger = logging.getLogger('parse_m2.parse_local_file')
-    full_name = f"local:{filepath}"
-
-    # If the skip_existing flag is set to True, and this file
-    # already exists on this event, don't parse it again.
-    if skip_existing and parsed_file_exists(event, full_name):
-        logger = logging.getLogger('parse_m2.parse_local_file')
-        logger.debug(
-            f"Skipping existing file {full_name}, because skip_existing = True"
-        )
-        return
 
     # Instantiate a parser
-    parser = M2FileParser(event, full_name, collection)
+    parser = M2FileParser(event, file_name_local(filepath), collection)
 
     logger.debug(f"Parsing local file: {filepath}")
     try:
@@ -86,9 +78,16 @@ def parse_files_from_local_filesystem(
         filepath = os.path.join(data_directory, filename)
 
         if os.path.isfile(filepath):
-            if zip_file(filename):
+            if is_zip_file(filename):
                 parse_zip_file_contents(filepath, event, skip_existing, collection)
-            elif data_file(filename):
-                parse_local_file(event, filepath, skip_existing, collection)
+            if skip_existing and parsed_file_exists(event, file_name_local(filepath)):
+                # If the skip_existing flag is set to True and this file
+                # already exists on this event, don't parse it again.
+                logger.debug(
+                    f"Skipping existing file {file_name_local(filepath)}, because skip_existing = True"
+                )
+            elif is_data_file(filename):
+                parse_local_file(event, filepath, collection)
             else:
-                log_invalid_file_extension(event, filename, skip_existing, logger)
+                logger.info("Skipping. Does not match an allowed file type.")
+                log_invalid_file_extension(event, filename, skip_existing,)

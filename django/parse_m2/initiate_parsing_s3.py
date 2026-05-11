@@ -4,11 +4,11 @@ import zipfile
 
 from django_application.s3_utils import s3_bucket_files
 from parse_m2.initiate_parsing_utils import (
-    data_file,
+    is_data_file,
     log_invalid_file_extension,
     parse_file_from_zip,
     parsed_file_exists,
-    zip_file,
+    is_zip_file,
 )
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
@@ -25,29 +25,22 @@ from parse_m2.models import Metro2Event
 # For more on how to set credentials:
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html
 
+def file_name_s3(file) -> str:
+    return f"s3:{file.key}"
+
 def parse_s3_file(
-    file, event: Metro2Event, skip_existing: bool = True, collection: str = None
+    file, event: Metro2Event, collection: str = None,
 ):
     logger = logging.getLogger('parse_m2.parse_s3_file')
-    full_name = f"s3:{file.key}"
-
-    # If the skip_existing flag is set to True, and this file
-    # already exists on this event, don't parse it again.
-    if skip_existing and parsed_file_exists(event, full_name):
-        logger = logging.getLogger('parse_m2.parse_s3_file')
-        logger.debug(
-            f"Skipping existing file {full_name}, because skip_existing = True"
-        )
-        return
 
     # Instantiate a parser
-    parser = M2FileParser(event, full_name, collection)
+    parser = M2FileParser(event, file_name_s3(file), collection)
 
     # Parse the file
     fstream = file.get()["Body"]
-    logger.debug(f"Successfully opened file: {full_name}. Now parsing...")
+    logger.debug(f"Successfully opened file: {file_name_s3(file)}. Now parsing...")
     parser.parse_file_contents(fstream, file.size)
-    logger.info(f'File {full_name} written to database.')
+    logger.info(f'File {file_name_s3(file)} written to database.')
 
 def parse_zip_file_contents_S3(
     zip_obj,
@@ -100,9 +93,17 @@ def parse_files_from_s3_bucket(
         logger.info(f"Encountered file: {file.key}")
         # TODO: Handle errors connecting to bucket and opening files
 
-        if zip_file(file.key):
+        if is_zip_file(file.key):
             parse_zip_file_contents_S3(file, event, file.key, skip_existing, collection)
-        elif data_file(file.key):
+
+        elif skip_existing and parsed_file_exists(event, file_name_s3(file)):
+            # If the skip_existing flag is set to True, and this file
+            # already exists on this event, don't parse it again.
+            logger.debug(
+                f"Skipping existing file {file_name_s3(file)}, because skip_existing = True"
+            )
+        elif is_data_file(file.key):
             parse_s3_file(file, event, skip_existing, collection)
         else:
-            log_invalid_file_extension(event, file.key, skip_existing, logger)
+            logger.info("Skipping. Does not match an allowed file type.")
+            log_invalid_file_extension(event, file.key, skip_existing)

@@ -5,7 +5,7 @@ from django.conf import settings
 from smart_open import open
 
 from django_application.s3_utils import s3_bucket_files, s3_session
-from parse_m2.initiate_parsing_utils import data_file
+from parse_m2.initiate_parsing_utils import is_data_file
 from parse_m2.parse_utils import get_next_line, is_header_line
 
 
@@ -30,7 +30,7 @@ def update_S3_directory_files_format(source_dir: str, destination_dir: str):
     for file in s3_bucket_files(source_dir):
         logger.debug(f"file: {file.key}")
 
-        if data_file(file.key):
+        if is_data_file(file.key):
             logger.debug("processing...")
             source_fstream = file.get()["Body"]
             destination = destination_path(file.key, destination_dir)

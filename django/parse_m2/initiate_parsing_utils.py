@@ -5,11 +5,11 @@ from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
 
 
-def data_file(filename: str) -> bool:
+def is_data_file(filename: str) -> bool:
     data_file_extensions = ['txt']
     return get_extension(filename) in data_file_extensions
 
-def zip_file(filename: str) -> bool:
+def is_zip_file(filename: str) -> bool:
     zip_file_extensions = ['zip']
     return get_extension(filename) in zip_file_extensions
 
@@ -17,10 +17,10 @@ def get_extension(filename: str) -> str:
     return filename.split('.')[-1].lower()
 
 def parse_file_from_zip(
-    f: ZipInfo, 
-    zip_file: ZipFile, 
-    full_name: str, 
-    event: Metro2Event, 
+    f: ZipInfo,
+    zip_file: ZipFile,
+    full_name: str,
+    event: Metro2Event,
     collection: str = None
 ):
     logger = logging.getLogger('parse_m2.parse_file_from_zip')
@@ -28,7 +28,7 @@ def parse_file_from_zip(
     logger.info(f"Encountered file in zipfile: {filename}")
     if not f.is_dir():
         parser = M2FileParser(event, full_name, collection)
-        if data_file(filename):
+        if is_data_file(filename):
             try:
                 with zip_file.open(filename) as fstream:
                     logger.debug(f"Parsing file {full_name}...")
@@ -59,19 +59,12 @@ def parsed_file_exists(event: Metro2Event, filename: str) -> bool:
     return file.exists()
 
 def log_invalid_file_extension(
-    event: Metro2Event, filename: str, skip_existing: bool, logger
+    event: Metro2Event, filename: str,
 ):
-    if parsed_file_exists(event, filename) and skip_existing:
-        # If the skip_existing flag is set to True, and this file
-        # already exists on this event, don't log it again.
-        logger.debug(f"Skipping existing file {filename}, because skip_existing = True")
-    else:
-        # If no skip_existing flag or it hasn't been logged before, log it.
-        error_message = (
-            "File skipped because of invalid file extension: "
-            f".{get_extension(filename)}"
-        )
-        M2FileParser(event, filename).update_file_record(
-            status="Not parsed", msg=error_message
-        )
-        logger.info("Skipping. Does not match an allowed file type.")
+    error_message = (
+        "File skipped because of invalid file extension: "
+        f".{get_extension(filename)}"
+    )
+    M2FileParser(event, filename).update_file_record(
+        status="Not parsed", msg=error_message
+    )
