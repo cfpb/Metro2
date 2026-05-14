@@ -25,14 +25,12 @@ def parse_local_file(
 ):
     logger = logging.getLogger('parse_m2.parse_local_file')
 
-    # Instantiate a parser
     parser = M2FileParser(event, file_name_local(filepath), collection)
 
     logger.info(f"Parsing local file: {filepath}")
     try:
         with open(filepath) as fstream:
             file_size = os.path.getsize(filepath)
-            # Parse the file
             parser.parse_file_contents(fstream, file_size)
             logger.debug("Parsing completed")
     except FileNotFoundError as e:
@@ -50,7 +48,8 @@ def parse_zip_file_contents(
             if skip_existing and parsed_file_exists(event, full_name):
                 logger = logging.getLogger('parse_m2.local.parse_zip_file_contents')
                 logger.debug(
-                    f"Skipping existing file {full_name}, because skip_existing = True"
+                    f"Skipping existing file {full_name}, ",
+                    "because skip_existing = True"
                 )
                 return
 
@@ -73,9 +72,9 @@ def parse_files_from_local_filesystem(
 
     data_directory: str = directory if directory else event.directory
 
-    # iterate over files in the directory
+    # Iterate over files in the directory
     for filename in os.listdir(data_directory):
-        logger.info(f"Encountered file in local data path: {filename}")
+        logger.debug(f"Encountered file in local data path: {filename}")
         filepath = os.path.join(data_directory, filename)
 
         if os.path.isfile(filepath):
@@ -94,6 +93,6 @@ def parse_files_from_local_filesystem(
             elif is_data_file(filename):
                 parse_local_file(event, filepath, collection)
             else:
-                # If the file is neither zip nor datafile, log the error and skip.
+                # If the file is neither zip nor datafile, log an error and skip
                 logger.info("Skipping. Does not match an allowed file type.")
                 log_invalid_file_extension(event, filename)
