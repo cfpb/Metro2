@@ -25,20 +25,20 @@ def parse_file_from_zip(
 ):
     logger = logging.getLogger('parse_m2.parse_file_from_zip')
     filename = f.filename
-    logger.info(f"Encountered file in zipfile: {filename}")
+    logger.debug(f"Encountered file in zipfile: {filename}")
     if not f.is_dir():
         if is_data_file(filename):
             parser = M2FileParser(event, full_name, collection)
             try:
                 with zip_file.open(filename) as fstream:
-                    logger.debug(f"Parsing file {full_name}...")
+                    logger.info(f"Parsing file {full_name}")
                     parser.parse_file_contents(fstream, f.file_size)
-                    logger.info("file written to db")
+                    logger.debug("Parsing completed.")
             except NotImplementedError as e:
                 parser.update_file_record(status="Not parsed", msg=f"File skipped: {e}")
         else:
             log_invalid_file_extension(event, full_name)
-            logger.info(
+            logger.debug(
                 "Skipping file within zip. Does not match an allowed file type."
             )
 

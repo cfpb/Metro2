@@ -28,13 +28,13 @@ def parse_local_file(
     # Instantiate a parser
     parser = M2FileParser(event, file_name_local(filepath), collection)
 
-    logger.debug(f"Parsing local file: {filepath}")
+    logger.info(f"Parsing local file: {filepath}")
     try:
         with open(filepath) as fstream:
             file_size = os.path.getsize(filepath)
             # Parse the file
             parser.parse_file_contents(fstream, file_size)
-            logger.info(f'File {os.path.basename(fstream.name)} written to database.')
+            logger.debug("Parsing completed")
     except FileNotFoundError as e:
         logger.error(f"There was an error opening the file: {e}")
 
