@@ -54,11 +54,19 @@ jobs:
       - ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-      - name: SCA Scan
+      - name: SCA Scan Django
         env:
           SRCCLR_API_TOKEN: ${{secrets.SRCCLR_API_TOKEN}}
           SRCCLR_REGION: FED
-        working-directory: ./
+        working-directory: ./django
+        run: >
+          curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan
+          --json=SCA-App-Issues.json
+      - name: SCA Scan front-end
+        env:
+          SRCCLR_API_TOKEN: ${{secrets.SRCCLR_API_TOKEN}}
+          SRCCLR_REGION: FED
+        working-directory: ./front-end
         run: >
           curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan
           --json=SCA-App-Issues.json
