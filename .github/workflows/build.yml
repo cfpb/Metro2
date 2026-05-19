@@ -4,8 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - update/dockerfiles
-      # - main
+      - main
   merge_group:
 
 jobs:
