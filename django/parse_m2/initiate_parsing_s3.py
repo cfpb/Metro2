@@ -70,16 +70,19 @@ def parse_files_from_s3_bucket(
 ):
     """
     Parse all files in the folder of the S3 bucket location indicated by
-    event.directory, and save them to event. For any files that look like zip
+    event.directory, (or directory arg if present) and save them to event.
+    For any files that look like zip
     files, iterate through each file in the zip and parse each one.
 
     The parser will not parse a file if one with a matching name already exists.
     """
     logger = logging.getLogger('parse_m2.parse_files_from_s3_bucket')
 
+    # Directory argument overrides event.directory if present
+    parse_directory = directory if directory else event.directory
 
-    logger.info(f"Finding all files in S3 bucket with prefix: {event.directory}")
-    for file in s3_bucket_files(event.directory):
+    logger.info(f"Finding all files in S3 bucket with prefix: {parse_directory}")
+    for file in s3_bucket_files(parse_directory):
         logger.info(f"Encountered file: {file.key}")
         # TODO: Handle errors connecting to bucket and opening files
 

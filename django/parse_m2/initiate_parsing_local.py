@@ -56,14 +56,15 @@ def parse_files_from_local_filesystem(
 ):
     """
     Parse all files in the local filesystem location indicated by
-    event.directory, and save them to event. For any files that look like
+    directory param if present, or default to event.directory.
+    Save them to event. For any files that look like
     zip files, iterate through each file in the zip and parse each one.
 
     The parser will not parse a file if one with a matching name already exists.
     """
     logger = logging.getLogger('parse_m2.parse_files_from_local_filesystem')
 
-    data_directory: str = event.directory
+    data_directory: str = directory if directory else event.directory
 
     # Iterate over files in the directory
     for filename in os.listdir(data_directory):
