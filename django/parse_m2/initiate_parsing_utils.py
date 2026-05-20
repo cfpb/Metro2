@@ -17,10 +17,10 @@ def get_extension(filename: str) -> str:
     return filename.split('.')[-1].lower()
 
 def parse_file_from_zip(
-    f: ZipInfo, 
-    zip_file: ZipFile, 
-    full_name: str, 
-    event: Metro2Event, 
+    f: ZipInfo,
+    zip_file: ZipFile,
+    full_name: str,
+    event: Metro2Event,
     collection: str = None
 ):
     logger = logging.getLogger('parse_m2.parse_file_from_zip')
