@@ -3,11 +3,11 @@ import os
 import zipfile
 
 from parse_m2.initiate_parsing_utils import (
-    data_file,
+    is_data_file,
+    is_zip_file,
     log_invalid_file_extension,
     parse_file_from_zip,
     parsed_file_exists,
-    zip_file,
 )
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
@@ -85,9 +85,11 @@ def parse_files_from_local_filesystem(
         filepath = os.path.join(data_directory, filename)
 
         if os.path.isfile(filepath):
-            if zip_file(filename):
-                parse_zip_file_contents(filepath, event, skip_existing, collection)
-            elif data_file(filename):
-                parse_local_file(event, filepath, skip_existing, collection)
+            if is_zip_file(filename):
+                parse_zip_file_contents(
+                    filepath, event, collection
+                )
+            elif is_data_file(filename):
+                parse_local_file(event, filepath, collection)
             else:
                 log_invalid_file_extension(event, filename, skip_existing, logger)

@@ -5,11 +5,11 @@ from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
 
 
-def data_file(filename: str) -> bool:
+def is_data_file(filename: str) -> bool:
     data_file_extensions = ['txt']
     return get_extension(filename) in data_file_extensions
 
-def zip_file(filename: str) -> bool:
+def is_zip_file(filename: str) -> bool:
     zip_file_extensions = ['zip']
     return get_extension(filename) in zip_file_extensions
 
@@ -28,7 +28,7 @@ def parse_file_from_zip(
     logger.info(f"Encountered file in zipfile: {filename}")
     if not f.is_dir():
         parser = M2FileParser(event, full_name, collection)
-        if data_file(filename):
+        if is_data_file(filename):
             try:
                 with zip_file.open(filename) as fstream:
                     logger.debug(f"Parsing file {full_name}...")

@@ -4,11 +4,11 @@ import zipfile
 
 from django_application.s3_utils import s3_bucket_files
 from parse_m2.initiate_parsing_utils import (
-    data_file,
+    is_data_file,
+    is_zip_file,
     log_invalid_file_extension,
     parse_file_from_zip,
     parsed_file_exists,
-    zip_file,
 )
 from parse_m2.m2_parser import M2FileParser
 from parse_m2.models import Metro2Event
@@ -96,9 +96,9 @@ def parse_files_from_s3_bucket(
         logger.info(f"Encountered file: {file.key}")
         # TODO: Handle errors connecting to bucket and opening files
 
-        if zip_file(file.key):
-            parse_zip_file_contents_S3(file, event, file.key, skip_existing, collection)
-        elif data_file(file.key):
-            parse_s3_file(file, event, skip_existing, collection)
+        if is_zip_file(file.key):
+            parse_zip_file_contents_S3(file, event, file.key, collection)
+        elif is_data_file(file.key):
+            parse_s3_file(file, event, collection)
         else:
             log_invalid_file_extension(event, file.key, skip_existing, logger)
