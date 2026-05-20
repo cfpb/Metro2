@@ -22,7 +22,7 @@ class Command(BaseCommand):
     )
 
     def add_arguments(self, argparser):
-        event_help = "The ID of the event record"
+        event_help = "The ID of the event record. (required)"
         argparser.add_argument(
             "-e",
             "--event_id",
@@ -35,7 +35,7 @@ class Command(BaseCommand):
             "The directory to find files for parsing. When present, overrides "
             "the 'directory' value on the Metro2Event model. Useful for when "
             "an event has files in multiple directories that need to be parsed "
-            "separately."
+            "separately. (optional)"
         )
         argparser.add_argument(
             "-d", "--directory",
