@@ -59,19 +59,17 @@ def parsed_file_exists(event: Metro2Event, filename: str) -> bool:
     return file.exists()
 
 def log_invalid_file_extension(
-    event: Metro2Event, filename: str, skip_existing: bool, logger
+    event: Metro2Event, filename: str,
 ):
-    if parsed_file_exists(event, filename) and skip_existing:
-        # If the skip_existing flag is set to True, and this file
-        # already exists on this event, don't log it again.
-        logger.debug(f"Skipping existing file {filename}, because skip_existing = True")
-    else:
-        # If no skip_existing flag or it hasn't been logged before, log it.
-        error_message = (
-            "File skipped because of invalid file extension: "
-            f".{get_extension(filename)}"
-        )
-        M2FileParser(event, filename).update_file_record(
-            status="Not parsed", msg=error_message
-        )
-        logger.info("Skipping. Does not match an allowed file type.")
+    """
+    For the given file, create a M2DataFile record with status
+    'Not parsed' and informative error message, which will show
+    up in the list of files for the event.
+    """
+    error_message = (
+        "File skipped because of invalid file extension: "
+        f".{get_extension(filename)}"
+    )
+    M2FileParser(event, filename).update_file_record(
+        status="Not parsed", msg=error_message
+    )
