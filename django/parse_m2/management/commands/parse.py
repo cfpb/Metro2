@@ -75,14 +75,12 @@ class Command(BaseCommand):
         if settings.S3_ENABLED:
             parse_files_from_s3_bucket(
                 event,
-                skip_existing=True,
                 directory=directory,
                 collection=collection
             )
         else:
             parse_files_from_local_filesystem(
                 event,
-                skip_existing=True,
                 directory=directory,
                 collection=collection
             )

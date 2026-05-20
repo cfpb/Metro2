@@ -46,7 +46,6 @@ def parse_zip_file_contents_S3(
     zip_obj,
     event: Metro2Event,
     zipfile_name: str,
-    skip_existing: bool,
     collection: str = None
 ):
     # TODO: If the files are large (>2GB), this method of streaming
@@ -58,21 +57,16 @@ def parse_zip_file_contents_S3(
         for f in zipf.filelist:
             full_name = f"s3:{zipfile_name}:{f.filename}"
 
-            # If the skip_existing flag is set to True, and this file
-            # already exists on this event, don't parse it again.
-            if skip_existing and parsed_file_exists(event, full_name):
+            # If this file already exists on this event, don't parse it again.
+            if parsed_file_exists(event, full_name):
                 logger = logging.getLogger('parse_m2.s3.parse_zip_file_contents')
-                logger.debug(
-                    f"Skipping existing file {full_name}, because "
-                    "skip_existing = True"
-                )
+                logger.debug(f"Skipping existing file {full_name}")
                 return
 
             parse_file_from_zip(f, zipf, full_name, event, collection)
 
 def parse_files_from_s3_bucket(
-    event: Metro2Event, skip_existing: bool = True,
-    directory: str = None, collection: str = None
+    event: Metro2Event, directory: str = None, collection: str = None
 ):
     """
     Parse all files in the folder of the S3 bucket location indicated by
@@ -80,8 +74,7 @@ def parse_files_from_s3_bucket(
     For any files that look like zip
     files, iterate through each file in the zip and parse each one.
 
-    If skip_existing is True, the parser will not parse a file if one with
-    a matching name already exists.
+    The parser will not parse a file if one with a matching name already exists.
     """
     logger = logging.getLogger('parse_m2.parse_files_from_s3_bucket')
 
@@ -94,15 +87,11 @@ def parse_files_from_s3_bucket(
         # TODO: Handle errors connecting to bucket and opening files
 
         if is_zip_file(file.key):
-            parse_zip_file_contents_S3(file, event, file.key, skip_existing, collection)
+            parse_zip_file_contents_S3(file, event, file.key, collection)
 
-        elif skip_existing and parsed_file_exists(event, file_name_s3(file)):
-            # If the skip_existing flag is set to True, and this file
-            # already exists on this event, don't parse it again.
-            logger.debug(
-                f"Skipping existing file {file_name_s3(file)}, ",
-                "because skip_existing = True"
-            )
+        elif parsed_file_exists(event, file_name_s3(file)):
+            # If this file already exists on this event, don't parse it again.
+            logger.debug(f"Skipping existing file {file_name_s3(file)}")
         elif is_data_file(file.key):
             parse_s3_file(file, event, collection)
         else:

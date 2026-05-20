@@ -37,27 +37,22 @@ def parse_local_file(
         logger.error(f"There was an error opening the file: {e}")
 
 def parse_zip_file_contents(
-    zip_path: str, event: Metro2Event, skip_existing: bool, collection: str = None
+    zip_path: str, event: Metro2Event, collection: str = None
 ):
     with zipfile.ZipFile(zip_path, 'r') as zipf:
         for f in zipf.filelist:
             full_name = f"local:ZIP:{zip_path}:{f.filename}"
 
-            # If the skip_existing flag is set to True, and this file
-            # already exists on this event, don't parse it again.
-            if skip_existing and parsed_file_exists(event, full_name):
+            # If this file already exists on this event, don't parse it again.
+            if parsed_file_exists(event, full_name):
                 logger = logging.getLogger('parse_m2.local.parse_zip_file_contents')
-                logger.debug(
-                    f"Skipping existing file {full_name}, ",
-                    "because skip_existing = True"
-                )
+                logger.debug(f"Skipping existing file {full_name}")
                 return
 
             parse_file_from_zip(f, zipf, full_name, event, collection)
 
 def parse_files_from_local_filesystem(
-    event: Metro2Event, skip_existing: bool = True,
-    directory: str = None, collection: str = None
+    event: Metro2Event, directory: str = None, collection: str = None
 ):
     """
     Parse all files in the local filesystem location indicated by
@@ -65,8 +60,7 @@ def parse_files_from_local_filesystem(
     Save them to event. For any files that look like
     zip files, iterate through each file in the zip and parse each one.
 
-    If skip_existing is True, the parser will not parse a file if one with
-    a matching name already exists.
+    The parser will not parse a file if one with a matching name already exists.
     """
     logger = logging.getLogger('parse_m2.parse_files_from_local_filesystem')
 
@@ -80,15 +74,12 @@ def parse_files_from_local_filesystem(
         if os.path.isfile(filepath):
             if is_zip_file(filename):
                 parse_zip_file_contents(
-                    filepath, event, skip_existing, collection
+                    filepath, event, collection
                 )
-            elif skip_existing and \
-                parsed_file_exists(event, file_name_local(filepath)):
-                # If the skip_existing flag is set to True and this file
-                # already exists on this event, don't parse it again.
+            elif parsed_file_exists(event, file_name_local(filepath)):
+                # If this file already exists on this event, don't parse it again.
                 logger.debug(
-                    f"Skipping existing file {file_name_local(filepath)}, ",
-                    "because skip_existing = True"
+                    f"Skipping existing file {file_name_local(filepath)}"
                 )
             elif is_data_file(filename):
                 parse_local_file(event, filepath, collection)
