@@ -27,8 +27,8 @@ def parse_file_from_zip(
     filename = f.filename
     logger.debug(f"Encountered file in zipfile: {filename}")
     if not f.is_dir():
-        parser = M2FileParser(event, full_name, collection)
         if is_data_file(filename):
+            parser = M2FileParser(event, full_name, collection)
             try:
                 with zip_file.open(filename) as fstream:
                     logger.info(f"Parsing file {full_name}")
@@ -37,11 +37,7 @@ def parse_file_from_zip(
             except NotImplementedError as e:
                 parser.update_file_record(status="Not parsed", msg=f"File skipped: {e}")
         else:
-            file_ext = get_extension(filename)
-            error_message = (
-                f"File skipped because of invalid file extension: .{file_ext}"
-            )
-            parser.update_file_record(status="Not parsed", msg=error_message)
+            log_invalid_file_extension(event, full_name)
             logger.debug(
                 "Skipping file within zip. Does not match an allowed file type."
             )
