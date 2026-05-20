@@ -24,6 +24,7 @@
                 <td>Parsing status</td>
                 <td>Parsed lines</td>
                 <td>Unparseable lines</td>
+                <td>Collection</td>
                 <td>Imported date</td>
                 <td>Error message</td>
                 <td>Parser version</td>
@@ -33,10 +34,19 @@
             {% for file in object.get_files_in_order %}
                 <tr>
                     <td>{{ file.file_name }}</td>
-                    <td>{{ file.activity_date }}</td>
+                    {% if file.activity_date %}
+                        <td>{{ file.activity_date }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
                     <td>{{ file.parsing_status }}</td>
                     <td>{{ file.accountactivity_set.count|intcomma }}</td>
                     <td>{{ file.unparseabledata_set.count|intcomma }}</td>
+                    {% if file.collection %}
+                        <td>{{ file.collection }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
                     <td>{{ file.timestamp|localtime }}</td>
                     <td>{{ file.error_message }}</td>
                     <td>{{ file.parser_version }}</td>
@@ -69,8 +79,16 @@
                 <tr>
                     <td>{{ result.evaluator.id }}</td>
                     <td>{{ result.hits|intcomma }}</td>
-                    <td>{{ result.inconsistency_start }}</td>
-                    <td>{{ result.inconsistency_end }}</td>
+                    {% if result.inconsistency_start %}
+                        <td>{{ result.inconsistency_start }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+                    {% if result.inconsistency_end %}
+                        <td>{{ result.inconsistency_end }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
                     <td>{{ result.evaluator_version }}</td>
                 </tr>
             {% endfor %}
