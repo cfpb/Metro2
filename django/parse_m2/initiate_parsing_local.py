@@ -15,6 +15,9 @@ from parse_m2.models import Metro2Event
 
 ############################################
 # Methods for parsing files from the local filesystem
+def file_name_local(filepath) -> str:
+    return f"local:{filepath}"
+
 def parse_local_file(
     event: Metro2Event,
     filepath: str,
@@ -22,7 +25,7 @@ def parse_local_file(
 ):
     logger = logging.getLogger('parse_m2.parse_local_file')
 
-    parser = M2FileParser(event, full_name, collection)
+    parser = M2FileParser(event, file_name_local(filepath), collection)
 
     logger.info(f"Parsing local file: {filepath}")
     try:

@@ -25,19 +25,22 @@ from parse_m2.models import Metro2Event
 # For more on how to set credentials:
 # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html
 
+def file_name_s3(file) -> str:
+    return f"s3:{file.key}"
+
 def parse_s3_file(
     file, event: Metro2Event, collection: str = None,
 ):
     logger = logging.getLogger('parse_m2.parse_s3_file')
 
     # Instantiate a parser
-    parser = M2FileParser(event, full_name, collection)
+    parser = M2FileParser(event, file_name_s3(file), collection)
 
     # Parse the file
     fstream = file.get()["Body"]
     logger.debug(f"Successfully opened file: {file_name_s3(file)}. Now parsing...")
     parser.parse_file_contents(fstream, file.size)
-    logger.info(f'File {full_name} written to database.')
+    logger.info(f'File {file_name_s3(file)} written to database.')
 
 def parse_zip_file_contents_S3(
     zip_obj,
