@@ -35,7 +35,7 @@ def parse_s3_file(
 
     # Parse the file
     fstream = file.get()["Body"]
-    logger.debug(f"Successfully opened file: {full_name}. Now parsing...")
+    logger.debug(f"Successfully opened file: {file_name_s3(file)}. Now parsing...")
     parser.parse_file_contents(fstream, file.size)
     logger.info(f'File {full_name} written to database.')
 
@@ -89,4 +89,6 @@ def parse_files_from_s3_bucket(
         elif is_data_file(file.key):
             parse_s3_file(file, event, collection)
         else:
-            log_invalid_file_extension(event, file.key, skip_existing, logger)
+            # If the file is neither zip nor datafile, log the error and skip.
+            logger.info("Skipping. Does not match an allowed file type.")
+            log_invalid_file_extension(event, file.key)

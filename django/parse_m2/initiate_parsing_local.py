@@ -22,16 +22,14 @@ def parse_local_file(
 ):
     logger = logging.getLogger('parse_m2.parse_local_file')
 
-    # Instantiate a parser
     parser = M2FileParser(event, full_name, collection)
 
-    logger.debug(f"Parsing local file: {filepath}")
+    logger.info(f"Parsing local file: {filepath}")
     try:
         with open(filepath) as fstream:
             file_size = os.path.getsize(filepath)
-            # Parse the file
             parser.parse_file_contents(fstream, file_size)
-            logger.info(f'File {os.path.basename(fstream.name)} written to database.')
+            logger.debug("Parsing completed")
     except FileNotFoundError as e:
         logger.error(f"There was an error opening the file: {e}")
 
@@ -64,9 +62,9 @@ def parse_files_from_local_filesystem(
 
     data_directory: str = event.directory
 
-    # iterate over files in the directory
+    # Iterate over files in the directory
     for filename in os.listdir(data_directory):
-        logger.info(f"Encountered file in local data path: {filename}")
+        logger.debug(f"Encountered file in local data path: {filename}")
         filepath = os.path.join(data_directory, filename)
 
         if os.path.isfile(filepath):
@@ -82,4 +80,6 @@ def parse_files_from_local_filesystem(
             elif is_data_file(filename):
                 parse_local_file(event, filepath, collection)
             else:
-                log_invalid_file_extension(event, filename, skip_existing, logger)
+                # If the file is neither zip nor datafile, log an error and skip
+                logger.info("Skipping. Does not match an allowed file type.")
+                log_invalid_file_extension(event, filename)

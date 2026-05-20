@@ -22,7 +22,7 @@ class Command(BaseCommand):
     )
 
     def add_arguments(self, argparser):
-        event_help = "The ID of the event record"
+        event_help = "The ID of the event record. (required)"
         argparser.add_argument(
             "-e",
             "--event_id",
