@@ -22,13 +22,25 @@ class Command(BaseCommand):
     )
 
     def add_arguments(self, argparser):
-        event_help = "The ID of the event record"
+        event_help = "The ID of the event record. (required)"
         argparser.add_argument(
             "-e",
             "--event_id",
             nargs="?",
             required=True,
             help=event_help
+        )
+
+        directory_help = (
+            "The directory to find files for parsing. When present, overrides "
+            "the 'directory' value on the Metro2Event model. Useful for when "
+            "an event has files in multiple directories that need to be parsed "
+            "separately. (optional)"
+        )
+        argparser.add_argument(
+            "-d", "--directory",
+            nargs="?", required=False,
+            help=directory_help,
         )
 
         collection_help = (
@@ -48,6 +60,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         logger = logging.getLogger('commands.parse')
         event_id = options["event_id"]
+        directory = options["directory"]
         collection = options["collection"]
 
         # Fetch the Metro2Event
@@ -62,13 +75,13 @@ class Command(BaseCommand):
         if settings.S3_ENABLED:
             parse_files_from_s3_bucket(
                 event,
-                skip_existing=True,
+                directory=directory,
                 collection=collection
             )
         else:
             parse_files_from_local_filesystem(
                 event,
-                skip_existing=True,
+                directory=directory,
                 collection=collection
             )
 
