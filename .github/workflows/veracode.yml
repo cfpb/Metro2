@@ -1,0 +1,109 @@
+name: veracode
+on:
+  workflow_dispatch:
+  pull_request:
+  merge_group:
+
+jobs:
+  Veracode_SAST:
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Zip scannable files
+        run: >
+          find . -path '*test*' -prune -o \( -name '*.py' -o -name '*.js' -o
+          -name '*.ts' -o -name '*.htm*' -o -name '*.json' -o -name '*.yml' \)
+          -print | zip metro2-gha.zip -@
+
+      - name: See included files
+        run: |
+          ls -la
+
+      - name: Setup Veracode
+        run: |
+          curl -fsS https://tools.veracode.com/veracode-cli/install | sh
+
+      - name: Download Veracode Static Pipeline Scanner
+        run: >
+          curl
+          https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+          -o veracode.zip
+
+          unzip -o veracode.zip
+
+      - name: Veracode Static Pipeline Scanner
+        env:
+          VERACODE_API_ID: ${{ secrets.VERACODE_API_ID }}
+          VERACODE_API_KEY: ${{ secrets.VERACODE_API_KEY }}
+          VERACODE_POLICY: CFPB-Policy
+        run: >
+          java -jar pipeline-scan.jar
+          --veracode_api_id "$VERACODE_API_ID"
+          --veracode_api_key "$VERACODE_API_KEY"
+          --request_policy "$VERACODE_POLICY"
+
+          java -jar pipeline-scan.jar
+          --veracode_api_id "$VERACODE_API_ID"
+          --veracode_api_key "$VERACODE_API_KEY"
+          --file "./metro2-gha.zip"
+          --policy_file "$VERACODE_POLICY.json"
+          --app_id="metro2"
+          --summary_output true
+
+  Veracode_SCA:
+    runs-on:
+      - ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Fetch Veracode
+        run: curl -sSL https://download.sourceclear.com/ci.sh -o veracode.sh
+
+      - name: SCA scan Django
+        id: sca_backend
+        continue-on-error: true
+        env:
+          SRCCLR_API_TOKEN: ${{secrets.SRCCLR_API_TOKEN}}
+          SRCCLR_REGION: FED
+        working-directory: ./django
+        run: |
+          set -o pipefail
+          sh ../veracode.sh scan --json | tee ../sca_backend.json
+
+      - name: SCA scan front-end
+        id: sca_frontend
+        continue-on-error: true
+        env:
+          SRCCLR_API_TOKEN: ${{secrets.SRCCLR_API_TOKEN}}
+          SRCCLR_REGION: FED
+        working-directory: ./front-end
+        run: |
+            set -o pipefail
+            sh ../veracode.sh scan --json | tee ../sca_frontend.json
+
+      - name: Report SCA results
+        if: steps.sca_backend.outcome == 'failure' || steps.sca_frontend.outcome == 'failure'
+        run: |
+          echo "CVSS > 7.0 fails"
+          echo "==== Django ===="
+          jq -r '
+            . as $root |
+            [.records[0].vulnerabilities[]] |
+            sort_by(-(.cvss3Score // .cvssScore // 0), .cve) |
+            .[] |
+            (.libraries[0]._links.ref | split("/") | map(select(. != "")) | map(tonumber? // .)) as $path |
+            ($root | getpath($path[0:4])) as $lib |
+            "- CVSS \(.cvss3Score // .cvssScore) [CVE \(.cve)] in `\($lib.name)@\($lib.versions[0].version)`: \(.title)  — affected \(.libraries[0].details[0].versionRange), fix: \(.libraries[0].details[0].updateToVersion // "none")"
+          ' sca_backend.json
+          echo "==== Front-end ===="
+          jq -r '
+            . as $root |
+            [.records[0].vulnerabilities[]] |
+            sort_by(-(.cvss3Score // .cvssScore // 0), .cve) |
+            .[] |
+            (.libraries[0]._links.ref | split("/") | map(select(. != "")) | map(tonumber? // .)) as $path |
+            ($root | getpath($path[0:4])) as $lib |
+            "- CVSS \(.cvss3Score // .cvssScore) [CVE \(.cve)] in `\($lib.name)@\($lib.versions[0].version)`: \(.title)  — affected \(.libraries[0].details[0].versionRange), fix: \(.libraries[0].details[0].updateToVersion // "none")"
+          ' sca_frontend.json
+          exit 1
