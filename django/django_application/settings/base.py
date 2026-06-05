@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_filters',
     'parse_m2.apps.ParseM2Config',
     'evaluate_m2.apps.EvaluateM2Config',
+    'django_prose_editor',
 ]
 
 MIDDLEWARE = [

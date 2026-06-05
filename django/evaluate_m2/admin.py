@@ -11,7 +11,6 @@ from evaluate_m2.models import (
 class EvaluatorMetadataAdmin(admin.ModelAdmin):
     readonly_fields = [
         'id', 'category', 'fields_used', 'fields_display',
-        'long_description',
     ]
     fields = [
         'id', 'category', 'fields_used', 'fields_display',

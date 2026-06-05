@@ -12,6 +12,7 @@ gunicorn==25.3.0
 whitenoise==6.12.0
 smart-open[s3]==7.6.0
 yappi==1.7.6
+django-prose-editor[sanitize]
 
 # Not required directly by Metro2; pinned to avoid CVEs
 certifi==2026.4.22
