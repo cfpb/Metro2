@@ -21,8 +21,12 @@ class EvaluatorMetadata(models.Model):
             "Bold": True,
             "Italic": True,
             "BulletList": True,
+            "OrderedList": True,
             "ListItem": True,
             "Link": True,
+            "Heading": {
+                "levels": [4]
+            },
         },
         sanitize=True,  # Built-in server side sanitization
         blank=True,
