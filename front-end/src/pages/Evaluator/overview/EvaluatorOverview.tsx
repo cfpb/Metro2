@@ -1,9 +1,9 @@
+import DOMPurify from 'dompurify'
 import Accordion from '@src/components/Accordion/Accordion'
 import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
 import type Event from '@src/types/Event'
 import type User from '@src/types/User'
 import type { ReactElement } from 'react'
-import EvaluatorLongDescription from './components/LongDescription'
 import EvaluatorMetadataSection from './components/Metadata'
 import EvaluatorSummary from './components/Summary'
 
@@ -33,7 +33,8 @@ export default function EvaluatorOverview({
           <div className='evaluator-metadata'>
             <Accordion header='Criteria evaluated'>
               <div className='long-description'>
-                <EvaluatorLongDescription content={metadata.long_description} />
+                <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(metadata.long_description) }}>
+          </div>
               </div>
             </Accordion>
             <Accordion header='How to evaluate these results'>
