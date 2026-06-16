@@ -1,7 +1,8 @@
-import {
-  DOWNLOAD_ACKNOWLEDGMENT_LABEL,
-  DOWNLOAD_ACKNOWLEDGMENT_TEXT
-} from '@src/config'
+const DOWNLOAD_ACKNOWLEDGMENT_TEXT =
+  'I understand that by downloading data from this system, I will be accessing Personally Identifiable Information (PII) and Confidential Information (CI).'
+
+const DOWNLOAD_ACKNOWLEDGMENT_LABEL =
+  'I confirm that I am knowingly downloading PII or CI and understand that I am responsible for safeguarding this data.'
 
 export const getInputByLabel = (label: string) => {
   return cy

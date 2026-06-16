@@ -1,12 +1,13 @@
 import { Button } from '@cfpb/design-system-react'
-import { PII_WARNING_TEXT } from '@src/config'
 import { acceptPIIWarning, hasAcceptedPIIWarning } from '@src/utils/cookies'
 import DOMPurify from 'dompurify'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import { Modal, ModalFooter } from './Modal'
 
-const warningText = DOMPurify.sanitize(PII_WARNING_TEXT)
+const warningText = DOMPurify.sanitize(
+  import.meta.env.VITE_PII_WARNING_TEXT as string
+)
 
 export default function WarningModal(): ReactElement | null {
   const [isOpen, setIsOpen] = useState(!hasAcceptedPIIWarning())

@@ -1,8 +1,4 @@
 import { Button, ButtonGroup, Checkbox } from '@cfpb/design-system-react'
-import {
-  DOWNLOAD_ACKNOWLEDGMENT_LABEL,
-  DOWNLOAD_ACKNOWLEDGMENT_TEXT
-} from '@src/config'
 import DOMPurify from 'dompurify'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
@@ -21,7 +17,10 @@ interface DownloadModalProperties {
   buttonText?: string
 }
 
-const downloadText = DOMPurify.sanitize(DOWNLOAD_ACKNOWLEDGMENT_TEXT)
+const downloadText = DOMPurify.sanitize(
+  import.meta.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT as string
+)
+const downloadLabel = import.meta.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_LABEL as string
 
 /**
  * DownloadModal()
@@ -93,7 +92,7 @@ export default function DownloadModal({
               isLarge
               checked={privacyMessageAcknowledged}
               data-testid='pii-checkbox'
-              label={DOWNLOAD_ACKNOWLEDGMENT_LABEL}
+              label={downloadLabel}
               onChange={onChange}
             />
           </div>

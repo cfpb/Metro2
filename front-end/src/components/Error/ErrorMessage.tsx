@@ -1,5 +1,4 @@
 import { ButtonGroup, Link as CFPBLink } from '@cfpb/design-system-react'
-import { ADMIN_EMAIL } from '@src/config'
 import { Link } from '@src/utils/DSRLink'
 import { useRouterState } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
@@ -18,6 +17,7 @@ export default function ErrorMessage({
 }: ErrorMessageProperties): ReactElement {
   const router = useRouterState()
   const currentPath = router.location.pathname
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL as string
 
   return (
     <div className='error-container content-row' data-testid='error-container'>
@@ -30,12 +30,12 @@ export default function ErrorMessage({
           <Link asButton to='/' data-testid='back-button'>
             Back to Metro 2 home page
           </Link>
-          {ADMIN_EMAIL ? (
+          {adminEmail ? (
             <CFPBLink
               asButton
               iconRight='email'
-              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              href={`mailto:${ADMIN_EMAIL ?? ''}?subject=${type}%20Error%20at%20%22${currentPath}%22`}
+               
+              href={`mailto:${adminEmail ?? ''}?subject=${type}%20Error%20at%20%22${currentPath}%22`}
               data-testid='contact-link'>
               Contact an administrator
             </CFPBLink>
