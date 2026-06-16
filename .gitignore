@@ -2,20 +2,12 @@
 **
 
 # ...except the following directories
+!.github/
+!.github/**
 !django/
 !django/**
 !front-end/
 !front-end/**
-!helm/
-!helm/**
-!build-utils/
-!build-utils/**
-!jenkins/
-!jenkins/**
-!.github/
-!.github/**
-!local_data/
-!local_data/**
 
 # ...and the following files
 !Dockerfile
@@ -23,11 +15,7 @@
 !.dockerignore
 !.gitignore
 !README.md
-!API.md
-!helm-install-local.sh
-!build-images.sh
 !.editorconfig
-!buildspec.yml
 !CODE_OF_CONDUCT.md
 !CONTRIBUTING.md
 !LICENSE
@@ -39,7 +27,6 @@
 *.sqlite3
 .coverage
 *.DS_Store
-helm/metro2/charts/
 django/static
 htmlcov/
 
