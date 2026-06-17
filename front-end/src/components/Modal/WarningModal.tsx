@@ -18,15 +18,17 @@ export default function WarningModal(): ReactElement | null {
   }
 
   return (
-    <Modal open={isOpen} interactionRequired>
+    <Modal open={isOpen} interactionRequired data-testid='warning-modal'>
       <h1 className='h3 u-mb30'>Warning</h1>
-      <div dangerouslySetInnerHTML={{ __html: warningText }}></div>
+      <div
+        data-testid='warning-text'
+        dangerouslySetInnerHTML={{ __html: warningText }}></div>
       <ModalFooter>
         <Button
           appearance='primary'
           id='accept'
           label='Accept and continue to PII'
-          data-testid='csv-download-button'
+          data-testid='accept-warning-button'
           className='a-btn a-btn--full-on-xs'
           onClick={onClick}
           size='default'

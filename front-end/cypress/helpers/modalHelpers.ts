@@ -14,8 +14,8 @@ export const getInputByLabel = (label: string) => {
 }
 
 export class Metro2Modal {
-  getModal() {
-    return cy.get('.modal')
+  getModal(testid: string | null = null) {
+    return testid ? cy.get(`[data-testid="${testid}"].modal`) : cy.get('.modal')
   }
 
   openModal(buttonText: string): Cypress.Chainable<JQuery> {

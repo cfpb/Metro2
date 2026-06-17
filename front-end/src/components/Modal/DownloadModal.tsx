@@ -82,7 +82,7 @@ export default function DownloadModal({
       {requirePrivacyAcknowledgment && (
         <fieldset
           className='o-form__fieldset block block--sub'
-          data-test-id='download-acknowledgment'>
+          data-testid='download-acknowledgment'>
           <legend className='h4'>{privacyHeader}</legend>
           <p dangerouslySetInnerHTML={{ __html: downloadText }}></p>
           <div className='u-mt15'>

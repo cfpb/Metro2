@@ -14,8 +14,9 @@ export function Modal({
   children,
   interactionRequired = false,
   open,
-  onClose
-}: ModalProperties & React.HTMLAttributes<HTMLDivElement>): ReactElement | null {
+  onClose,
+  ...rest
+}: ModalProperties & React.HTMLAttributes<HTMLDialogElement>): ReactElement | null {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const openModal = (): void => {
     dialogRef.current?.showModal()
@@ -51,7 +52,7 @@ export function Modal({
   })
 
   return (
-    <dialog className='modal' ref={dialogRef}>
+    <dialog className='modal' ref={dialogRef} {...rest}>
       <div className='modal-wrapper'>
         {interactionRequired ? (
           ''
