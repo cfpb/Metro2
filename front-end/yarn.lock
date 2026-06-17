@@ -6349,7 +6349,7 @@ __metadata:
     query-string: "npm:^9.1.1"
     react: "npm:^19.2.4"
     react-dom: "npm:^19.2.4"
-    react-router-dom: "npm:^7.13.1"
+    react-router-dom: "npm:^7.17.0"
     sass: "npm:^1.97.3"
     start-server-and-test: "npm:2.1.5"
     stylelint: "npm:^17.4.0"
@@ -9838,21 +9838,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^7.13.1":
-  version: 7.13.1
-  resolution: "react-router-dom@npm:7.13.1"
+"react-router-dom@npm:^7.17.0":
+  version: 7.17.0
+  resolution: "react-router-dom@npm:7.17.0"
   dependencies:
-    react-router: "npm:7.13.1"
+    react-router: "npm:7.17.0"
   peerDependencies:
     react: ">=18"
     react-dom: ">=18"
-  checksum: 10/bda00612fc5032ad2b693d9d6dc9049690c7967900a166887ce60727be5b375a1c9d5c9e4083a80a2baa548428edf74c1cd2a43255a771e9cab7ea33b42aefc2
+  checksum: 10/1372a4f269431c4e8ae6085d1d518a210c5c9a8da1b2f68673ba7b0aebfb2a1956ddbb1fa32d8dab3a9fb731b9156cb037680e311958faa7dba3e8e968dcdca2
   languageName: node
   linkType: hard
 
-"react-router@npm:7.13.1":
-  version: 7.13.1
-  resolution: "react-router@npm:7.13.1"
+"react-router@npm:7.17.0":
+  version: 7.17.0
+  resolution: "react-router@npm:7.17.0"
   dependencies:
     cookie: "npm:^1.0.1"
     set-cookie-parser: "npm:^2.6.0"
@@ -9862,7 +9862,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10/da3c9f52ccb968647090013f735b8506b5f6a0290a43259d78e9ef6a664715978b6de90417e56b18717ce4ffc306e02826f0418e046aae22936a6f8cf386bc79
+  checksum: 10/0f1303150cd607682f911c32b3584cb88bd6312004553032b4db36a7917eae1eba08ba527d42647cb3842e76c313b2ad67fafa1cbfe554c14e6e87c13535b8a1
   languageName: node
   linkType: hard
 
@@ -11578,17 +11578,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tmp@npm:^0.2.0":
-  version: 0.2.3
-  resolution: "tmp@npm:0.2.3"
-  checksum: 10/7b13696787f159c9754793a83aa79a24f1522d47b87462ddb57c18ee93ff26c74cbb2b8d9138f571d2e0e765c728fb2739863a672b280528512c6d83d511c6fa
-  languageName: node
-  linkType: hard
-
-"tmp@npm:~0.2.4":
-  version: 0.2.5
-  resolution: "tmp@npm:0.2.5"
-  checksum: 10/dd4b78b32385eab4899d3ae296007b34482b035b6d73e1201c4a9aede40860e90997a1452c65a2d21aee73d53e93cd167d741c3db4015d90e63b6d568a93d7ec
+"tmp@npm:0.2.7":
+  version: 0.2.7
+  resolution: "tmp@npm:0.2.7"
+  checksum: 10/0a3bc90beb0c6275273c3475fb57e466eaab1c9c4a101d029ff62b18146ce136e7f75d09de34863d9f2c2a492751402508f9e028bc98eb34a1416195d4b15619
   languageName: node
   linkType: hard
 
