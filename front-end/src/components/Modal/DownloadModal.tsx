@@ -18,9 +18,9 @@ interface DownloadModalProperties {
 }
 
 const downloadText = DOMPurify.sanitize(
-  import.meta.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT as string
+  import.meta.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT
 )
-const downloadLabel = import.meta.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_LABEL as string
+const downloadLabel = import.meta.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_LABEL
 
 /**
  * DownloadModal()

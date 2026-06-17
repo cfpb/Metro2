@@ -5,9 +5,7 @@ import type { ReactElement } from 'react'
 import { useState } from 'react'
 import { Modal, ModalFooter } from './Modal'
 
-const warningText = DOMPurify.sanitize(
-  import.meta.env.VITE_PII_WARNING_TEXT as string
-)
+const warningText = DOMPurify.sanitize(import.meta.env.VITE_PII_WARNING_TEXT)
 
 export default function WarningModal(): ReactElement | null {
   const [isOpen, setIsOpen] = useState(!hasAcceptedPIIWarning())

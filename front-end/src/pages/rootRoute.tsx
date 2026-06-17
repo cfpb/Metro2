@@ -9,12 +9,12 @@ interface RouterContext {
   queryClient: QueryClient
 }
 
-const showCFPBHeader = import.meta.env.VITE_SHOW_CFPB_HEADER as boolean
+const showCFPBHeader = import.meta.env.VITE_SHOW_CFPB_HEADER
 
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: (): React.JSX.Element => (
     <Suspense fallback={<LoadingOrError />}>
-      {showCFPBHeader === true ? (
+      {showCFPBHeader === 'true' ? (
         <PageHeader
           href='/'
           links={[

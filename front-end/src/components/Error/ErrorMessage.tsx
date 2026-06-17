@@ -17,7 +17,7 @@ export default function ErrorMessage({
 }: ErrorMessageProperties): ReactElement {
   const router = useRouterState()
   const currentPath = router.location.pathname
-  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL as string
+  const adminEmail = import.meta.env.VITE_ADMIN_EMAIL
 
   return (
     <div className='error-container content-row' data-testid='error-container'>
@@ -34,7 +34,6 @@ export default function ErrorMessage({
             <CFPBLink
               asButton
               iconRight='email'
-               
               href={`mailto:${adminEmail ?? ''}?subject=${type}%20Error%20at%20%22${currentPath}%22`}
               data-testid='contact-link'>
               Contact an administrator
