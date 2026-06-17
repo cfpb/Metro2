@@ -84,7 +84,9 @@ export default function DownloadModal({
           className='o-form__fieldset block block--sub'
           data-testid='download-acknowledgment'>
           <legend className='h4'>{privacyHeader}</legend>
-          <p dangerouslySetInnerHTML={{ __html: downloadText }}></p>
+          <p
+            dangerouslySetInnerHTML={{ __html: downloadText }}
+            data-testid='download-acknowledgment-text'></p>
           <div className='u-mt15'>
             <Checkbox
               id='confirmPII'

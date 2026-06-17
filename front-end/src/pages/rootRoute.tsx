@@ -24,7 +24,7 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
           ]}
         />
       ) : (
-        <header className='row row--action'>
+        <header className='row row--action' data-testid='metro2-header'>
           <h1 className='h4 u-mb0'>
             <Link to='/' className='a-link'>
               Metro2 Evaluator Tool

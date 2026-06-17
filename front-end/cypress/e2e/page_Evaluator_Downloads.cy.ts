@@ -1,5 +1,6 @@
 import { EvaluatorPage } from '@cypress/helpers/evaluatorPageHelpers'
 import { Metro2Modal } from '@cypress/helpers/modalHelpers'
+import { stripHtmlTags } from '@cypress/helpers/utils'
 
 // Instantiate helpers
 const modal = new Metro2Modal()
@@ -32,6 +33,23 @@ describe('Evaluator page', () => {
       modal.getModal().should('be.visible')
       modal.closeModal()
       modal.getModal().should('not.be.visible')
+    })
+
+    it('Should show a download acknowledgment message from env variable', () => {
+      modal.openModal('Save results')
+      cy.env(['VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT']).then(
+        ({ VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT }) => {
+          modal
+            .getModal()
+            .should('be.visible')
+            .within(() => {
+              cy.findByTestId('download-acknowledgment-text').should(
+                'include.text',
+                stripHtmlTags(VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT as string)
+              )
+            })
+        }
+      )
     })
 
     it('Should not allow downloading unless privacy notice is accepted', () => {

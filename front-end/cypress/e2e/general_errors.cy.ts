@@ -77,5 +77,26 @@ describe('Errors', () => {
         `The account doesn’t exist.`
       )
     })
+
+    it('Should show a mailto link if admin email env variable is set', () => {
+      cy.intercept('GET', '/api/events/1/', { fixture: 'event_1' }).as('getEvent')
+      cy.intercept('GET', '/api/events/1/account/not-an-account/', {
+        statusCode: 404
+      }).as('nonexistentAccount')
+
+      cy.visit('/events/1/accounts/not-an-account')
+
+      cy.wait(['@getEvent', '@nonexistentAccount'])
+      cy.env(['VITE_ADMIN_EMAIL']).then(({ VITE_ADMIN_EMAIL }) => {
+        if (VITE_ADMIN_EMAIL) {
+          cy.findByTestId('contact-link')
+            .should('exist')
+            .and('have.attr', 'href')
+            .and('include', `mailto:${VITE_ADMIN_EMAIL}`)
+        } else {
+          cy.findByTestId('contact-link').should('not.exist')
+        }
+      })
+    })
   })
 })

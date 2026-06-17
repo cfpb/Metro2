@@ -1,4 +1,5 @@
 import { getInputByLabel, Metro2Modal } from '@cypress/helpers/modalHelpers'
+import { stripHtmlTags } from '@cypress/helpers/utils'
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 import { accountTableFields } from '@src/pages/Account/utils/accountTableFields'
 
@@ -127,6 +128,24 @@ describe('Account data download', () => {
     modal.closeModal()
     modal.getModal().should('not.be.visible')
   })
+
+  it('Should show a download acknowledgment message from env variable', () => {
+    modal.openModal('Save account data')
+    cy.env(['VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT']).then(
+      ({ VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT }) => {
+        modal
+          .getModal()
+          .should('be.visible')
+          .within(() => {
+            cy.findByTestId('download-acknowledgment-text').should(
+              'include.text',
+              stripHtmlTags(VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT as string)
+            )
+          })
+      }
+    )
+  })
+
   it('Should not allow downloading unless privacy notice is accepted', () => {
     modal.openModal('Save account data')
     modal.verifyPrivacyCheckboxRequired()
