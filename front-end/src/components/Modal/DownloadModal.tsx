@@ -20,7 +20,6 @@ interface DownloadModalProperties {
 const downloadText = DOMPurify.sanitize(
   import.meta.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT
 )
-const downloadLabel = import.meta.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_LABEL
 
 /**
  * DownloadModal()
@@ -92,7 +91,7 @@ export default function DownloadModal({
               isLarge
               checked={privacyMessageAcknowledged}
               data-testid='pii-checkbox'
-              label={downloadLabel}
+              label='I confirm that I am knowingly downloading PII or CI and understand that I am responsible for safeguarding this data.'
               onChange={onChange}
             />
           </div>
