@@ -7,6 +7,7 @@ import { loadEnv } from 'vite'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Get any env variable overrides from parent of parent directory
 dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 
 export default defineConfig({
@@ -26,6 +27,7 @@ export default defineConfig({
       const viteEnv = loadEnv(mode, process.cwd())
 
       // Assign the variables to config.env so Cypress can access them
+      // Check for override values first
       config.env.VITE_ADMIN_EMAIL =
         process.env.VITE_ADMIN_EMAIL ?? viteEnv.VITE_ADMIN_EMAIL
       config.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT =
