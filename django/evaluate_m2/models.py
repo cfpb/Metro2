@@ -33,10 +33,58 @@ class EvaluatorMetadata(models.Model):
     )
     fields_used = JSONField(encoder=DjangoJSONEncoder, null=True)
     fields_display = JSONField(encoder=DjangoJSONEncoder, null=True)
-    crrg_reference = models.TextField(blank=True)
-    potential_harm = models.TextField(blank=True)
-    rationale = models.TextField(blank=True)
-    alternate_explanation = models.TextField(blank=True)
+    crrg_reference = ProseEditorField(
+        extensions={
+            "Bold": True,
+            "Italic": True,
+            "BulletList": True,
+            "OrderedList": True,
+            "ListItem": True,
+            "Link": True,
+            "Blockquote": True
+        },
+        sanitize=True,  # Built-in server side sanitization
+        blank=True,
+    )
+    potential_harm = ProseEditorField(
+        extensions={
+            "Bold": True,
+            "Italic": True,
+            "BulletList": True,
+            "OrderedList": True,
+            "ListItem": True,
+            "Link": True,
+            "Blockquote": True
+        },
+        sanitize=True,  # Built-in server side sanitization
+        blank=True,
+    )
+    rationale = ProseEditorField(
+        extensions={
+            "Bold": True,
+            "Italic": True,
+            "BulletList": True,
+            "OrderedList": True,
+            "ListItem": True,
+            "Link": True,
+            "Blockquote": True
+        },
+        sanitize=True,  # Built-in server side sanitization
+        blank=True,
+    )
+    alternate_explanation = ProseEditorField(
+        extensions={
+            "Bold": True,
+            "Italic": True,
+            "BulletList": True,
+            "OrderedList": True,
+            "ListItem": True,
+            "Link": True,
+            "Blockquote": True
+        },
+        sanitize=True,  # Built-in server side sanitization
+        blank=True,
+    )
 
     func: any
 

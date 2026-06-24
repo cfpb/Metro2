@@ -9,15 +9,25 @@
   max-width: 870px;
 }
 
-// Styles for evaluator long description
+.metadata-expandable-content,
 .long-description {
+  margin: math.div(math.div($grid_gutter-width, 4), $base-font-size-px) + em 0;
+}
+
+// Styles for evaluator long description
+.long-description,
+.metadata-expandable-content {
   h4 {
     margin-bottom: math.div(math.div($grid_gutter-width, 5), $base-font-size-px) + em;
-    font-size: 1rem;
+    font-size: 1rem !important;
     font-weight: 600;
-  }
 
-  p {
-    margin-bottom: math.div($grid_gutter-width, $base-font-size-px) + em;
+    &:not(:first-of-type) {
+      margin-top: math.div($grid_gutter-width, $base-font-size-px) + em;
+    }
   }
+}
+
+.metadata-expandable-content p {
+  margin-bottom: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
 }
