@@ -19,8 +19,7 @@ class EvaluatorMetadataAdmin(admin.ModelAdmin):
         'rationale', 'alternate_explanation',
     ]
     list_display = [
-        'id', 'category', 'description', 'long_description',
-        'fields_used', 'fields_display',
+        'id', 'category', 'description', 'fields_used', 'fields_display',
     ]
 
     def has_add_permission(self, request, obj=None):
