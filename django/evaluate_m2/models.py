@@ -3,6 +3,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import JSONField
 
+from django_prose_editor.fields import ProseEditorField
+
 from parse_m2.models import AccountActivity, Metro2Event
 
 
@@ -15,7 +17,21 @@ class EvaluatorMetadata(models.Model):
     id = models.CharField(max_length=200, primary_key=True)
     category = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)  # short plain language description
-    long_description = models.TextField(blank=True)
+    long_description = ProseEditorField(
+        extensions={
+            "Bold": True,
+            "Italic": True,
+            "BulletList": True,
+            "OrderedList": True,
+            "ListItem": True,
+            "Link": True,
+            "Heading": {
+                "levels": [4]
+            },
+        },
+        sanitize=True,  # Built-in server side sanitization
+        blank=True,
+    )
     fields_used = JSONField(encoder=DjangoJSONEncoder, null=True)
     fields_display = JSONField(encoder=DjangoJSONEncoder, null=True)
     crrg_reference = models.TextField(blank=True)
