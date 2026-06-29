@@ -14,10 +14,11 @@ class EvaluatorMetadataAdmin(admin.ModelAdmin):
         'id', 'category', 'fields_used', 'fields_display',
     ]
     fields = [
-        'id', 'category', 'fields_used', 'fields_display',
+        'category',
         'description', 'long_description',
         'crrg_reference', 'potential_harm',
         'rationale', 'alternate_explanation',
+        'fields_used', 'fields_display',
     ]
     list_display = [
         'id', 'category', 'description', 'show_long_description',
