@@ -63,7 +63,7 @@ export default function Accordion({
           aria-expanded={isExpanded}
           title={header}
           onClick={onClick}>
-          <h3 className='h4 o-expandable__label'>{header}</h3>
+          <h3 className='o-expandable__label'>{header}</h3>
           {expandableLink}
         </button>
       ) : (

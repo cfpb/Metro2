@@ -1,0 +1,50 @@
+{% extends "admin/base_site.html" %}
+{% block extrahead %}
+    <style>
+        .prose-editor {
+            max-width: 670px;
+        }
+        .ProseMirror {
+            min-height: 150px;
+        }
+        .ProseMirror h4,
+        .field-show_long_description h4 {
+            margin-bottom: 0 !important;
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 0;
+        }
+        .ProseMirror p,
+        .field-show_long_description p {
+            margin-top: 0 !important;
+        }
+        .ProseMirror h4:not(:first-of-type),
+        .field-show_long_description h4:not(:first-of-type) {
+            margin-top: 1.5em !important;
+        }
+        .column-description {
+            min-width: 200px;
+        }
+        .field-show_long_description {
+            min-width: 200px;
+        }
+        .field-show_long_description * {
+            max-width: 670px;
+        }
+        .field-show_long_description p,
+        .field-show_long_description h4 {
+            padding-left: 0;
+        }
+        .field-show_long_description p:first-of-type,
+        .field-show_long_description h4:first-of-type {
+            margin-top: 0;
+        }
+        .field-show_long_description p {
+            margin-bottom: .5em;
+        }
+        .field-show_long_description h4 {
+            font-weight: 600;
+            font-size: 14px;
+        }
+    </style>
+{% endblock %}

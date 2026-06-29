@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from evaluate_m2.models import (
     EvaluatorMetadata,
@@ -19,8 +20,12 @@ class EvaluatorMetadataAdmin(admin.ModelAdmin):
         'rationale', 'alternate_explanation',
     ]
     list_display = [
-        'id', 'category', 'description', 'fields_used', 'fields_display',
+        'id', 'category', 'description', 'show_long_description',
     ]
+
+    @admin.display(description='Long Description')
+    def show_long_description(self, obj):
+        return format_html(obj.long_description)
 
     def has_add_permission(self, request, obj=None):
         return False
