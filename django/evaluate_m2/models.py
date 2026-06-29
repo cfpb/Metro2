@@ -12,6 +12,16 @@ class EvaluatorMetadata(models.Model):
     class Meta:
         verbose_name_plural = "Evaluator Metadata"
 
+    _richtext_basic_options = {
+        "Bold": True,
+        "Italic": True,
+        "BulletList": True,
+        "OrderedList": True,
+        "ListItem": True,
+        "Link": True,
+        "Blockquote": True
+    }
+
     # Use the identifier as the primary key instead of an auto_numbered ID.
     # id values may not be blank and must be unique
     id = models.CharField(max_length=200, primary_key=True)
@@ -34,10 +44,26 @@ class EvaluatorMetadata(models.Model):
     )
     fields_used = JSONField(encoder=DjangoJSONEncoder, null=True)
     fields_display = JSONField(encoder=DjangoJSONEncoder, null=True)
-    crrg_reference = models.TextField(blank=True)
-    potential_harm = models.TextField(blank=True)
-    rationale = models.TextField(blank=True)
-    alternate_explanation = models.TextField(blank=True)
+    crrg_reference = ProseEditorField(
+        extensions=_richtext_basic_options,
+        sanitize=True,
+        blank=True,
+    )
+    potential_harm = ProseEditorField(
+        extensions=_richtext_basic_options,
+        sanitize=True,
+        blank=True,
+    )
+    rationale = ProseEditorField(
+        extensions=_richtext_basic_options,
+        sanitize=True,
+        blank=True,
+    )
+    alternate_explanation = ProseEditorField(
+        extensions=_richtext_basic_options,
+        sanitize=True,
+        blank=True,
+    )
 
     func: any
 

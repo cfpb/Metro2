@@ -61,8 +61,8 @@ export default function LocatorBar({
               {eyebrow}
             </div>
           ) : null}
-          <h2 data-testid='locator-bar-heading'>{heading}</h2>
-          {subhead ? <h3 data-testid='locator-bar-subhead'>{subhead}</h3> : null}
+          <h1 className='h2' data-testid='locator-bar-heading'>{heading}</h1>
+          {subhead ? <h2 className='h3' data-testid='locator-bar-subhead'>{subhead}</h2> : null}
         </div>
       </div>
     </div>
