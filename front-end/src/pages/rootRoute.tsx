@@ -9,33 +9,34 @@ interface RouterContext {
   queryClient: QueryClient
 }
 
+const showCFPBHeader = import.meta.env.VITE_SHOW_CFPB_HEADER
+
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: (): React.JSX.Element => (
     <Suspense fallback={<LoadingOrError />}>
-      <PageHeader
-        href='/'
-        links={[
-          <Link key='guide' to='/guide'>
-            User guide
-          </Link>
-        ]}
-      />
-      {/* 
-      TODO: use env variable to toggle CFPB and generic header
-      const isInternal: boolean | null = import.meta.env.VITE_CFPB_INTERNAL as boolean
-      <header className='row row--action'>
-        <h1 className='h4 u-mb0'>
-          <Link to='/' className='a-link'>
-            Metro2 Evaluator Tool
-          </Link>
-        </h1>
-        <div className='links'>
-          <Link to='/guide' className='nav-item'>
-            Need help? See the user guide
-          </Link>
-        </div>
-      </header> */}
-
+      {showCFPBHeader === 'true' ? (
+        <PageHeader
+          href='/'
+          links={[
+            <Link key='guide' to='/guide'>
+              User guide
+            </Link>
+          ]}
+        />
+      ) : (
+        <header className='row row--action' data-testid='metro2-header'>
+          <h1 className='h4 u-mb0'>
+            <Link to='/' className='a-link'>
+              Metro2 Evaluator Tool
+            </Link>
+          </h1>
+          <div className='links'>
+            <Link to='/guide' className='nav-item'>
+              Need help? See the user guide
+            </Link>
+          </div>
+        </header>
+      )}
       <div className='loader_wrapper'>
         <Outlet />
       </div>

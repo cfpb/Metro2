@@ -1,12 +1,11 @@
 import { Button } from '@cfpb/design-system-react'
-import { PII_WARNING_TEXT } from '@src/config'
 import { acceptPIIWarning, hasAcceptedPIIWarning } from '@src/utils/cookies'
 import DOMPurify from 'dompurify'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import { Modal, ModalFooter } from './Modal'
 
-const warningText = DOMPurify.sanitize(PII_WARNING_TEXT)
+const warningText = DOMPurify.sanitize(import.meta.env.VITE_PII_WARNING_TEXT)
 
 export default function WarningModal(): ReactElement | null {
   const [isOpen, setIsOpen] = useState(!hasAcceptedPIIWarning())
@@ -19,15 +18,17 @@ export default function WarningModal(): ReactElement | null {
   }
 
   return (
-    <Modal open={isOpen} interactionRequired>
+    <Modal open={isOpen} interactionRequired data-testid='warning-modal'>
       <h1 className='h3 u-mb30'>Warning</h1>
-      <div dangerouslySetInnerHTML={{ __html: warningText }}></div>
+      <div
+        data-testid='warning-text'
+        dangerouslySetInnerHTML={{ __html: warningText }}></div>
       <ModalFooter>
         <Button
           appearance='primary'
           id='accept'
           label='Accept and continue to PII'
-          data-testid='csv-download-button'
+          data-testid='accept-warning-button'
           className='a-btn a-btn--full-on-xs'
           onClick={onClick}
           size='default'

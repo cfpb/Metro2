@@ -1,8 +1,4 @@
 import { Button, ButtonGroup, Checkbox } from '@cfpb/design-system-react'
-import {
-  DOWNLOAD_ACKNOWLEDGMENT_LABEL,
-  DOWNLOAD_ACKNOWLEDGMENT_TEXT
-} from '@src/config'
 import DOMPurify from 'dompurify'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
@@ -21,7 +17,9 @@ interface DownloadModalProperties {
   buttonText?: string
 }
 
-const downloadText = DOMPurify.sanitize(DOWNLOAD_ACKNOWLEDGMENT_TEXT)
+const downloadText = DOMPurify.sanitize(
+  import.meta.env.VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT
+)
 
 /**
  * DownloadModal()
@@ -84,16 +82,18 @@ export default function DownloadModal({
       {requirePrivacyAcknowledgment && (
         <fieldset
           className='o-form__fieldset block block--sub'
-          data-test-id='download-acknowledgment'>
+          data-testid='download-acknowledgment'>
           <legend className='h4'>{privacyHeader}</legend>
-          <p dangerouslySetInnerHTML={{ __html: downloadText }}></p>
+          <p
+            dangerouslySetInnerHTML={{ __html: downloadText }}
+            data-testid='download-acknowledgment-text'></p>
           <div className='u-mt15'>
             <Checkbox
               id='confirmPII'
               isLarge
               checked={privacyMessageAcknowledged}
               data-testid='pii-checkbox'
-              label={DOWNLOAD_ACKNOWLEDGMENT_LABEL}
+              label='I confirm that I am knowingly downloading PII or CI and understand that I am responsible for safeguarding this data.'
               onChange={onChange}
             />
           </div>
