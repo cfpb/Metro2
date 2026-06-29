@@ -23,11 +23,6 @@ services:
 
   frontend:
     container_name: frontend
-    environment:
-      - VITE_SHOW_CFPB_HEADER
-      - VITE_ADMIN_EMAIL
-      - VITE_DOWNLOAD_ACKNOWLEDGMENT_TEXT
-      - VITE_PII_WARNING_TEXT
     build:
       context: ./front-end
       target: dev
