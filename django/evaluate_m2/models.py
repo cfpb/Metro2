@@ -12,6 +12,16 @@ class EvaluatorMetadata(models.Model):
     class Meta:
         verbose_name_plural = "Evaluator Metadata"
 
+    _richtext_basic_options = {
+        "Bold": True,
+        "Italic": True,
+        "BulletList": True,
+        "OrderedList": True,
+        "ListItem": True,
+        "Link": True,
+        "Blockquote": True
+    }
+
     # Use the identifier as the primary key instead of an auto_numbered ID.
     # id values may not be blank and must be unique
     id = models.CharField(max_length=200, primary_key=True)
@@ -35,55 +45,23 @@ class EvaluatorMetadata(models.Model):
     fields_used = JSONField(encoder=DjangoJSONEncoder, null=True)
     fields_display = JSONField(encoder=DjangoJSONEncoder, null=True)
     crrg_reference = ProseEditorField(
-        extensions={
-            "Bold": True,
-            "Italic": True,
-            "BulletList": True,
-            "OrderedList": True,
-            "ListItem": True,
-            "Link": True,
-            "Blockquote": True
-        },
-        sanitize=True,  # Built-in server side sanitization
+        extensions=_richtext_basic_options,
+        sanitize=True,
         blank=True,
     )
     potential_harm = ProseEditorField(
-        extensions={
-            "Bold": True,
-            "Italic": True,
-            "BulletList": True,
-            "OrderedList": True,
-            "ListItem": True,
-            "Link": True,
-            "Blockquote": True
-        },
-        sanitize=True,  # Built-in server side sanitization
+        extensions=_richtext_basic_options,
+        sanitize=True,
         blank=True,
     )
     rationale = ProseEditorField(
-        extensions={
-            "Bold": True,
-            "Italic": True,
-            "BulletList": True,
-            "OrderedList": True,
-            "ListItem": True,
-            "Link": True,
-            "Blockquote": True
-        },
-        sanitize=True,  # Built-in server side sanitization
+        extensions=_richtext_basic_options,
+        sanitize=True,
         blank=True,
     )
     alternate_explanation = ProseEditorField(
-        extensions={
-            "Bold": True,
-            "Italic": True,
-            "BulletList": True,
-            "OrderedList": True,
-            "ListItem": True,
-            "Link": True,
-            "Blockquote": True
-        },
-        sanitize=True,  # Built-in server side sanitization
+        extensions=_richtext_basic_options,
+        sanitize=True,
         blank=True,
     )
 
