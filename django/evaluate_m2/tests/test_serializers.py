@@ -47,6 +47,8 @@ class EvalSerializerTestCase(TestCase):
             fields_used=["cons_info_ind", "dolp", "id_num"],
             fields_display=["spc_com_cd", "dofd", "l1__change_ind"],
             crrg_reference="PDF page 3",
+            interpret_fields_last_modified=date(2025,9,30),
+            additional_notes_last_modified=date(1900,1,1),
         )
 
         self.e1_json = {
@@ -60,6 +62,9 @@ class EvalSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': '',
+            'interpret_fields_last_modified': '2025-09-30',
+            'additional_notes': '',
+            'additional_notes_last_modified': '1900-01-01',
         }
 
 
@@ -85,6 +90,9 @@ class EvalSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': '',
+            'interpret_fields_last_modified': '1900-01-01',
+            'additional_notes': '',
+            'additional_notes_last_modified': '1900-01-01',
         }
 
         to_json = EvaluatorMetadataSerializer(e2)
@@ -105,6 +113,8 @@ class EvalSerializerTestCase(TestCase):
             record.fields_display,
             ['spc_com_cd', 'dofd', 'l1__change_ind']
         )
+        self.assertEqual(record.interpret_fields_last_modified, date(2025,9,30))
+        self.assertEqual(record.additional_notes_last_modified, date(1900,1,1))
 
     def test_import_from_json_case_insensitive(self):
         fields_used = "\r\n".join([
@@ -130,6 +140,9 @@ class EvalSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': '',
+            'interpret_fields_last_modified': '1900-01-01',
+            'additional_notes': '',
+            'additional_notes_last_modified': '1900-01-01',
         }
 
         from_json = EvaluatorMetadataSerializer(data=eval_json)

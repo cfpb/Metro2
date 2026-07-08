@@ -1,3 +1,4 @@
+from datetime import date
 from rest_framework import serializers
 
 from evaluate_m2.metadata_utils import (
@@ -63,7 +64,8 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         fields = [
             'id', 'category', 'description', 'long_description', 'fields_used',
             'fields_display', 'crrg_reference','potential_harm','rationale',
-            'alternate_explanation'
+            'alternate_explanation', 'interpret_fields_last_modified',
+            'additional_notes', 'additional_notes_last_modified',
         ]
 
     id = serializers.CharField()
@@ -76,6 +78,9 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
     potential_harm = serializers.CharField(required=False, allow_blank=True)
     rationale = serializers.CharField(required=False, allow_blank=True)
     alternate_explanation = serializers.CharField(required=False, allow_blank=True)
+    interpret_fields_last_modified = serializers.DateField(default=date(1900,1,1))
+    additional_notes = serializers.CharField(required=False, allow_blank=True)
+    additional_notes_last_modified = serializers.DateField(default=date(1900,1,1))
 
     def create(self, validated_data):
         return EvaluatorMetadata.objects.create(**validated_data)
@@ -111,6 +116,18 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         instance.alternate_explanation = validated_data.get(
             'alternate_explanation',
             instance.alternate_explanation
+        )
+        instance.interpret_fields_last_modified = validated_data.get(
+            'interpret_fields_last_modified',
+            instance.interpret_fields_last_modified
+        )
+        instance.additional_notes = validated_data.get(
+            'additional_notes',
+            instance.additional_notes
+        )
+        instance.additional_notes_last_modified = validated_data.get(
+            'additional_notes_last_modified',
+            instance.additional_notes_last_modified
         )
         instance.save()
         return instance
