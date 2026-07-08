@@ -12,13 +12,18 @@ from evaluate_m2.models import (
 class EvaluatorMetadataAdmin(admin.ModelAdmin):
     readonly_fields = [
         'id', 'category', 'fields_used', 'fields_display',
+        'interpret_fields_last_modified',
+        'additional_notes_last_modified',
     ]
     fields = [
         'category',
         'description', 'long_description',
         'crrg_reference', 'potential_harm',
         'rationale', 'alternate_explanation',
+        'additional_notes',
         'fields_used', 'fields_display',
+        'interpret_fields_last_modified',
+        'additional_notes_last_modified',
     ]
     list_display = [
         'id', 'category', 'description', 'show_long_description',
