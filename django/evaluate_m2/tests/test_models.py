@@ -7,11 +7,12 @@ from evaluate_m2.models import (
     EvaluatorResult,
     EvaluatorResultSummary,
 )
+from evaluate_m2.serializers import EvaluatorMetadataSerializer
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
 
 
-class ResultSampleTestCase(TestCase):
+class EvaluatorResultSummaryTestCase(TestCase):
     def setUp(self):
         event = Metro2Event.objects.create(name="MyeVent")
         eval = EvaluatorMetadata.objects.create(
@@ -67,7 +68,7 @@ class ResultSampleTestCase(TestCase):
         self.assertEqual(sorted(result), [31, 32, 33, 34])
 
 
-class EvaluateModelsTestCase(TestCase):
+class EvaluatorMetadataTestCase(TestCase):
     def test_eval_res_create_csv_header(self):
         eval = EvaluatorMetadata(
             id="event_name",
@@ -123,3 +124,92 @@ class EvaluateModelsTestCase(TestCase):
             'current_bal',
             ]
         self.assertEqual(field_list, expected)
+
+    def test_save_new_from_csv_imports_last_modified_dates(self):
+        info = {
+            "id": "Test-Type-A",
+            "category": "testing",
+            "description": "",
+            "long_description": "",
+            "fields_used": "",
+            "fields_display": "",
+            "crrg_reference": "",
+            "potential_harm": "",
+            "rationale": "",
+            "alternate_explanation": "",
+            "interpret_fields_last_modified": "2023-02-28",
+            "additional_notes": "",
+            "additional_notes_last_modified": "1900-01-01",
+        }
+        from_json = EvaluatorMetadataSerializer(data=info)
+        self.assertTrue(from_json.is_valid())
+        record = from_json.save()
+        self.assertEqual(
+            record.interpret_fields_last_modified,
+            date(2023,2,28)
+        )
+        self.assertEqual(
+            record.additional_notes_last_modified,
+            date(1900,1,1)
+        )
+
+    def test_save_existing_from_csv_uses_imported_dates(self):
+        ev = EvaluatorMetadata(
+            id="Sample-1",
+            interpret_fields_last_modified=date(2025,9,30),
+            additional_notes_last_modified=date(1900,1,1),
+        )
+        ev.save()
+
+        update_info = {
+            "id": "Sample-1",
+            "category": "testing",
+            "description": "",
+            "long_description": "",
+            "fields_used": "",
+            "fields_display": "",
+            "crrg_reference": "",
+            "potential_harm": "",
+            "rationale": "",
+            "alternate_explanation": "",
+            "interpret_fields_last_modified": "2023-02-28",
+            "additional_notes": "",
+            "additional_notes_last_modified": "1900-01-01",
+        }
+        from_json = EvaluatorMetadataSerializer(ev, data=update_info)
+        self.assertTrue(from_json.is_valid())
+        record = from_json.save()
+
+        self.assertEqual(
+            record.interpret_fields_last_modified,
+            date(2023,2,28)
+        )
+        self.assertEqual(
+            record.additional_notes_last_modified,
+            date(1900,1,1)
+        )
+
+
+    def test_manual_edit_updates_last_modified_date(self):
+        ev = EvaluatorMetadata(
+            id = "Test-Mod-1",
+            rationale = "An initial rationale.",
+        )
+        ev.save()
+        self.assertEqual(ev.interpret_fields_last_modified, date(1900,1,1))
+        self.assertEqual(ev.additional_notes_last_modified, date(1900,1,1))
+
+        eval_load = EvaluatorMetadata.objects.get(id="Test-Mod-1")
+        eval_load.rationale = "Modified rationale"
+        eval_load.additional_notes = "Modified notes"
+        eval_load.save()
+
+        eval_load_2 = EvaluatorMetadata.objects.get(id="Test-Mod-1")
+        self.assertEqual(
+            eval_load_2.interpret_fields_last_modified,
+            date.today()
+        )
+        self.assertEqual(
+            eval_load_2.additional_notes_last_modified,
+            date.today()
+        )

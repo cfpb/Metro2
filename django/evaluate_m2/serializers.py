@@ -154,6 +154,10 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         vals['fields_display'] = [plain_to_code_field_map.get(k, k) \
             for k in vals['fields_display']]
 
+        # signal to the model that this instance is coming from a metadata
+        # import, rather than the Admin interface
+        vals['from_bulk_import'] = True
+
         return vals
 
     def validate(self, data):
