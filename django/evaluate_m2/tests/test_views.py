@@ -413,6 +413,9 @@ class EvaluateViewsTestCase(TestCase):
                 'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa',],
                 'crrg_reference': '', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': '',
+                'interpret_fields_last_modified': '1900-01-01',
+                'additional_notes': '',
+                'additional_notes_last_modified': '1900-01-01',
             }, {
                 'hits': 1,
                 'accounts_affected': 1,
@@ -426,6 +429,9 @@ class EvaluateViewsTestCase(TestCase):
                 'fields_display': ['orig_chg_off_amt', 'terms_freq'],
                 'crrg_reference': '410', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',  # noqa: E501
+                'interpret_fields_last_modified': '1900-01-01',
+                'additional_notes': '',
+                'additional_notes_last_modified': '1900-01-01',
             }, {
                 'hits': 25,
                 'accounts_affected': 1,
@@ -439,7 +445,10 @@ class EvaluateViewsTestCase(TestCase):
                 'crrg_reference': '410',
                 'potential_harm': '',
                 'rationale': '',
-                'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'  # noqa: E501
+                'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',  # noqa: E501
+                'interpret_fields_last_modified': '1900-01-01',
+                'additional_notes': '',
+                'additional_notes_last_modified': '1900-01-01',
         }]}
 
         response = self.client.get('/api/events/1/')

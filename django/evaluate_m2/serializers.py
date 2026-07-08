@@ -22,6 +22,9 @@ class EventsViewSerializer(serializers.ModelSerializer):
     potential_harm = serializers.SerializerMethodField(read_only=True)
     rationale = serializers.SerializerMethodField(read_only=True)
     alternate_explanation = serializers.SerializerMethodField(read_only=True)
+    interpret_fields_last_modified = serializers.SerializerMethodField(read_only=True)
+    additional_notes = serializers.SerializerMethodField(read_only=True)
+    additional_notes_last_modified = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = EvaluatorResultSummary
@@ -29,7 +32,10 @@ class EventsViewSerializer(serializers.ModelSerializer):
                   'inconsistency_end', 'id', 'category',
                   'description', 'long_description',
                   'fields_used', 'fields_display', 'crrg_reference',
-                  'potential_harm','rationale', 'alternate_explanation']
+                  'potential_harm','rationale', 'alternate_explanation',
+                  'interpret_fields_last_modified',
+                  'additional_notes', 'additional_notes_last_modified',
+        ]
 
     def get_id(self, obj: EvaluatorResultSummary):
         return obj.evaluator.id
@@ -51,6 +57,12 @@ class EventsViewSerializer(serializers.ModelSerializer):
         return obj.evaluator.rationale
     def get_alternate_explanation(self, obj: EvaluatorResultSummary):
         return obj.evaluator.alternate_explanation
+    def get_interpret_fields_last_modified(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.interpret_fields_last_modified
+    def get_additional_notes(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.additional_notes
+    def get_additional_notes_last_modified(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.additional_notes_last_modified
 
 
 class EvaluatorMetadataSerializer(serializers.Serializer):

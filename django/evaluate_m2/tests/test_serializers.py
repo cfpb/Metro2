@@ -233,6 +233,9 @@ class EventsViewSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': 'Lorem ipsum dolor sit amet',
+            'interpret_fields_last_modified': date(1900,1,1),
+            'additional_notes': '',
+            'additional_notes_last_modified': date(1900,1,1),
         }
 
     def test_evaluator_metadata_serializer(self):
