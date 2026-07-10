@@ -1,4 +1,3 @@
-from datetime import date
 from rest_framework import serializers
 
 from evaluate_m2.metadata_utils import (
@@ -185,10 +184,13 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         an instance of EvaluatorMetadata
         """
         # First, catch blank date values and set them to the default date
-        if not ('additional_notes_last_modified' in data and data['additional_notes_last_modified']):
-            data['additional_notes_last_modified'] = EvaluatorMetadata._last_modified_never
-        if not ('interpret_fields_last_modified' in data and data['interpret_fields_last_modified']):
-            data['interpret_fields_last_modified'] = EvaluatorMetadata._last_modified_never
+        default_value = EvaluatorMetadata._last_modified_never
+        key1 = 'additional_notes_last_modified'
+        if not (key1 in data and data[key1]):
+            data[key1] = default_value
+        key2 = 'interpret_fields_last_modified'
+        if not (key2 in data and data[key2]):
+            data[key2] = default_value
 
         # Then, get the default values
         vals = super().to_internal_value(data)

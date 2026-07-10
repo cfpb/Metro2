@@ -1,7 +1,8 @@
-from django.test import TestCase
 from django.core.management import call_command
+from django.test import TestCase
 
 from evaluate_m2.models import EvaluatorMetadata
+
 
 class EvalMetadataImportExportTestCase(TestCase):
     #### Test with the actual eval metadata that we import from eval_metadata.csv
@@ -27,6 +28,10 @@ class EvalMetadataImportExportTestCase(TestCase):
         # the CSV should contain info about the evals
         csv_content = response.content.decode('utf-8')
         csv_content_lines = csv_content.splitlines()
-        expected_header = "id,category,description,long_description,fields_used,fields_display,crrg_reference,potential_harm,rationale,alternate_explanation,interpret_fields_last_modified,additional_notes,additional_notes_last_modified"
+        expected_header = \
+            "id,category,description,long_description,fields_used," + \
+            "fields_display,crrg_reference,potential_harm,rationale," + \
+            "alternate_explanation,interpret_fields_last_modified," + \
+            "additional_notes,additional_notes_last_modified"
         self.assertEqual(csv_content_lines[0], expected_header)
         self.assertIn('Portfolio-Type-1', csv_content)

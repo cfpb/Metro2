@@ -3,7 +3,7 @@ from datetime import date
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import JSONField, DEFERRED
+from django.db.models import DEFERRED, JSONField
 
 from django_prose_editor.fields import ProseEditorField
 
@@ -125,12 +125,14 @@ class EvaluatorMetadata(models.Model):
         instance._loaded_values = dict(
             zip(
                 field_names,
-                (value for value in values if value is not DEFERRED)
+                (value for value in values if value is not DEFERRED),
+                strict=False,
             )
         )
         return instance
 
-    _interpret_fields = ['crrg_reference', 'potential_harm', 'rationale', 'alternate_explanation']
+    _interpret_fields = ['crrg_reference', 'potential_harm',
+                         'rationale', 'alternate_explanation']
     _additional_fields = ['additional_notes']
     def _values_modified(self, field_names):
         for f in field_names:
