@@ -24,9 +24,6 @@ class EvaluatorMetadata(models.Model):
         "Blockquote": True
     }
 
-    # Use a default date instead of None if metadata has never been
-    # modified. This allows us to use the Eval Metadata Serializer for
-    # deserializing records.
     _last_modified_never = date(1900,1,1)
 
     # Use the identifier as the primary key instead of an auto_numbered ID.
