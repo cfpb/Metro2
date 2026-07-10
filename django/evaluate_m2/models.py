@@ -24,6 +24,11 @@ class EvaluatorMetadata(models.Model):
         "Blockquote": True
     }
 
+    # Use a default date instead of None if metadata has never been
+    # modified. This allows us to use the Eval Metadata Serializer for
+    # deserializing records.
+    _last_modified_never = date(1900,1,1)
+
     # Use the identifier as the primary key instead of an auto_numbered ID.
     # id values may not be blank and must be unique
     id = models.CharField(max_length=200, primary_key=True)
@@ -66,13 +71,13 @@ class EvaluatorMetadata(models.Model):
         sanitize=True,
         blank=True,
     )
-    interpret_fields_last_modified = models.DateField(default=date(1900,1,1))
+    interpret_fields_last_modified = models.DateField(default=_last_modified_never)
     additional_notes = ProseEditorField(
         extensions=_richtext_basic_options,
         sanitize=True,
         blank=True,
     )
-    additional_notes_last_modified = models.DateField(default=date(1900,1,1))
+    additional_notes_last_modified = models.DateField(default=_last_modified_never)
 
     func: any
 

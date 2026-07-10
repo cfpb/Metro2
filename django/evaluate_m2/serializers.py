@@ -90,9 +90,11 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
     potential_harm = serializers.CharField(required=False, allow_blank=True)
     rationale = serializers.CharField(required=False, allow_blank=True)
     alternate_explanation = serializers.CharField(required=False, allow_blank=True)
-    interpret_fields_last_modified = serializers.DateField(default=date(1900,1,1))
+    interpret_fields_last_modified = serializers.DateField(
+        default=EvaluatorMetadata._last_modified_never)
     additional_notes = serializers.CharField(required=False, allow_blank=True)
-    additional_notes_last_modified = serializers.DateField(default=date(1900,1,1))
+    additional_notes_last_modified = serializers.DateField(
+        default=EvaluatorMetadata._last_modified_never)
 
     def create(self, validated_data):
         return EvaluatorMetadata.objects.create(**validated_data)
