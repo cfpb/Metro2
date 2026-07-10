@@ -98,11 +98,9 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
     potential_harm = serializers.CharField(required=False, allow_blank=True)
     rationale = serializers.CharField(required=False, allow_blank=True)
     alternate_explanation = serializers.CharField(required=False, allow_blank=True)
-    interpret_fields_last_modified = serializers.DateField(
-        default=EvaluatorMetadata._last_modified_never)
+    interpret_fields_last_modified = serializers.DateField()
     additional_notes = serializers.CharField(required=False, allow_blank=True)
-    additional_notes_last_modified = serializers.DateField(
-        default=EvaluatorMetadata._last_modified_never)
+    additional_notes_last_modified = serializers.DateField()
 
     def create(self, validated_data):
         return EvaluatorMetadata.objects.create(**validated_data)
@@ -172,14 +170,27 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         json['fields_used'] = format_fields_for_csv(fields_used)
         json['fields_display'] = format_fields_for_csv(fields_display)
 
+        # Also translate default date values to blank
+        default_date = str(EvaluatorMetadata._last_modified_never)
+        if json['additional_notes_last_modified'] == default_date:
+            json['additional_notes_last_modified'] = ''
+        if json['interpret_fields_last_modified'] == default_date:
+            json['interpret_fields_last_modified'] = ''
+
         return json
 
-    def to_internal_value(self, data):
+    def to_internal_value(self, data: dict):
         """
         Convert a JSON object (as it comes from the evaluator CSV) to
         an instance of EvaluatorMetadata
         """
-        # First, get the default values
+        # First, catch blank date values and set them to the default date
+        if not ('additional_notes_last_modified' in data and data['additional_notes_last_modified']):
+            data['additional_notes_last_modified'] = EvaluatorMetadata._last_modified_never
+        if not ('interpret_fields_last_modified' in data and data['interpret_fields_last_modified']):
+            data['interpret_fields_last_modified'] = EvaluatorMetadata._last_modified_never
+
+        # Then, get the default values
         vals = super().to_internal_value(data)
 
         # get the fields_used and fields_display values from the

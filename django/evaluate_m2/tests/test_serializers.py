@@ -48,7 +48,6 @@ class EvalSerializerTestCase(TestCase):
             fields_display=["spc_com_cd", "dofd", "l1__change_ind"],
             crrg_reference="PDF page 3",
             interpret_fields_last_modified=date(2025,9,30),
-            additional_notes_last_modified=date(1900,1,1),
         )
 
         self.e1_json = {
@@ -64,7 +63,7 @@ class EvalSerializerTestCase(TestCase):
             'alternate_explanation': '',
             'interpret_fields_last_modified': '2025-09-30',
             'additional_notes': '',
-            'additional_notes_last_modified': '1900-01-01',
+            'additional_notes_last_modified': '',
         }
 
 
@@ -90,9 +89,9 @@ class EvalSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': '',
-            'interpret_fields_last_modified': '1900-01-01',
+            'interpret_fields_last_modified': '',
             'additional_notes': '',
-            'additional_notes_last_modified': '1900-01-01',
+            'additional_notes_last_modified': '',
         }
 
         to_json = EvaluatorMetadataSerializer(e2)
@@ -140,9 +139,9 @@ class EvalSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': '',
-            'interpret_fields_last_modified': '1900-01-01',
+            'interpret_fields_last_modified': None,
             'additional_notes': '',
-            'additional_notes_last_modified': '1900-01-01',
+            'additional_notes_last_modified': None,
         }
 
         from_json = EvaluatorMetadataSerializer(data=eval_json)

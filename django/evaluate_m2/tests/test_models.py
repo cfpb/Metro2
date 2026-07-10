@@ -139,7 +139,7 @@ class EvaluatorMetadataTestCase(TestCase):
             "alternate_explanation": "",
             "interpret_fields_last_modified": "2023-02-28",
             "additional_notes": "",
-            "additional_notes_last_modified": "1900-01-01",
+            "additional_notes_last_modified": "",
         }
         from_json = EvaluatorMetadataSerializer(data=info)
         self.assertTrue(from_json.is_valid())
@@ -150,14 +150,14 @@ class EvaluatorMetadataTestCase(TestCase):
         )
         self.assertEqual(
             record.additional_notes_last_modified,
-            date(1900,1,1)
+            EvaluatorMetadata._last_modified_never
         )
 
     def test_save_existing_from_csv_uses_imported_dates(self):
         ev = EvaluatorMetadata(
             id="Sample-1",
             interpret_fields_last_modified=date(2025,9,30),
-            additional_notes_last_modified=date(1900,1,1),
+            additional_notes_last_modified=EvaluatorMetadata._last_modified_never,
         )
         ev.save()
 
@@ -174,7 +174,7 @@ class EvaluatorMetadataTestCase(TestCase):
             "alternate_explanation": "",
             "interpret_fields_last_modified": "2023-02-28",
             "additional_notes": "",
-            "additional_notes_last_modified": "1900-01-01",
+            "additional_notes_last_modified": "",
         }
         from_json = EvaluatorMetadataSerializer(ev, data=update_info)
         self.assertTrue(from_json.is_valid())
@@ -186,7 +186,7 @@ class EvaluatorMetadataTestCase(TestCase):
         )
         self.assertEqual(
             record.additional_notes_last_modified,
-            date(1900,1,1)
+            EvaluatorMetadata._last_modified_never
         )
 
 
@@ -196,8 +196,12 @@ class EvaluatorMetadataTestCase(TestCase):
             rationale = "An initial rationale.",
         )
         ev.save()
-        self.assertEqual(ev.interpret_fields_last_modified, date(1900,1,1))
-        self.assertEqual(ev.additional_notes_last_modified, date(1900,1,1))
+        self.assertEqual(
+            ev.interpret_fields_last_modified,
+            EvaluatorMetadata._last_modified_never)
+        self.assertEqual(
+            ev.additional_notes_last_modified,
+            EvaluatorMetadata._last_modified_never)
 
         eval_load = EvaluatorMetadata.objects.get(id="Test-Mod-1")
         eval_load.rationale = "Modified rationale"
