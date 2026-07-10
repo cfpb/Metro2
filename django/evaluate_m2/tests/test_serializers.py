@@ -193,6 +193,7 @@ class EventsViewSerializerTestCase(TestCase):
                     'terms frequency'],
             crrg_reference='400',
             alternate_explanation='Lorem ipsum dolor sit amet',
+            interpret_fields_last_modified=date(2025,10,31),
         )
 
         # Create the parent records for the AccountActivity data
@@ -233,9 +234,9 @@ class EventsViewSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': 'Lorem ipsum dolor sit amet',
-            'interpret_fields_last_modified': date(1900,1,1),
+            'interpret_fields_last_modified': date(2025,10,31),
             'additional_notes': '',
-            'additional_notes_last_modified': date(1900,1,1),
+            'additional_notes_last_modified': None,
         }
 
     def test_evaluator_metadata_serializer(self):

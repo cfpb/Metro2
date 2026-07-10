@@ -58,11 +58,19 @@ class EventsViewSerializer(serializers.ModelSerializer):
     def get_alternate_explanation(self, obj: EvaluatorResultSummary):
         return obj.evaluator.alternate_explanation
     def get_interpret_fields_last_modified(self, obj: EvaluatorResultSummary):
-        return obj.evaluator.interpret_fields_last_modified
+        value = obj.evaluator.interpret_fields_last_modified
+        if value == EvaluatorMetadata._last_modified_never:
+            return None
+        else:
+            return value
     def get_additional_notes(self, obj: EvaluatorResultSummary):
         return obj.evaluator.additional_notes
     def get_additional_notes_last_modified(self, obj: EvaluatorResultSummary):
-        return obj.evaluator.additional_notes_last_modified
+        value = obj.evaluator.additional_notes_last_modified
+        if value == EvaluatorMetadata._last_modified_never:
+            return None
+        else:
+            return value
 
 
 class EvaluatorMetadataSerializer(serializers.Serializer):

@@ -25,6 +25,7 @@ class EvaluateViewsTestCase(TestCase):
             long_description='',
             fields_used=['hcola', 'smpa', 'dofd'],
             fields_display=['amt_past_due', 'compl_cond_cd', 'smpa',],
+            additional_notes_last_modified=date(2026,3,31),
         )
         self.stat_dofd_2 = EvaluatorMetadata.objects.create(
             id='Status-DOFD-2',
@@ -413,9 +414,9 @@ class EvaluateViewsTestCase(TestCase):
                 'fields_display': ['amt_past_due', 'compl_cond_cd', 'smpa',],
                 'crrg_reference': '', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': '',
-                'interpret_fields_last_modified': '1900-01-01',
+                'interpret_fields_last_modified': None,
                 'additional_notes': '',
-                'additional_notes_last_modified': '1900-01-01',
+                'additional_notes_last_modified': '2026-03-31',
             }, {
                 'hits': 1,
                 'accounts_affected': 1,
@@ -429,9 +430,9 @@ class EvaluateViewsTestCase(TestCase):
                 'fields_display': ['orig_chg_off_amt', 'terms_freq'],
                 'crrg_reference': '410', 'potential_harm': '',
                 'rationale': '', 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',  # noqa: E501
-                'interpret_fields_last_modified': '1900-01-01',
+                'interpret_fields_last_modified': None,
                 'additional_notes': '',
-                'additional_notes_last_modified': '1900-01-01',
+                'additional_notes_last_modified': None,
             }, {
                 'hits': 25,
                 'accounts_affected': 1,
@@ -446,9 +447,9 @@ class EvaluateViewsTestCase(TestCase):
                 'potential_harm': '',
                 'rationale': '',
                 'alternate_explanation': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',  # noqa: E501
-                'interpret_fields_last_modified': '1900-01-01',
+                'interpret_fields_last_modified': None,
                 'additional_notes': '',
-                'additional_notes_last_modified': '1900-01-01',
+                'additional_notes_last_modified': None,
         }]}
 
         response = self.client.get('/api/events/1/')
