@@ -113,7 +113,8 @@ class EvalSerializerTestCase(TestCase):
             ['spc_com_cd', 'dofd', 'l1__change_ind']
         )
         self.assertEqual(record.interpret_fields_last_modified, date(2025,9,30))
-        self.assertEqual(record.additional_notes_last_modified, date(1900,1,1))
+        self.assertEqual(record.additional_notes_last_modified,
+                         EvaluatorMetadata._last_modified_never)
 
     def test_import_from_json_case_insensitive(self):
         fields_used = "\r\n".join([
