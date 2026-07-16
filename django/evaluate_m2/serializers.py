@@ -21,6 +21,9 @@ class EventsViewSerializer(serializers.ModelSerializer):
     potential_harm = serializers.SerializerMethodField(read_only=True)
     rationale = serializers.SerializerMethodField(read_only=True)
     alternate_explanation = serializers.SerializerMethodField(read_only=True)
+    interpret_fields_last_modified = serializers.SerializerMethodField(read_only=True)
+    additional_notes = serializers.SerializerMethodField(read_only=True)
+    additional_notes_last_modified = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = EvaluatorResultSummary
@@ -28,7 +31,10 @@ class EventsViewSerializer(serializers.ModelSerializer):
                   'inconsistency_end', 'id', 'category',
                   'description', 'long_description',
                   'fields_used', 'fields_display', 'crrg_reference',
-                  'potential_harm','rationale', 'alternate_explanation']
+                  'potential_harm','rationale', 'alternate_explanation',
+                  'interpret_fields_last_modified',
+                  'additional_notes', 'additional_notes_last_modified',
+        ]
 
     def get_id(self, obj: EvaluatorResultSummary):
         return obj.evaluator.id
@@ -50,6 +56,20 @@ class EventsViewSerializer(serializers.ModelSerializer):
         return obj.evaluator.rationale
     def get_alternate_explanation(self, obj: EvaluatorResultSummary):
         return obj.evaluator.alternate_explanation
+    def get_interpret_fields_last_modified(self, obj: EvaluatorResultSummary):
+        value = obj.evaluator.interpret_fields_last_modified
+        if value == EvaluatorMetadata._last_modified_never:
+            return None
+        else:
+            return value
+    def get_additional_notes(self, obj: EvaluatorResultSummary):
+        return obj.evaluator.additional_notes
+    def get_additional_notes_last_modified(self, obj: EvaluatorResultSummary):
+        value = obj.evaluator.additional_notes_last_modified
+        if value == EvaluatorMetadata._last_modified_never:
+            return None
+        else:
+            return value
 
 
 class EvaluatorMetadataSerializer(serializers.Serializer):
@@ -63,7 +83,8 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         fields = [
             'id', 'category', 'description', 'long_description', 'fields_used',
             'fields_display', 'crrg_reference','potential_harm','rationale',
-            'alternate_explanation'
+            'alternate_explanation', 'interpret_fields_last_modified',
+            'additional_notes', 'additional_notes_last_modified',
         ]
 
     id = serializers.CharField()
@@ -76,6 +97,9 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
     potential_harm = serializers.CharField(required=False, allow_blank=True)
     rationale = serializers.CharField(required=False, allow_blank=True)
     alternate_explanation = serializers.CharField(required=False, allow_blank=True)
+    interpret_fields_last_modified = serializers.DateField()
+    additional_notes = serializers.CharField(required=False, allow_blank=True)
+    additional_notes_last_modified = serializers.DateField()
 
     def create(self, validated_data):
         return EvaluatorMetadata.objects.create(**validated_data)
@@ -112,6 +136,18 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
             'alternate_explanation',
             instance.alternate_explanation
         )
+        instance.interpret_fields_last_modified = validated_data.get(
+            'interpret_fields_last_modified',
+            instance.interpret_fields_last_modified
+        )
+        instance.additional_notes = validated_data.get(
+            'additional_notes',
+            instance.additional_notes
+        )
+        instance.additional_notes_last_modified = validated_data.get(
+            'additional_notes_last_modified',
+            instance.additional_notes_last_modified
+        )
         instance.save()
         return instance
 
@@ -133,14 +169,30 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         json['fields_used'] = format_fields_for_csv(fields_used)
         json['fields_display'] = format_fields_for_csv(fields_display)
 
+        # Also translate default date values to blank
+        default_date = str(EvaluatorMetadata._last_modified_never)
+        if json['additional_notes_last_modified'] == default_date:
+            json['additional_notes_last_modified'] = ''
+        if json['interpret_fields_last_modified'] == default_date:
+            json['interpret_fields_last_modified'] = ''
+
         return json
 
-    def to_internal_value(self, data):
+    def to_internal_value(self, data: dict):
         """
         Convert a JSON object (as it comes from the evaluator CSV) to
         an instance of EvaluatorMetadata
         """
-        # First, get the default values
+        # First, catch blank date values and set them to the default date
+        default_value = EvaluatorMetadata._last_modified_never
+        key1 = 'additional_notes_last_modified'
+        if not (key1 in data and data[key1]):
+            data[key1] = default_value
+        key2 = 'interpret_fields_last_modified'
+        if not (key2 in data and data[key2]):
+            data[key2] = default_value
+
+        # Then, get the default values
         vals = super().to_internal_value(data)
 
         # get the fields_used and fields_display values from the
@@ -153,6 +205,10 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
             for k in vals['fields_used']]
         vals['fields_display'] = [plain_to_code_field_map.get(k, k) \
             for k in vals['fields_display']]
+
+        # signal to the model that this instance is coming from a metadata
+        # import, rather than the Admin interface
+        vals['from_bulk_import'] = True
 
         return vals
 

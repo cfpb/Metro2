@@ -47,6 +47,7 @@ class EvalSerializerTestCase(TestCase):
             fields_used=["cons_info_ind", "dolp", "id_num"],
             fields_display=["spc_com_cd", "dofd", "l1__change_ind"],
             crrg_reference="PDF page 3",
+            interpret_fields_last_modified=date(2025,9,30),
         )
 
         self.e1_json = {
@@ -60,6 +61,9 @@ class EvalSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': '',
+            'interpret_fields_last_modified': '2025-09-30',
+            'additional_notes': '',
+            'additional_notes_last_modified': '',
         }
 
 
@@ -85,6 +89,9 @@ class EvalSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': '',
+            'interpret_fields_last_modified': '',
+            'additional_notes': '',
+            'additional_notes_last_modified': '',
         }
 
         to_json = EvaluatorMetadataSerializer(e2)
@@ -105,6 +112,9 @@ class EvalSerializerTestCase(TestCase):
             record.fields_display,
             ['spc_com_cd', 'dofd', 'l1__change_ind']
         )
+        self.assertEqual(record.interpret_fields_last_modified, date(2025,9,30))
+        self.assertEqual(record.additional_notes_last_modified,
+                         EvaluatorMetadata._last_modified_never)
 
     def test_import_from_json_case_insensitive(self):
         fields_used = "\r\n".join([
@@ -130,6 +140,9 @@ class EvalSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': '',
+            'interpret_fields_last_modified': None,
+            'additional_notes': '',
+            'additional_notes_last_modified': None,
         }
 
         from_json = EvaluatorMetadataSerializer(data=eval_json)
@@ -180,6 +193,7 @@ class EventsViewSerializerTestCase(TestCase):
                     'terms frequency'],
             crrg_reference='400',
             alternate_explanation='Lorem ipsum dolor sit amet',
+            interpret_fields_last_modified=date(2025,10,31),
         )
 
         # Create the parent records for the AccountActivity data
@@ -220,6 +234,9 @@ class EventsViewSerializerTestCase(TestCase):
             'potential_harm': '',
             'rationale': '',
             'alternate_explanation': 'Lorem ipsum dolor sit amet',
+            'interpret_fields_last_modified': date(2025,10,31),
+            'additional_notes': '',
+            'additional_notes_last_modified': None,
         }
 
     def test_evaluator_metadata_serializer(self):

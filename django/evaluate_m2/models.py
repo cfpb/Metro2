@@ -1,7 +1,9 @@
+from datetime import date
+
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import DEFERRED, JSONField
 
 from django_prose_editor.fields import ProseEditorField
 
@@ -21,6 +23,8 @@ class EvaluatorMetadata(models.Model):
         "Link": True,
         "Blockquote": True
     }
+
+    _last_modified_never = date(1900,1,1)
 
     # Use the identifier as the primary key instead of an auto_numbered ID.
     # id values may not be blank and must be unique
@@ -64,6 +68,13 @@ class EvaluatorMetadata(models.Model):
         sanitize=True,
         blank=True,
     )
+    interpret_fields_last_modified = models.DateField(default=_last_modified_never)
+    additional_notes = ProseEditorField(
+        extensions=_richtext_basic_options,
+        sanitize=True,
+        blank=True,
+    )
+    additional_notes_last_modified = models.DateField(default=_last_modified_never)
 
     func: any
 
@@ -91,6 +102,50 @@ class EvaluatorMetadata(models.Model):
         'amt_past_due',
         'current_bal',
     ]
+
+    _from_bulk_import: bool = False
+    _loaded_values: dict = {}
+
+    def __init__(self, *args, **kwargs):
+        # When records are initialized from the EvaluatorMetadataSerializer
+        # (i.e. from csv import), _from_bulk_import is True
+        if 'from_bulk_import' in kwargs:
+            self._from_bulk_import = kwargs.pop('from_bulk_import')
+        super().__init__(*args, **kwargs)
+
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        # When loading a record from the db, cache the loaded values
+        # so we can compare them to the new values upon save. Source:
+        # https://docs.djangoproject.com/en/5.2/ref/models/instances/
+        instance = super().from_db(db, field_names, values)
+        instance._loaded_values = dict(
+            zip(
+                field_names,
+                (value for value in values if value is not DEFERRED),
+                strict=False,
+            )
+        )
+        return instance
+
+    _interpret_fields = ['crrg_reference', 'potential_harm',
+                         'rationale', 'alternate_explanation']
+    _additional_fields = ['additional_notes']
+    def _values_modified(self, field_names):
+        for f in field_names:
+            if self._loaded_values[f] != self.__getattribute__(f):
+                return True
+        return False
+
+    def save(self, *args, **kwargs):
+        # If modifying an existing record manually (not with a bulk import),
+        # update the _last_modified fields if necessary
+        if self._loaded_values and not self._from_bulk_import:
+            if self._values_modified(self._interpret_fields):
+                self.interpret_fields_last_modified = date.today()
+            if self._values_modified(self._additional_fields):
+                self.additional_notes_last_modified = date.today()
+        return super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.id
