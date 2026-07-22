@@ -13,4 +13,7 @@ export default interface EvaluatorMetadata {
   crrg_reference?: string | null
   potential_harm?: string | null
   rationale?: string | null
+  additional_notes?: string | null
+  interpret_fields_last_modified?: string | null
+  additional_notes_last_modified?: string | null
 }

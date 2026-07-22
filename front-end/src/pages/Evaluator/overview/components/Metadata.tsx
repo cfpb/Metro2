@@ -1,7 +1,8 @@
+import Accordion from '@src/components/Accordion/Accordion'
 import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
+import { formatDate } from '@src/utils/formatDates'
 import type { ReactElement } from 'react'
 export const adminUrlPrefix = import.meta.env.DEV ? 'http://localhost:8000' : ''
-
 /**
  * EvaluatorMetadata
  *
@@ -48,59 +49,100 @@ export default function EvaluatorMetadataSection({
   const hasMetadata = populatedFields.length > 0
 
   return (
-    <div className='metadata-expandable-content'>
-      {hasMetadata ? (
-        <div data-testid='metadata' className='metadata-section u-mb30'>
-          {populatedFields.map(field => (
-            <>
-              <h4>{explanatoryFields.get(field)}</h4>
-              <div
-                data-testid={field}
-                dangerouslySetInnerHTML={{
-                  __html: metadata[field as keyof EvaluatorMetadata] ?? ''
-                }}></div>
-            </>
-          ))}
-        </div>
-      ) : (
-        <div data-testid='no-metadata-message' className='u-mb15'>
-          <h4>Add additional context for this evaluator</h4>
-          <p>
-            Information contributed by users like you will help make the tool easier
-            to understand and more useful for everyone.
-          </p>
-        </div>
-      )}
-      {isAdmin === true ? (
-        <p data-testid='metadata-contribute-admin'>
-          {' '}
-          As a Metro2 admin, you can{' '}
-          <a
-            href={`${adminUrlPrefix}/admin/evaluate_m2/evaluatormetadata/${metadata.id}/change/`}
-            target='_blank'
-            rel='noreferrer'>
-            contribute additional context
-          </a>{' '}
-          directly to this evaluator.
-        </p>
-      ) : (
-        <>
+    <>
+      <Accordion
+        header='How to evaluate these results'
+        className='evaluate-expandable'>
+        <div className='metadata-expandable-content'>
           {hasMetadata ? (
-            <p data-testid='metadata-contribute'>
-              To contribute additional context for this evaluator, please contact a
-              Metro2 admin.
-            </p>
+            <div data-testid='metadata' className='metadata-section '>
+              {populatedFields.map(field => (
+                <>
+                  <h4>{explanatoryFields.get(field)}</h4>
+                  <div
+                    data-testid={field}
+                    dangerouslySetInnerHTML={{
+                      __html: metadata[field as keyof EvaluatorMetadata] ?? ''
+                    }}></div>
+                </>
+              ))}
+            </div>
           ) : (
-            <p className='u-mt15' data-testid='no-metadata-contribute'>
-              <a href='/guide/contribute' target='_blank' rel='noreferrer'>
-                See the user guide
-              </a>{' '}
-              for examples or contact a Metro 2 administrator to contribute
-              additional context for this evaluator.
-            </p>
+            <div data-testid='no-metadata-message' className='u-mb15'>
+              <h4>Add additional context for this evaluator</h4>
+              <p>
+                Information contributed by users like you will help make the tool
+                easier to understand and more useful for everyone.
+              </p>
+            </div>
           )}
-        </>
-      )}
-    </div>
+
+          <div className='contribute-instructions'>
+            {isAdmin === true ? (
+              <p data-testid='metadata-contribute-admin'>
+                {' '}
+                As a Metro2 admin, you can{' '}
+                <a
+                  href={`${adminUrlPrefix}/admin/evaluate_m2/evaluatormetadata/${metadata.id}/change/`}
+                  target='_blank'
+                  rel='noreferrer'>
+                  contribute additional context
+                </a>{' '}
+                directly to this evaluator.
+              </p>
+            ) : (
+              <>
+                {hasMetadata ? (
+                  <p data-testid='metadata-contribute '>
+                    To contribute additional context for this evaluator, please
+                    contact a Metro2 admin.
+                  </p>
+                ) : (
+                  <p data-testid='no-metadata-contribute'>
+                    <a href='/guide/contribute' target='_blank' rel='noreferrer'>
+                      See the user guide
+                    </a>{' '}
+                    for examples or contact a Metro 2 administrator to contribute
+                    additional context for this evaluator.
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+          {metadata.interpret_fields_last_modified ? (
+            <p
+              data-testid='interpret-fields-last-modified'
+              className='last-modified-date'>
+              This data was last modified{' '}
+              <span data-testid='interpret-fields-last-modified-date'>
+                {formatDate(metadata.interpret_fields_last_modified, 'fullText')}.
+              </span>
+            </p>
+          ) : null}
+        </div>
+      </Accordion>
+      {metadata.additional_notes ? (
+        <Accordion header='Additional notes' className='additional-notes-expandable'>
+          <div className='metadata-expandable-content'>
+            <p
+              data-testid='additional-notes'
+              dangerouslySetInnerHTML={{
+                __html: metadata.additional_notes
+              }}
+            />
+            {metadata.additional_notes_last_modified ? (
+              <p
+                data-testid='additional-notes-last-modified'
+                className='last-modified-date'>
+                This data was last modified{' '}
+                <span data-testid='additional-notes-last-modified-date'>
+                  {formatDate(metadata.additional_notes_last_modified, 'fullText')}.
+                </span>
+              </p>
+            ) : null}
+          </div>
+        </Accordion>
+      ) : null}
+    </>
   )
 }
