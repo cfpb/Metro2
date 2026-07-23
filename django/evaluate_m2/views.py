@@ -20,7 +20,7 @@ from evaluate_m2.exception_utils import (
     format_error,
     get_evaluate_m2_not_found_exception,
 )
-from evaluate_m2.filters import EvaluatorResultFilterSet
+from evaluate_m2.filters import AccountListFilterSet, EvaluatorResultFilterSet
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
@@ -338,13 +338,11 @@ class EvaluatorResultsView(generics.ListAPIView):
         return self.get_paginated_response(serializer.data)
 
 
-
-
 class AccountsListView(generics.ListAPIView):
     filter_backends = [
         django_filters.rest_framework.DjangoFilterBackend,
     ]
-    # filterset_class = EvaluatorResultFilterSet
+    filterset_class = AccountListFilterSet
 
     def get_queryset(self):
         event_id = self.kwargs["event_id"]
