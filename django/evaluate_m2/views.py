@@ -6,6 +6,7 @@ from datetime import date
 from django.conf import settings
 from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
+from django.utils.functional import cached_property
 
 import botocore
 import django_filters.rest_framework
@@ -232,30 +233,25 @@ class EvaluatorResultsView(generics.ListAPIView):
     ]
     filterset_class = EvaluatorResultFilterSet
 
-    def get_result_summary(self):
-        # Get the EvaluatorResultSummary object for this event_id and
-        # evaluator_id. These are queried directly so we can validate that
-        # they exist and error appropriately if they do not.
+    @cached_property
+    def result_summary(self):
         event_id = self.kwargs["event_id"]
         evaluator_id = self.kwargs["evaluator_id"]
-        event = Metro2Event.objects.get(id=event_id)
-        evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
-        result_summary = EvaluatorResultSummary.objects.get(
-            event=event, evaluator=evaluator)
+        result_summary = EvaluatorResultSummary.objects.select_related(
+            "event",
+            "evaluator",
+        ).get(
+            event__id=event_id, evaluator__id=evaluator_id)
         return result_summary
 
     def get_queryset(self):
-        # Get all EvaluatorResult objects for this event_id and evaluator_id
-        event_id = self.kwargs["event_id"]
-        evaluator_id = self.kwargs["evaluator_id"]
-
-        result_summary = EvaluatorResultSummary.objects.get(
-            event__id=event_id, evaluator__id=evaluator_id)
-
         queryset = EvaluatorResult.objects.filter(
-            result_summary=result_summary,
+            result_summary=self.result_summary,
         ).select_related(
-            "source_record"
+            "source_record",
+            "source_record__k2",
+            "source_record__k4",
+            "source_record__l1",
         ).order_by("source_record__activity_date")
 
         return queryset
@@ -265,11 +261,7 @@ class EvaluatorResultsView(generics.ListAPIView):
         # the event_id or evaluator_id are invalid.
         try:
             return super().get(request, *args, **kwargs)
-        except (
-                Metro2Event.DoesNotExist,
-                EvaluatorMetadata.DoesNotExist,
-                EvaluatorResultSummary.DoesNotExist
-            ) as e:
+        except EvaluatorResultSummary.DoesNotExist as e:
             logger = logging.getLogger('views.download_evaluator_results_csv')
             error = get_evaluate_m2_not_found_exception(
                 str(e),
@@ -281,7 +273,7 @@ class EvaluatorResultsView(generics.ListAPIView):
             return Response(error, status=status.HTTP_404_NOT_FOUND)
 
     def list(self, request, *args, **kwargs):
-        result_summary = self.get_result_summary()
+        result_summary = self.result_summary
         event = result_summary.event
         evaluator = result_summary.evaluator
 
