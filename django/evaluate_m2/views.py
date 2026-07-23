@@ -29,6 +29,7 @@ from evaluate_m2.models import (
 )
 from evaluate_m2.pagination import EvaluatorResultsPaginator
 from evaluate_m2.serializers import (
+    AccountListSerializer,
     EvaluatorMetadataSerializer,
     EvaluatorResultSerializer,
     EventsViewSerializer,
@@ -335,3 +336,44 @@ class EvaluatorResultsView(generics.ListAPIView):
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
+
+
+
+
+class AccountsListView(generics.ListAPIView):
+    filter_backends = [
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    # filterset_class = EvaluatorResultFilterSet
+
+    def get_queryset(self):
+        event_id = self.kwargs["event_id"]
+        event = Metro2Event.objects.get(id=event_id)
+
+        queryset = event.get_all_account_activity().select_related(
+            "k2",
+            "k4",
+            "l1"
+        ).with_inconsistency_counts(
+            event
+        ).with_months_of_data(
+            event
+        )
+
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        event_id = self.kwargs["event_id"]
+        event = Metro2Event.objects.get(id=event_id)
+
+        # TODO: replace using DRF permissions/check_permissions()
+        if not has_permissions_for_request(request, event):
+            return HttpResponse('Unauthorized', status=401)
+
+        queryset = self.filter_queryset(
+            self.get_queryset()
+        ).distinct_accounts()
+
+        # Paginate the results
+        serializer = AccountListSerializer(queryset, many=True)
+        return Response(serializer.data)

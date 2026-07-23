@@ -11,6 +11,7 @@ from evaluate_m2.models import (
     EvaluatorResultMaterializedView,
     EvaluatorResultSummary,
 )
+from parse_m2.serializers import AccountActivitySerializer
 
 
 class EventsViewSerializer(serializers.ModelSerializer):
@@ -269,3 +270,14 @@ class EvaluatorResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = EvaluatorResultMaterializedView
         fields = '__all__'
+
+
+class AccountListSerializer(AccountActivitySerializer):
+    total_inconsistencies = serializers.IntegerField(read_only=True)
+    months_of_data = serializers.IntegerField(read_only=True)
+
+    class Meta(AccountActivitySerializer.Meta):
+        default_fields = list(AccountActivitySerializer.Meta.default_fields) + [
+            "total_inconsistencies",
+            "months_of_data",
+        ]
