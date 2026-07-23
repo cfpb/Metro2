@@ -277,7 +277,11 @@ class AccountListSerializer(AccountActivitySerializer):
     months_of_data = serializers.IntegerField(read_only=True)
 
     class Meta(AccountActivitySerializer.Meta):
-        default_fields = list(AccountActivitySerializer.Meta.default_fields) + [
+        default_fields = [
+            # list(AccountActivitySerializer.Meta.default_fields) + [
+            "cons_acct_num",
+            "port_type",
+            "acct_type",
             "total_inconsistencies",
             "months_of_data",
         ]
