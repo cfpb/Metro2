@@ -4,7 +4,7 @@ import logging
 from datetime import date
 
 from django.conf import settings
-from django.http import Http404, HttpResponse, JsonResponse, StreamingHttpResponse
+from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
 
 import botocore
@@ -118,7 +118,7 @@ def account_summary_view(request, event_id, account_number):
         data = {'cons_acct_num': account_number,
                 'inconsistencies': evals_hit_uniq,
                 'account_activity': activities_serializer.data}
-        return JsonResponse(data)
+        return Response(data)
     except (
         Http404,
         Metro2Event.DoesNotExist,
@@ -143,7 +143,7 @@ def account_pii_view(request, event_id, account_number):
             cons_acct_num=account_number) \
                 .latest('activity_date')
         acct_holder_serializer = AccountHolderSerializer(latest_acct_activity)
-        return JsonResponse(acct_holder_serializer.data)
+        return Response(acct_holder_serializer.data)
     except (
         Metro2Event.DoesNotExist,
         AccountActivity.DoesNotExist
@@ -178,7 +178,7 @@ def events_view(request, event_id):
             'date_range_end': event.date_range_end,
             'evaluators': evaluator_metadata_serializer.data
         }
-        return JsonResponse(result)
+        return Response(result)
     except (
         Metro2Event.DoesNotExist,
         EvaluatorResultSummary.DoesNotExist
@@ -216,7 +216,7 @@ def fetch_json_results_from_s3(request, event_id, evaluator_id):
     try:
         file = s3.get_object(Bucket=settings.S3_BUCKET_NAME, Key=key)
         file_data = file['Body'].read().decode('utf-8')
-        return JsonResponse(json.loads(file_data))
+        return Response(json.loads(file_data))
     except botocore.exceptions.ClientError as e:
         if e.response['Error']['Code'] == "NoSuchKey":
             error = get_evaluate_m2_not_found_exception(
