@@ -1,7 +1,7 @@
 from django.conf import settings
-from django.http import JsonResponse
 
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 
 class EvaluatorResultsPaginator(PageNumberPagination):
@@ -9,8 +9,7 @@ class EvaluatorResultsPaginator(PageNumberPagination):
     page_size_query_param = 'page_size'
 
     def get_paginated_response(self, data):
-        return JsonResponse({
+        return Response({
             "count": self.page.paginator.count,
             "hits": data
         })
-

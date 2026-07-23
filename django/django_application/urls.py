@@ -16,6 +16,7 @@ Including another URLconf
 """
 from contextlib import suppress
 
+from django.conf import settings
 from django.contrib import admin
 from django.core.exceptions import ImproperlyConfigured
 from django.urls import include, path, re_path
@@ -41,6 +42,13 @@ with suppress(ImproperlyConfigured):
     urlpatterns += [
         path('oauth2/', include('django_auth_adfs.urls')),
     ]
+
+# Add Django Debug Toolbar if it is installed
+if "debug_toolbar" in settings.INSTALLED_APPS:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
+    urlpatterns += debug_toolbar_urls()
+
 
 # All erroneous API calls to return 400: bad request
 urlpatterns.append(re_path(r'api(?:.*)?', app_views.bad_request_view ))

@@ -1,6 +1,29 @@
+import sys
 from .base import *
 
 DEBUG = True
+TESTING = "test" in sys.argv
+
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
+    'rest_framework.renderers.BrowsableAPIRenderer'
+)
+
+# If DEBUG is enabled and we're not running tests, add Django Debug Toolbar
+if DEBUG and not TESTING:
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG,
+        "UPDATE_ON_FETCH": True,
+    }
+    DEBUG_TOOLBAR_PANELS = [
+        'debug_toolbar.panels.history.HistoryPanel',
+        'debug_toolbar.panels.timer.TimerPanel',
+        'debug_toolbar.panels.request.RequestPanel',
+        'debug_toolbar.panels.sql.SQLPanel',
+        'debug_toolbar.panels.cache.CachePanel',
+        'debug_toolbar.panels.profiling.ProfilingPanel',
+    ]
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
