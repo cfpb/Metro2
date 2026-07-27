@@ -39,12 +39,7 @@ export default function EvaluatorOverview({
                   }}></div>
               </div>
             </Accordion>
-            <Accordion header='How to evaluate these results'>
-              <EvaluatorMetadataSection
-                metadata={metadata}
-                isAdmin={user.is_admin}
-              />
-            </Accordion>
+            <EvaluatorMetadataSection metadata={metadata} isAdmin={user.is_admin} />
           </div>
         </div>
       </div>

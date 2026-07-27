@@ -70,7 +70,18 @@ class EvaluatorMetadata(models.Model):
     )
     interpret_fields_last_modified = models.DateField(default=_last_modified_never)
     additional_notes = ProseEditorField(
-        extensions=_richtext_basic_options,
+        extensions= {
+            "Bold": True,
+            "Italic": True,
+            "BulletList": True,
+            "OrderedList": True,
+            "ListItem": True,
+            "Link": True,
+            "Blockquote": True,
+            "Heading": {
+                "levels": [4]
+            },
+        },
         sanitize=True,
         blank=True,
     )

@@ -36,3 +36,8 @@
 .metadata-expandable-content p {
   margin-bottom: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
 }
+
+.last-modified-date,
+.contribute-instructions {
+  margin-top: math.div(20px, $base-font-size-px) + em;
+}

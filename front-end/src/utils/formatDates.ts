@@ -9,6 +9,12 @@ export const dateFormat = {
     month: 'short',
     year: 'numeric',
     timeZone: 'UTC'
+  },
+  fullText: {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC'
   }
 }
 
@@ -46,10 +52,13 @@ export const isDateString = (val: number | string | null | undefined): boolean =
  *
  *    - formatDate('2024-01-04', 'text')
  *      Returns: Jan 2024
+ *
+ *    - formatDate('2024-01-04', 'fullText')
+ *      Returns: January 4, 2024
  */
 export const formatDate = (
   val: number | string | null | undefined,
-  format: 'default' | 'text' = 'default'
+  format: 'default' | 'text' | 'fullText' = 'default'
 ): string => {
   if (!isDateString(val)) return ''
   return new Intl.DateTimeFormat(
