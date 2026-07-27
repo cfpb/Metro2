@@ -4,6 +4,7 @@ import logging
 from datetime import date
 
 from django.conf import settings
+from django.db import ProgrammingError
 from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
 
@@ -15,7 +16,7 @@ from rest_framework.response import Response
 
 from django_application.s3_utils import s3_session
 from evaluate_m2 import upload_utils
-from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
+from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception, format_error
 from evaluate_m2.filters import EvaluatorResultFilterSet
 from evaluate_m2.models import (
     EvaluatorMetadata,
@@ -279,6 +280,23 @@ class EvaluatorResultsView(generics.ListAPIView):
             )
             logger.error(error['message'])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
+        except ProgrammingError as e:
+            # Gracefully handle when the materialized view doesn't exist as a 503.
+            # It will raise a ProgrammingError, which we introspect to make sure
+            # it's caused by an UndefinedTable, otherwise we let it raise.
+            import psycopg
+            if not isinstance(e.__cause__, psycopg.errors.UndefinedTable):
+                raise
+            return Response(
+                format_error(
+                    503,
+                    "Not available",
+                    "Materialized view for evaluator results is not available",
+                    request.path
+                ),
+                status=503
+            )
+            return Response(error, status=503)
 
     def list(self, request, *args, **kwargs):
         result_summary = self.get_result_summary()
