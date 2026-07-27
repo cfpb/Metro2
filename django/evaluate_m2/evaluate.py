@@ -6,7 +6,11 @@ from django.db import connection
 from django.utils.module_loading import import_string
 
 from evaluate_m2.evaluate_utils import create_eval_insert_query
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResultMaterializedView,
+    EvaluatorResultSummary,
+)
 from evaluate_m2.upload_utils import stream_results_files_to_s3
 from parse_m2.models import Metro2Event
 
@@ -36,8 +40,10 @@ class Evaluate:
     # runs evaluators to produce results
     def run_evaluators(self, event: Metro2Event):
         """
-        Given an event, run all evaluators on the Account Activity associated
-        to the event and save the results to the database.
+        Given an event, run all evaluators on the Account Activity records
+        associated with the event and save the results to the database.
+        Then, create or update the evaluator result materialized view, so
+        the results can be queried.
         """
         logger = logging.getLogger('evaluate.run_evaluators')
 
@@ -46,6 +52,7 @@ class Evaluate:
         if record_set.exists():
             for eval_name, eval_func in self.evaluators.items():
                 self.run_single_evaluator(event, eval_name, eval_func, record_set)
+            EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
         else:
             logger.info(f"No AccountActivity found for the event '{event.id}'")
 
