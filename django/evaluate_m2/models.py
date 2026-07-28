@@ -272,12 +272,12 @@ class EvaluatorResultMaterializedView(models.Model):
         if cls.materialized_view_exists():
             lg.info("Refreshing the evaluator results materialized view...")
             with connection.cursor() as c:
-                c.execute(cls.refresh_view_command, [cls.table_name])
+                c.execute(cls.refresh_view_command)
         else:
             lg.info("Creating the evaluator results materialized view...")
             with connection.cursor() as c:
-                c.execute(cls.create_view_command, [cls.table_name])
-                c.execute(cls.create_index_command, [cls.table_name])
+                c.execute(cls.create_view_command)
+                c.execute(cls.create_index_command)
         lg.info("... Done.")
 
     @classmethod
@@ -374,16 +374,16 @@ class EvaluatorResultMaterializedView(models.Model):
     prior_new_id_num = models.CharField(db_column="prior_new_id_num")
 
     refresh_view_command = """
-        REFRESH MATERIALIZED VIEW %s;
+        REFRESH MATERIALIZED VIEW mv_all_evaluator_results;
     """
     create_index_command = """
-        CREATE INDEX idx_event_id_evaluator_id ON %s (event_id, evaluator_id);
+        CREATE INDEX idx_event_id_evaluator_id ON mv_all_evaluator_results (event_id, evaluator_id);
     """
 
     # The column names in the materialized view correspond to the
     # fields on the model
     create_view_command = """
-        CREATE MATERIALIZED VIEW %s AS (
+        CREATE MATERIALIZED VIEW mv_all_evaluator_results AS (
         SELECT
             r.id,
             a.event_id,
