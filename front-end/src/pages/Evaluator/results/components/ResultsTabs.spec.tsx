@@ -30,8 +30,8 @@ describe('<EvaluatorResultsToggle />', () => {
     const sampleTab = await screen.findByTestId('sample-results-tab')
     const allTab = await screen.findByTestId('all-results-tab')
 
-    expect(sampleTab).not.toHaveClass('active')
-    expect(allTab).toHaveClass('active')
+    expect(sampleTab).not.toHaveClass('tab--active')
+    expect(allTab).toHaveClass('tab--active')
   })
 
   it('sample results button is checked when useSearch returns sample', async () => {
@@ -40,8 +40,8 @@ describe('<EvaluatorResultsToggle />', () => {
     const sampleTab = await screen.findByTestId('sample-results-tab')
     const allTab = await screen.findByTestId('all-results-tab')
 
-    expect(sampleTab).toHaveClass('active')
-    expect(allTab).not.toHaveClass('active')
+    expect(sampleTab).toHaveClass('tab--active')
+    expect(allTab).not.toHaveClass('tab--active')
   })
 
   it('navigate is called when toggle radio is clicked', async () => {
@@ -51,8 +51,8 @@ describe('<EvaluatorResultsToggle />', () => {
     const sampleTab = await screen.findByTestId('sample-results-tab')
     const allTab = await screen.findByTestId('all-results-tab')
     // on load, sample button should be checked
-    expect(sampleTab).toHaveClass('active')
-    expect(allTab).not.toHaveClass('active')
+    expect(sampleTab).toHaveClass('tab--active')
+    expect(allTab).not.toHaveClass('tab--active')
     expect(mocks.navigate).not.toHaveBeenCalled()
     // clicking the all button should call navigate
     allTab.click()

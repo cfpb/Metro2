@@ -1,10 +1,15 @@
 @use '@cfpb/cfpb-design-system/src/index' as *;
-@use '@cfpb/cfpb-design-system/src/elements/abstracts' as *;
+@use '@cfpb/cfpb-design-system/src/abstracts' as *;
 @use '@cfpb/cfpb-design-system/src/utilities' as *;
 
 .results-message {
   display: flex;
   gap: 1em;
+}
+
+.evaluator-hits-row {
+  padding-bottom: 30px;
+  position: relative;
 }
 
 .results-container {

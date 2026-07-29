@@ -35,9 +35,9 @@ describe('Results view', () => {
     cy.location('search').should('include', 'view=sample').and('include', 'page=1')
 
     // Sample view tab is active
-    cy.get('.tabbed__navigation').should('be.visible')
-    cy.findByTestId('sample-results-tab').should('have.class', 'active')
-    cy.findByTestId('all-results-tab').should('not.have.class', 'active')
+    cy.get('.tablist').should('be.visible')
+    cy.findByTestId('sample-results-tab').should('have.class', 'tab--active')
+    cy.findByTestId('all-results-tab').should('not.have.class', 'tab--active')
 
     // Sample results message is displayed
     cy.findByTestId('results-message').should(
@@ -55,7 +55,7 @@ describe('Results view', () => {
 
     // Sample view is indicated in URL and tab
     cy.location('search').should('include', 'view=sample').and('include', 'page=1')
-    cy.findByTestId('sample-results-tab').should('have.class', 'active')
+    cy.findByTestId('sample-results-tab').should('have.class', 'tab--active')
 
     // Intercept all results request
     page.interceptFilteredResults(

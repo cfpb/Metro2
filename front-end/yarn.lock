@@ -479,28 +479,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cfpb/cfpb-design-system@npm:4.4.0, @cfpb/cfpb-design-system@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "@cfpb/cfpb-design-system@npm:4.4.0"
+"@cfpb/cfpb-design-system@npm:^5.8.0":
+  version: 5.8.1
+  resolution: "@cfpb/cfpb-design-system@npm:5.8.1"
   dependencies:
     "@fontsource-variable/source-sans-3": "npm:5.2.9"
+    lit: "npm:3.3.3"
     tippy.js: "npm:6.3.7"
-  checksum: 10/eb834e320dc911fd501aa187e38ccbf58b00f3de8f629aa54fcf0cb4cc2e1eddb539dfec3f2406fac5b075fe25250ad19a56e1f704386c7af5ddbec6882dcc4d
+  checksum: 10/1bef5d53c3140ceaf28994c38ddc3a70f5c230cdb3922d91d147627639eb85b0e82cb109ae54e6ae49b2cf8b4be0febb06c643fe1388458c911863305e272cad
   languageName: node
   linkType: hard
 
-"@cfpb/design-system-react@npm:0.0.15":
-  version: 0.0.15
-  resolution: "@cfpb/design-system-react@npm:0.0.15"
+"@cfpb/design-system-react@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@cfpb/design-system-react@npm:2.0.0"
   dependencies:
-    "@cfpb/browserslist-config": "npm:^0.0.6"
-    "@cfpb/cfpb-design-system": "npm:4.4.0"
     react-select: "npm:^5.10.2"
   peerDependencies:
-    react: ^18.0.0 || ^19.0.0
-    react-dom: ^18.0.0 || ^19.0.0
-    react-router: ^7.13.0
-  checksum: 10/0f5f04d8319fb3ac406c850d70bd7db57088701e79175b42b90715f91ad05a9fc8ebe2aa1dd7440fa3161077c9d6db5472284c639dceb21606d276cec79624ab
+    "@cfpb/cfpb-design-system": 5.8.0
+    lit: ^3.3.3
+    react: 19.2.7
+    react-dom: ^19.2.4
+  checksum: 10/97ac3391b2243cd3d83f1ad3fd01360dade16cd45b0ece665eed6aba56dd25fc248aec02aa6a09c8f444639a0f5b94b0cc213b270fe155a1a3c75882e0797469
   languageName: node
   linkType: hard
 
@@ -1648,6 +1648,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lit-labs/ssr-dom-shim@npm:^1.5.0":
+  version: 1.6.0
+  resolution: "@lit-labs/ssr-dom-shim@npm:1.6.0"
+  checksum: 10/144432432e1749c4878a59baf41b2afaadef565675d64b2a8e088c6f54e36f26f67ef43aa93e49d3e6dd38a5e27c41059e981c33accdb4e8c6d47c1048696b80
+  languageName: node
+  linkType: hard
+
+"@lit/reactive-element@npm:^2.1.0":
+  version: 2.1.2
+  resolution: "@lit/reactive-element@npm:2.1.2"
+  dependencies:
+    "@lit-labs/ssr-dom-shim": "npm:^1.5.0"
+  checksum: 10/91ae952d34fba51ac4936f7d6b3a4300e48a54a9e7c77c8747a08148124a2a9a52cd057db059eff8424ae43c6fa342275550793e6ecfc0054bce8286df4214cb
+  languageName: node
+  linkType: hard
+
 "@mswjs/interceptors@npm:^0.41.2":
   version: 0.41.3
   resolution: "@mswjs/interceptors@npm:0.41.3"
@@ -2659,7 +2675,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/trusted-types@npm:^2.0.7":
+"@types/trusted-types@npm:^2.0.2, @types/trusted-types@npm:^2.0.7":
   version: 2.0.7
   resolution: "@types/trusted-types@npm:2.0.7"
   checksum: 10/8e4202766a65877efcf5d5a41b7dd458480b36195e580a3b1085ad21e948bc417d55d6f8af1fd2a7ad008015d4117d5fdfe432731157da3c68678487174e4ba3
@@ -4378,7 +4394,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:^1.0.1, cookie@npm:^1.0.2":
+"cookie@npm:^1.0.2":
   version: 1.1.1
   resolution: "cookie@npm:1.1.1"
   checksum: 10/85538153054791155cf4d38d2e807e3b9382d71bf71d92fc46fca348515ea574049d0d9ef8eb84d2d54a681ad1d7a7316b1989b901dace50a6c0f4c3858dbdb2
@@ -6274,8 +6290,8 @@ __metadata:
   resolution: "front-end@workspace:."
   dependencies:
     "@cfpb/browserslist-config": "npm:^0.0.6"
-    "@cfpb/cfpb-design-system": "npm:^4.4.0"
-    "@cfpb/design-system-react": "npm:0.0.15"
+    "@cfpb/cfpb-design-system": "npm:^5.8.0"
+    "@cfpb/design-system-react": "npm:^2.0.0"
     "@eslint/js": "npm:^10.0.1"
     "@nabla/vite-plugin-eslint": "npm:^3.0.0"
     "@tanstack/react-query": "npm:^5.90.21"
@@ -6331,7 +6347,6 @@ __metadata:
     query-string: "npm:^9.1.1"
     react: "npm:^19.2.4"
     react-dom: "npm:^19.2.4"
-    react-router-dom: "npm:^7.18.1"
     sass: "npm:^1.97.3"
     start-server-and-test: "npm:2.1.5"
     stylelint: "npm:^17.4.0"
@@ -8342,6 +8357,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lit-element@npm:^4.2.0":
+  version: 4.2.2
+  resolution: "lit-element@npm:4.2.2"
+  dependencies:
+    "@lit-labs/ssr-dom-shim": "npm:^1.5.0"
+    "@lit/reactive-element": "npm:^2.1.0"
+    lit-html: "npm:^3.3.0"
+  checksum: 10/268705c5a88c68ceeffb4dc871ffa7a9e5b5405b4907bc408cdc3336ea865b1690b4f4a34155af287200cc0737933c25326ed6816fa2c040b747925717bc21a6
+  languageName: node
+  linkType: hard
+
+"lit-html@npm:^3.3.0":
+  version: 3.3.3
+  resolution: "lit-html@npm:3.3.3"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.2"
+  checksum: 10/d8fc4ccd983ad5c32e5efa98687e6be90dbfb29863ecda124d18452545854fdd97c8b06679182d8fbb2324e5db9ba1e210724e1d3e279545357b031e94ec9139
+  languageName: node
+  linkType: hard
+
+"lit@npm:3.3.3":
+  version: 3.3.3
+  resolution: "lit@npm:3.3.3"
+  dependencies:
+    "@lit/reactive-element": "npm:^2.1.0"
+    lit-element: "npm:^4.2.0"
+    lit-html: "npm:^3.3.0"
+  checksum: 10/238a6574447f6499b7a4c6e30a4da89907b095ea48d6291fb1de570e937745b84550ced459f9c51632c3010c964403e2d6ebe65caf1500f03779b6049f229f12
+  languageName: node
+  linkType: hard
+
 "load-json-file@npm:^4.0.0":
   version: 4.0.0
   resolution: "load-json-file@npm:4.0.0"
@@ -9820,34 +9866,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^7.18.1":
-  version: 7.18.1
-  resolution: "react-router-dom@npm:7.18.1"
-  dependencies:
-    react-router: "npm:7.18.1"
-  peerDependencies:
-    react: ">=18"
-    react-dom: ">=18"
-  checksum: 10/4afbab4fb0f355429ad9905d48c17cdebe264d55bff824d409998d03c8548f86a64ec484cdab54b956cd3de2ceed1b87aa8837e631f47d63f71d490a0f7add00
-  languageName: node
-  linkType: hard
-
-"react-router@npm:7.18.1":
-  version: 7.18.1
-  resolution: "react-router@npm:7.18.1"
-  dependencies:
-    cookie: "npm:^1.0.1"
-    set-cookie-parser: "npm:^2.6.0"
-  peerDependencies:
-    react: ">=18"
-    react-dom: ">=18"
-  peerDependenciesMeta:
-    react-dom:
-      optional: true
-  checksum: 10/f507876822281499759abc53b3230375f706aa45c66b9ba271308f7420501ff1e5430443c560028299210efe1797141d2297c3bb6d09f3ef175220c1ae67a368
-  languageName: node
-  linkType: hard
-
 "react-select@npm:^5.10.2":
   version: 5.10.2
   resolution: "react-select@npm:5.10.2"
@@ -10484,13 +10502,6 @@ __metadata:
   version: 1.5.6
   resolution: "seroval@npm:1.5.6"
   checksum: 10/4d685bfdfd69b30c432f05b05a576d44ce50bbb80979988fcd29ebd8adb49598c597835b8c348cebb3559180e1b12643e29a6ecc913903a2105c651f13813646
-  languageName: node
-  linkType: hard
-
-"set-cookie-parser@npm:^2.6.0":
-  version: 2.7.2
-  resolution: "set-cookie-parser@npm:2.7.2"
-  checksum: 10/4b6f5ec4e3fa1aef471d9207117704d217ba6bb6443400b41f5ea945c4a7f6fc08e405a122c1a32b4ebde41f06dea75e02c2af87cee9abb27f3e3fe911e5839b
   languageName: node
   linkType: hard
 

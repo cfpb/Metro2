@@ -120,7 +120,7 @@ export default function AccountDownloader({
           name='contact-info-download'
           label='Include latest contact information for account holder'
           labelClassName=''
-          labelInline
+          isLabelInline
           isLarge
           checked={includeContactInfo === 'include'}
           onChange={onChange}
@@ -132,7 +132,7 @@ export default function AccountDownloader({
           name='contact-info-download'
           label='Do not include account holder contact information'
           labelClassName=''
-          labelInline
+          isLabelInline
           checked={includeContactInfo === 'exclude'}
           onChange={onChange}
           isLarge

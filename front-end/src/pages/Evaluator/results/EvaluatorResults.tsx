@@ -1,4 +1,4 @@
-import { Icon } from '@cfpb/design-system-react'
+import { Icon, TabPanel } from '@cfpb/design-system-react'
 import Loader from '@src/components/Loader/Loader'
 import { ITEMS_PER_PAGE } from '@src/constants/settings'
 import { useEvaluatorResults } from '@src/queries/evaluatorHits'
@@ -81,12 +81,11 @@ export default function EvaluatorResults({
           See advanced table features
         </Link>
       </div>
-
-      <div className='loader__wrapper'>
-        {isFetching ? <Loader message='Your data is loading' /> : null}
-        <div className='evaluator-hits-row'>
-          <div className='row row--content u-mt0'>
-            <div className='tab-panel'>
+      <div className='evaluator-hits-row'>
+        <div className='loader__wrapper'>
+          {isFetching ? <Loader message='Your data is loading' /> : null}
+          <div className='row row--content u-mt0 u-mb0'>
+            <TabPanel id={`${view === 'all' ? 'all' : 'sample'}`}>
               <div className={`results-container results-container--${view}`}>
                 <div className='row row--action '>
                   <div className='results-message' data-testid='results-message'>
@@ -154,7 +153,7 @@ export default function EvaluatorResults({
                   </div>
                 </div>
               </div>
-            </div>
+            </TabPanel>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import TabbedNavigation from '@src/components/TabbedNavigation/TabbedNavigation'
+import { Tab, TabList } from '@cfpb/design-system-react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 
@@ -15,7 +15,7 @@ export default function EvaluatorResultsTabbedNavigation(): ReactElement {
       to: '.',
       search: (): object => {
         return {
-          view: event.currentTarget.id === 'all-results-tab' ? 'all' : 'sample',
+          view: event.currentTarget.id === 'tab-all' ? 'all' : 'sample',
           page: 1,
           sort: 'activity_date'
         }
@@ -24,22 +24,23 @@ export default function EvaluatorResultsTabbedNavigation(): ReactElement {
   }
 
   return (
-    <TabbedNavigation
-      onClick={onClick}
-      tabs={[
-        {
-          id: 'all-results-tab',
-          isActive: view === 'all',
-          icon: 'filter',
-          text: 'All results'
-        },
-        {
-          id: 'sample-results-tab',
-          isActive: view !== 'all',
-          icon: 'search',
-          text: 'Sample'
-        }
-      ]}
-    />
+    <TabList>
+      <Tab
+        id='all'
+        iconLeft='filter'
+        onClick={onClick}
+        isActive={view === 'all'}
+        data-testid='all-results-tab'>
+        All results
+      </Tab>
+      <Tab
+        id='search'
+        iconLeft='search'
+        onClick={onClick}
+        isActive={view !== 'all'}
+        data-testid='sample-results-tab'>
+        Sample
+      </Tab>
+    </TabList>
   )
 }

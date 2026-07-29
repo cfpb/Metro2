@@ -11,7 +11,7 @@ describe('DownloadModal.cy.tsx', () => {
 
   it('PII checkbox unchecked on page load', () => {
     cy.get('.modal').within(() => {
-      cy.findByTestId('pii-checkbox').should('not.be.checked')
+      cy.findByTestId('confirmPII-input').should('not.be.checked')
     })
   })
 
@@ -22,7 +22,7 @@ describe('DownloadModal.cy.tsx', () => {
   })
 
   it('Download button is enable/disabled with PII checkbox value', () => {
-    cy.findByTestId('pii-checkbox')
+    cy.findByTestId('confirmPII-input')
     cy.get('label').click()
     cy.findByTestId('csv-download-button').should('be.enabled')
     cy.get('label').contains('PII').click()

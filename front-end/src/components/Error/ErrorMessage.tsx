@@ -1,5 +1,4 @@
-import { ButtonGroup, Link as CFPBLink } from '@cfpb/design-system-react'
-import { Link } from '@src/utils/DSRLink'
+import { ButtonGroup, Link } from '@cfpb/design-system-react'
 import { useRouterState } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 import './ErrorMessage.scss'
@@ -27,17 +26,17 @@ export default function ErrorMessage({
         </h2>
         <p data-testid='error-description'>{description}</p>
         <ButtonGroup>
-          <Link asButton to='/' data-testid='back-button'>
+          <Link isButton to='/' data-testid='back-button'>
             Back to Metro 2 home page
           </Link>
           {adminEmail ? (
-            <CFPBLink
-              asButton
+            <Link
+              isButton
               iconRight='email'
-              href={`mailto:${adminEmail ?? ''}?subject=${type}%20Error%20at%20%22${currentPath}%22`}
+              to={`mailto:${adminEmail ?? ''}?subject=${type}%20Error%20at%20%22${currentPath}%22`}
               data-testid='contact-link'>
               Contact an administrator
-            </CFPBLink>
+            </Link>
           ) : undefined}
         </ButtonGroup>
       </div>
