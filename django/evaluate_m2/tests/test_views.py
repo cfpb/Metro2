@@ -294,8 +294,7 @@ class EvaluateViewsTestCase(TestCase):
         response = self.client.get('/api/events/1/evaluator/NON_EXISTENT/')
 
         self.assertEqual(response.headers['Content-Type'], 'application/json')
-        self.assertContains(response, 'Evaluator: NON_EXISTENT does not exist.',
-            status_code=404)
+        self.assertContains(response, 'record(s) not found', status_code=404)
 
     def test_evaluator_results_view_with_error_no_event(self):
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
