@@ -318,7 +318,8 @@ class EvaluatorResultsView(generics.ListAPIView):
             # If we're asked for a sample and S3 is enabled, quickly return
             # the results from there.
             if settings.S3_ENABLED:
-                return fetch_json_results_from_s3(request, event.id, evaluator.id)
+                evaluator_id = self.kwargs["evaluator_id"]
+                return fetch_json_results_from_s3(request, event.id, evaluator_id)
 
             # Get a sample queryset
             queryset = self.get_sample_queryset(self.get_queryset())
