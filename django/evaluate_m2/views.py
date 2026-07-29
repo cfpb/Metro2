@@ -16,19 +16,22 @@ from rest_framework.response import Response
 
 from django_application.s3_utils import s3_session
 from evaluate_m2 import upload_utils
-from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception, format_error
+from evaluate_m2.exception_utils import (
+    format_error,
+    get_evaluate_m2_not_found_exception,
+)
 from evaluate_m2.filters import EvaluatorResultFilterSet
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
-    EvaluatorResultSummary,
     EvaluatorResultMaterializedView,
+    EvaluatorResultSummary,
 )
 from evaluate_m2.pagination import EvaluatorResultsPaginator
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
-    EventsViewSerializer,
     EvaluatorResultSerializer,
+    EventsViewSerializer,
 )
 from evaluate_m2.views_utils import (
     get_object,
@@ -284,7 +287,6 @@ class EvaluatorResultsView(generics.ListAPIView):
                 ),
                 status=503
             )
-            return Response(error, status=503)
 
     def get_sample_queryset(self, queryset):
         # We need sample ids from the EvaluatorResultSummary

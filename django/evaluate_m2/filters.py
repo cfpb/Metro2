@@ -21,21 +21,10 @@ class AnyCharFilter(django_filters.BaseInFilter, django_filters.CharFilter):
 
 class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     """This filter set specifies `EvaluatorResultMaterializedView` fields to filter.
-
-    Because the fields that we would filter `EvaluatorResult` objects by exist
-    on their `source_record` relation, the fields here simply map the
-    `source_record` field name to the correct field name for an
-    `EvaluatorResult`.
-
-    For example, the API might allow filtering `EvaluatorResults` by
-    `acct_stat`, but the Django queryset will for `EvaluatorResults` will need
-    to be filtered by `acct_stat`.
     """
 
     acct_type = django_filters.CharFilter(field_name="acct_type")
-    acct_stat = AnyCharFilter(
-        field_name="acct_stat",
-    )
+    acct_stat = AnyCharFilter(field_name="acct_stat")
     compl_cond_cd = AnyCharFilter(field_name="compl_cond_cd")
     php = AnyCharFilter(field_name="php")
     php1 = AnyCharFilter(field_name="php1")
@@ -59,15 +48,9 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     )
 
     # Amounts, as ranges of values with _max and _min fields
-    amt_past_due = django_filters.RangeFilter(
-        field_name="amt_past_due",
-    )
-    current_bal = django_filters.RangeFilter(
-        field_name="current_bal",
-    )
-    smpa = django_filters.RangeFilter(
-        field_name="smpa",
-    )
+    amt_past_due = django_filters.RangeFilter(field_name="amt_past_due")
+    current_bal = django_filters.RangeFilter(field_name="current_bal")
+    smpa = django_filters.RangeFilter(field_name="smpa")
 
     # Sort ordering filter for all the relevant fields from AccountActivity
     # This just maps sortable fields from the source_record on EvaluatorResult

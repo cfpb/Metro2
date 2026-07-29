@@ -6,11 +6,10 @@ from evaluate_m2.metadata_utils import (
     parse_fields_from_csv,
     plain_to_code_field_map,
 )
-
 from evaluate_m2.models import (
     EvaluatorMetadata,
-    EvaluatorResultSummary,
     EvaluatorResultMaterializedView,
+    EvaluatorResultSummary,
 )
 
 
@@ -250,7 +249,8 @@ class EvaluatorResultSerializer(serializers.ModelSerializer):
     previous_value__acct_stat = serializers.CharField(source="prior_acct_stat")
     previous_value__pmt_rating = serializers.CharField(source="prior_pmt_rating")
     previous_value__current_bal = serializers.CharField(source="prior_current_bal")
-    previous_value__orig_chg_off_amt = serializers.CharField(source="prior_orig_chg_off_amt")
+    previous_value__orig_chg_off_amt = serializers.CharField(
+        source="prior_orig_chg_off_amt")
     previous_value__dofd = serializers.CharField(source="prior_dofd")
     previous_value__date_closed = serializers.CharField(source="prior_date_closed")
     previous_value__surname = serializers.CharField(source="prior_surname")
@@ -258,7 +258,8 @@ class EvaluatorResultSerializer(serializers.ModelSerializer):
     previous_value__ecoa = serializers.CharField(source="prior_ecoa")
     previous_value__ecoa_assoc = serializers.CharField(source="prior_ecoa_assoc")
     previous_value__cons_info_ind = serializers.CharField(source="prior_cons_info_ind")
-    previous_value__cons_info_ind_assoc = serializers.CharField(source="prior_cons_info_ind_assoc")
+    previous_value__cons_info_ind_assoc = serializers.CharField(
+        source="prior_cons_info_ind_assoc")
     previous_value__l1__change_ind = serializers.CharField(source="prior_change_ind")
     previous_value__l1__new_acc_num = serializers.CharField(source="prior_new_acc_num")
     previous_value__l1__new_id_num = serializers.CharField(source="prior_new_id_num")
