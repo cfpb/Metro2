@@ -7,7 +7,11 @@ from evaluate_m2.metadata_utils import (
     plain_to_code_field_map,
 )
 
-from .models import EvaluatorMetadata, EvaluatorResultSummary
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResultSummary,
+    EvaluatorResultMaterializedView,
+)
 
 
 class EventsViewSerializer(serializers.ModelSerializer):
@@ -224,3 +228,41 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         if invalid_fields:
             raise serializers.ValidationError(f"Invalid field names: {invalid_fields}")
         return data
+
+
+class EvaluatorResultSerializer(serializers.ModelSerializer):
+    # Outside of the materialized view, the API serializes related objects
+    # using Django's __ notation. These fields preserve those fieldnames.
+    k2__purch_sold_ind = serializers.CharField(source="purch_sold_ind")
+    k2__purch_sold_name = serializers.CharField(source="purch_sold_name")
+    k4__spc_pmt_ind = serializers.CharField(source="spc_pmt_ind")
+    k4__deferred_pmt_st_dt = serializers.CharField(source="deferred_pmt_st_dt")
+    k4__balloon_pmt_due_dt = serializers.CharField(source="balloon_pmt_due_dt")
+    k4__balloon_pmt_amt = serializers.CharField(source="balloon_pmt_amt")
+    l1__change_ind = serializers.CharField(source="change_ind")
+    l1__new_acc_num = serializers.CharField(source="new_acc_num")
+    l1__new_id_num = serializers.CharField(source="new_id_num")
+    previous_value__activity_date = serializers.CharField(source="prior_activity_date")
+    previous_value__port_type = serializers.CharField(source="prior_port_type")
+    previous_value__acct_type = serializers.CharField(source="prior_acct_type")
+    previous_value__date_open = serializers.CharField(source="prior_date_open")
+    previous_value__id_num = serializers.CharField(source="prior_id_num")
+    previous_value__acct_stat = serializers.CharField(source="prior_acct_stat")
+    previous_value__pmt_rating = serializers.CharField(source="prior_pmt_rating")
+    previous_value__current_bal = serializers.CharField(source="prior_current_bal")
+    previous_value__orig_chg_off_amt = serializers.CharField(source="prior_orig_chg_off_amt")
+    previous_value__dofd = serializers.CharField(source="prior_dofd")
+    previous_value__date_closed = serializers.CharField(source="prior_date_closed")
+    previous_value__surname = serializers.CharField(source="prior_surname")
+    previous_value__first_name = serializers.CharField(source="prior_first_name")
+    previous_value__ecoa = serializers.CharField(source="prior_ecoa")
+    previous_value__ecoa_assoc = serializers.CharField(source="prior_ecoa_assoc")
+    previous_value__cons_info_ind = serializers.CharField(source="prior_cons_info_ind")
+    previous_value__cons_info_ind_assoc = serializers.CharField(source="prior_cons_info_ind_assoc")
+    previous_value__l1__change_ind = serializers.CharField(source="prior_change_ind")
+    previous_value__l1__new_acc_num = serializers.CharField(source="prior_new_acc_num")
+    previous_value__l1__new_id_num = serializers.CharField(source="prior_new_id_num")
+
+    class Meta:
+        model = EvaluatorResultMaterializedView
+        fields = '__all__'
