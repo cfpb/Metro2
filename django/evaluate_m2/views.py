@@ -220,22 +220,6 @@ def fetch_csv_results_from_s3(request, event_id, evaluator_id):
             return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
-def fetch_json_results_from_s3(request, event_id, evaluator_id):
-    logger = logging.getLogger('views.fetch_json_results_from_s3')
-    s3 = s3_session()
-    key = upload_utils.s3_bucket_key(event_id, evaluator_id, "json")
-    try:
-        file = s3.get_object(Bucket=settings.S3_BUCKET_NAME, Key=key)
-        file_data = file['Body'].read().decode('utf-8')
-        return Response(json.loads(file_data))
-    except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == "NoSuchKey":
-            error = get_evaluate_m2_not_found_exception(
-            e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
-            logger.error(error['message'])
-            return Response(error, status=status.HTTP_404_NOT_FOUND)
-
-
 class EvaluatorResultsView(generics.ListAPIView):
     serializer_class = EvaluatorResultSerializer
     pagination_class = EvaluatorResultsPaginator
@@ -319,12 +303,6 @@ class EvaluatorResultsView(generics.ListAPIView):
         view_param = self.request.query_params.get("view", "sample")
 
         if view_param == "sample":
-            # If we're asked for a sample and S3 is enabled, quickly return
-            # the results from there.
-            if settings.S3_ENABLED:
-                evaluator_id = self.kwargs["evaluator_id"]
-                return fetch_json_results_from_s3(request, event.id, evaluator_id)
-
             # Get a sample queryset
             queryset = self.get_sample_queryset(self.get_queryset())
         else:
