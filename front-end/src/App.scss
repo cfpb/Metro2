@@ -102,6 +102,11 @@ header h1 {
   }
 }
 
+// Hide footer tagline conditionally
+.o-footer--no-tagline .o-footer__post {
+  display: none;
+}
+
 // Global layout pattern
 // Some content -- loader, locator bar -- needs to be full width,
 // so 'row' class provides left / right padding for individual content sections

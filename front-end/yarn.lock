@@ -490,17 +490,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cfpb/design-system-react@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@cfpb/design-system-react@npm:2.0.0"
+"@cfpb/design-system-react@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@cfpb/design-system-react@npm:2.0.1"
   dependencies:
     react-select: "npm:^5.10.2"
   peerDependencies:
-    "@cfpb/cfpb-design-system": 5.8.0
+    "@cfpb/cfpb-design-system": 5.8.1
     lit: ^3.3.3
-    react: 19.2.7
-    react-dom: ^19.2.4
-  checksum: 10/97ac3391b2243cd3d83f1ad3fd01360dade16cd45b0ece665eed6aba56dd25fc248aec02aa6a09c8f444639a0f5b94b0cc213b270fe155a1a3c75882e0797469
+    react: ^19.2.8
+    react-dom: ^19.2.8
+  checksum: 10/f376e122c60509d26b328bde75e4ee6a61e851ec1652daa925ac07cf80973cbef71295ab5868f67b6317f9d34e4ada0e99ec8e70dca57149b1c2359f37cd6ad2
   languageName: node
   linkType: hard
 
@@ -6291,7 +6291,7 @@ __metadata:
   dependencies:
     "@cfpb/browserslist-config": "npm:^0.0.6"
     "@cfpb/cfpb-design-system": "npm:^5.8.0"
-    "@cfpb/design-system-react": "npm:^2.0.0"
+    "@cfpb/design-system-react": "npm:^2.0.1"
     "@eslint/js": "npm:^10.0.1"
     "@nabla/vite-plugin-eslint": "npm:^3.0.0"
     "@tanstack/react-query": "npm:^5.90.21"

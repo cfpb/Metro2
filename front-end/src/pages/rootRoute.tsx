@@ -23,11 +23,11 @@ const showCFPBHeader = import.meta.env.VITE_SHOW_CFPB_HEADER
 const footerContent = DOMPurify.sanitize(
   import.meta.env.VITE_FOOTER_CONTENT as string
 )
-
 const footerLinks = JSON.parse(import.meta.env.VITE_FOOTER_LINKS as string) as Omit<
   LinkProperties,
   'preload'
 >[]
+const showFooterTagline = import.meta.env.VITE_SHOW_FOOTER_TAGLINE as boolean
 
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: (): React.JSX.Element => (
@@ -69,7 +69,9 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
               data-testid='footer-content'
               dangerouslySetInnerHTML={{ __html: footerContent }}
             />
-          }></AppFooter>
+          }
+          className={showFooterTagline ? undefined : 'o-footer--no-tagline'}
+        />
         {/* <TanStackRouterDevtools /> */}
       </Suspense>
     </DSRContext>
