@@ -7,7 +7,6 @@ from django.utils.module_loading import import_string
 
 from evaluate_m2.evaluate_utils import create_eval_insert_query
 from evaluate_m2.models import (
-    EvaluatorMetadata,
     EvaluatorResultMaterializedView,
     EvaluatorResultSummary,
 )

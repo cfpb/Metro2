@@ -1,9 +1,7 @@
 import csv
-import json
 import logging
 
 from django.conf import settings
-from django.core.serializers.json import DjangoJSONEncoder
 
 from smart_open import open
 

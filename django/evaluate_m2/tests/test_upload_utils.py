@@ -1,4 +1,3 @@
-import datetime
 import io
 
 from django.test import TestCase
@@ -16,7 +15,6 @@ from evaluate_m2.upload_utils import (
     s3_filename,
 )
 from parse_m2.models import (
-    AccountActivity,
     M2DataFile,
     Metro2Event,
 )
