@@ -27,7 +27,7 @@ const footerLinks = JSON.parse(import.meta.env.VITE_FOOTER_LINKS as string) as O
   LinkProperties,
   'preload'
 >[]
-const showFooterTagline = import.meta.env.VITE_SHOW_FOOTER_TAGLINE as boolean
+const showFooterTagline = import.meta.env.VITE_SHOW_FOOTER_TAGLINE
 
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: (): React.JSX.Element => (
@@ -70,7 +70,7 @@ const rootRoute = createRootRouteWithContext<RouterContext>()({
               dangerouslySetInnerHTML={{ __html: footerContent }}
             />
           }
-          className={showFooterTagline ? undefined : 'o-footer--no-tagline'}
+          className={showFooterTagline === 'true' ? undefined : 'o-footer--no-tagline'}
         />
         {/* <TanStackRouterDevtools /> */}
       </Suspense>
