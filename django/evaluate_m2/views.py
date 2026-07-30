@@ -289,18 +289,19 @@ class EvaluatorResultsView(generics.ListAPIView):
             )
 
     def get_sample_queryset(self, queryset):
-        # We need sample ids from the EvaluatorResultSummary
+        # If the Eval Result Summary doesn't exist, this will error,
+        # responding with 404 automatically
         event_id = self.kwargs["event_id"]
         evaluator_id = self.kwargs["evaluator_id"]
-        result_summary = EvaluatorResultSummary.objects.get(
+        EvaluatorResultSummary.objects.get(
             event_id=event_id,
             evaluator__id=evaluator_id
         )
 
-        sample_results = result_summary.sample_results()
+        sample_results = queryset.filter(sample=True)
 
         if sample_results.exists():
-            queryset = queryset.filter(sample=True)
+            return sample_results
         else:
             # OR select a random set of sample length from the queryset
             queryset = queryset.order_by("?")[:settings.M2_RESULT_SAMPLE_SIZE]
