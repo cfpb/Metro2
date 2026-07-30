@@ -204,6 +204,46 @@ class EvaluatorResultSummary(models.Model):
         csv_header.insert(0, 'event_name')
         return csv_header
 
+    @classmethod
+    def initialize(cls, event: Metro2Event, eval_id: str, eval_version: str):
+        """
+        Before the evaluator runs, create an EvaluatorResultsSummary object
+        to associate hits with.
+        """
+        # If an EvaluatorMetadata record already exists in the database
+        # with this name, associate the results with that record.
+        # If one does not exist, create it.
+        try:
+            eval_metadata = EvaluatorMetadata.objects.get(id=eval_id)
+        except EvaluatorMetadata.DoesNotExist:
+            eval_metadata = EvaluatorMetadata.objects.create(id=eval_id)
+
+        return cls.objects.create(
+            event = event,
+            evaluator = eval_metadata,
+            evaluator_version = eval_version,
+        )
+
+    def summarize_eval_results(self):
+        """
+        After the evaluator runs, if there were any hits, update the
+        summary of info about the hits.
+        """
+        data = self.evaluatorresult_set
+        if data.exists():
+            hits = data.count()
+            accounts_affected = data.values('acct_num').distinct().count()
+            earliest_date = data.order_by('date').first().date
+            latest_date = data.order_by('-date').first().date
+
+            self.hits = hits
+            self.accounts_affected = accounts_affected
+            self.inconsistency_start = earliest_date
+            self.inconsistency_end = latest_date
+            self.save()
+
+            self.sample_of_results().update(sample=True)
+
     def sample_of_results(
         self,
         sample_size: int = settings.M2_RESULT_SAMPLE_SIZE

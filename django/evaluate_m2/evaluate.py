@@ -59,7 +59,8 @@ class Evaluate:
     def run_single_evaluator(self, event, eval_name, eval_func, record_set):
         logger = logging.getLogger('evaluate.run_single_evaluator')
         logger.info(f"Running evaluator: {eval_name}")
-        result_summary = self.prepare_result_summary(event, eval_name)
+        result_summary = EvaluatorResultSummary.initialize(
+            event, eval_name, self.evaluator_version)
         try:
             self.save_evaluator_results(result_summary, eval_func(record_set))
         except TypeError as e:
@@ -69,7 +70,7 @@ class Evaluate:
             self.save_error_result(result_summary)
             return
 
-        self.update_result_summary_with_actual_results(result_summary)
+        result_summary.summarize_eval_results()
 
         if settings.S3_ENABLED and result_summary.hits > 0:
             stream_results_files_to_s3(result_summary, record_set)
@@ -87,48 +88,7 @@ class Evaluate:
         with connection.cursor() as cursor:
             cursor.execute(full_query, query_params)
 
-    def prepare_result_summary(
-        self, event: Metro2Event, eval_id: str
-    ) -> EvaluatorResultSummary:
-        """
-        Create an EvaluatorResultSummary object so we can associate results with it.
-        Later, we will update the values related to eval hits.
-        """
-        # If an EvaluatorMetadata record already exists in the database with this name,
-        # associate the results with that record. If one does not exist, create it.
-        try:
-            eval_metadata = EvaluatorMetadata.objects.get(id=eval_id)
-        except EvaluatorMetadata.DoesNotExist:
-            eval_metadata = EvaluatorMetadata.objects.create(id=eval_id)
 
-        return EvaluatorResultSummary.objects.create(
-            event = event,
-            evaluator = eval_metadata,
-            hits = 0,
-            accounts_affected = 0,
-            evaluator_version = self.evaluator_version,
-        )
-
-    def update_result_summary_with_actual_results(
-        self, result_summary: EvaluatorResultSummary
-    ):
-        """
-        If the evaluator had any hits, update the information about the hits
-        in the EvaluatorResultSummary record.
-        """
-        data = result_summary.evaluatorresult_set
-        if data.exists():
-            hits = data.count()
-            accounts_affected = data.values('acct_num').distinct().count()
-            earliest_date = data.order_by('date').first().date
-            latest_date = data.order_by('-date').first().date
-
-            result_summary.hits = hits
-            result_summary.accounts_affected = accounts_affected
-            result_summary.inconsistency_start = earliest_date
-            result_summary.inconsistency_end = latest_date
-            result_summary.sample_ids = result_summary.sample_of_results()
-            result_summary.save()
 
     def save_error_result(self, result_summary):
         result_summary.hits = -1
