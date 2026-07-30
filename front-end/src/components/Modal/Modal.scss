@@ -47,3 +47,7 @@ dialog.modal {
 body:has(dialog[open]) {
   overflow: hidden;
 }
+
+#warning-text b {
+  font-weight: 700;
+}
