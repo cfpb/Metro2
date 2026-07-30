@@ -188,12 +188,11 @@ class EvaluatorResultSummary(models.Model):
         verbose_name_plural = "Evaluator Result Summaries"
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     evaluator = models.ForeignKey(EvaluatorMetadata, on_delete=models.CASCADE)
-    hits = models.IntegerField()
-    accounts_affected = models.IntegerField(null=True)
+    hits = models.IntegerField(default=0)
+    accounts_affected = models.IntegerField(default=0)
     inconsistency_start = models.DateField(null=True)
     inconsistency_end = models.DateField(null=True)
     evaluator_version = models.CharField(max_length=200, blank=True)
-    sample_ids = models.JSONField(encoder=DjangoJSONEncoder, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -203,6 +202,9 @@ class EvaluatorResultSummary(models.Model):
         csv_header = list(self.evaluator.result_summary_fields())
         csv_header.insert(0, 'event_name')
         return csv_header
+
+    def sample_results(self):
+        return self.evaluatorresult_set.filter(sample=True)
 
     @classmethod
     def initialize(cls, event: Metro2Event, eval_id: str, eval_version: str):
@@ -242,15 +244,16 @@ class EvaluatorResultSummary(models.Model):
             self.inconsistency_end = latest_date
             self.save()
 
-            self.sample_of_results().update(sample=True)
+            self._generate_sample_of_results().update(sample=True)
 
-    def sample_of_results(
+    def _generate_sample_of_results(
         self,
         sample_size: int = settings.M2_RESULT_SAMPLE_SIZE
-    ) -> list[int]:
+    ):
         """
-        Return a list of IDs of AccountActivity records that are hits
+        Return a set of EvaluatorResult records that are hits
         for this evaluator.
+
         If this eval has more than sample_size hits, the list is a
         RANDOM sample of this eval's hits. Otherwise, return a list
         of all hits.
@@ -260,8 +263,7 @@ class EvaluatorResultSummary(models.Model):
         if not data.exists():
             return []
         if self.hits <= sample_size:
-            small_aa_set = data.values_list('source_record_id')
-            return [val[0] for val in small_aa_set]
+            return data
         else:
             # Since all hits for an eval are added to the EvaluatorResults table
             # in one transaction and the ID column is auto-generated, we can
@@ -274,10 +276,7 @@ class EvaluatorResultSummary(models.Model):
             last_id = data.order_by("-id").first().id
             random_ids = random.sample(range(first_id, last_id + 1), sample_size)
 
-            random_aa_set = data.filter(id__in=random_ids) \
-                .values_list('source_record_id')
-
-            return [val[0] for val in random_aa_set]
+            return data.filter(id__in=random_ids)
 
 
 class EvaluatorResult(models.Model):
@@ -288,6 +287,8 @@ class EvaluatorResult(models.Model):
     date = models.DateField()
     source_record = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     acct_num = models.CharField(max_length=30)
+    # Indicate whether this result is included in the set of random sample results
+    sample = models.BooleanField(default=False)
 
     def create_csv_row_data(self, fields_list: list[str]):
         field_values = AccountActivity.objects \
@@ -333,6 +334,7 @@ class EvaluatorResultMaterializedView(models.Model):
     event_id = models.IntegerField(db_column="event_id")
     evaluator_id = models.CharField(db_column="evaluator_id")
     source_record_id = models.IntegerField(db_column="source_record_id")
+    sample = models.BooleanField(db_column="sample")
     # account activity fields
     activity_date = models.DateField(db_column="activity_date")
     cons_acct_num = models.CharField(db_column="cons_acct_num")
@@ -430,6 +432,7 @@ class EvaluatorResultMaterializedView(models.Model):
             a.event_id,
             s.evaluator_id,
             a.id as source_record_id,
+            r.sample,
 
             a.activity_date,
             a.cons_acct_num,

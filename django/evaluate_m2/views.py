@@ -296,10 +296,11 @@ class EvaluatorResultsView(generics.ListAPIView):
             event_id=event_id,
             evaluator__id=evaluator_id
         )
-        sample_ids = result_summary.sample_ids
 
-        if sample_ids and (len(sample_ids) > 0):
-            queryset = queryset.filter(source_record_id__in=sample_ids)
+        sample_results = result_summary.sample_results()
+
+        if sample_results.exists():
+            queryset = queryset.filter(sample=True)
         else:
             # OR select a random set of sample length from the queryset
             queryset = queryset.order_by("?")[:settings.M2_RESULT_SAMPLE_SIZE]

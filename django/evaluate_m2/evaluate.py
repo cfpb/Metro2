@@ -73,7 +73,7 @@ class Evaluate:
         result_summary.summarize_eval_results()
 
         if settings.S3_ENABLED and result_summary.hits > 0:
-            stream_results_files_to_s3(result_summary, record_set)
+            stream_results_files_to_s3(result_summary)
 
 
     def save_evaluator_results(self, result_summary, eval_query):

@@ -11,9 +11,8 @@ from django_application.s3_utils import s3_session
 from evaluate_m2.models import EvaluatorResultSummary
 
 
-def stream_results_files_to_s3(result_summary: EvaluatorResultSummary, record_set):
+def stream_results_files_to_s3(result_summary: EvaluatorResultSummary):
     stream_full_results_csv_to_s3(result_summary)
-    stream_sample_results_json_to_s3(result_summary, record_set)
 
 ##############
 # Methods for generating and uploading full CSV
@@ -60,57 +59,6 @@ def generate_full_csv(result_summary: EvaluatorResultSummary, fout):
             writer.writerow(eval_result.create_csv_row_data(fields_list))
 
     return fout
-
-
-##############
-# Methods for generating and uploading JSON sample
-def stream_sample_results_json_to_s3(
-    result_summary: EvaluatorResultSummary, record_set, url: str = None
-):
-    """
-    Save the set of sample of evaluator results as JSON to an S3 bucket.
-    """
-    logger = logging.getLogger('evaluate.stream_sample_results_json_to_s3')
-    if not url:
-        url = full_s3_url(result_summary.event_id, result_summary.evaluator_id, 'json')
-    logger.info(
-        f"Saving JSON for event {result_summary.event_id}, evaluator "
-        f"{result_summary.evaluator_id}"
-    )
-
-    with open(url, 'w', transport_params={'client': s3_session()}) as jsonFile:
-        response = generate_json_sample(result_summary, record_set)
-        json.dump(response, jsonFile, cls=DjangoJSONEncoder)
-    logger.debug("Completed saving JSON file")
-
-# TODO: Combine this with and/or use the
-# EvaluatorResultAccountActivitySerializer for serializing the resulting
-# records.
-def generate_json_sample(result_summary: EvaluatorResultSummary, record_set):
-    """
-    Generate the JSON of evaluator results that is sent to the front-end
-    on the evaluator results view. When S3_ENABLED == True, this method is used
-    by evaluate.py to send the JSON to S3. When S3_ENABLED == False, this
-    method is used by views.py to generate the JSON for the API response.
-
-    The set of results is the set of AccountActivity records specified by
-    result_summary.sample_ids. This value should be populated during the
-    evaluate process (in update_result_summary_with_actual_results).
-    If not, as a fallback, just return the first 20 AccountActivity records.
-    """
-    fields_list = result_summary.evaluator.result_summary_fields()
-    sample_ids = result_summary.sample_ids
-
-    if not sample_ids or (len(sample_ids) == 0):
-        page_size = settings.M2_RESULT_SAMPLE_SIZE
-        records = record_set \
-            .order_by('activity_date') \
-            .values(*fields_list)[:page_size]
-    else:
-        records = record_set.filter(id__in=sample_ids) \
-        .order_by('activity_date') \
-        .values(*fields_list)
-    return {'hits': [obj for obj in records]}
 
 
 ###############
