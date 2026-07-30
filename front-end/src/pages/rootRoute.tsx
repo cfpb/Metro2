@@ -27,7 +27,7 @@ const footerLinks = JSON.parse(import.meta.env.VITE_FOOTER_LINKS as string) as O
   LinkProperties,
   'preload'
 >[]
-const showFooterTagline = import.meta.env.VITE_SHOW_FOOTER_TAGLINE
+const showFooterTagline = import.meta.env.VITE_SHOW_FOOTER_TAGLINE as string
 
 const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: (): React.JSX.Element => (

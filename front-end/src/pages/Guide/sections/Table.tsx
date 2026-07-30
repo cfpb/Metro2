@@ -69,7 +69,6 @@ export default function Features(): ReactElement {
       <div className='features'>
         <Table
           columns={['Column Feature', 'Mouse navigation', 'Keyboard navigation']}
-          // @ts-expect-error DSR issue
           rows={[
             [
               'Pin',
