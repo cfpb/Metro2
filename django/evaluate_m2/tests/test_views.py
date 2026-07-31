@@ -5,8 +5,8 @@ from django.test import TestCase, override_settings
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
-    EvaluatorResultSummary,
     EvaluatorResultMaterializedView,
+    EvaluatorResultSummary,
 )
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
 from evaluate_m2.tests.evaluator_test_helper import acct_record
