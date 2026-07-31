@@ -1,3 +1,5 @@
+from functools import reduce
+
 from django.db.models import Q
 
 import django_filters.rest_framework
@@ -6,27 +8,62 @@ from django_filters.constants import EMPTY_VALUES
 from evaluate_m2.models import EvaluatorResultMaterializedView
 
 
-class AnyCharFilter(django_filters.BaseInFilter, django_filters.CharFilter):
-    """Subclass CharFilter to allow multiple Char choices"""
-
+class NullInclusiveFilterMixin:
     # If this value is given, filter on a null value
     null_value = "blank"
 
-    # Override the filter method to construct a query that will filter for
-    # values and null.
-    def filter(self, qs, value):
-        if value in EMPTY_VALUES:
-            return qs
-
+    def get_null_query(self, values, null_value="blank"):
         query = Q()
-        if value is not None and self.null_value in value:
+
+        if values is not None and self.null_value in values:
             # Construct values that do not include the the null placeholder
             # and add a null value query
-            value = [v for v in value if v != self.null_value]
+            values = [v for v in values if v != self.null_value]
             query |= Q(**{f"{self.field_name}__isnull": True})
 
-        # Filter in the given value list
-        query |= Q(**{f"{self.field_name}__{self.lookup_expr}": value})
+        return values, query
+
+
+class AnyCharFilter(django_filters.BaseInFilter, NullInclusiveFilterMixin):
+    """Match any char value in a CharField"""
+
+    # Override the filter method to construct a query that will filter for
+    # values and null.
+    def filter(self, qs, values):
+        if values in EMPTY_VALUES:
+            return qs
+
+        # Pull out a null value as a separate query
+        values, query = self.get_null_query(values)
+
+        # Filter for remaining values
+        if len(values) > 0:
+            query |= Q(**{f"{self.field_name}__{self.lookup_expr}": values})
+
+        return self.get_method(qs)(query)
+
+
+class JSONArrayContainsFilter(django_filters.BaseCSVFilter, NullInclusiveFilterMixin):
+    """Match any value in a JSONField array"""
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("lookup_expr", "contains")
+        super().__init__(*args, **kwargs)
+
+    def filter(self, qs, values):
+        if values in EMPTY_VALUES:
+            return qs
+
+        # Pull out a null value as a separate query
+        values, query = self.get_null_query(values)
+
+        if len(values) > 0:
+            # Construct a Q object for every potential value
+            query |= reduce(
+                Q.__or__,
+                (Q(**{f"{self.field_name}__{self.lookup_expr}": [v]}) for v in values)
+            )
+
         return self.get_method(qs)(query)
 
 
@@ -54,7 +91,7 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     spc_com_cd = AnyCharFilter(field_name="spc_com_cd")
     terms_freq = AnyCharFilter(field_name="terms_freq")
     cons_info_ind = AnyCharFilter(field_name="cons_info_ind")
-    cons_info_ind_assoc = AnyCharFilter(field_name="cons_info_ind_assoc")
+    cons_info_ind_assoc = JSONArrayContainsFilter(field_name="cons_info_ind_assoc")
     l1__change_ind = AnyCharFilter(field_name="change_ind")
 
     # Dates, as a boolean where the date either exists or does not
