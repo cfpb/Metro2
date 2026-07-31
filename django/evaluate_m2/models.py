@@ -318,6 +318,7 @@ class EvaluatorResultMaterializedView(models.Model):
     doai = models.DateField(db_column="doai")
     dofd = models.DateField(db_column="dofd")
     date_closed = models.DateField(db_column="date_closed")
+    dolp = models.DateField(db_column="dolp")
     int_type_ind = models.CharField(db_column="int_type_ind")
     surname = models.CharField(db_column="surname")
     first_name = models.CharField(db_column="first_name")
@@ -415,6 +416,7 @@ class EvaluatorResultMaterializedView(models.Model):
             a.doai,
             a.dofd,
             a.date_closed,
+            a.dolp,
             a.int_type_ind,
             a.surname,
             a.first_name,
