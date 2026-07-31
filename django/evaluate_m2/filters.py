@@ -1,4 +1,7 @@
+from django.db.models import Q
+
 import django_filters.rest_framework
+from django_filters.constants import EMPTY_VALUES
 
 from evaluate_m2.models import EvaluatorResultMaterializedView
 
@@ -6,17 +9,25 @@ from evaluate_m2.models import EvaluatorResultMaterializedView
 class AnyCharFilter(django_filters.BaseInFilter, django_filters.CharFilter):
     """Subclass CharFilter to allow multiple Char choices"""
 
-    # If this value is given, filter on an empty sting.
-    empty_value = "blank"
+    # If this value is given, filter on a null value
+    null_value = "blank"
 
-    # django-filter cannot filter on empty strings by default.
-    # The documentaiton offers a couple of approaches to doing so, this is
-    # based on one of them:
-    # https://django-filter.readthedocs.io/en/stable/guide/tips.html#filtering-by-an-empty-string
+    # Override the filter method to construct a query that will filter for
+    # values and null.
     def filter(self, qs, value):
-        if value is not None and self.empty_value in value:
-            value = ["" if v == self.empty_value else v for v in value]
-        return super().filter(qs, value)
+        if value in EMPTY_VALUES:
+            return qs
+
+        query = Q()
+        if value is not None and self.null_value in value:
+            # Construct values that do not include the the null placeholder
+            # and add a null value query
+            value = [v for v in value if v != self.null_value]
+            query |= Q(**{f"{self.field_name}__isnull": True})
+
+        # Filter in the given value list
+        query |= Q(**{f"{self.field_name}__{self.lookup_expr}": value})
+        return self.get_method(qs)(query)
 
 
 class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
