@@ -16,9 +16,5 @@ echo "Parse the data file and run the evaluators"
 python manage.py add_seed_data_local -e Sample-Dataset-007
 
 echo
-echo "Generate the evaluator results materialized view"
-python manage.py materialized_view
-
-echo
 echo "Add the user as a member of the event"
 python manage.py add_user_to_event --event=Sample-Dataset-007 --user=admin
