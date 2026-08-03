@@ -263,6 +263,7 @@ class EvaluatorResultMaterializedView(models.Model):
     class Meta:
         managed = False
         db_table = 'mv_all_evaluator_results'
+        verbose_name_plural = "Evaluator Result Materialized View"
 
     table_name = 'mv_all_evaluator_results'
 

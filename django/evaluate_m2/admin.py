@@ -72,9 +72,9 @@ class EvaluatorResultAdmin(admin.ModelAdmin):
 
 class EvaluatorResultMaterializedViewAdmin(admin.ModelAdmin):
     list_display = [
+        'source_record_id',
         'event_id',
         'evaluator_id',
-        'source_record_id',
         'activity_date',
         'cons_acct_num',
         "acct_type",
@@ -109,9 +109,9 @@ class EvaluatorResultMaterializedViewAdmin(admin.ModelAdmin):
 
 
 admin.site.register(EvaluatorMetadata, EvaluatorMetadataAdmin)
-admin.site.register(EvaluatorResultSummary, EvaluatorResultSummaryAdmin)
-admin.site.register(EvaluatorResult, EvaluatorResultAdmin)
 admin.site.register(
     EvaluatorResultMaterializedView,
     EvaluatorResultMaterializedViewAdmin
 )
+admin.site.register(EvaluatorResultSummary, EvaluatorResultSummaryAdmin)
+admin.site.register(EvaluatorResult, EvaluatorResultAdmin)
