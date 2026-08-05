@@ -7,6 +7,7 @@ from django.conf import settings
 from django.db import ProgrammingError
 from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
+from django.utils.functional import cached_property
 
 import botocore
 import django_filters.rest_framework
@@ -344,34 +345,30 @@ class AccountsListView(generics.ListAPIView):
     ]
     filterset_class = AccountListFilterSet
 
-    def get_queryset(self):
+    @cached_property
+    def event(self):
         event_id = self.kwargs["event_id"]
-        event = Metro2Event.objects.get(id=event_id)
+        return Metro2Event.objects.get(id=event_id)
 
-        queryset = event.get_all_account_activity().select_related(
+    def get_queryset(self):
+        return self.event.get_all_account_activity().select_related(
             "k2",
             "k4",
             "l1"
         ).with_inconsistency_counts(
-            event
+            self.event
         ).with_months_of_data(
-            event
+            self.event
         )
 
-        return queryset
-
     def list(self, request, *args, **kwargs):
-        event_id = self.kwargs["event_id"]
-        event = Metro2Event.objects.get(id=event_id)
-
         # TODO: replace using DRF permissions/check_permissions()
-        if not has_permissions_for_request(request, event):
+        if not has_permissions_for_request(request, self.event):
             return HttpResponse('Unauthorized', status=401)
 
         queryset = self.filter_queryset(
             self.get_queryset()
         ).distinct_accounts()
 
-        # Paginate the results
         serializer = AccountListSerializer(queryset, many=True)
         return Response(serializer.data)
