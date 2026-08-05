@@ -1,37 +1,98 @@
 @use 'sass:math';
 @use '@cfpb/cfpb-design-system/src/index' as *;
-@use '@cfpb/cfpb-design-system/src/elements/abstracts' as *;
+@use '@cfpb/cfpb-design-system/src/abstracts' as *;
 @import '@cfpb/design-system-react/index.css';
 @include licensed-font('/static/fonts');
 
+// Internal content spacing variable
 $content-margin-width: math.div($grid-gutter-width * 3, $base-font-size-px) + rem;
 
-// Set heights & layout so the loader can cover
-// a section of the page to bottom of viewport.
+// Basic layout
 html,
-body,
-#root {
+body {
   height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
 #root {
   display: flex;
   flex-direction: column;
+  min-height: 100dvh;
 }
+
+.app-container {
+  flex: 1;
+}
+
+footer {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+// DS / DSR customization
 
 // Design system overrides needed for full-width layout.
-.wrapper,
-.grid,
-.m-hero__wrapper {
-  max-width: none !important;
-  padding-left: $content-margin-width !important;
-  padding-right: $content-margin-width !important;
+@include respond-to-min($bp-sm-min) {
+  .wrapper,
+  .grid,
+  .m-hero__wrapper {
+    max-width: none !important;
+    padding-left: $content-margin-width !important;
+    padding-right: $content-margin-width !important;
+  }
+
+  .m-hero__wrapper .m-hero__text {
+    padding-left: 0;
+  }
 }
 
-.m-hero__wrapper .m-hero__text {
-  padding-left: 0;
+// Breadcrumb overrides
+.u-layout-grid__breadcrumbs {
+  padding: 0;
+  background-color: inherit;
+  border-bottom-width: 0;
+  margin-bottom: 0;
 }
 
+// Footer overrides
+.o-footer__left-column p {
+  max-width: 670px;
+}
+
+// Tab overrides
+.tab-panel {
+  padding: 0;
+  border-top: 1px solid var(--gray-40);
+}
+
+.tablist {
+  margin-bottom: -1px;
+  position: relative;
+  z-index: 10;
+}
+
+// Link spacing overrides
+// Add spacing between link text and icons
+.a-link__text + .cf-icon-svg-wrapper,
+.a-btn--link .cf-icon-svg-wrapper {
+  padding-left: 0.2rem;
+}
+
+// Add spacing for icon on warning button
+.a-btn--warning {
+  .cf-icon-svg-wrapper {
+    margin-right: 0.3em;
+  }
+}
+
+// Header overrides
 // Metro 2 header is a link but doesn't need link styling
 header h1 {
   font-size: 1.25rem !important;
@@ -41,13 +102,23 @@ header h1 {
   }
 }
 
+// Hide footer tagline conditionally
+.o-footer--no-tagline .o-footer__post {
+  display: none;
+}
+
 // Global layout pattern
 // Some content -- loader, locator bar -- needs to be full width,
 // so 'row' class provides left / right padding for individual content sections
 // as well as flex layout for the loader.
 .row {
   margin: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + rem
-    $content-margin-width;
+    math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + rem;
+
+  @include respond-to-min($bp-sm-min) {
+    margin: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + rem
+      $content-margin-width;
+  }
   display: flex;
 }
 
@@ -81,18 +152,5 @@ header h1 {
   ol,
   ul {
     margin-top: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
-  }
-}
-
-// Add spacing between link text and icons
-.a-link__text + .cf-icon-svg-wrapper,
-.a-btn--link .cf-icon-svg-wrapper {
-  padding-left: 0.2rem;
-}
-
-// Add spacing for icon on warning button
-.a-btn--warning {
-  .cf-icon-svg-wrapper {
-    margin-right: 0.3em;
   }
 }

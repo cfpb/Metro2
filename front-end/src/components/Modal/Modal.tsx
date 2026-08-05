@@ -60,7 +60,7 @@ export function Modal({
           <div className='u-right'>
             <Button
               appearance='primary'
-              asLink
+              isLink
               label='Close'
               className='a-btn a-btn--link'
               onClick={onClose}

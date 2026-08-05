@@ -69,7 +69,6 @@ export default function Features(): ReactElement {
       <div className='features'>
         <Table
           columns={['Column Feature', 'Mouse navigation', 'Keyboard navigation']}
-          // @ts-expect-error DSR issue
           rows={[
             [
               'Pin',
@@ -171,12 +170,12 @@ export default function Features(): ReactElement {
         natively. To learn more about use the links below.
       </Paragraph>
       <Paragraph>
-        <Link href='https://www.ag-grid.com/react-data-grid/accessibility/'>
+        <Link to='https://www.ag-grid.com/react-data-grid/accessibility/'>
           https://www.ag-grid.com/react-data-grid/accessibility/
         </Link>
       </Paragraph>
       <Paragraph>
-        <Link href='https://www.ag-grid.com/react-data-grid/keyboard-navigation/#'>
+        <Link to='https://www.ag-grid.com/react-data-grid/keyboard-navigation/#'>
           https://www.ag-grid.com/react-data-grid/keyboard-navigation/
         </Link>
       </Paragraph>

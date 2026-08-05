@@ -26,8 +26,8 @@ export default function EvaluatorPage(): ReactElement {
         icon='flag-round'
         breadcrumbs={[
           {
-            href: `/events/${String(eventData.id)}`,
-            text: 'Back to event results'
+            to: `/events/${String(eventData.id)}`,
+            label: 'Back to event results'
           }
         ]}
       />

@@ -1,7 +1,6 @@
+import { Label } from '@cfpb/design-system-react'
 import type { ChangeEvent, JSX, ReactElement, ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
-
-import { Label } from '@cfpb/design-system-react'
 import './IndeterminateCheckbox.scss'
 
 /**
@@ -40,7 +39,7 @@ export interface CheckboxProperties {
   /** Additional CSS classes that will be applied to checkbox label element */
   labelClassName?: string
   /** Removes/Adds 'label__heading' class to the Label * */
-  labelInline?: boolean
+  isLabelInline?: boolean
   /** A name for this checkbox's value that can be referenced in javascript */
   name?: string
   /** Is this checkbox disabled? */
@@ -69,7 +68,7 @@ export function IndeterminateCheckbox({
   disabled = false,
   isIndeterminate = false,
   isLarge = false,
-  labelInline = true, // 'true' REMOVES the a.label__heading class
+  isLabelInline = true, // 'true' REMOVES the a.label__heading class
   name,
   onChange,
   status,
@@ -113,7 +112,7 @@ export function IndeterminateCheckbox({
         id={`${id}-label`}
         className={labelClassName}
         htmlFor={id}
-        inline={labelInline}>
+        isInline={isLabelInline}>
         {label}
       </Label>
     </div>

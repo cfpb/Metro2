@@ -1,3 +1,4 @@
+import { LinkProperties } from '@cfpb/design-system-react'
 import { Metro2Modal } from '@cypress/helpers/modalHelpers'
 import { stripHtmlTags } from '@cypress/helpers/utils'
 import { PII_COOKIE_NAME } from '@src/constants/settings'
@@ -89,6 +90,79 @@ describe('General page content', () => {
                 .should('have.text', 'Need help? See the user guide')
             })
         }
+      })
+    })
+  })
+
+  describe('Page footer', () => {
+    beforeEach(() => {
+      cy.viewport(1920, 1080)
+      cy.setCookie(PII_COOKIE_NAME, 'true')
+      cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
+      cy.visit('/')
+      cy.wait('@getUser')
+    })
+
+    it('Should show a footer', () => {
+      cy.get('footer').should('be.visible')
+    })
+
+    it('Should show footer left column content from env', () => {
+      cy.env(['VITE_FOOTER_CONTENT']).then(({ VITE_FOOTER_CONTENT }) => {
+        cy.get('footer')
+          .should('be.visible')
+          .within(() => {
+            cy.findByTestId('footer-content').should(
+              'include.html',
+              VITE_FOOTER_CONTENT
+            )
+          })
+      })
+    })
+
+    it('Should show footer links from env variable', () => {
+      cy.env(['VITE_FOOTER_LINKS']).then(({ VITE_FOOTER_LINKS }) => {
+        let footerLinks
+        try {
+          footerLinks = JSON.parse(VITE_FOOTER_LINKS as string) as Omit<
+            LinkProperties,
+            'preload'
+          >[]
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.log(error)
+        }
+        if (Array.isArray(footerLinks) && footerLinks.length > 0) {
+          cy.get('.o-footer__right-column')
+            .should('be.visible')
+            .within(() => {
+              cy.get('.m-list__link').each((link, index) => {
+                const expected = footerLinks[index] as Omit<
+                  LinkProperties,
+                  'preload'
+                >
+                cy.wrap(link)
+                  .should('have.attr', 'href', expected.to)
+                  .and('have.text', expected.label)
+              })
+            })
+        } else {
+          cy.get('.o-footer__right-column').should('be.empty')
+        }
+      })
+    })
+
+    it('Should show footer tagline based on env', () => {
+      cy.env(['VITE_SHOW_FOOTER_TAGLINE']).then(({ VITE_SHOW_FOOTER_TAGLINE }) => {
+        cy.get('footer')
+          .should('be.visible')
+          .within(() => {
+            if (VITE_SHOW_FOOTER_TAGLINE === 'true') {
+              cy.get('.o-footer__post').should('be.visible')
+            } else {
+              cy.get('.o-footer__post').should('not.be.visible')
+            }
+          })
       })
     })
   })

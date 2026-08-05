@@ -40,7 +40,7 @@ describe('LocatorBar.cy.tsx', () => {
       <LocatorBar
         icon='bank-round'
         heading='Home page'
-        breadcrumbs={[{ href: '/results', text: 'Back to results' }]}
+        breadcrumbs={[{ to: '/results', label: 'Back to results' }]}
       />
     )
     cy.findByTestId('locator-bar-heading')

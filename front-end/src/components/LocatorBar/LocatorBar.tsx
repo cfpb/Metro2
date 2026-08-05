@@ -1,10 +1,13 @@
-import { Icon } from '@cfpb/design-system-react'
+import { Breadcrumb, Icon } from '@cfpb/design-system-react'
 import type { ReactElement } from 'react'
-import type { Breadcrumb } from './Breadcrumbs'
 
-import { Breadcrumbs } from './Breadcrumbs'
-import './Breadcrumbs.scss'
 import './LocatorBar.scss'
+
+interface BreadcrumbCrumb {
+  to: string
+  label: string
+  isCurrent?: boolean
+}
 
 /**
  * LocatorBar
@@ -21,7 +24,7 @@ import './LocatorBar.scss'
  * @param {string} subhead - text for H3 heading below the H2
  * @param {array} breadcrumbs - array of breadcrumb links
  *                              with format:
- *                              [href:'link url', text:'link text']
+ *                              [to:'link url', label:'link text']
  *
  */
 
@@ -30,7 +33,7 @@ interface LocatorBarProperties {
   heading: string
   eyebrow?: string
   subhead?: string
-  breadcrumbs?: Breadcrumb[] | null
+  breadcrumbs?: BreadcrumbCrumb[] | null
 }
 
 export default function LocatorBar({
@@ -46,7 +49,7 @@ export default function LocatorBar({
   return (
     <div className={className}>
       {breadcrumbs ? (
-        <Breadcrumbs links={breadcrumbs} data-testid='locator-bar-breadcrumbs' />
+        <Breadcrumb crumbs={breadcrumbs} data-testid='locator-bar-breadcrumbs' />
       ) : null}
       <div className='header-with-icon'>
         <Icon
@@ -61,8 +64,14 @@ export default function LocatorBar({
               {eyebrow}
             </div>
           ) : null}
-          <h1 className='h2' data-testid='locator-bar-heading'>{heading}</h1>
-          {subhead ? <h2 className='h3' data-testid='locator-bar-subhead'>{subhead}</h2> : null}
+          <h1 className='h2' data-testid='locator-bar-heading'>
+            {heading}
+          </h1>
+          {subhead ? (
+            <h2 className='h3' data-testid='locator-bar-subhead'>
+              {subhead}
+            </h2>
+          ) : null}
         </div>
       </div>
     </div>

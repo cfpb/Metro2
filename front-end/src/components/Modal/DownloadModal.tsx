@@ -116,7 +116,7 @@ export default function DownloadModal({
 
           <Button
             appearance='primary'
-            asLink
+            isLink
             label='Cancel'
             className='a-btn a-btn--link a-btn--full-on-xs'
             onClick={onCloseModal}

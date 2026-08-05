@@ -37,6 +37,12 @@ export default defineConfig({
         process.env.VITE_PII_WARNING_TEXT ?? viteEnv.VITE_PII_WARNING_TEXT
       config.env.VITE_SHOW_CFPB_HEADER =
         process.env.VITE_SHOW_CFPB_HEADER ?? viteEnv.VITE_SHOW_CFPB_HEADER
+      config.env.VITE_FOOTER_CONTENT =
+        process.env.VITE_FOOTER_CONTENT ?? viteEnv.VITE_FOOTER_CONTENT
+      config.env.VITE_FOOTER_LINKS =
+        process.env.VITE_FOOTER_LINKS ?? viteEnv.VITE_FOOTER_LINKS
+      config.env.VITE_SHOW_FOOTER_TAGLINE =
+        process.env.VITE_SHOW_FOOTER_TAGLINE ?? viteEnv.VITE_SHOW_FOOTER_TAGLINE
 
       return config
     }
