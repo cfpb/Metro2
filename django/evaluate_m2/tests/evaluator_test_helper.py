@@ -1,6 +1,11 @@
 from datetime import date
 
 from evaluate_m2.evaluate import evaluator
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResult,
+    EvaluatorResultSummary,
+)
 from parse_m2.models import J1, J2, K2, K4, L1, AccountActivity, M2DataFile, Metro2Event
 
 
@@ -106,6 +111,7 @@ def acct_record(file: M2DataFile, custom_values: dict) -> AccountActivity:
     acct_activity.save()
     return acct_activity
 
+
 def k2_record(custom_values: dict):
     """
     Returns a K2 record for use in tests, using the values
@@ -130,6 +136,7 @@ def k2_record(custom_values: dict):
     )
     k2.save()
     return k2
+
 
 def k4_record(custom_values: dict):
     """
@@ -160,6 +167,7 @@ def k4_record(custom_values: dict):
     k4.save()
     return k4
 
+
 def l1_record(custom_values: dict):
     """
     Returns a L1 record for use in tests, using the values
@@ -187,6 +195,7 @@ def l1_record(custom_values: dict):
     l1.save()
     return l1
 
+
 def create_bulk_acct_record(file: M2DataFile, value_list: dict, size: int):
     """
     Returns a list of AccountActivity records for use in tests, using the values
@@ -207,6 +216,7 @@ def create_bulk_acct_record(file: M2DataFile, value_list: dict, size: int):
         acct_activity = acct_record(file, custom_values[i])
         account_activities.append(acct_activity)
     return account_activities
+
 
 def create_bulk_JSegments(j_type: str, value_list: dict, size: int):
     """
@@ -238,6 +248,39 @@ def create_bulk_JSegments(j_type: str, value_list: dict, size: int):
         return J1.objects.bulk_create(j_segments)
     else:
         return J2.objects.bulk_create(j_segments)
+
+
+def evaluator_result_record(
+    event: Metro2Event,
+    evaluator_id: str,
+    source_record: AccountActivity
+) -> EvaluatorResult:
+    """
+    Returns an EvaluatorResult for use in tests, creating the parent
+    EvaluatorResultSummary (one per evaluator/event) as needed.
+
+    Inputs:
+    - event: the Metro2Event the result belongs to
+    - evaluator_id: id for the EvaluatorMetadata (created if absent)
+    - source_record: the AccountActivity the result points to
+    """
+    evaluator, _ = EvaluatorMetadata.objects.get_or_create(
+        id=evaluator_id
+    )
+    result_summary, _ = EvaluatorResultSummary.objects.get_or_create(
+        event=event,
+        evaluator=evaluator,
+        defaults={
+            "hits": 0,
+            "sample_ids": []
+        }
+    )
+    return EvaluatorResult.objects.create(
+        result_summary=result_summary,
+        acct_num=source_record.cons_acct_num,
+        source_record=source_record,
+        date=source_record.activity_date,
+    )
 
 
 class EvaluatorTestHelper:
