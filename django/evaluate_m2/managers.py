@@ -20,7 +20,7 @@ class AccountActivityQuerySet(models.QuerySet):
             result_summary__event=event,
             acct_num=OuterRef("cons_acct_num"),
         ).order_by().values("acct_num").annotate(
-            n=Count("result_summary__evaluator_id", distinct=True),
+            n=Count("id"),
         ).values("n")[:1]
 
         return self.annotate(

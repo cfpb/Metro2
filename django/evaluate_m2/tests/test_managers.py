@@ -153,7 +153,7 @@ class AccountActivityQuerySetAnnotationsTest(TestCase):
 
         qs = AccountActivity.objects.with_inconsistency_counts(self.event)
         query_acct = qs.filter(cons_acct_num=acct1.cons_acct_num).first()
-        self.assertEqual(query_acct.total_inconsistencies, 1)
+        self.assertEqual(query_acct.total_inconsistencies, 2)
 
     def test_months_of_data(self):
         acct_record(
