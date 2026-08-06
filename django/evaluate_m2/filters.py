@@ -69,15 +69,6 @@ class JSONArrayContainsFilter(django_filters.BaseCSVFilter, NullInclusiveFilterM
 
 class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     """This filter set specifies `EvaluatorResultMaterializedView` fields to filter.
-
-    Because the fields that we would filter `EvaluatorResult` objects by exist
-    on their `source_record` relation, the fields here simply map the
-    `source_record` field name to the correct field name for an
-    `EvaluatorResult`.
-
-    For example, the API might allow filtering `EvaluatorResults` by
-    `acct_stat`, but the Django queryset will for `EvaluatorResults` will need
-    to be filtered by `acct_stat`.
     """
 
     acct_type = django_filters.CharFilter(field_name="acct_type")

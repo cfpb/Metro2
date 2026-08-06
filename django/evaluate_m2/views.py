@@ -287,7 +287,6 @@ class EvaluatorResultsView(generics.ListAPIView):
                 ),
                 status=503
             )
-            return Response(error, status=503)
 
     def get_sample_queryset(self, queryset):
         # We need sample ids from the EvaluatorResultSummary
