@@ -278,7 +278,6 @@ class AccountListSerializer(AccountActivitySerializer):
 
     class Meta(AccountActivitySerializer.Meta):
         default_fields = [
-            # list(AccountActivitySerializer.Meta.default_fields) + [
             "cons_acct_num",
             "port_type",
             "acct_type",

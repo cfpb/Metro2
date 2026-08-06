@@ -351,10 +351,7 @@ class AccountsListView(generics.ListAPIView):
         return Metro2Event.objects.get(id=event_id)
 
     def get_queryset(self):
-        return self.event.get_all_account_activity().select_related(
-            "k2",
-            "k4",
-            "l1"
+        return self.event.get_all_account_activity(
         ).with_inconsistency_counts(
             self.event
         ).with_months_of_data(
