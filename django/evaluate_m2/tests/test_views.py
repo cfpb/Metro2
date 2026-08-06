@@ -328,16 +328,16 @@ class EvaluateViewsTestCase(TestCase):
             {
                 "acct_type": "",
                 "cons_acct_num": "0032",
-                "months_of_data": 1,
+                "total_records": 1,
                 "port_type": "A",
-                "total_inconsistencies": 2
+                "total_hits": 2
             },
             {
                 "acct_type": "",
                 "cons_acct_num": "0033",
-                "months_of_data": 1,
+                "total_records": 1,
                 "port_type": "A",
-                "total_inconsistencies": 1
+                "total_hits": 1
             }
         ]
         response = self.client.get("/api/events/1/account/?cons_acct_num=0033,0032")

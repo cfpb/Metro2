@@ -273,14 +273,14 @@ class EvaluatorResultSerializer(serializers.ModelSerializer):
 
 
 class AccountListSerializer(AccountActivitySerializer):
-    total_inconsistencies = serializers.IntegerField(read_only=True)
-    months_of_data = serializers.IntegerField(read_only=True)
+    total_hits = serializers.IntegerField(read_only=True)
+    total_records = serializers.IntegerField(read_only=True)
 
     class Meta(AccountActivitySerializer.Meta):
         default_fields = [
             "cons_acct_num",
             "port_type",
             "acct_type",
-            "total_inconsistencies",
-            "months_of_data",
+            "total_hits",
+            "total_records",
         ]

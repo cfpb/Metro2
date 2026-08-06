@@ -43,13 +43,13 @@ from parse_m2.models import AccountActivity, Metro2Event
 from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
 
 
-@api_view(('GET',))
+@api_view(("GET",))
 def download_evaluator_metadata_csv(request):
     # Documentation on returning CSV: https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
     filename = f"evaluator-metadata-{date.today()}.csv"
     response = HttpResponse(
         content_type="text/csv",
-        headers={"Content-Disposition": f"attachment; filename={filename}"}
+        headers={"Content-Disposition": f"attachment; filename={filename}"},
     )
 
     eval_metadata_serializer = EvaluatorMetadataSerializer(
@@ -67,17 +67,18 @@ def download_evaluator_metadata_csv(request):
     return response
 
 
-@api_view(('GET',))
+@api_view(("GET",))
 def download_evaluator_results_csv(request, event_id, evaluator_id):
-    logger = logging.getLogger('views.download_evaluator_results_csv')
+    logger = logging.getLogger("views.download_evaluator_results_csv")
     try:
         event = Metro2Event.objects.get(id=event_id)
         evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
         eval_result_summary = EvaluatorResultSummary.objects.get(
-            event=event, evaluator=evaluator)
+            event=event, evaluator=evaluator
+        )
 
         if not has_permissions_for_request(request, event):
-            return HttpResponse('Unauthorized', status=401)
+            return HttpResponse("Unauthorized", status=401)
 
         if settings.S3_ENABLED:
             return fetch_csv_results_from_s3(request, event_id, evaluator_id)
@@ -87,123 +88,124 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
             filename = f"{event.name}_{evaluator.id}.csv"
             response = HttpResponse(
                 content_type="text/csv",
-                headers={"Content-Disposition": f"attachment; filename={filename}"}
+                headers={"Content-Disposition": f"attachment; filename={filename}"},
             )
             return upload_utils.generate_full_csv(eval_result_summary, response)
     except (
         Metro2Event.DoesNotExist,
         EvaluatorMetadata.DoesNotExist,
-        EvaluatorResultSummary.DoesNotExist
+        EvaluatorResultSummary.DoesNotExist,
     ) as e:
         error = get_evaluate_m2_not_found_exception(
-            str(e), event_id, evaluator_id, request.path)
-        logger.error(error['message'])
+            str(e), event_id, evaluator_id, request.path
+        )
+        logger.error(error["message"])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(('GET',))
+@api_view(("GET",))
 def account_summary_view(request, event_id, account_number):
-    logger = logging.getLogger('views.account_summary_view')
+    logger = logging.getLogger("views.account_summary_view")
     try:
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
-            return HttpResponse('Unauthorized', status=401)
-        event_activities=get_list_or_404(
-            event.get_all_account_activity().filter(
-                cons_acct_num=account_number).order_by('activity_date') \
-                .select_related('k2', 'k4', 'l1')
-            )
+            return HttpResponse("Unauthorized", status=401)
+        event_activities = get_list_or_404(
+            event.get_all_account_activity()
+            .filter(cons_acct_num=account_number)
+            .order_by("activity_date")
+            .select_related("k2", "k4", "l1")
+        )
         if not event_activities:
             raise Http404()
         activities_serializer = AccountActivitySerializer(event_activities, many=True)
 
         eval_results = EvaluatorResult.objects.filter(
-            acct_num=account_number,
-            result_summary__event=event) \
-            .select_related('result_summary')
+            acct_num=account_number, result_summary__event=event
+        ).select_related("result_summary")
         evals_hit = [e.result_summary.evaluator_id for e in eval_results]
         evals_hit_uniq = sorted(list(set(evals_hit)))
 
-        data = {'cons_acct_num': account_number,
-                'inconsistencies': evals_hit_uniq,
-                'account_activity': activities_serializer.data}
+        data = {
+            "cons_acct_num": account_number,
+            "inconsistencies": evals_hit_uniq,
+            "account_activity": activities_serializer.data,
+        }
         return Response(data)
     except (
         Http404,
         Metro2Event.DoesNotExist,
         EvaluatorMetadata.DoesNotExist,
         EvaluatorResult.DoesNotExist,
-        AccountActivity.DoesNotExist
+        AccountActivity.DoesNotExist,
     ) as e:
         error = get_evaluate_m2_not_found_exception(
-            str(e), event_id, None, request.path, account_number)
-        logger.error(error['message'])
+            str(e), event_id, None, request.path, account_number
+        )
+        logger.error(error["message"])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(('GET',))
+@api_view(("GET",))
 def account_pii_view(request, event_id, account_number):
-    logger = logging.getLogger('views.account_pii_view')
+    logger = logging.getLogger("views.account_pii_view")
     try:
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
-            return HttpResponse('Unauthorized', status=401)
+            return HttpResponse("Unauthorized", status=401)
         latest_acct_activity = AccountActivity.objects.filter(
-            data_file__event=event,
-            cons_acct_num=account_number) \
-                .latest('activity_date')
+            data_file__event=event, cons_acct_num=account_number
+        ).latest("activity_date")
         acct_holder_serializer = AccountHolderSerializer(latest_acct_activity)
         return Response(acct_holder_serializer.data)
-    except (
-        Metro2Event.DoesNotExist,
-        AccountActivity.DoesNotExist
-    ) as e:
+    except (Metro2Event.DoesNotExist, AccountActivity.DoesNotExist) as e:
         error = get_evaluate_m2_not_found_exception(
-            str(e), event_id, None, request.path, account_number)
-        logger.error(error['message'])
+            str(e), event_id, None, request.path, account_number
+        )
+        logger.error(error["message"])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
 @api_view()
 def events_view(request, event_id):
-    logger = logging.getLogger('views.evaluator_results_view')
+    logger = logging.getLogger("views.evaluator_results_view")
     try:
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
-            return HttpResponse('Unauthorized', status=401)
+            return HttpResponse("Unauthorized", status=401)
 
-        eval_result_summaries = EvaluatorResultSummary.objects \
-                .filter(event=event, hits__gt=0) \
-                .select_related('evaluator') \
-                .order_by('evaluator__id')
+        eval_result_summaries = (
+            EvaluatorResultSummary.objects.filter(event=event, hits__gt=0)
+            .select_related("evaluator")
+            .order_by("evaluator__id")
+        )
         evaluator_metadata_serializer = EventsViewSerializer(
-            eval_result_summaries, many=True, context={'event': event})
+            eval_result_summaries, many=True, context={"event": event}
+        )
         result = {
-            'id': event.id,
-            'name': event.name,
-            'portfolio': event.portfolio,
-            'eid_or_matter_num': event.eid_or_matter_num,
-            'other_descriptor': event.other_descriptor,
-            'directory': event.directory,
-            'date_range_start': event.date_range_start,
-            'date_range_end': event.date_range_end,
-            'evaluators': evaluator_metadata_serializer.data
+            "id": event.id,
+            "name": event.name,
+            "portfolio": event.portfolio,
+            "eid_or_matter_num": event.eid_or_matter_num,
+            "other_descriptor": event.other_descriptor,
+            "directory": event.directory,
+            "date_range_start": event.date_range_start,
+            "date_range_end": event.date_range_end,
+            "evaluators": evaluator_metadata_serializer.data,
         }
         return Response(result)
-    except (
-        Metro2Event.DoesNotExist,
-        EvaluatorResultSummary.DoesNotExist
-    ) as e:
+    except (Metro2Event.DoesNotExist, EvaluatorResultSummary.DoesNotExist) as e:
         error = get_evaluate_m2_not_found_exception(
-            str(e), event_id, None, request.path)
-        logger.error(error['message'])
+            str(e), event_id, None, request.path
+        )
+        logger.error(error["message"])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
 ###########################################
 ## Helper methods for eval results when S3_ENABLED == True
 def fetch_csv_results_from_s3(request, event_id, evaluator_id):
-    logger = logging.getLogger('views.fetch_csv_results_from_s3')
+    logger = logging.getLogger("views.fetch_csv_results_from_s3")
     filename = upload_utils.s3_filename(evaluator_id, "csv")
     key = upload_utils.s3_bucket_key(event_id, evaluator_id, "csv")
     try:
@@ -215,26 +217,36 @@ def fetch_csv_results_from_s3(request, event_id, evaluator_id):
         response["Content-Disposition"] = f"attachment; filename={filename}"
         return response
     except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == "NoSuchKey":
+        if e.response["Error"]["Code"] == "NoSuchKey":
             error = get_evaluate_m2_not_found_exception(
-            e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
-            logger.error(error['message'])
+                e.response["Error"]["Message"],
+                event_id,
+                evaluator_id,
+                request.path,
+                None,
+            )
+            logger.error(error["message"])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
 def fetch_json_results_from_s3(request, event_id, evaluator_id):
-    logger = logging.getLogger('views.fetch_json_results_from_s3')
+    logger = logging.getLogger("views.fetch_json_results_from_s3")
     s3 = s3_session()
     key = upload_utils.s3_bucket_key(event_id, evaluator_id, "json")
     try:
         file = s3.get_object(Bucket=settings.S3_BUCKET_NAME, Key=key)
-        file_data = file['Body'].read().decode('utf-8')
+        file_data = file["Body"].read().decode("utf-8")
         return Response(json.loads(file_data))
     except botocore.exceptions.ClientError as e:
-        if e.response['Error']['Code'] == "NoSuchKey":
+        if e.response["Error"]["Code"] == "NoSuchKey":
             error = get_evaluate_m2_not_found_exception(
-            e.response['Error']['Message'], event_id, evaluator_id, request.path, None)
-            logger.error(error['message'])
+                e.response["Error"]["Message"],
+                event_id,
+                evaluator_id,
+                request.path,
+                None,
+            )
+            logger.error(error["message"])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
@@ -260,18 +272,18 @@ class EvaluatorResultsView(generics.ListAPIView):
         try:
             return super().get(request, *args, **kwargs)
         except (
-                Metro2Event.DoesNotExist,
-                EvaluatorMetadata.DoesNotExist,
-                EvaluatorResultSummary.DoesNotExist
-            ) as e:
-            logger = logging.getLogger('views.download_evaluator_results_csv')
+            Metro2Event.DoesNotExist,
+            EvaluatorMetadata.DoesNotExist,
+            EvaluatorResultSummary.DoesNotExist,
+        ) as e:
+            logger = logging.getLogger("views.download_evaluator_results_csv")
             error = get_evaluate_m2_not_found_exception(
                 str(e),
                 self.kwargs["event_id"],
                 self.kwargs["evaluator_id"],
-                request.path
+                request.path,
             )
-            logger.error(error['message'])
+            logger.error(error["message"])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
         except ProgrammingError as e:
             # Gracefully handle when the materialized view doesn't exist as a 503.
@@ -313,7 +325,7 @@ class EvaluatorResultsView(generics.ListAPIView):
         event_id = self.kwargs["event_id"]
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
-            return HttpResponse('Unauthorized', status=401)
+            return HttpResponse("Unauthorized", status=401)
 
         # Default to sample view
         view_param = self.request.query_params.get("view", "sample")
@@ -351,21 +363,18 @@ class AccountsListView(generics.ListAPIView):
         return Metro2Event.objects.get(id=event_id)
 
     def get_queryset(self):
-        return self.event.get_all_account_activity(
-        ).with_inconsistency_counts(
-            self.event
-        ).with_months_of_data(
-            self.event
+        return (
+            self.event.get_all_account_activity()
+            .with_hit_count(self.event)
+            .with_record_count(self.event)
         )
 
     def list(self, request, *args, **kwargs):
         # TODO: replace using DRF permissions/check_permissions()
         if not has_permissions_for_request(request, self.event):
-            return HttpResponse('Unauthorized', status=401)
+            return HttpResponse("Unauthorized", status=401)
 
-        queryset = self.filter_queryset(
-            self.get_queryset()
-        ).distinct_accounts()
+        queryset = self.filter_queryset(self.get_queryset()).distinct_accounts()
 
         serializer = AccountListSerializer(queryset, many=True)
         return Response(serializer.data)
