@@ -4,7 +4,7 @@ from datetime import date
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection, models
-from django.db.models import DEFERRED, JSONField
+from django.db.models import DEFERRED, JSONField, Subquery
 
 from django_prose_editor.fields import ProseEditorField
 
@@ -238,39 +238,27 @@ class EvaluatorResultSummary(models.Model):
             self.inconsistency_end = latest_date
             self.save()
 
-            self._generate_sample_of_results().update(sample=True)
+            self._save_sample_of_results()
 
-    def _generate_sample_of_results(
+    def _save_sample_of_results(
         self,
         sample_size: int = settings.M2_RESULT_SAMPLE_SIZE
     ):
         """
-        Return a set of EvaluatorResult records that are hits
-        for this evaluator.
+        Choose a set of EvaluatorResult records that are hits
+        for this evaluator and save them with sample=True.
 
         If this eval has more than sample_size hits, the list is a
-        RANDOM sample of this eval's hits. Otherwise, return a list
-        of all hits.
+        RANDOM sample of this eval's hits. Otherwise, all hits
+        will be included in the sample.
         """
         data = self.evaluatorresult_set
 
-        if not data.exists():
-            return []
-        if self.hits <= sample_size:
-            return data
-        else:
-            # Since all hits for an eval are added to the EvaluatorResults table
-            # in one transaction and the ID column is auto-generated, we can
-            # assume the ID values will be sequential. In that case, we can select
-            # the sample as numbers from the numeric range of IDs, which is
-            # computationally easier than selecting records from the table.
-            import random
-
-            first_id = data.order_by("id").first().id
-            last_id = data.order_by("-id").first().id
-            random_ids = random.sample(range(first_id, last_id + 1), sample_size)
-
-            return data.filter(id__in=random_ids)
+        if data.exists():
+            id_set = data.order_by("?").values('id')[:sample_size]
+            self.evaluatorresult_set.filter(
+                id__in=Subquery(id_set)
+            ).update(sample=True)
 
 
 class EvaluatorResult(models.Model):

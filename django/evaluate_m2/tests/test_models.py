@@ -53,7 +53,8 @@ class EvaluatorResultSummaryTestCase(TestCase):
         self.eval_results = [res1, res2, res3, res4]
 
     def test_sample_randomize(self):
-        result = self.ers._generate_sample_of_results(sample_size=2)
+        self.ers._save_sample_of_results(sample_size=2)
+        result = self.ers.sample_results()
 
         # There should be two items in the list
         self.assertEqual(len(result), 2)
