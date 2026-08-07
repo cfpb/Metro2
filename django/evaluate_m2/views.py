@@ -4,6 +4,7 @@ import logging
 from datetime import date
 
 from django.conf import settings
+from django.db import ProgrammingError
 from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
 
@@ -15,16 +16,21 @@ from rest_framework.response import Response
 
 from django_application.s3_utils import s3_session
 from evaluate_m2 import upload_utils
-from evaluate_m2.exception_utils import get_evaluate_m2_not_found_exception
+from evaluate_m2.exception_utils import (
+    format_error,
+    get_evaluate_m2_not_found_exception,
+)
 from evaluate_m2.filters import EvaluatorResultFilterSet
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
+    EvaluatorResultMaterializedView,
     EvaluatorResultSummary,
 )
 from evaluate_m2.pagination import EvaluatorResultsPaginator
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
+    EvaluatorResultSerializer,
     EventsViewSerializer,
 )
 from evaluate_m2.views_utils import (
@@ -57,6 +63,7 @@ def download_evaluator_metadata_csv(request):
         writer.writerow(row)
 
     return response
+
 
 @api_view(('GET',))
 def download_evaluator_results_csv(request, event_id, evaluator_id):
@@ -131,6 +138,7 @@ def account_summary_view(request, event_id, account_number):
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(('GET',))
 def account_pii_view(request, event_id, account_number):
     logger = logging.getLogger('views.account_pii_view')
@@ -152,6 +160,7 @@ def account_pii_view(request, event_id, account_number):
             str(e), event_id, None, request.path, account_number)
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view()
 def events_view(request, event_id):
@@ -188,6 +197,7 @@ def events_view(request, event_id):
         logger.error(error['message'])
         return Response(error, status=status.HTTP_404_NOT_FOUND)
 
+
 ###########################################
 ## Helper methods for eval results when S3_ENABLED == True
 def fetch_csv_results_from_s3(request, event_id, evaluator_id):
@@ -209,6 +219,7 @@ def fetch_csv_results_from_s3(request, event_id, evaluator_id):
             logger.error(error['message'])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
 
+
 def fetch_json_results_from_s3(request, event_id, evaluator_id):
     logger = logging.getLogger('views.fetch_json_results_from_s3')
     s3 = s3_session()
@@ -226,39 +237,20 @@ def fetch_json_results_from_s3(request, event_id, evaluator_id):
 
 
 class EvaluatorResultsView(generics.ListAPIView):
+    serializer_class = EvaluatorResultSerializer
     pagination_class = EvaluatorResultsPaginator
     filter_backends = [
         django_filters.rest_framework.DjangoFilterBackend,
     ]
     filterset_class = EvaluatorResultFilterSet
 
-    def get_result_summary(self):
-        # Get the EvaluatorResultSummary object for this event_id and
-        # evaluator_id. These are queried directly so we can validate that
-        # they exist and error appropriately if they do not.
-        event_id = self.kwargs["event_id"]
-        evaluator_id = self.kwargs["evaluator_id"]
-        event = Metro2Event.objects.get(id=event_id)
-        evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
-        result_summary = EvaluatorResultSummary.objects.get(
-            event=event, evaluator=evaluator)
-        return result_summary
-
     def get_queryset(self):
-        # Get all EvaluatorResult objects for this event_id and evaluator_id
         event_id = self.kwargs["event_id"]
         evaluator_id = self.kwargs["evaluator_id"]
-
-        result_summary = EvaluatorResultSummary.objects.get(
-            event__id=event_id, evaluator__id=evaluator_id)
-
-        queryset = EvaluatorResult.objects.filter(
-            result_summary=result_summary,
-        ).select_related(
-            "source_record"
-        ).order_by("source_record__activity_date")
-
-        return queryset
+        return EvaluatorResultMaterializedView.objects.filter(
+            event_id=event_id,
+            evaluator_id=evaluator_id,
+        ).order_by("activity_date")
 
     def get(self, request, *args, **kwargs):
         # Override the default `get()` so we can error appropriately if
@@ -279,43 +271,67 @@ class EvaluatorResultsView(generics.ListAPIView):
             )
             logger.error(error['message'])
             return Response(error, status=status.HTTP_404_NOT_FOUND)
+        except ProgrammingError as e:
+            # Gracefully handle when the materialized view doesn't exist as a 503.
+            # It will raise a ProgrammingError, which we introspect to make sure
+            # it's caused by an UndefinedTable, otherwise we let it raise.
+            import psycopg
+            if not isinstance(e.__cause__, psycopg.errors.UndefinedTable):
+                raise
+            return Response(
+                format_error(
+                    503,
+                    "Not available",
+                    "Materialized view for evaluator results is not available",
+                    request.path
+                ),
+                status=503
+            )
+
+    def get_sample_queryset(self, queryset):
+        # We need sample ids from the EvaluatorResultSummary
+        event_id = self.kwargs["event_id"]
+        evaluator_id = self.kwargs["evaluator_id"]
+        result_summary = EvaluatorResultSummary.objects.get(
+            event_id=event_id,
+            evaluator__id=evaluator_id
+        )
+        sample_ids = result_summary.sample_ids
+
+        if sample_ids and (len(sample_ids) > 0):
+            queryset = queryset.filter(source_record_id__in=sample_ids)
+        else:
+            # OR select a random set of sample length from the queryset
+            queryset = queryset.order_by("?")[:settings.M2_RESULT_SAMPLE_SIZE]
+
+        return queryset
 
     def list(self, request, *args, **kwargs):
-        result_summary = self.get_result_summary()
-        event = result_summary.event
-        evaluator = result_summary.evaluator
-
         # TODO: replace using DRF permissions/check_permissions()
+        event_id = self.kwargs["event_id"]
+        event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse('Unauthorized', status=401)
 
+        # Default to sample view
         view_param = self.request.query_params.get("view", "sample")
 
-        # If we're asked for a sample and S3 is enabled, quickly return
-        # the results from there.
-        if settings.S3_ENABLED and view_param == "sample":
-            return fetch_json_results_from_s3(request, event.id, evaluator.id)
-
-        # Get the result set, performing any filtering as needed
-        queryset = self.filter_queryset(self.get_queryset())
-
-        # If we're asked for a sample, filter the result set by sample_ids
         if view_param == "sample":
-            sample_ids = result_summary.sample_ids
-            if sample_ids and (len(sample_ids) > 0):
-                queryset = queryset.filter(source_record__id__in=sample_ids)
-            else:
-                # OR select a random set of sample length from the queryset
-                queryset = queryset.order_by("?")[:settings.M2_RESULT_SAMPLE_SIZE]
+            # If we're asked for a sample and S3 is enabled, quickly return
+            # the results from there.
+            if settings.S3_ENABLED:
+                evaluator_id = self.kwargs["evaluator_id"]
+                return fetch_json_results_from_s3(request, event.id, evaluator_id)
 
-        # Regardless, paginate the results.
+            # Get a sample queryset
+            queryset = self.get_sample_queryset(self.get_queryset())
+        else:
+            # Get the full result set, performing any filtering as needed
+            queryset = self.filter_queryset(self.get_queryset())
+
+        # Paginate and serialize results.
         # Pagination size should be the same as the sample size, so the
         # sample view will be exactly one page long.
         page = self.paginate_queryset(queryset)
-        paged_records = [result.source_record for result in page]
-        serializer = AccountActivitySerializer(
-            paged_records,
-            include_fields=evaluator.result_summary_fields(),
-            many=True,
-        )
+        serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)

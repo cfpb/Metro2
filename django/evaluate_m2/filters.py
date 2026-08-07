@@ -1,72 +1,111 @@
+from functools import reduce
+
+from django.db.models import Q
+
 import django_filters.rest_framework
+from django_filters.constants import EMPTY_VALUES
 
-from evaluate_m2.models import EvaluatorResult
+from evaluate_m2.models import EvaluatorResultMaterializedView
 
 
-class AnyCharFilter(django_filters.BaseInFilter, django_filters.CharFilter):
-    """Subclass CharFilter to allow multiple Char choices"""
+class NullInclusiveFilterMixin:
+    # If this value is given, filter on a null value
+    null_value = "blank"
 
-    # If this value is given, filter on an empty sting.
-    empty_value = "blank"
+    def get_null_query(self, values, null_value="blank"):
+        query = Q()
 
-    # django-filter cannot filter on empty strings by default.
-    # The documentaiton offers a couple of approaches to doing so, this is
-    # based on one of them:
-    # https://django-filter.readthedocs.io/en/stable/guide/tips.html#filtering-by-an-empty-string
-    def filter(self, qs, value):
-        if value is not None and self.empty_value in value:
-            value = ["" if v == self.empty_value else v for v in value]
-        return super().filter(qs, value)
+        if values is not None and self.null_value in values:
+            # Construct values that do not include the the null placeholder
+            # and add a null value query
+            values = [v for v in values if v != self.null_value]
+            query |= Q(**{f"{self.field_name}__isnull": True})
+
+        return values, query
+
+
+class AnyCharFilter(django_filters.BaseInFilter, NullInclusiveFilterMixin):
+    """Match any char value in a CharField"""
+
+    # Override the filter method to construct a query that will filter for
+    # values and null.
+    def filter(self, qs, values):
+        if values in EMPTY_VALUES:
+            return qs
+
+        # Pull out a null value as a separate query
+        values, query = self.get_null_query(values)
+
+        # Filter for remaining values
+        if len(values) > 0:
+            query |= Q(**{f"{self.field_name}__{self.lookup_expr}": values})
+
+        return self.get_method(qs)(query)
+
+
+class JSONArrayContainsFilter(django_filters.BaseCSVFilter, NullInclusiveFilterMixin):
+    """Match any value in a JSONField array"""
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("lookup_expr", "contains")
+        super().__init__(*args, **kwargs)
+
+    def filter(self, qs, values):
+        if values in EMPTY_VALUES:
+            return qs
+
+        # Pull out a null value as a separate query
+        values, query = self.get_null_query(values)
+
+        if len(values) > 0:
+            # Construct a Q object for every potential value
+            query |= reduce(
+                Q.__or__,
+                (Q(**{f"{self.field_name}__{self.lookup_expr}": [v]}) for v in values)
+            )
+
+        return self.get_method(qs)(query)
 
 
 class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
-    """This filter set specifies `EvaluatorResult` fields to filter.
-
-    Because the fields that we would filter `EvaluatorResult` objects by exist
-    on their `source_record` relation, the fields here simply map the
-    `source_record` field name to the correct field name for an
-    `EvaluatorResult`.
-
-    For example, the API might allow filtering `EvaluatorResults` by
-    `acct_stat`, but the Django queryset will for `EvaluatorResults` will need
-    to be filtered by `source_record__acct_stat`.
+    """This filter set specifies `EvaluatorResultMaterializedView` fields to filter.
     """
 
-    acct_type = django_filters.CharFilter(field_name="source_record__acct_type")
+    acct_type = django_filters.CharFilter(field_name="acct_type")
     acct_stat = AnyCharFilter(
-        field_name="source_record__acct_stat",
+        field_name="acct_stat",
     )
-    compl_cond_cd = AnyCharFilter(field_name="source_record__compl_cond_cd")
-    php = AnyCharFilter(field_name="source_record__php")
-    php1 = AnyCharFilter(field_name="source_record__php1")
-    pmt_rating = AnyCharFilter(field_name="source_record__pmt_rating")
-    spc_com_cd = AnyCharFilter(field_name="source_record__spc_com_cd")
-    terms_freq = AnyCharFilter(field_name="source_record__terms_freq")
-    cons_info_ind = AnyCharFilter(field_name="source_record__cons_info_ind")
-    cons_info_ind_assoc = AnyCharFilter(field_name="source_record__cons_info_ind_assoc")
-    l1__change_ind = AnyCharFilter(field_name="source_record__l1__change_ind")
+    compl_cond_cd = AnyCharFilter(field_name="compl_cond_cd")
+    php = AnyCharFilter(field_name="php")
+    php1 = AnyCharFilter(field_name="php1")
+    pmt_rating = AnyCharFilter(field_name="pmt_rating")
+    spc_com_cd = AnyCharFilter(field_name="spc_com_cd")
+    terms_freq = AnyCharFilter(field_name="terms_freq")
+    cons_info_ind = AnyCharFilter(field_name="cons_info_ind")
+    cons_info_ind_assoc = JSONArrayContainsFilter(field_name="cons_info_ind_assoc")
+    l1__change_ind = AnyCharFilter(field_name="change_ind")
 
     # Dates, as a boolean where the date either exists or does not
     dofd = django_filters.BooleanFilter(
-        field_name="source_record__dofd",
+        field_name="dofd",
         lookup_expr="isnull",
         exclude=True,
     )
     date_closed = django_filters.BooleanFilter(
-        field_name="source_record__date_closed",
+        field_name="date_closed",
         lookup_expr="isnull",
         exclude=True,
     )
 
     # Amounts, as ranges of values with _max and _min fields
     amt_past_due = django_filters.RangeFilter(
-        field_name="source_record__amt_past_due",
+        field_name="amt_past_due",
     )
     current_bal = django_filters.RangeFilter(
-        field_name="source_record__current_bal",
+        field_name="current_bal",
     )
     smpa = django_filters.RangeFilter(
-        field_name="source_record__smpa",
+        field_name="smpa",
     )
 
     # Sort ordering filter for all the relevant fields from AccountActivity
@@ -74,101 +113,76 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     # to the field name on AccountActivity.
     sort = django_filters.OrderingFilter(
         fields=(
-            ("source_record__activity_date", "activity_date"),
-            ("source_record__cons_acct_num", "cons_acct_num"),
-            ("source_record__port_type", "port_type"),
-            ("source_record__acct_type", "acct_type"),
-            ("source_record__date_open", "date_open"),
-            ("source_record__credit_limit", "credit_limit"),
-            ("source_record__hcola", "hcola"),
-            ("source_record__id_num", "id_num"),
-            ("source_record__terms_dur", "terms_dur"),
-            ("source_record__terms_freq", "terms_freq"),
-            ("source_record__smpa", "smpa"),
-            ("source_record__actual_pmt_amt", "actual_pmt_amt"),
-            ("source_record__acct_stat", "acct_stat"),
-            ("source_record__pmt_rating", "pmt_rating"),
-            ("source_record__php", "php"),
-            ("source_record__php1", "php1"),
-            ("source_record__spc_com_cd", "spc_com_cd"),
-            ("source_record__compl_cond_cd", "compl_cond_cd"),
-            ("source_record__current_bal", "current_bal"),
-            ("source_record__amt_past_due", "amt_past_due"),
-            ("source_record__orig_chg_off_amt", "orig_chg_off_amt"),
-            ("source_record__doai", "doai"),
-            ("source_record__dofd", "dofd"),
-            ("source_record__date_closed", "date_closed"),
-            ("source_record__dolp", "dolp"),
-            ("source_record__int_type_ind", "int_type_ind"),
-            ("source_record__cons_info_ind", "cons_info_ind"),
-            ("source_record__ecoa", "ecoa"),
-            ("source_record__cons_info_ind_assoc", "cons_info_ind_assoc"),
-            ("source_record__ecoa_assoc", "ecoa_assoc"),
-            ("source_record__first_name", "first_name"),
-            ("source_record__surname", "surname"),
-            ("source_record__k2__purch_sold_ind", "k2__purch_sold_ind"),
-            ("source_record__k2__purch_sold_name", "k2__purch_sold_name"),
-            ("source_record__k4__balloon_pmt_amt", "k4__balloon_pmt_amt"),
-            ("source_record__l1__change_ind", "l1__change_ind"),
-            ("source_record__l1__new_id_num", "l1__new_id_num"),
-            ("source_record__l1__new_acc_num", "l1__new_acc_num"),
+            ("activity_date", "activity_date"),
+            ("cons_acct_num", "cons_acct_num"),
+            ("port_type", "port_type"),
+            ("acct_type", "acct_type"),
+            ("date_open", "date_open"),
+            ("credit_limit", "credit_limit"),
+            ("hcola", "hcola"),
+            ("id_num", "id_num"),
+            ("terms_dur", "terms_dur"),
+            ("terms_freq", "terms_freq"),
+            ("smpa", "smpa"),
+            ("actual_pmt_amt", "actual_pmt_amt"),
+            ("acct_stat", "acct_stat"),
+            ("pmt_rating", "pmt_rating"),
+            ("php", "php"),
+            ("php1", "php1"),
+            ("spc_com_cd", "spc_com_cd"),
+            ("compl_cond_cd", "compl_cond_cd"),
+            ("current_bal", "current_bal"),
+            ("amt_past_due", "amt_past_due"),
+            ("orig_chg_off_amt", "orig_chg_off_amt"),
+            ("doai", "doai"),
+            ("dofd", "dofd"),
+            ("date_closed", "date_closed"),
+            ("dolp", "dolp"),
+            ("int_type_ind", "int_type_ind"),
+            ("cons_info_ind", "cons_info_ind"),
+            ("ecoa", "ecoa"),
+            ("cons_info_ind_assoc", "cons_info_ind_assoc"),
+            ("ecoa_assoc", "ecoa_assoc"),
+            ("first_name", "first_name"),
+            ("surname", "surname"),
+
+            # For all of these that are relations on the original models but
+            # direct fields on the materialized view, we keep the original
+            # Django __ related fieldname on the sort parameter side. That's
+            # the name the front-end knows the field as.
+            ("purch_sold_ind", "k2__purch_sold_ind"),
+            ("purch_sold_name", "k2__purch_sold_name"),
+            ("balloon_pmt_amt", "k4__balloon_pmt_amt"),
+            ("change_ind", "l1__change_ind"),
+            ("new_id_num", "l1__new_id_num"),
+            ("new_acc_num", "l1__new_acc_num"),
+            ("prior_cons_info_ind", "previous_values__cons_info_ind"),
             (
-                "source_record__previous_values__cons_info_ind",
-                "previous_values__cons_info_ind",
-            ),
-            (
-                "source_record__previous_values__cons_info_ind_assoc",
+                "prior_cons_info_ind_assoc",
                 "previous_values__cons_info_ind_assoc",
             ),
-            ("source_record__previous_values__ecoa", "previous_values__ecoa"),
-            (
-                "source_record__previous_values__first_name",
-                "previous_values__first_name",
-            ),
-            ("source_record__previous_values__surname", "previous_values__surname"),
-            (
-                "source_record__previous_values__l1__change_ind",
-                "previous_values__l1__change_ind",
-            ),
-            (
-                "source_record__previous_values__l1__new_acc_num",
-                "previous_values__l1__new_acc_num",
-            ),
-            (
-                "source_record__previous_values__l1__new_id_num",
-                "previous_values__l1__new_id_num",
-            ),
-            (
-                "source_record__previous_values__activity_date",
-                "previous_values__activity_date",
-            ),
-            ("source_record__previous_values__port_type", "previous_values__port_type"),
-            ("source_record__previous_values__acct_type", "previous_values__acct_type"),
-            ("source_record__previous_values__date_open", "previous_values__date_open"),
-            ("source_record__previous_values__acct_stat", "previous_values__acct_stat"),
-            (
-                "source_record__previous_values__pmt_rating",
-                "previous_values__pmt_rating",
-            ),
-            (
-                "source_record__previous_values__current_bal",
-                "previous_values__current_bal",
-            ),
-            (
-                "source_record__previous_values__orig_chg_off_amt",
-                "previous_values__orig_chg_off_amt",
-            ),
-            ("source_record__previous_values__dofd", "previous_values__dofd"),
-            (
-                "source_record__previous_values__date_closed",
-                "previous_values__date_closed",
-            ),
-            ("source_record__previous_values__id_num", "previous_values__id_num"),
+            ("prior_ecoa", "previous_values__ecoa"),
+            ("prior_first_name", "previous_values__first_name"),
+            ("prior_surname", "previous_values__surname"),
+            ("prior_change_ind", "previous_values__l1__change_ind"),
+            ("prior_new_acc_num", "previous_values__l1__new_acc_num"),
+            ("prior_new_id_num", "previous_values__l1__new_id_num"),
+            ("prior_activity_date", "previous_values__activity_date"),
+            ("prior_port_type", "previous_values__port_type"),
+            ("prior_acct_type", "previous_values__acct_type"),
+            ("prior_date_open", "previous_values__date_open"),
+            ("prior_acct_stat", "previous_values__acct_stat"),
+            ("prior_pmt_rating", "previous_values__pmt_rating"),
+            ("prior_current_bal", "previous_values__current_bal"),
+            ("prior_orig_chg_off_amt", "previous_values__orig_chg_off_amt"),
+            ("prior_dofd", "previous_values__dofd"),
+            ("prior_date_closed", "previous_values__date_closed"),
+            ("prior_id_num", "previous_values__id_num"),
         )
     )
 
     class Meta:
-        model = EvaluatorResult
+        model = EvaluatorResultMaterializedView
         fields = [
             "acct_type",
             "acct_stat",

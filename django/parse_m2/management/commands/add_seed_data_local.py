@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from evaluate_m2.evaluate import evaluator
+from evaluate_m2.models import EvaluatorResultMaterializedView
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
 from parse_m2.initiate_post_parsing import post_parse
 from parse_m2.models import Metro2Event
@@ -57,9 +58,17 @@ class Command(BaseCommand):
             )
             data_directory = self.default_location
 
-        if not Metro2Event.objects.filter(name=event_name).exists():
-            # Create a new Metro2Event. All records parsed will be associated with this
-            # Event.
+        if Metro2Event.objects.filter(name=event_name).exists():
+            logger.info(
+                f"An event record already exists for event name: {event_name}. No "
+                "new seed data will be added."
+            )
+            # Still make sure the evaluator results materialized view exists.
+            EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
+
+        else:
+            # Create a new Metro2Event. All records parsed will be associated
+            # with this event.
             event = Metro2Event(name=event_name, directory=data_directory)
             event.save()
             logger.info(
@@ -77,9 +86,3 @@ class Command(BaseCommand):
             evaluator.run_evaluators(event)
             logger.info(
                 self.style.SUCCESS("Finished running evaluators and saving results."))
-
-        else:
-            logger.info(
-                f"An event record already exists for event name: {event_name}. No "
-                "changes will be made."
-            )

@@ -5,6 +5,7 @@ from django.test import TestCase, override_settings
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
+    EvaluatorResultMaterializedView,
     EvaluatorResultSummary,
 )
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
@@ -55,6 +56,8 @@ class EvaluateViewsTestCase(TestCase):
             crrg_reference='410',
             alternate_explanation='Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua',  # noqa: E501
         )
+
+        EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
 
     def get_account_activity(
         self,
@@ -182,6 +185,8 @@ class EvaluateViewsTestCase(TestCase):
                 inconsistency_end=acct_date
             )
 
+        EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
+
     ########################################
     # Tests for Eval Metadata download
     def test_download_eval_metadata(self):
@@ -232,6 +237,7 @@ class EvaluateViewsTestCase(TestCase):
     def test_evaluator_results_view(self):
         self.create_activity_data()
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
+
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
@@ -275,6 +281,8 @@ class EvaluateViewsTestCase(TestCase):
         self.eval_rs3.sample_ids = [1,3,5,7,9]
         self.eval_rs3.save()
 
+        EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
+
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-6/')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
@@ -286,8 +294,7 @@ class EvaluateViewsTestCase(TestCase):
         response = self.client.get('/api/events/1/evaluator/NON_EXISTENT/')
 
         self.assertEqual(response.headers['Content-Type'], 'application/json')
-        self.assertContains(response, 'Evaluator: NON_EXISTENT does not exist.',
-            status_code=404)
+        self.assertContains(response, 'record(s) not found', status_code=404)
 
     def test_evaluator_results_view_with_error_no_event(self):
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-1/')
