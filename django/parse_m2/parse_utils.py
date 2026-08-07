@@ -109,12 +109,15 @@ def get_next_line(f) -> str:
     readline may return a string or a bytes-like object. Since the parser
     expects strings, use this method to ensure a string is returned.
     """
-    line = f.readline()
+    line = read_a_line(f)
     if decode_needed(line):
         decoded = m2_decode(line)
         return m2_replace_nulls(decoded)
     else:
         return line
+
+def read_a_line(f):
+    return f.readline()
 
 def decode_needed(input) -> bool:
     if isinstance(input, str):
