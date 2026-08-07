@@ -110,7 +110,28 @@ def get_next_line(f) -> str:
     expects strings, use this method to ensure a string is returned.
     """
     line = f.readline()
-    return decode_if_needed(line)
+    if decode_needed(line):
+        decoded = m2_decode(line)
+        return m2_replace_nulls(decoded)
+    else:
+        return line
+
+def decode_needed(input) -> bool:
+    if isinstance(input, str):
+        return False
+    elif isinstance(input, bytes):
+        return True
+    else:
+        # We don't know what this is
+        raise UnreadableLineException(
+            f"Input type: {type(input)} is neither string nor bytes"
+        )
+
+def m2_decode(input: bytes) -> str:
+    return input.decode('utf-8', errors='replace')
+
+def m2_replace_nulls(input: str) -> str:
+    return input.replace('\x00', '\uFFFD')
 
 def decode_if_needed(input: any) -> str:
     if isinstance(input, str):
