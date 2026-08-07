@@ -188,8 +188,8 @@ class EvaluatorResultSummary(models.Model):
         verbose_name_plural = "Evaluator Result Summaries"
     event = models.ForeignKey(Metro2Event, on_delete=models.CASCADE)
     evaluator = models.ForeignKey(EvaluatorMetadata, on_delete=models.CASCADE)
-    hits = models.IntegerField()
-    accounts_affected = models.IntegerField(null=True)
+    hits = models.IntegerField(default=0)
+    accounts_affected = models.IntegerField(default=0)
     inconsistency_start = models.DateField(null=True)
     inconsistency_end = models.DateField(null=True)
     evaluator_version = models.CharField(max_length=200, blank=True)
@@ -203,6 +203,40 @@ class EvaluatorResultSummary(models.Model):
         csv_header = list(self.evaluator.result_summary_fields())
         csv_header.insert(0, 'event_name')
         return csv_header
+
+    @classmethod
+    def initialize(cls, event: Metro2Event, eval_id: str, eval_version: str):
+        """
+        Before the evaluator runs, create an EvaluatorResultsSummary object
+        to associate hits with.
+        """
+        eval, _ = EvaluatorMetadata.objects.get_or_create(id=eval_id)
+
+        return cls.objects.create(
+            event = event,
+            evaluator = eval,
+            evaluator_version = eval_version,
+        )
+
+    def summarize_eval_results(self):
+        """
+        After the evaluator runs, if there were any hits, update the
+        summary of info about the hits.
+        """
+        data = self.evaluatorresult_set
+        if data.exists():
+            hits = data.count()
+            accounts_affected = data.values('acct_num').distinct().count()
+            earliest_date = data.order_by('date').first().date
+            latest_date = data.order_by('-date').first().date
+
+            self.hits = hits
+            self.accounts_affected = accounts_affected
+            self.inconsistency_start = earliest_date
+            self.inconsistency_end = latest_date
+            self.save()
+
+            self._generate_sample_of_results().update(sample=True)
 
     def sample_of_results(
         self,
