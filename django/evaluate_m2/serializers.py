@@ -11,6 +11,7 @@ from evaluate_m2.models import (
     EvaluatorResultMaterializedView,
     EvaluatorResultSummary,
 )
+from parse_m2.serializers import AccountActivitySerializer
 
 
 class EventsViewSerializer(serializers.ModelSerializer):
@@ -269,3 +270,17 @@ class EvaluatorResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = EvaluatorResultMaterializedView
         fields = '__all__'
+
+
+class AccountListSerializer(AccountActivitySerializer):
+    total_hits = serializers.IntegerField(read_only=True)
+    total_records = serializers.IntegerField(read_only=True)
+
+    class Meta(AccountActivitySerializer.Meta):
+        default_fields = [
+            "cons_acct_num",
+            "port_type",
+            "acct_type",
+            "total_hits",
+            "total_records",
+        ]

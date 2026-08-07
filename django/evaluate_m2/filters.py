@@ -6,6 +6,7 @@ import django_filters.rest_framework
 from django_filters.constants import EMPTY_VALUES
 
 from evaluate_m2.models import EvaluatorResultMaterializedView
+from parse_m2.models import AccountActivity
 
 
 class NullInclusiveFilterMixin:
@@ -200,3 +201,21 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
             "smpa",
             "sort",
         ]
+
+
+class AccountListFilterSet(django_filters.rest_framework.FilterSet):
+    cons_acct_num = django_filters.BaseInFilter(
+        field_name="cons_acct_num",
+        lookup_expr="in"
+    )
+
+    class Meta:
+        model = AccountActivity
+        fields = ["cons_acct_num"]
+
+    # Require a specific list of accounts to filter, otherwise this
+    # filter will return an empty queryset.
+    def filter_queryset(self, queryset):
+        if not self.form.cleaned_data.get("cons_acct_num"):
+            return queryset.none()
+        return super().filter_queryset(queryset)

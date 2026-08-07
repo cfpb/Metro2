@@ -311,6 +311,43 @@ class EvaluateViewsTestCase(TestCase):
             status_code=404)
 
     ########################################
+    # Tests for Account list view API endpoint
+    def test_account_list_view_no_acct_num(self):
+        self.create_activity_data()
+        expected = []
+        response = self.client.get("/api/events/1/account/")
+
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["Content-Type"], "application/json")
+        self.assertEqual(response.json(), expected)
+
+    def test_account_list_view(self):
+        self.create_activity_data()
+        expected = [
+            {
+                "acct_type": "",
+                "cons_acct_num": "0032",
+                "total_records": 1,
+                "port_type": "A",
+                "total_hits": 2
+            },
+            {
+                "acct_type": "",
+                "cons_acct_num": "0033",
+                "total_records": 1,
+                "port_type": "A",
+                "total_hits": 1
+            }
+        ]
+        response = self.client.get("/api/events/1/account/?cons_acct_num=0033,0032")
+
+        # the response should be a JSON
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["Content-Type"], "application/json")
+        self.assertEqual(response.json(), expected)
+
+    ########################################
     # Tests for Account Summary view API endpoint
     def test_account_summary_view_single_results(self):
         self.create_activity_data()
