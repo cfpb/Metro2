@@ -282,6 +282,8 @@ class EvaluatorResult(models.Model):
     date = models.DateField()
     source_record = models.ForeignKey(AccountActivity, on_delete=models.CASCADE)
     acct_num = models.CharField(max_length=30)
+    # Indicate whether this result is included in the set of random sample results
+    sample = models.BooleanField(default=False)
 
     def create_csv_row_data(self, fields_list: list[str]):
         field_values = AccountActivity.objects \
@@ -328,6 +330,7 @@ class EvaluatorResultMaterializedView(models.Model):
     event_id = models.IntegerField(db_column="event_id")
     evaluator_id = models.CharField(db_column="evaluator_id")
     source_record_id = models.IntegerField(db_column="source_record_id")
+    sample = models.BooleanField(db_column="sample")
     # account activity fields
     activity_date = models.DateField(db_column="activity_date")
     cons_acct_num = models.CharField(db_column="cons_acct_num")
@@ -426,6 +429,7 @@ class EvaluatorResultMaterializedView(models.Model):
             a.event_id,
             s.evaluator_id,
             a.id as source_record_id,
+            r.sample,
 
             a.activity_date,
             a.cons_acct_num,

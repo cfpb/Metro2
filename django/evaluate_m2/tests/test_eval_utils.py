@@ -59,7 +59,7 @@ class EvaluatorUtilsTestCase(TestCase):
         # Ensure sql matches expected pattern:
         #    INSERT into evaluate_m2_evaluatorresult [specific fields]
         #    SELECT [specific fields] FROM parse_m2_accountactivity
-        regex_check = re.compile('^\s*INSERT INTO evaluate_m2_evaluatorresult\s* \(source_record_id, date, acct_num, result_summary_id\)\s*SELECT\s*parse_m2_accountactivity\.id,\s*parse_m2_accountactivity\.activity_date,\s*parse_m2_accountactivity\.cons_acct_num,\s*\d?\d FROM parse_m2.accountactivity')  # noqa: E501
+        regex_check = re.compile(r'^\s*INSERT INTO evaluate_m2_evaluatorresult\s* \(source_record_id, date, acct_num, result_summary_id, sample\)\s*SELECT\s*parse_m2_accountactivity\.id,\s*parse_m2_accountactivity\.activity_date,\s*parse_m2_accountactivity\.cons_acct_num,\s*\d?\d, FALSE FROM parse_m2.accountactivity')  # noqa: E501
         self.assertRegex(result_sql, regex_check)
 
     def test_insert_query_errors_with_bad_input(self):
