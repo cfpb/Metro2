@@ -193,7 +193,6 @@ class EvaluatorResultSummary(models.Model):
     inconsistency_start = models.DateField(null=True)
     inconsistency_end = models.DateField(null=True)
     evaluator_version = models.CharField(max_length=200, blank=True)
-    sample_ids = models.JSONField(encoder=DjangoJSONEncoder, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -203,6 +202,9 @@ class EvaluatorResultSummary(models.Model):
         csv_header = list(self.evaluator.result_summary_fields())
         csv_header.insert(0, 'event_name')
         return csv_header
+
+    def sample_results(self):
+        return self.evaluatorresult_set.filter(sample=True)
 
     @classmethod
     def initialize(cls, event: Metro2Event, eval_id: str, eval_version: str):
@@ -238,13 +240,14 @@ class EvaluatorResultSummary(models.Model):
 
             self._generate_sample_of_results().update(sample=True)
 
-    def sample_of_results(
+    def _generate_sample_of_results(
         self,
         sample_size: int = settings.M2_RESULT_SAMPLE_SIZE
-    ) -> list[int]:
+    ):
         """
-        Return a list of IDs of AccountActivity records that are hits
+        Return a set of EvaluatorResult records that are hits
         for this evaluator.
+
         If this eval has more than sample_size hits, the list is a
         RANDOM sample of this eval's hits. Otherwise, return a list
         of all hits.
@@ -254,8 +257,7 @@ class EvaluatorResultSummary(models.Model):
         if not data.exists():
             return []
         if self.hits <= sample_size:
-            small_aa_set = data.values_list('source_record_id')
-            return [val[0] for val in small_aa_set]
+            return data
         else:
             # Since all hits for an eval are added to the EvaluatorResults table
             # in one transaction and the ID column is auto-generated, we can
@@ -268,10 +270,7 @@ class EvaluatorResultSummary(models.Model):
             last_id = data.order_by("-id").first().id
             random_ids = random.sample(range(first_id, last_id + 1), sample_size)
 
-            random_aa_set = data.filter(id__in=random_ids) \
-                .values_list('source_record_id')
-
-            return [val[0] for val in random_aa_set]
+            return data.filter(id__in=random_ids)
 
 
 class EvaluatorResult(models.Model):

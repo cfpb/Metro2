@@ -278,15 +278,13 @@ class EvaluateViewsTestCase(TestCase):
             EvaluatorResult.objects.create(
                 result_summary=self.eval_rs3, date=date(2021, 1, 1),
                 source_record=record, acct_num='0032')
-        self.eval_rs3.sample_ids = [1,3,5,7,9]
-        self.eval_rs3.save()
 
         EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
 
         response = self.client.get('/api/events/1/evaluator/Status-DOFD-6/')
         # the response should be a JSON
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()['hits']), 5)
+        self.assertEqual(len(response.json()['hits']), 20)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
     def test_evaluator_results_view_with_error_no_evaluator_metadata(self):
