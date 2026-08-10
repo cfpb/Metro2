@@ -87,7 +87,7 @@ export default function EvaluatorResults({
           <div className='row row--content u-mt0 u-mb0'>
             <TabPanel id={`${view === 'all' ? 'all' : 'sample'}`}>
               <div className={`results-container results-container--${view}`}>
-                <div className='row row--action '>
+                <div className='row row--action row--background'>
                   <div className='results-message' data-testid='results-message'>
                     <EvaluatorResultsMessage
                       page={page ?? 1}

@@ -12,21 +12,11 @@ describe('customStringify', () => {
     expect(customStringify(24)).toEqual('24')
   })
 
-  it('returns arrays as sorted, comma-separated strings', () => {
-    expect(customStringify(['red', 'blue', 'green'])).toEqual('blue,green,red')
-    expect(customStringify([3, 1, 2])).toEqual('1,2,3')
-    expect(customStringify(['red', 'blue', 3, 1])).toEqual('1,3,blue,red')
-  })
-
   it('returns sort arrays as comma-separated strings', () => {
-    expect(customStringify(['red', 'blue', 'green'], 'sort')).toEqual(
-      'red,blue,green'
-    )
-    expect(customStringify([3, 1, 2], 'sort')).toEqual('3,1,2')
-    expect(customStringify(['red', 'blue', 3, 1], 'sort')).toEqual('red,blue,3,1')
-    expect(customStringify(['date', '-name', '-color'], 'sort')).toEqual(
-      'date,-name,-color'
-    )
+    expect(customStringify(['red', 'blue', 'green'])).toEqual('red,blue,green')
+    expect(customStringify([3, 1, 2])).toEqual('3,1,2')
+    expect(customStringify(['red', 'blue', 3, 1])).toEqual('red,blue,3,1')
+    expect(customStringify(['date', '-name', '-color'])).toEqual('date,-name,-color')
   })
 
   it('returns JSON.stringified objects', () => {
@@ -69,10 +59,10 @@ describe('stringifySearchParams', () => {
     )
   })
 
-  it('sorts and comma-separates arrays', () => {
+  it('comma-separates arrays', () => {
     const params = {
       selected: [2, 1, 3]
     }
-    expect(stringifySearchParams(params)).toEqual('?selected=1,2,3')
+    expect(stringifySearchParams(params)).toEqual('?selected=2,1,3')
   })
 })

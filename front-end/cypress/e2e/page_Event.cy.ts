@@ -34,6 +34,8 @@ describe('Event page', () => {
     cy.intercept('GET', 'api/events/1', { fixture: 'event_1' }).as('getEvent')
     cy.visit('/events/1')
   })
+
+  // Locator Bar
   it('Should show locator', () => {
     cy.get('.locator-bar').should('be.visible')
   })
@@ -43,6 +45,24 @@ describe('Event page', () => {
       'Data from Jan 2020 - Nov 2020'
     )
   })
+
+  // Account search
+  it('Should show account search information', () => {
+    cy.findByTestId('account-search-container').should('be.visible')
+  })
+
+  it('Should show a link to the account search page', () => {
+    cy.findByTestId('account-search-link')
+      .should('be.visible')
+      .and('contain.text', 'account search')
+      .and('have.attr', 'href', '/events/1/accounts')
+  })
+
+  // Evaluator results
+  it('Should show evaluator results heading', () => {
+    cy.get('h2').contains('Evaluator results').should('be.visible')
+  })
+
   it('Should show correct headers for evaluator table', () => {
     const expectedHeaders = [
       'Evaluator',

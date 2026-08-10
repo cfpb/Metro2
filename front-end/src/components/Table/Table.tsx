@@ -48,7 +48,7 @@ interface TableProperties<T> {
   NoResultsMessage?: ComponentType
   isLoading?: boolean
   isLoadingError?: boolean
-  defaultSort: string[]
+  defaultSort?: string[]
   isSortedOnServer?: boolean
 }
 
@@ -101,7 +101,9 @@ export default function Table<T extends object>({
   }
 
   const onFirstDataRendered = (): void => {
-    updateTableSortState()
+    if (defaultSort) {
+      updateTableSortState()
+    }
   }
 
   /* onSortChanged
@@ -166,3 +168,5 @@ export default function Table<T extends object>({
     </div>
   )
 }
+
+//{ type: 'fitCellContents', skipHeader: false }

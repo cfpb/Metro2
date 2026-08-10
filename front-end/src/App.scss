@@ -154,3 +154,31 @@ header h1 {
     margin-top: math.div(math.div($grid_gutter-width, 3), $base-font-size-px) + em;
   }
 }
+
+// Row with background
+.row--background {
+  padding: 0.75em 1em;
+  background-color: var(--gray-5);
+}
+
+// Add spacing between link text and icons
+.a-link__text + .cf-icon-svg-wrapper,
+.a-btn--link .cf-icon-svg-wrapper {
+  padding-left: 0.2rem;
+}
+
+// Add spacing for icon on warning button
+.a-btn--warning {
+  .cf-icon-svg-wrapper {
+    margin-right: 0.3em;
+  }
+}
+
+// Account search wells should be full width
+.account-search-container {
+  width: 100%;
+}
+
+p {
+  max-width: 670px;
+}

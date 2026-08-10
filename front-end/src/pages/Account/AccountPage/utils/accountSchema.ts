@@ -1,9 +1,9 @@
 /* eslint-disable unicorn/prefer-top-level-await */
-import { accountTableFields } from '@src/pages/Account/utils/accountTableFields'
+import { accountTableFields } from '@src/pages/Account/AccountPage/utils/accountTableFields'
 import { validateSortQueryParams } from '@src/utils/sortState'
 import { z } from 'zod'
 
-export const accountSchema = z.object({
+export const accountPageSchema = z.object({
   sort: z
     .any()
     .transform(val => validateSortQueryParams(val, accountTableFields))
@@ -11,4 +11,4 @@ export const accountSchema = z.object({
     .default(['activity_date'])
 })
 
-export type AccountSearch = z.infer<typeof accountSchema>
+export type AccountSchema = z.infer<typeof accountPageSchema>
