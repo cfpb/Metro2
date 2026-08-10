@@ -1,6 +1,6 @@
 asgiref==3.11.1
 coverage==7.13.5
-Django==5.2.14
+Django==5.2.16
 django-debug-toolbar==7.0.0
 psycopg==3.3.3
 psycopg-binary==3.3.3

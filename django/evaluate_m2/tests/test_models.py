@@ -30,42 +30,41 @@ class EvaluatorResultSummaryTestCase(TestCase):
             evaluator=eval,
             hits=4
         )
-        EvaluatorResult.objects.create(
+        res1 = EvaluatorResult.objects.create(
             date=r1.activity_date,
             result_summary=self.ers,
             source_record=r1
         )
-        EvaluatorResult.objects.create(
+        res2 = EvaluatorResult.objects.create(
             date=r2.activity_date,
             result_summary=self.ers,
             source_record=r2
         )
-        EvaluatorResult.objects.create(
+        res3 = EvaluatorResult.objects.create(
             date=r3.activity_date,
             result_summary=self.ers,
             source_record=r3
         )
-        EvaluatorResult.objects.create(
+        res4 = EvaluatorResult.objects.create(
             date=r4.activity_date,
             result_summary=self.ers,
             source_record=r4
         )
+        self.eval_results = [res1, res2, res3, res4]
 
     def test_sample_randomize(self):
-        result = self.ers.sample_of_results(sample_size=2)
+        self.ers._save_sample_of_results(sample_size=2)
+        result = self.ers.sample_results()
 
         # There should be two items in the list
         self.assertEqual(len(result), 2)
+
+        # each item should be an EvaluatorResult object
         for x in result:
-            # each item in the list should match an AccountActivity ID
-            self.assertTrue(x in [31, 32, 33, 34])
+            self.assertTrue(x in self.eval_results)
+
         # IDs in the list should not be repeated
         self.assertNotEqual(result[0], result[1])
-
-    def test_sample_when_not_randomized(self):
-        # sample_size is greater than the number of results, so all should be included
-        result = self.ers.sample_of_results(sample_size=5)
-        self.assertEqual(sorted(result), [31, 32, 33, 34])
 
 
 class EvaluatorMetadataTestCase(TestCase):

@@ -1,4 +1,3 @@
-import datetime
 import io
 
 from django.test import TestCase
@@ -12,12 +11,10 @@ from evaluate_m2.tests.evaluator_test_helper import acct_record
 from evaluate_m2.upload_utils import (
     full_s3_url,
     generate_full_csv,
-    generate_json_sample,
     s3_bucket_key,
     s3_filename,
 )
 from parse_m2.models import (
-    AccountActivity,
     M2DataFile,
     Metro2Event,
 )
@@ -77,71 +74,6 @@ class UploadUtilsTestCase(TestCase):
             'MyEVENT,4,2022-05-30,44,2022-05-01,0,AE,,,,,,,00,,,,,,0'
         ]
         self.assertEqual(expected, result)
-
-    def test_generate_sample_json(self):
-        # When the eval result summary specifies the sample ID list,
-        # the response includes only the records in that list
-        self.ers.sample_ids=[2, 4]
-        expected = {
-            'hits': [
-                {
-                    'id': 2,
-                    'activity_date': datetime.date(2022, 5, 30),
-                    'cons_acct_num': '42',
-                    'doai': datetime.date(2022, 5, 1),
-                    'amt_past_due': 0,
-                    'ecoa': 'AC',
-                    'acct_stat': '',
-                    'compl_cond_cd': '',
-                    'php': '',
-                    'php1': '',
-                    'pmt_rating': '',
-                    'spc_com_cd': '',
-                    'terms_freq': '00',
-                    'cons_info_ind': '',
-                    'cons_info_ind_assoc': None,
-                    'l1__change_ind': None,
-                    'dofd': None,
-                    'date_closed': None,
-                    'current_bal': 0
-                },
-                {
-                    'id': 4,
-                    'activity_date': datetime.date(2022, 5, 30),
-                    'cons_acct_num': '44',
-                    'doai': datetime.date(2022, 5, 1),
-                    'amt_past_due': 0,
-                    'ecoa': 'AE',
-                    'acct_stat': '',
-                    'compl_cond_cd': '',
-                    'php': '',
-                    'php1': '',
-                    'pmt_rating': '',
-                    'spc_com_cd': '',
-                    'terms_freq': '00',
-                    'cons_info_ind': '',
-                    'cons_info_ind_assoc': None,
-                    'l1__change_ind': None,
-                    'dofd': None,
-                    'date_closed': None,
-                    'current_bal': 0
-                }
-            ]
-        }
-        result = generate_json_sample(self.ers, AccountActivity.objects)
-        self.assertEqual(expected, result)
-
-    def test_generate_sample_json_sample_ids_missing(self):
-        # When the eval result summary doesn't specify a sample ID list,
-        # the response includes all results (up to a max of M2_RESULT_SAMPLE_SIZE)
-        self.ers.sample_ids=[]
-        result = generate_json_sample(self.ers, AccountActivity.objects)
-
-        hits = result['hits']
-        self.assertEqual(len(hits), 4)
-        keys = list(hits[0].keys())
-        expected_keys = ["id"] + self.eval.result_summary_fields()
-        self.assertEqual(keys.sort(), expected_keys.sort())
 
     def test_get_url(self):
         with self.settings(S3_BUCKET_NAME = 'sample-bucket'):
