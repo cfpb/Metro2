@@ -272,7 +272,6 @@ def evaluator_result_record(
         evaluator=evaluator,
         defaults={
             "hits": 0,
-            "sample_ids": []
         }
     )
     return EvaluatorResult.objects.create(
