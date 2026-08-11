@@ -107,7 +107,7 @@ describe('General page content', () => {
       cy.get('footer').should('be.visible')
     })
 
-    xit('Should show footer left column content from env', () => {
+    it('Should show footer left column content from env', () => {
       cy.env(['VITE_FOOTER_CONTENT']).then(({ VITE_FOOTER_CONTENT }) => {
         cy.get('footer')
           .should('be.visible')
@@ -120,7 +120,7 @@ describe('General page content', () => {
       })
     })
 
-    xit('Should show footer links from env variable', () => {
+    it('Should show footer links from env variable', () => {
       cy.env(['VITE_FOOTER_LINKS']).then(({ VITE_FOOTER_LINKS }) => {
         let footerLinks
         try {
