@@ -1,8 +1,8 @@
 import LocatorBar from '@src/components/LocatorBar/LocatorBar'
 import Table from '@src/components/Table/Table'
-import type Account from '@src/types/Account'
-import type Event from '@src/types/Event'
-import { useLoaderData } from '@tanstack/react-router'
+import { useAccountSuspense } from '@src/queries/account'
+import { useEventSuspense } from '@src/queries/event'
+import { getRouteApi } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 import AccountDownloader from './components/Downloader'
 import AccountOverview from './components/Overview'
@@ -10,11 +10,11 @@ import { accountTableFields } from './utils/accountTableFields'
 import { getColDefs } from './utils/getColDefs'
 
 export default function AccountPage(): ReactElement {
-  // Get event and account data from loaders
-  const eventData: Event = useLoaderData({ from: '/events/$eventId' })
-  const accountData: Account = useLoaderData({
-    from: '/events/$eventId/accounts/$accountId'
-  })
+  const { eventId, accountId } = getRouteApi(
+    '/events/$eventId/accounts/$accountId'
+  ).useParams()
+  const eventData = useEventSuspense(eventId)
+  const accountData = useAccountSuspense(eventId, accountId)
 
   // Generate list of fields and column definitions for the account records table
   const colDefs = getColDefs(accountTableFields, accountData.inconsistencies)

@@ -48,8 +48,9 @@ interface TableProperties<T> {
   NoResultsMessage?: ComponentType
   isLoading?: boolean
   isLoadingError?: boolean
-  defaultSort: string[]
+  defaultSort?: string[]
   isSortedOnServer?: boolean
+  sizeColumnsToFit?: boolean
 }
 
 export default function Table<T extends object>({
@@ -61,7 +62,8 @@ export default function Table<T extends object>({
   isLoading = false,
   isLoadingError,
   defaultSort,
-  isSortedOnServer = false
+  isSortedOnServer = false,
+  sizeColumnsToFit = false
 }: TableProperties<T>): ReactElement {
   // store row data in state
   const [rowData, setRowData] = useState(rows)
@@ -101,7 +103,10 @@ export default function Table<T extends object>({
   }
 
   const onFirstDataRendered = (): void => {
-    updateTableSortState()
+    if (defaultSort) {
+      updateTableSortState()
+    }
+    if (sizeColumnsToFit) gridRef.current?.api.sizeColumnsToFit()
   }
 
   /* onSortChanged
@@ -166,3 +171,5 @@ export default function Table<T extends object>({
     </div>
   )
 }
+
+//{ type: 'fitCellContents', skipHeader: false }

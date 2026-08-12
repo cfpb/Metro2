@@ -7,7 +7,7 @@ import { eventSchema } from './utils/eventSearchSchema'
 export const eventRoute = createRoute({
   path: 'events/$eventId',
   getParentRoute: () => rootRoute,
-  loader: async ({ context: { queryClient }, params: { eventId } }) =>
+  loader: ({ context: { queryClient }, params: { eventId } }) =>
     queryClient.ensureQueryData(eventQueryOptions(eventId))
 })
 

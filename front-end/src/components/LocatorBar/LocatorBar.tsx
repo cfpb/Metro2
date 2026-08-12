@@ -29,7 +29,7 @@ interface BreadcrumbCrumb {
  */
 
 interface LocatorBarProperties {
-  icon: string
+  icon?: string
   heading: string
   eyebrow?: string
   subhead?: string
@@ -52,12 +52,15 @@ export default function LocatorBar({
         <Breadcrumb crumbs={breadcrumbs} data-testid='locator-bar-breadcrumbs' />
       ) : null}
       <div className='header-with-icon'>
-        <Icon
-          name={icon}
-          size='47px'
-          data-testid='locator-bar-icon'
-          isPresentational
-        />
+        {icon ? (
+          <Icon
+            name={icon}
+            size='47px'
+            data-testid='locator-bar-icon'
+            isPresentational
+          />
+        ) : null}
+
         <div>
           {eyebrow ? (
             <div className='h5 eyebrow' data-testid='locator-bar-eyebrow'>

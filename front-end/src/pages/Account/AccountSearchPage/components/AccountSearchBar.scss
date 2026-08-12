@@ -1,0 +1,43 @@
+// Overrides needed to make DS search input styles work with
+// a textarea instead of a text input
+.o-search-input {
+  // Display button below textarea
+  flex-direction: column !important;
+
+  // All corners can be rounded since button
+  // doesn't need to sit next to input
+  button[type='submit'] {
+    border-radius: 0.25em !important;
+  }
+
+  &__input {
+    // Set max width for textarea
+    max-width: 670px;
+
+    // DSR wraps textarea with form field class,
+    // so we need it to fill width of container
+    .m-form-field {
+      width: 100%;
+    }
+
+    // Position search icon label and reset button
+    // at top of textarea
+    button[type='reset'] {
+      top: 0;
+      align-self: start;
+    }
+
+    &-label {
+      top: 10px;
+      align-self: start;
+    }
+
+    // Make textarea expandable but not resizable
+    textarea {
+      width: 100%;
+      field-sizing: content;
+      padding: 8px 30px;
+      resize: none !important;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { getInputByLabel, Metro2Modal } from '@cypress/helpers/modalHelpers'
 import { stripHtmlTags } from '@cypress/helpers/utils'
 import { PII_COOKIE_NAME } from '@src/constants/settings'
-import { accountTableFields } from '@src/pages/Account/utils/accountTableFields'
+import { accountTableFields } from '@src/pages/Account/AccountPage/utils/accountTableFields'
 
 import accountData from '@cypress/fixtures/account_1.json'
 import { Metro2Page } from '@cypress/helpers/pageHelper'

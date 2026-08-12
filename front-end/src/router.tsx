@@ -1,4 +1,8 @@
-import accountRoute from '@src/pages/Account/route'
+import {
+  accountRoute,
+  accountSearchRoute,
+  accountsRoute
+} from '@src/pages/Account/route'
 import evaluatorRoute from '@src/pages/Evaluator/route'
 import { eventIndexRoute, eventRoute } from '@src/pages/Event/route'
 import {
@@ -15,9 +19,11 @@ import rootRoute from '@src/pages/rootRoute'
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
-
-  eventRoute.addChildren([eventIndexRoute, evaluatorRoute, accountRoute]),
-
+  eventRoute.addChildren([
+    eventIndexRoute,
+    evaluatorRoute,
+    accountsRoute.addChildren([accountSearchRoute, accountRoute])
+  ]),
   guideRoute,
   overviewRoute,
   exploreRoute,

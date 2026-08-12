@@ -1,6 +1,10 @@
 import { getDisplayValue } from './displayValueHelper'
 
 export class Metro2Table {
+  getTable() {
+    return cy.findByTestId('data-grid-container')
+  }
+
   getHeaderCells() {
     return cy.get('.ag-header-cell-text')
   }

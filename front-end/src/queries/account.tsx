@@ -1,8 +1,7 @@
 import type Account from '@src/types/Account'
 import { annotateAccountRecords } from '@src/utils/annotations'
 import fetchData from '@src/utils/fetchData'
-import type { UseQueryOptions } from '@tanstack/react-query'
-import { queryOptions } from '@tanstack/react-query'
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query'
 
 export const fetchAccount = async (
   eventId: string,
@@ -14,11 +13,13 @@ export const fetchAccount = async (
   return data
 }
 
-export const accountQueryOptions = (
-  eventId: string,
-  accountId: string
-): UseQueryOptions<Account, Error, unknown, string[]> =>
+export const accountQueryOptions = (eventId: string, accountId: string) =>
   queryOptions({
-    queryKey: ['events', eventId, 'accounts', accountId],
+    queryKey: ['events', eventId, 'account', accountId],
     queryFn: async () => fetchAccount(eventId, accountId)
   })
+
+export const useAccountSuspense = (eventId: string, accountId: string) => {
+  const { data } = useSuspenseQuery(accountQueryOptions(eventId, accountId))
+  return data
+}

@@ -17,8 +17,8 @@ describe('Table accessibility', () => {
   beforeEach(() => {
     cy.viewport(1920, 1080)
     cy.setCookie(PII_COOKIE_NAME, 'true')
-    cy.intercept('GET', 'api/events/154/', { fixture: 'event_1' }).as('getEvent')
-    cy.visit('/events/154/')
+    cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
+    cy.visit('/events/1/')
     cy.wait(['@getEvent'])
   })
 
