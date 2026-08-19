@@ -52,6 +52,18 @@ def cast_to_type(input: str, type_str: str):
             else:
                 return None
 
+def get_field_string(field_start: int, field_end: int, line: str) -> str:
+    # Throw an error if the desired indices don't exist in the string
+    if len(line) < field_end:
+        msg = f"Segment too short: looking for index {field_end}, " + \
+            f"but segment length is {len(line)}"
+        raise UnreadableLineException(msg)
+
+    # Get the string between start and end indices.
+    # The CRRG (and fields.py) uses string positions that start at 1,
+    # but python indicates string position starting at 0.
+    # So we use `field_start-1` to adjust for the difference.
+    return line[field_start - 1: field_end]
 
 def get_field_value(field_ref: dict, field_name: str, line: str):
     """
@@ -80,28 +92,15 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
         field_type = "string"
 
     try:
-        # Throw an error if the desired indices don't exist in the string
-        if len(line) < field_end:
-            msg = f"Segment too short: looking for index {field_end}, " + \
-                f"but segment length is {len(line)}"
-            raise UnreadableLineException(msg)
-
-        # Get the string between start and end indices.
-        # The CRRG (and fields.py) uses string positions that start at 1,
-        # but python indicates string position starting at 0.
-        # So we use `field_start-1` to adjust for the difference.
-        target_str = line[field_start - 1: field_end]
-
+        value = get_field_string(field_start, field_end, line)
         # Cast the string to the given type
-        result =  cast_to_type(target_str, field_type)
+        return cast_to_type(value, field_type)
 
     except UnreadableLineException as e:
         # Add context to the error message that comes out of cast_to_type
         msg = f"Field name: `{field_name}`. Indices: {field_start}-{field_end}. " \
                + f"Field_type `{field_type}`. Issue detail: " + str(e)
         raise UnreadableLineException(msg) from e
-
-    return result
 
 def get_next_line(f) -> str:
     """
