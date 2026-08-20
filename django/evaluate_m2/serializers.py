@@ -1,10 +1,9 @@
 from rest_framework import serializers
 
 from evaluate_m2.metadata_utils import (
-    code_to_plain_field_map,
     format_fields_for_csv,
     parse_fields_from_csv,
-    plain_to_code_field_map,
+    valid_fields,
 )
 from evaluate_m2.models import (
     EvaluatorMetadata,
@@ -163,15 +162,9 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         # First, get the default representation
         json = super().to_representation(instance)
 
-        # Then translate the fields from code to plain language
-        fields_used = [code_to_plain_field_map.get(k, k) for k in json['fields_used']]
-        fields_display = [
-            code_to_plain_field_map.get(k, k) for k in json['fields_display']
-        ]
-
-        # Then override fields_used with the newline-delimited string version
-        json['fields_used'] = format_fields_for_csv(fields_used)
-        json['fields_display'] = format_fields_for_csv(fields_display)
+        # Then override fields_used with semicolon-delimited string
+        json['fields_used'] = format_fields_for_csv(json['fields_used'])
+        json['fields_display'] = format_fields_for_csv(json['fields_display'])
 
         # Also translate default date values to blank
         default_date = str(EvaluatorMetadata._last_modified_never)
@@ -200,15 +193,9 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         vals = super().to_internal_value(data)
 
         # get the fields_used and fields_display values from the
-        # newline-delimited string columns of the SSoTS
+        # semicolon-delimited string columns of the SSoTS
         vals['fields_used'] = parse_fields_from_csv(vals['fields_used'])
         vals['fields_display'] = parse_fields_from_csv(vals['fields_display'])
-
-        # Then translate the fields from plain language to code
-        vals['fields_used'] = [plain_to_code_field_map.get(k, k) \
-            for k in vals['fields_used']]
-        vals['fields_display'] = [plain_to_code_field_map.get(k, k) \
-            for k in vals['fields_display']]
 
         # signal to the model that this instance is coming from a metadata
         # import, rather than the Admin interface
@@ -223,7 +210,7 @@ class EvaluatorMetadataSerializer(serializers.Serializer):
         """
         invalid_fields = []
         for f in data['fields_used'] + data['fields_display']:
-            if f not in code_to_plain_field_map:
+            if f not in valid_fields:
                 invalid_fields.append(f)
         if invalid_fields:
             raise serializers.ValidationError(f"Invalid field names: {invalid_fields}")
