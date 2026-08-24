@@ -23,7 +23,7 @@ RUN apk update --no-cache && \
     apk upgrade --no-cache && \
     apk add libpq && \
     apk add --virtual .build-deps gcc python3-dev musl-dev && \
-    apk add --no-cache aws-cli bash && \
+    apk add --no-cache aws-cli bash jq && \
     apk add libffi-dev && \
     pip install --upgrade pip
 
