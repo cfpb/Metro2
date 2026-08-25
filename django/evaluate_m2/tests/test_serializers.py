@@ -13,27 +13,6 @@ from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
 
 
-e1_fields_used = """
-consumer information indicator
-date of last payment
-ID number
-"""
-
-e1_fields_display = """
-special comment code
-date of first delinquency
-L1 change indicator
-"""
-
-e2_fields_used = """
-wrong
-misspelled
-"""
-
-e2_fields_display = """
-other
-"""
-
 class EvalSerializerTestCase(TestCase):
     def setUp(self) -> None:
         self.multi_line_text="""Here is some text.
@@ -55,8 +34,8 @@ class EvalSerializerTestCase(TestCase):
             'category': 'paid/not paid',
             'description': 'desc 1',
             'long_description': self.multi_line_text,
-            'fields_used': e1_fields_used.strip(),
-            'fields_display': e1_fields_display.strip(),
+            'fields_used': "cons_info_ind;dolp;id_num",
+            'fields_display': "spc_com_cd;dofd;l1__change_ind",
             'crrg_reference': 'PDF page 3',
             'potential_harm': '',
             'rationale': '',
@@ -83,8 +62,8 @@ class EvalSerializerTestCase(TestCase):
             'category': '',
             'description': '',
             'long_description': '',
-            'fields_used': e2_fields_used.strip(),
-            'fields_display': e2_fields_display.strip(),
+            'fields_used': "wrong;misspelled",
+            'fields_display': "other",
             'crrg_reference': '',
             'potential_harm': '',
             'rationale': '',
@@ -116,51 +95,8 @@ class EvalSerializerTestCase(TestCase):
         self.assertEqual(record.additional_notes_last_modified,
                          EvaluatorMetadata._last_modified_never)
 
-    def test_import_from_json_case_insensitive(self):
-        fields_used = "\r\n".join([
-            "cONsumer information indicator",
-            "date of last payment",
-            "id number",
-        ])
-
-        fields_display = "\r\n".join([
-            "special comment CODE",
-            "date of FIRST delinquency",
-            "L1 change indicator",
-            "ECoa",
-        ])
-
-        eval_json = {
-            'id': 'Test-19',
-            'description': 'desc 1',
-            'long_description': self.multi_line_text,
-            'fields_used': fields_used,
-            'fields_display': fields_display,
-            'crrg_reference': 'PDF page 3',
-            'potential_harm': '',
-            'rationale': '',
-            'alternate_explanation': '',
-            'interpret_fields_last_modified': None,
-            'additional_notes': '',
-            'additional_notes_last_modified': None,
-        }
-
-        from_json = EvaluatorMetadataSerializer(data=eval_json)
-        self.assertTrue(from_json.is_valid())
-        record = from_json.save()
-        self.assertEqual(record.id, "Test-19")
-        self.assertEqual(record.description, self.e1_json['description'])
-        self.assertEqual(record.fields_used, ['cons_info_ind', 'dolp', 'id_num'])
-        self.assertEqual(record.fields_display, ['spc_com_cd', 'dofd', 'l1__change_ind',
-                                                 'ecoa'])
-
     def test_import_fails_when_field_names_incorrect(self):
-        fields = "\r\n".join([
-            "date of last payment",
-            "bogus name",
-            "K2 purchased - sold indicator",
-            "something misspelled",
-        ])
+        fields = "dolp;bogus;k2__purc_sold_ind;wrong"
         e4_json = {
             'id': 'TEST-99',
             'description': '',

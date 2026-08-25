@@ -52,7 +52,8 @@ def download_evaluator_metadata_csv(request):
     )
 
     eval_metadata_serializer = EvaluatorMetadataSerializer(
-        EvaluatorMetadata.objects.all(), many=True
+        EvaluatorMetadata.objects.all().order_by('id'),
+        many=True,
     )
     header = EvaluatorMetadataSerializer.Meta.fields
     # Add the header to the CSV response
