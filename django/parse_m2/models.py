@@ -67,6 +67,9 @@ class Metro2Event(models.Model):
 
         return file_info
 
+    # used in the Django admin "import data summary" template
+    def get_eval_result_summaries(self):
+        return self.evaluatorresultsummary_set.select_related('evaluator').values()
 
 
     def check_access_for_user(self, user) -> bool:

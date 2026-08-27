@@ -57,7 +57,8 @@
     {% endwith %}
 
     <h2 style="padding-top: 20px;">Evaluators</h2>
-    {% if object.evaluatorresultsummary_set.first %}
+    {% with eval_results=object.evaluatorresultsummary_set %}
+    {% if eval_results.first %}
         <table style="width: 100%; margin-bottom: 10px;">
             <thead>
             <tr>
@@ -69,9 +70,9 @@
             </tr>
             </thead>
             <tbody>
-            {% for result in object.evaluatorresultsummary_set.all %}
+            {% for result in object.get_eval_result_summaries %}
                 <tr>
-                    <td>{{ result.evaluator.id }}</td>
+                    <td>{{ result.evaluator_id }}</td>
                     <td>{{ result.hits|intcomma }}</td>
                     <td>{{ result.inconsistency_start | default_if_none:"-" }}</td>
                     <td>{{ result.inconsistency_end | default_if_none:"-" }}</td>
@@ -81,9 +82,10 @@
             </tbody>
         </table>
 
-        <p><b>Evaluators executed on:</b> {{ object.evaluatorresultsummary_set.first.timestamp }}</p>
+        <p><b>Evaluators executed on:</b> {{ eval_results.first.timestamp }}</p>
     {% else %}
         <h3>No evaluators have been run for this event</h3>
     {% endif %}
+    {% endwith %}
 
 {% endblock %}
