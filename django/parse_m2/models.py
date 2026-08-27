@@ -61,7 +61,9 @@ class Metro2Event(models.Model):
         for f in files:
             record_ct = next(i for i in record_counts if i['data_file_id']==f['id'])
             f['record_count'] = record_ct['total']
-            unparseable_ct = next(i for i in unparseable_counts if i['data_file_id']==f['id'])
+            unparseable_ct = next(
+                i for i in unparseable_counts if i['data_file_id']==f['id']
+            )
             f['unparseable_data_count'] = unparseable_ct['total']
             file_info.append(f)
 
