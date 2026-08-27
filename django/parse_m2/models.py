@@ -39,13 +39,40 @@ class Metro2Event(models.Model):
         call_command('run_evaluators', event_id=self.id)
 
     def total_tradelines(self) -> int:
-        total = 0
-        for file in self.m2datafile_set.all():
-            total += file.accountactivity_set.count()
-        return total
+        return AccountActivity.objects.filter(event_id=self.id).count()
 
-    def get_files_in_order(self):
-        return self.m2datafile_set.order_by('activity_date')
+    # used in the Django admin "import data summary" template
+    def get_file_summary(self):
+        # file info
+        files = self.m2datafile_set.order_by('activity_date').values()
+
+        # data for the "parsed lines" column
+        from django.db.models import Count
+        record_counts = AccountActivity.objects.filter(event_id=self.id) \
+            .values('data_file_id').annotate(total=Count('id'))
+
+        # data for the "unparseable lines" column
+        file_ids = [f['id'] for f in files]
+        unparseable_counts = UnparseableData.objects.filter(data_file_id__in=file_ids) \
+            .values('data_file_id').annotate(total=Count('id'))
+
+        # organize the data into a list of dicts
+        file_info = []
+        for f in files:
+            record_ct = next(i for i in record_counts if i['data_file_id']==f['id'])
+            f['record_count'] = record_ct['total']
+            unparseable_ct = next(
+                i for i in unparseable_counts if i['data_file_id']==f['id']
+            )
+            f['unparseable_data_count'] = unparseable_ct['total']
+            file_info.append(f)
+
+        return file_info
+
+    # used in the Django admin "import data summary" template
+    def get_eval_result_summaries(self):
+        return self.evaluatorresultsummary_set.select_related('evaluator').values()
+
 
     def check_access_for_user(self, user) -> bool:
         """

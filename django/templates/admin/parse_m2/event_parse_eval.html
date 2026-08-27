@@ -13,7 +13,8 @@
 
 {% block content %}
     <h1>Data import summary for event: {{ object.name }}</h1>
-    {% if object.m2datafile_set.first %}
+    {% with datafile_info=object.get_file_summary %}
+    {% if datafile_info %}
         <h2>Data files imported</h2>
 
         <table style="width: 100%; margin-bottom: 10px;">
@@ -31,22 +32,14 @@
             </tr>
             </thead>
             <tbody>
-            {% for file in object.get_files_in_order %}
+            {% for file in datafile_info %}
                 <tr>
                     <td>{{ file.file_name }}</td>
-                    {% if file.activity_date %}
-                        <td>{{ file.activity_date }}</td>
-                    {% else %}
-                        <td>-</td>
-                    {% endif %}
+                    <td>{{ file.activity_date | default_if_none:"-" }}</td>
                     <td>{{ file.parsing_status }}</td>
-                    <td>{{ file.accountactivity_set.count|intcomma }}</td>
-                    <td>{{ file.unparseabledata_set.count|intcomma }}</td>
-                    {% if file.collection %}
-                        <td>{{ file.collection }}</td>
-                    {% else %}
-                        <td>-</td>
-                    {% endif %}
+                    <td>{{ file.record_count|intcomma }}</td>
+                    <td>{{ file.unparseable_data_count|intcomma }}</td>
+                    <td>{{ file.collection | default_if_none:"-" }}</td>
                     <td>{{ file.timestamp|localtime }}</td>
                     <td>{{ file.error_message }}</td>
                     <td>{{ file.parser_version }}</td>
@@ -55,15 +48,17 @@
             </tbody>
         </table>
 
-        <p><b>Total files imported:</b> {{ object.m2datafile_set.count|intcomma }} </p>
+        <p><b>Total files imported:</b> {{ datafile_info|length|intcomma }} </p>
         <p><b>Total tradelines imported:</b> {{ object.total_tradelines|intcomma }} </p>
 
     {% else %}
         <h3>No data files have been imported for this event</h3>
     {% endif %}
+    {% endwith %}
 
     <h2 style="padding-top: 20px;">Evaluators</h2>
-    {% if object.evaluatorresultsummary_set.first %}
+    {% with eval_results=object.evaluatorresultsummary_set %}
+    {% if eval_results.first %}
         <table style="width: 100%; margin-bottom: 10px;">
             <thead>
             <tr>
@@ -75,29 +70,22 @@
             </tr>
             </thead>
             <tbody>
-            {% for result in object.evaluatorresultsummary_set.all %}
+            {% for result in object.get_eval_result_summaries %}
                 <tr>
-                    <td>{{ result.evaluator.id }}</td>
+                    <td>{{ result.evaluator_id }}</td>
                     <td>{{ result.hits|intcomma }}</td>
-                    {% if result.inconsistency_start %}
-                        <td>{{ result.inconsistency_start }}</td>
-                    {% else %}
-                        <td>-</td>
-                    {% endif %}
-                    {% if result.inconsistency_end %}
-                        <td>{{ result.inconsistency_end }}</td>
-                    {% else %}
-                        <td>-</td>
-                    {% endif %}
+                    <td>{{ result.inconsistency_start | default_if_none:"-" }}</td>
+                    <td>{{ result.inconsistency_end | default_if_none:"-" }}</td>
                     <td>{{ result.evaluator_version }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
 
-        <p><b>Evaluators executed on:</b> {{ object.evaluatorresultsummary_set.first.timestamp }}</p>
+        <p><b>Evaluators executed on:</b> {{ eval_results.first.timestamp }}</p>
     {% else %}
         <h3>No evaluators have been run for this event</h3>
     {% endif %}
+    {% endwith %}
 
 {% endblock %}
