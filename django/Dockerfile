@@ -1,6 +1,6 @@
 #############################################################################
 ## Stage: base python/django image
-FROM python:3.13-alpine AS base
+FROM python:3.14-alpine AS base
 
 # Ensure that the environment uses UTF-8 encoding by default
 ENV LANG=en_US.UTF-8
