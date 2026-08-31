@@ -76,10 +76,8 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     """This filter set specifies `EvaluatorResultMaterializedView` fields to filter.
     """
 
-    acct_type = django_filters.CharFilter(field_name="acct_type")
-    acct_stat = AnyCharFilter(
-        field_name="acct_stat",
-    )
+    acct_type = AnyCharFilter(field_name="acct_type")
+    acct_stat = AnyCharFilter(field_name="acct_stat")
     compl_cond_cd = AnyCharFilter(field_name="compl_cond_cd")
     php = AnyCharFilter(field_name="php")
     php1 = AnyCharFilter(field_name="php1")
