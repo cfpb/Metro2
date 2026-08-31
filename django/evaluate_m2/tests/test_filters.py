@@ -6,8 +6,8 @@ from django.test import SimpleTestCase, TestCase, override_settings
 
 from evaluate_m2.filters import (
     AnyCharFilter,
+    EvaluatorResultFilterSet,
     JSONArrayContainsFilter,
-    EvaluatorResultFilterSet
 )
 from evaluate_m2.models import (
     EvaluatorMetadata,
