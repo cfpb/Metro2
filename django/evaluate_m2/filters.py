@@ -12,6 +12,7 @@ from parse_m2.models import AccountActivity
 class NullInclusiveFilterMixin:
     # If this value is given, filter on a null value
     null_value = "blank"
+    match_empty_string = True
 
     def get_null_query(self, values, null_value="blank"):
         query = Q()
@@ -21,6 +22,8 @@ class NullInclusiveFilterMixin:
             # and add a null value query
             values = [v for v in values if v != self.null_value]
             query |= Q(**{f"{self.field_name}__isnull": True})
+            if self.match_empty_string:
+                query |= Q(**{self.field_name: ""})
 
         return values, query
 
@@ -46,6 +49,7 @@ class AnyCharFilter(django_filters.BaseInFilter, NullInclusiveFilterMixin):
 
 class JSONArrayContainsFilter(django_filters.BaseCSVFilter, NullInclusiveFilterMixin):
     """Match any value in a JSONField array"""
+    match_empty_string = False
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("lookup_expr", "contains")
