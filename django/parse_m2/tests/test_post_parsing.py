@@ -27,6 +27,14 @@ class InitiatePostParsingTestCase(TestCase):
         self.assertEqual(date(2018, 3, 31), self.event.date_range_end)
         self.assertEqual(date(2018, 1, 31), self.event.date_range_start)
 
+    def test_post_parse_total_tradelines(self):
+        # total_tradelines defaults to zero
+        self.assertEqual(self.event.total_tradelines, 0)
+
+        post_parse(self.event)
+        # post_parse updates total_tradelines value
+        self.assertEqual(self.event.total_tradelines, 6)
+
     def test_associate_previous_records_no_previous_records(self):
         associate_previous_records(self.event)
         # Retrieve any record with activity_date 2018-01-31
