@@ -191,6 +191,7 @@ def events_view(request, event_id):
             "directory": event.directory,
             "date_range_start": event.date_range_start,
             "date_range_end": event.date_range_end,
+            "total_tradelines": event.total_tradelines,
             "evaluators": evaluator_metadata_serializer.data,
         }
         return Response(result)
