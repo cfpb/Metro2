@@ -8,6 +8,7 @@ from parse_m2.models import Metro2Event
 ############################################
 # Methods to update existing M2Event activity records
 def post_parse(event) -> None:
+    save_total_records(event)
     calculate_date_range(event)
     associate_previous_records(event)
 
@@ -15,6 +16,10 @@ def calculate_date_range(event: Metro2Event):
     date_range = event.account_activity_date_range()
     event.date_range_start = date_range['earliest']
     event.date_range_end = date_range['latest']
+    event.save()
+
+def save_total_records(event: Metro2Event):
+    event.total_tradelines = event.calculate_total_tradelines()
     event.save()
 
 def associate_previous_records(event: Metro2Event):
