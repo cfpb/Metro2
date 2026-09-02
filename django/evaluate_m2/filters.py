@@ -12,7 +12,6 @@ from parse_m2.models import AccountActivity
 class NullInclusiveFilterMixin:
     # If this value is given, filter on a null value
     null_value = "blank"
-    match_empty_string = True
 
     def get_null_query(self, values, null_value="blank"):
         query = Q()
@@ -22,14 +21,19 @@ class NullInclusiveFilterMixin:
             # and add a null value query
             values = [v for v in values if v != self.null_value]
             query |= Q(**{f"{self.field_name}__isnull": True})
-            if self.match_empty_string:
-                query |= Q(**{self.field_name: ""})
 
         return values, query
 
 
 class AnyCharFilter(django_filters.BaseInFilter, NullInclusiveFilterMixin):
     """Match any char value in a CharField"""
+
+    # Because this is a Char filter, match empty strings as null
+    def get_null_query(self, values, null_value="blank"):
+        values, query = super().get_null_query(values, null_value)
+        if values is not None and query:
+            query |= Q(**{self.field_name: ""})
+        return values, query
 
     # Override the filter method to construct a query that will filter for
     # values and null.
@@ -49,11 +53,17 @@ class AnyCharFilter(django_filters.BaseInFilter, NullInclusiveFilterMixin):
 
 class JSONArrayContainsFilter(django_filters.BaseCSVFilter, NullInclusiveFilterMixin):
     """Match any value in a JSONField array"""
-    match_empty_string = False
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault("lookup_expr", "contains")
         super().__init__(*args, **kwargs)
+
+    # Because this is a JSON array filter, match [] as null
+    def get_null_query(self, values, null_value="blank"):
+        values, query = super().get_null_query(values, null_value)
+        if values is not None and query:
+            query |= Q(**{self.field_name: []})
+        return values, query
 
     def filter(self, qs, values):
         if values in EMPTY_VALUES:

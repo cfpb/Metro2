@@ -42,6 +42,7 @@ class JSONArrayContainsFilterTestCase(SimpleTestCase):
 
         expected_q = (
             Q(test_field__isnull=True) |
+            Q(test_field=[]) |
             Q(test_field__contains=["value", ]) |
             Q(test_field__contains=["other", ])
         )
@@ -580,4 +581,4 @@ class EvaluatorResultJSONFiltersTestCase(BaseFilterSetTestCase):
 
     def test_cons_info_ind_assoc_blank(self):
         results = self.filter(cons_info_ind_assoc='blank')
-        self.assertEqual(results, set())
+        self.assertEqual(results, {self.result_4.id})
