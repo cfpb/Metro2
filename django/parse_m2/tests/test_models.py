@@ -17,13 +17,78 @@ from parse_m2.models import (
     AccountActivity,
     M2DataFile,
     Metro2Event,
+    UnparseableData,
 )
 
 
-class ParserModelsTestCase(TestCase):
+class Metro2EventModelTestCase(TestCase):
     def setUp(self):
-        self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')  # noqa E501
+        acct_date=date(2019, 12, 31)
+        # Create a test event with two AccountActivity records and
+        # two unparseable lines
+        self.event = Metro2Event.objects.create(name='test_exam')
+        self.file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
+        acct_record(self.file, {
+                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
+                'acct_type': '12', 'credit_limit': 30, 'hcola': -5, 'port_type': 'I',
+                'cons_info_ind': 'X', 'terms_dur': '15', 'terms_freq':'P'
+            })
+        acct_record(self.file, {
+                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
+              'acct_type': '91', 'credit_limit': 40, 'hcola': -5, 'port_type': 'I',
+              'cons_info_ind': 'W', 'terms_dur': '20', 'terms_freq':'D'
+            })
+        unparseable_file = M2DataFile.objects.create(
+            event=self.event, file_name='err.txt')
+        UnparseableData.objects.create(data_file=unparseable_file)
+        UnparseableData.objects.create(data_file=unparseable_file)
 
+        # Create a second test event to show that different events' data
+        # are kept separate
+        event_2 = Metro2Event.objects.create(name='test_exam2')
+        file2 = M2DataFile.objects.create(event=event_2, file_name='file2.txt')
+        acct_record(file2, {
+                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
+                'acct_type': '00', 'credit_limit': 10, 'hcola': -1, 'port_type': 'I',
+                'cons_info_ind': 'Z', 'terms_dur': '5', 'terms_freq':'P'
+            })
+        acct_record(file2, {
+                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
+                'acct_type': '3A', 'credit_limit': 20, 'hcola': -1, 'port_type': 'M',
+                'cons_info_ind': 'Y', 'terms_dur': '10', 'terms_freq':'W'
+            })
+
+    def test_metro2_event_get_all_account_activity_returns_results(self):
+        event = Metro2Event.objects.get(name='test_exam')
+        result = event.get_all_account_activity()
+        self.assertEqual(2, len(result))
+
+    def test_get_all_account_activity_returns_no_results_for_empty_exam(self):
+        event = Metro2Event.objects.create(name="new_exam")
+        result = event.get_all_account_activity()
+        self.assertEqual(0, len(result))
+
+    def test_str_matches_name(self):
+        self.assertEqual('test_exam', str(self.event))
+
+    def test_get_file_summary(self):
+        # sort summary by file ID so we can check each one
+        summary = sorted(
+            self.event.get_file_summary(),
+            key=lambda x: x['id']
+        )
+        self.assertEqual(len(summary),  2)
+        self.assertEqual(summary[0]['file_name'], 'file.txt')
+        self.assertEqual(summary[0]['record_count'], 2)
+        self.assertEqual(summary[0]['unparseable_data_count'], 0)
+
+        self.assertEqual(summary[1]['file_name'], 'err.txt')
+        self.assertEqual(summary[1]['record_count'], 0)
+        self.assertEqual(summary[1]['unparseable_data_count'], 2)
+
+
+class ParseSegmentsToModelInstancesTestCase(TestCase):
+    def setUp(self):
         # Create the parent records for the AccountActivity data
         event = Metro2Event(name='test_exam')
         self.data_file = M2DataFile(event=event, file_name='file.txt')
@@ -33,63 +98,8 @@ class ParserModelsTestCase(TestCase):
             activity_date = self.activity_date
         )
 
-    def create_exam_activity(self):
-        acct_date=date(2019, 12, 31)
-        # Create the Account Activities data
-        activities = [
-            {
-                'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
-                'acct_type': '12', 'credit_limit': 30, 'hcola': -5, 'port_type': 'I',
-                'cons_info_ind': 'X', 'terms_dur': '15', 'terms_freq':'P'
-            }, {
-                'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
-              'acct_type': '91', 'credit_limit': 40, 'hcola': -5, 'port_type': 'I',
-              'cons_info_ind': 'W', 'terms_dur': '20', 'terms_freq':'D'
-            }]
-        # Create the parent records for the AccountActivity data for first event
-        event = Metro2Event(name='test_exam')
-        event.save()
-        file = M2DataFile(event=event, file_name='file.txt')
-        file.save()
-
-        for item in activities:
-            acct_record(file, item)
-
-        # Create the second exam Account Activities data
-        activities2 = [
-            {
-                'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
-                'acct_type': '00', 'credit_limit': 10, 'hcola': -1, 'port_type': 'I',
-                'cons_info_ind': 'Z', 'terms_dur': '5', 'terms_freq':'P'
-            }, {
-                'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-              'acct_type': '3A', 'credit_limit': 20, 'hcola': -1, 'port_type': 'M',
-              'cons_info_ind': 'Y', 'terms_dur': '10', 'terms_freq':'W'
-            }]
-        # Create the parent records for the AccountActivity data for second event
-        event_2 = Metro2Event(name='test_exam2')
-        event_2.save()
-        file2 = M2DataFile(event=event_2, file_name='file2.txt')
-        file2.save()
-
-        for item in activities2:
-            acct_record(file2, item)
-
-    def test_metro2_event_get_all_account_activity_returns_results(self):
-        self.create_exam_activity()
-        event = Metro2Event.objects.get(name='test_exam')
-        result = event.get_all_account_activity()
-
-        self.assertEqual(2, len(result))
-
-    def test_get_all_account_activity_returns_no_results(self):
-        self.create_exam_activity()
-        event = Metro2Event.objects.create(name="test_exam")
-        result = event.get_all_account_activity()
-
-        self.assertEqual(0, len(result))
-
     def test_parse_account_activity(self):
+        self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')  # noqa E501
         with open(self.base_seg) as file:
             base_segment = file.readline()
             result = AccountActivity.parse_from_segment(
@@ -197,11 +207,3 @@ class TestMetro2EventAccess(TestCase):
         self.assertFalse(self.enf_event.check_access_for_user(self.sup_user))
         self.assertTrue(self.sup_event.check_access_for_user(self.sup_user))
 
-
-class TestMetro2Eventset(TestCase):
-    def setUp(self) -> None:
-        self.name = "OfficialExam2023"
-        self.event = Metro2Event.objects.create(name=self.name)
-
-    def test_str_matches_name(self):
-        self.assertEqual(self.name, str(self.event))
