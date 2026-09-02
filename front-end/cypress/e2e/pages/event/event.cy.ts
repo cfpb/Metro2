@@ -7,6 +7,7 @@ import { PII_COOKIE_NAME } from '@src/constants/settings'
 import { EVENT_COLUMN_MAP } from '@src/pages/Event/utils/eventColumns'
 import EvaluatorMetadata from '@src/types/EvaluatorMetadata'
 import type Event from '@src/types/Event'
+import { formatNumber } from '@src/utils/formatNumbers'
 const eventData = data as Event
 
 // Instantiate helpers
@@ -36,14 +37,15 @@ describe('Event page', () => {
   })
 
   // Locator Bar
-  it('Should show locator', () => {
-    cy.get('.locator-bar').should('be.visible')
-  })
-  it('Should show event title and date range for ID 1 in locator bar', () => {
-    eventPage.verifyEventLocatorBarContent(
-      eventData.name,
-      'Data from Jan 2020 - Nov 2020'
-    )
+  it('Should show locator bar content', () => {
+    eventPage.getLocatorBar().should('be.visible')
+    eventPage.getLocatorBarHeading().should('have.text', eventData.name)
+    cy.findByTestId('locator-bar-subhead')
+      .should('include.text', 'Data from Jan 2020 - Nov 2020')
+      .and(
+        'include.text',
+        `Total tradelines evaluated: ${formatNumber(eventData.total_tradelines)}`
+      )
   })
 
   // Account search

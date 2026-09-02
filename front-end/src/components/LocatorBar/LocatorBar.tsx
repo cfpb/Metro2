@@ -15,13 +15,14 @@ interface BreadcrumbCrumb {
  * Implements a full-width header bar with an icon and heading,
  * as well as optional eyebrow, subhead, and breadcrumbs.
  *
- * @param {string} heading - H2-level heading text
+ * @param {string} heading - H1-level heading text
  * @param {string} icon - name for a design-system icon
  *                        eg, 'bank' or 'bank-round'
  *                        Full list here:
  *                        https://cfpb.github.io/design-system/foundation/iconography
- * @param {string} eyebrow - text for small heading above the H2
- * @param {string} subhead - text for H3 heading below the H2
+ * @param {string} eyebrow - text for small heading above the H1
+ * @param {ReactElement | string | null} children - additional content to be displayed
+ *                                                  under the heading
  * @param {array} breadcrumbs - array of breadcrumb links
  *                              with format:
  *                              [to:'link url', label:'link text']
@@ -32,22 +33,23 @@ interface LocatorBarProperties {
   icon?: string
   heading: string
   eyebrow?: string
-  subhead?: string
   breadcrumbs?: BreadcrumbCrumb[] | null
+  children?: ReactElement | string | null
 }
 
 export default function LocatorBar({
   heading,
   icon,
   eyebrow,
-  subhead,
+  children,
   breadcrumbs = null
 }: LocatorBarProperties): ReactElement {
-  let className = 'locator-bar'
-  if (breadcrumbs) className += ' locator-bar--actions'
+  const className = ['locator-bar']
+  if (breadcrumbs) className.push('locator-bar--actions')
+  if (!(eyebrow || children)) className.push('locator-bar--vertically-centered')
 
   return (
-    <div className={className}>
+    <div className={className.join(' ')}>
       {breadcrumbs ? (
         <Breadcrumb crumbs={breadcrumbs} data-testid='locator-bar-breadcrumbs' />
       ) : null}
@@ -60,21 +62,14 @@ export default function LocatorBar({
             isPresentational
           />
         ) : null}
-
         <div>
           {eyebrow ? (
             <div className='h5 eyebrow' data-testid='locator-bar-eyebrow'>
               {eyebrow}
             </div>
           ) : null}
-          <h1 className='h2' data-testid='locator-bar-heading'>
-            {heading}
-          </h1>
-          {subhead ? (
-            <h2 className='h3' data-testid='locator-bar-subhead'>
-              {subhead}
-            </h2>
-          ) : null}
+          <h1 data-testid='locator-bar-heading'>{heading}</h1>
+          {children ? <div data-testid='locator-bar-subhead'>{children}</div> : null}
         </div>
       </div>
     </div>
