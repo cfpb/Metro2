@@ -28,6 +28,13 @@ class NullInclusiveFilterMixin:
 class AnyCharFilter(django_filters.BaseInFilter, NullInclusiveFilterMixin):
     """Match any char value in a CharField"""
 
+    # Because this is a Char filter, match empty strings as null
+    def get_null_query(self, values, null_value="blank"):
+        values, query = super().get_null_query(values, null_value)
+        if values is not None and query:
+            query |= Q(**{self.field_name: ""})
+        return values, query
+
     # Override the filter method to construct a query that will filter for
     # values and null.
     def filter(self, qs, values):
@@ -51,6 +58,13 @@ class JSONArrayContainsFilter(django_filters.BaseCSVFilter, NullInclusiveFilterM
         kwargs.setdefault("lookup_expr", "contains")
         super().__init__(*args, **kwargs)
 
+    # Because this is a JSON array filter, match [] as null
+    def get_null_query(self, values, null_value="blank"):
+        values, query = super().get_null_query(values, null_value)
+        if values is not None and query:
+            query |= Q(**{self.field_name: []})
+        return values, query
+
     def filter(self, qs, values):
         if values in EMPTY_VALUES:
             return qs
@@ -72,12 +86,8 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     """This filter set specifies `EvaluatorResultMaterializedView` fields to filter.
     """
 
-    acct_type = django_filters.CharFilter(field_name="acct_type")
-    acct_stat = AnyCharFilter(
-        field_name="acct_stat",
-    )
+    acct_stat = AnyCharFilter(field_name="acct_stat")
     compl_cond_cd = AnyCharFilter(field_name="compl_cond_cd")
-    php = AnyCharFilter(field_name="php")
     php1 = AnyCharFilter(field_name="php1")
     pmt_rating = AnyCharFilter(field_name="pmt_rating")
     spc_com_cd = AnyCharFilter(field_name="spc_com_cd")
@@ -104,9 +114,6 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     )
     current_bal = django_filters.RangeFilter(
         field_name="current_bal",
-    )
-    smpa = django_filters.RangeFilter(
-        field_name="smpa",
     )
 
     # Sort ordering filter for all the relevant fields from AccountActivity
@@ -185,20 +192,19 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     class Meta:
         model = EvaluatorResultMaterializedView
         fields = [
-            "acct_type",
             "acct_stat",
             "compl_cond_cd",
-            "php",
+            "php1",
             "pmt_rating",
             "spc_com_cd",
             "terms_freq",
             "cons_info_ind",
+            "cons_info_ind_assoc",
             "l1__change_ind",
             "dofd",
             "date_closed",
             "amt_past_due",
             "current_bal",
-            "smpa",
             "sort",
         ]
 
