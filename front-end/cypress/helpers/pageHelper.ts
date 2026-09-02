@@ -88,28 +88,23 @@ export class Metro2Page {
   ) {
     switch (state) {
       case 'checked': {
-        this.getInputByLabel(label).should('be.checked')
-        cy.contains('label', label)
-          .parent()
-          .should('not.have.class', 'indeterminate')
-
+        this.getInputByLabel(label)
+          .should('be.checked')
+          .and('have.prop', 'indeterminate', false)
         break
       }
       case 'unchecked': {
-        this.getInputByLabel(label).should('not.be.checked')
-        cy.contains('label', label)
-          .parent()
-          .should('not.have.class', 'indeterminate')
-
+        this.getInputByLabel(label)
+          .should('not.be.checked')
+          .and('have.prop', 'indeterminate', false)
         break
       }
       case 'indeterminate': {
-        this.getInputByLabel(label).should('not.be.checked')
-        cy.contains('label', label).parent().should('have.class', 'indeterminate')
-
+        this.getInputByLabel(label)
+          .should('not.be.checked')
+          .and('have.prop', 'indeterminate', true)
         break
       }
-      // No default
     }
   }
 

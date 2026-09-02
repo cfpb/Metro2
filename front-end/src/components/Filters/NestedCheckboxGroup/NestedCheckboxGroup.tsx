@@ -1,6 +1,6 @@
+import { Checkbox } from '@cfpb/design-system-react'
 import Accordion from '@src/components/Accordion/Accordion'
 import type { ReactElement } from 'react'
-import { IndeterminateCheckbox } from '../IndeterminateCheckbox/IndeterminateCheckbox'
 import type { CheckboxItem } from './CheckboxItem'
 import './NestedCheckboxGroup.scss'
 
@@ -77,7 +77,7 @@ export default function NestedCheckboxGroup({
             key={item.key}
             openOnLoad={level === 1 && someChecked}
             header={
-              <IndeterminateCheckbox
+              <Checkbox
                 onChange={item.onChange}
                 id={String(item.key)}
                 label={item.name}
@@ -89,7 +89,7 @@ export default function NestedCheckboxGroup({
             <NestedCheckboxGroup items={item.children} level={level + 1} />
           </Accordion>
         ) : (
-          <IndeterminateCheckbox
+          <Checkbox
             id={String(item.key)}
             key={item.key}
             label={item.name}
