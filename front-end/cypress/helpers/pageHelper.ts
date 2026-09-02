@@ -2,16 +2,17 @@ import { PII_COOKIE_NAME } from '@src/constants/settings'
 import { stringifySearchParams } from 'utils/customStringify'
 
 export class Metro2Page {
-  verifyLocatorBarContent(eyebrow: string, heading: string) {
-    cy.get('.header-with-icon').should('be.visible')
-    cy.findByTestId('locator-bar-eyebrow').should('have.text', eyebrow)
-    cy.findByTestId('locator-bar-heading').should('have.text', heading)
+  getLocatorBar() {
+    return cy.get('.header-with-icon')
+  }
+  getLocatorBarHeading() {
+    return cy.findByTestId('locator-bar-heading')
   }
 
-  verifyEventLocatorBarContent(heading: string, subhead: string) {
-    cy.get('.header-with-icon').should('be.visible')
-    cy.findByTestId('locator-bar-heading').should('have.text', heading)
-    cy.findByTestId('locator-bar-subhead').should('have.text', subhead)
+  verifyLocatorBarContent(eyebrow: string, heading: string) {
+    this.getLocatorBar().should('be.visible')
+    this.getLocatorBarHeading().should('have.text', heading)
+    cy.findByTestId('locator-bar-eyebrow').should('have.text', eyebrow)
   }
 
   verifyBreadcrumbs(breadcrumbs: [{ text: string; href: string }]) {
