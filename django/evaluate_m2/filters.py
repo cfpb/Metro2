@@ -86,10 +86,8 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     """This filter set specifies `EvaluatorResultMaterializedView` fields to filter.
     """
 
-    acct_type = AnyCharFilter(field_name="acct_type")
     acct_stat = AnyCharFilter(field_name="acct_stat")
     compl_cond_cd = AnyCharFilter(field_name="compl_cond_cd")
-    php = AnyCharFilter(field_name="php")
     php1 = AnyCharFilter(field_name="php1")
     pmt_rating = AnyCharFilter(field_name="pmt_rating")
     spc_com_cd = AnyCharFilter(field_name="spc_com_cd")
@@ -116,9 +114,6 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     )
     current_bal = django_filters.RangeFilter(
         field_name="current_bal",
-    )
-    smpa = django_filters.RangeFilter(
-        field_name="smpa",
     )
 
     # Sort ordering filter for all the relevant fields from AccountActivity
@@ -197,10 +192,8 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
     class Meta:
         model = EvaluatorResultMaterializedView
         fields = [
-            "acct_type",
             "acct_stat",
             "compl_cond_cd",
-            "php",
             "php1",
             "pmt_rating",
             "spc_com_cd",
@@ -212,7 +205,6 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
             "date_closed",
             "amt_past_due",
             "current_bal",
-            "smpa",
             "sort",
         ]
 

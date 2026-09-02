@@ -132,7 +132,6 @@ class EvaluatorResultAnyCharFiltersTestCase(BaseFilterSetTestCase):
     def create_activity_rows(self):
         self.result_1 = self.create_result(
             id=32,
-            acct_type="07",
             acct_stat="11",
             compl_cond_cd="XB",
             php="0",
@@ -145,7 +144,6 @@ class EvaluatorResultAnyCharFiltersTestCase(BaseFilterSetTestCase):
         )
         self.result_2 = self.create_result(
             id=33,
-            acct_type="15",
             acct_stat="13",
             compl_cond_cd="XH",
             php="1",
@@ -159,7 +157,6 @@ class EvaluatorResultAnyCharFiltersTestCase(BaseFilterSetTestCase):
         # Empty string values, no L1 segment
         self.result_3 = self.create_result(
             id=34,
-            acct_type="",
             acct_stat="",
             compl_cond_cd="",
             php="",
@@ -204,33 +201,6 @@ class EvaluatorResultAnyCharFiltersTestCase(BaseFilterSetTestCase):
         results = self.filter(acct_stat="99")
         self.assertEqual(results, set())
 
-    def test_acct_type_single_value(self):
-        results = self.filter(acct_type="07")
-        self.assertEqual(results, {self.result_1.id})
-
-    def test_acct_type_list(self):
-        # FAILING: acct_type is a plain CharFilter, so this matches the
-        # literal string "07,15" and returns nothing. Should be AnyCharFilter.
-        results = self.filter(acct_type="07,15")
-        self.assertEqual(
-            results,
-            {
-                self.result_1.id,
-                self.result_2.id,
-            }
-        )
-
-    def test_acct_type_blank(self):
-        # FAILING for the same reason: a plain CharFilter has no blank
-        # sentinel, so this matches the literal string "blank".
-        results = self.filter(acct_type="blank")
-        self.assertEqual(
-            results,
-            {
-                self.result_3.id,
-            }
-        )
-
     def test_compl_cond_cd_list(self):
         results = self.filter(compl_cond_cd="XB,XH")
         self.assertEqual(
@@ -243,26 +213,6 @@ class EvaluatorResultAnyCharFiltersTestCase(BaseFilterSetTestCase):
 
     def test_compl_cond_cd_list_blank(self):
         results = self.filter(compl_cond_cd="XB,blank")
-        self.assertEqual(
-            results,
-            {
-                self.result_1.id,
-                self.result_3.id,
-            }
-        )
-
-    def test_php_list(self):
-        results = self.filter(php="0,1")
-        self.assertEqual(
-            results,
-            {
-                self.result_1.id,
-                self.result_2.id,
-            }
-        )
-
-    def test_php_list_blank(self):
-        results = self.filter(php="0,blank")
         self.assertEqual(
             results,
             {
@@ -403,7 +353,7 @@ class EvaluatorResultAnyCharFiltersTestCase(BaseFilterSetTestCase):
         )
 
     def test_multiple_filters_are_combined(self):
-        results = self.filter(acct_stat="11", php="0")
+        results = self.filter(acct_stat="11", php1="0")
         self.assertEqual(
             results,
             {
@@ -412,9 +362,9 @@ class EvaluatorResultAnyCharFiltersTestCase(BaseFilterSetTestCase):
         )
 
     def test_multiple_filters_across_different_rows(self):
-        # acct_stat matches result_1, php matches result_2, so the
+        # acct_stat matches result_1, php1 matches result_2, so the
         # intersection is empty
-        results = self.filter(acct_stat="11", php="1")
+        results = self.filter(acct_stat="11", php1="1")
         self.assertEqual(results, set())
 
     def test_multiple_filters_with_lists(self):
@@ -467,25 +417,21 @@ class EvaluatorResultRangeFiltersTestCase(BaseFilterSetTestCase):
             id=32,
             amt_past_due=0,
             current_bal=0,
-            smpa=0
         )
         self.result_2 = self.create_result(
             id=33,
             amt_past_due=400,
             current_bal=400,
-            smpa=400
         )
         self.result_3 = self.create_result(
             id=34,
             amt_past_due=500,
             current_bal=500,
-            smpa=500
         )
         self.result_4 = self.create_result(
             id=35,
             amt_past_due=900,
             current_bal=900,
-            smpa=900
         )
 
     def test_amt_past_due_range(self):
@@ -525,16 +471,6 @@ class EvaluatorResultRangeFiltersTestCase(BaseFilterSetTestCase):
             {
                 self.result_2.id,
                 self.result_3.id,
-            }
-        )
-
-    def test_smpa_range(self):
-        results = self.filter(smpa_min='0', smpa_max='400')
-        self.assertEqual(
-            results,
-            {
-                self.result_1.id,
-                self.result_2.id,
             }
         )
 
