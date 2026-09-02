@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
-from django.db.models import JSONField
+from django.db.models import Count, JSONField
 
 from evaluate_m2.evaluate_utils import get_activity_date_range
 from evaluate_m2.managers import AccountActivityQuerySet
@@ -48,28 +48,28 @@ class Metro2Event(models.Model):
         files = self.m2datafile_set.order_by('activity_date').values()
 
         # data for the "parsed lines" column
-        from django.db.models import Count
-        record_counts = AccountActivity.objects.filter(event_id=self.id) \
+        record_counts = self.get_all_account_activity() \
             .values('data_file_id').annotate(total=Count('id'))
 
         # data for the "unparseable lines" column
         file_ids = [f['id'] for f in files]
-        unparseable_counts = UnparseableData.objects.filter(data_file_id__in=file_ids) \
-            .values('data_file_id').annotate(total=Count('id'))
+        unparseable_counts = UnparseableData.objects.filter(
+                data_file_id__in=file_ids
+            ).values(
+                'data_file_id'
+            ).annotate(total=Count('id'))
 
         # organize the data into a list of dicts
         file_info = []
         for f in files:
-            record_ct = next(
-                (i for i in record_counts if i['data_file_id']==f['id']),
-                {'total': 0}
+            f['record_count']= next(
+                (i['total'] for i in record_counts if i['data_file_id']==f['id']),
+                0
             )
-            f['record_count'] = record_ct['total']
-            unparseable_ct = next(
-                (i for i in unparseable_counts if i['data_file_id']==f['id']),
-                {'total': 0}
+            f['unparseable_data_count'] = next(
+                (i['total'] for i in unparseable_counts if i['data_file_id']==f['id']),
+                0
             )
-            f['unparseable_data_count'] = unparseable_ct['total']
             file_info.append(f)
 
         return file_info
