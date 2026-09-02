@@ -23,6 +23,7 @@ class Metro2Event(models.Model):
     members = models.ManyToManyField(User, blank=True)
     date_range_start = models.DateField(null=True)
     date_range_end = models.DateField(null=True)
+    total_tradelines = models.IntegerField(default=0)
 
 
     def __str__(self) -> str:
@@ -38,8 +39,8 @@ class Metro2Event(models.Model):
     def evaluate(self):
         call_command('run_evaluators', event_id=self.id)
 
-    def total_tradelines(self) -> int:
-        return AccountActivity.objects.filter(event_id=self.id).count()
+    def calculate_total_tradelines(self) -> int:
+        return self.get_all_account_activity().count()
 
     # used in the Django admin "import data summary" template
     def get_file_summary(self):
