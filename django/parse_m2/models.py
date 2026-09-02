@@ -60,10 +60,14 @@ class Metro2Event(models.Model):
         # organize the data into a list of dicts
         file_info = []
         for f in files:
-            record_ct = next(i for i in record_counts if i['data_file_id']==f['id'])
+            record_ct = next(
+                (i for i in record_counts if i['data_file_id']==f['id']),
+                {'total': 0}
+            )
             f['record_count'] = record_ct['total']
             unparseable_ct = next(
-                i for i in unparseable_counts if i['data_file_id']==f['id']
+                (i for i in unparseable_counts if i['data_file_id']==f['id']),
+                {'total': 0}
             )
             f['unparseable_data_count'] = unparseable_ct['total']
             file_info.append(f)

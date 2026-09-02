@@ -17,13 +17,15 @@ from parse_m2.models import (
     AccountActivity,
     M2DataFile,
     Metro2Event,
+    UnparseableData,
 )
 
 
 class Metro2EventModelTestCase(TestCase):
     def setUp(self):
         acct_date=date(2019, 12, 31)
-        # Create a test event with two AccountActivity records
+        # Create a test event with two AccountActivity records and
+        # two unparseable lines
         self.event = Metro2Event.objects.create(name='test_exam')
         self.file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
         acct_record(self.file, {
@@ -36,6 +38,10 @@ class Metro2EventModelTestCase(TestCase):
               'acct_type': '91', 'credit_limit': 40, 'hcola': -5, 'port_type': 'I',
               'cons_info_ind': 'W', 'terms_dur': '20', 'terms_freq':'D'
             })
+        unparseable_file = M2DataFile.objects.create(
+            event=self.event, file_name='err.txt')
+        UnparseableData.objects.create(data_file=unparseable_file)
+        UnparseableData.objects.create(data_file=unparseable_file)
 
         # Create a second test event to show that different events' data
         # are kept separate
@@ -64,6 +70,21 @@ class Metro2EventModelTestCase(TestCase):
 
     def test_str_matches_name(self):
         self.assertEqual('test_exam', str(self.event))
+
+    def test_get_file_summary(self):
+        # sort summary by file ID so we can check each one
+        summary = sorted(
+            self.event.get_file_summary(),
+            key=lambda x: x['id']
+        )
+        self.assertEqual(len(summary),  2)
+        self.assertEqual(summary[0]['file_name'], 'file.txt')
+        self.assertEqual(summary[0]['record_count'], 2)
+        self.assertEqual(summary[0]['unparseable_data_count'], 0)
+
+        self.assertEqual(summary[1]['file_name'], 'err.txt')
+        self.assertEqual(summary[1]['record_count'], 0)
+        self.assertEqual(summary[1]['unparseable_data_count'], 2)
 
 
 class ParseSegmentsToModelInstancesTestCase(TestCase):
