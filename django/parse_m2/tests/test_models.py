@@ -20,19 +20,7 @@ from parse_m2.models import (
 )
 
 
-class ParserModelsTestCase(TestCase):
-    def setUp(self):
-        self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')  # noqa E501
-
-        # Create the parent records for the AccountActivity data
-        event = Metro2Event(name='test_exam')
-        self.data_file = M2DataFile(event=event, file_name='file.txt')
-        self.activity_date = date(2021, 1, 1)
-        self.account_activity = AccountActivity(
-            data_file = self.data_file,
-            activity_date = self.activity_date
-        )
-
+class Metro2EventModelTestCase(TestCase):
     def create_exam_activity(self):
         acct_date=date(2019, 12, 31)
         # Create the Account Activities data
@@ -89,7 +77,20 @@ class ParserModelsTestCase(TestCase):
 
         self.assertEqual(0, len(result))
 
+
+class ParseSegmentsToModelInstancesTestCase(TestCase):
+    def setUp(self):
+        # Create the parent records for the AccountActivity data
+        event = Metro2Event(name='test_exam')
+        self.data_file = M2DataFile(event=event, file_name='file.txt')
+        self.activity_date = date(2021, 1, 1)
+        self.account_activity = AccountActivity(
+            data_file = self.data_file,
+            activity_date = self.activity_date
+        )
+
     def test_parse_account_activity(self):
+        self.base_seg = os.path.join('parse_m2', 'tests','sample_files', 'base_segment_1.txt')  # noqa E501
         with open(self.base_seg) as file:
             base_segment = file.readline()
             result = AccountActivity.parse_from_segment(
