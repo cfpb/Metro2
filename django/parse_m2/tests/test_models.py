@@ -21,61 +21,49 @@ from parse_m2.models import (
 
 
 class Metro2EventModelTestCase(TestCase):
-    def create_exam_activity(self):
+    def setUp(self):
         acct_date=date(2019, 12, 31)
-        # Create the Account Activities data
-        activities = [
-            {
+        # Create a test event with two AccountActivity records
+        self.event = Metro2Event.objects.create(name='test_exam')
+        self.file = M2DataFile.objects.create(event=self.event, file_name='file.txt')
+        acct_record(self.file, {
                 'id': 34, 'activity_date': acct_date, 'cons_acct_num': '0034',
                 'acct_type': '12', 'credit_limit': 30, 'hcola': -5, 'port_type': 'I',
                 'cons_info_ind': 'X', 'terms_dur': '15', 'terms_freq':'P'
-            }, {
+            })
+        acct_record(self.file, {
                 'id': 35, 'activity_date': acct_date, 'cons_acct_num': '0035',
               'acct_type': '91', 'credit_limit': 40, 'hcola': -5, 'port_type': 'I',
               'cons_info_ind': 'W', 'terms_dur': '20', 'terms_freq':'D'
-            }]
-        # Create the parent records for the AccountActivity data for first event
-        event = Metro2Event(name='test_exam')
-        event.save()
-        file = M2DataFile(event=event, file_name='file.txt')
-        file.save()
+            })
 
-        for item in activities:
-            acct_record(file, item)
-
-        # Create the second exam Account Activities data
-        activities2 = [
-            {
+        # Create a second test event to show that different events' data
+        # are kept separate
+        event_2 = Metro2Event.objects.create(name='test_exam2')
+        file2 = M2DataFile.objects.create(event=event_2, file_name='file2.txt')
+        acct_record(file2, {
                 'id': 32, 'activity_date': acct_date, 'cons_acct_num': '0032',
                 'acct_type': '00', 'credit_limit': 10, 'hcola': -1, 'port_type': 'I',
                 'cons_info_ind': 'Z', 'terms_dur': '5', 'terms_freq':'P'
-            }, {
+            })
+        acct_record(file2, {
                 'id': 33, 'activity_date': acct_date, 'cons_acct_num': '0033',
-              'acct_type': '3A', 'credit_limit': 20, 'hcola': -1, 'port_type': 'M',
-              'cons_info_ind': 'Y', 'terms_dur': '10', 'terms_freq':'W'
-            }]
-        # Create the parent records for the AccountActivity data for second event
-        event_2 = Metro2Event(name='test_exam2')
-        event_2.save()
-        file2 = M2DataFile(event=event_2, file_name='file2.txt')
-        file2.save()
-
-        for item in activities2:
-            acct_record(file2, item)
+                'acct_type': '3A', 'credit_limit': 20, 'hcola': -1, 'port_type': 'M',
+                'cons_info_ind': 'Y', 'terms_dur': '10', 'terms_freq':'W'
+            })
 
     def test_metro2_event_get_all_account_activity_returns_results(self):
-        self.create_exam_activity()
         event = Metro2Event.objects.get(name='test_exam')
         result = event.get_all_account_activity()
-
         self.assertEqual(2, len(result))
 
-    def test_get_all_account_activity_returns_no_results(self):
-        self.create_exam_activity()
-        event = Metro2Event.objects.create(name="test_exam")
+    def test_get_all_account_activity_returns_no_results_for_empty_exam(self):
+        event = Metro2Event.objects.create(name="new_exam")
         result = event.get_all_account_activity()
-
         self.assertEqual(0, len(result))
+
+    def test_str_matches_name(self):
+        self.assertEqual('test_exam', str(self.event))
 
 
 class ParseSegmentsToModelInstancesTestCase(TestCase):
@@ -198,11 +186,3 @@ class TestMetro2EventAccess(TestCase):
         self.assertFalse(self.enf_event.check_access_for_user(self.sup_user))
         self.assertTrue(self.sup_event.check_access_for_user(self.sup_user))
 
-
-class TestMetro2Eventset(TestCase):
-    def setUp(self) -> None:
-        self.name = "OfficialExam2023"
-        self.event = Metro2Event.objects.create(name=self.name)
-
-    def test_str_matches_name(self):
-        self.assertEqual(self.name, str(self.event))
