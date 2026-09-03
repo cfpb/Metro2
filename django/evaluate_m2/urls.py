@@ -9,6 +9,8 @@ urlpatterns = [
          eval_views.download_evaluator_results_csv),
     path('<int:event_id>/evaluator/<str:evaluator_id>/',
          eval_views.EvaluatorResultsView().as_view()),
+    path('<int:event_id>/evaluator/<str:evaluator_id>/facets/',
+         eval_views.EvaluatorResultsFacetsView().as_view()),
     path('<int:event_id>/account/',
         eval_views.AccountsListView().as_view()),
     path('<int:event_id>/account/<str:account_number>/',

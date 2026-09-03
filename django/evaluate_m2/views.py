@@ -4,6 +4,7 @@ from datetime import date
 
 from django.conf import settings
 from django.db import ProgrammingError
+from django.db.models import Count
 from django.http import Http404, HttpResponse, StreamingHttpResponse
 from django.shortcuts import get_list_or_404
 from django.utils.functional import cached_property
@@ -20,7 +21,11 @@ from evaluate_m2.exception_utils import (
     format_error,
     get_evaluate_m2_not_found_exception,
 )
-from evaluate_m2.filters import AccountListFilterSet, EvaluatorResultFilterSet
+from evaluate_m2.filters import (
+    AccountListFilterSet,
+    AnyCharFilter,
+    EvaluatorResultFilterSet,
+)
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
@@ -323,6 +328,70 @@ class EvaluatorResultsView(generics.ListAPIView):
         page = self.paginate_queryset(queryset)
         serializer = self.get_serializer(page, many=True)
         return self.get_paginated_response(serializer.data)
+
+
+class EvaluatorResultsFacetsView(generics.GenericAPIView):
+    filter_backends = [
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    filterset_class = EvaluatorResultFilterSet
+
+    def get_queryset(self):
+        event_id = self.kwargs["event_id"]
+        evaluator_id = self.kwargs["evaluator_id"]
+        return EvaluatorResultMaterializedView.objects.filter(
+            event_id=event_id,
+            evaluator_id=evaluator_id,
+        )
+
+    def get(self, request, *args, **kwargs):
+        event_id = self.kwargs["event_id"]
+        event = Metro2Event.objects.get(id=event_id)
+        if not has_permissions_for_request(request, event):
+            return HttpResponse("Unauthorized", status=401)
+
+        # Filter the queryset, this way we compute facets to just what is
+        # available in the filtered results
+        queryset = self.filter_queryset(self.get_queryset())
+
+        # Get a list of facet-able fields from the filterset.
+        # Right now this just facets AnyCharFilter fields, so the JSON field
+        # cons_info_ind_assoc isn't supported for facets yet.
+        facet_fields = {
+            param: declared.field_name
+            for param, declared in self.filterset_class.base_filters.items()
+            if isinstance(declared, AnyCharFilter)
+        }
+
+        # Evaluate the queryset for facets
+        # TODO: right now this performs a new query for every facet field, so
+        # if there's 10 in FACET_FIELDS, you'll get 10 queries.
+        facets = {}
+        for param, field_name in facet_fields.items():
+            # Have the database calculate a count for each facet field's value
+            counts = queryset.values(
+                field_name
+            ).annotate(
+                count=Count('id')
+            ).order_by(
+                field_name
+            )
+            # Build a dictionary for this field that is {value: count} for
+            # each of its possible values. Set that as the value for the field
+            # in the facets dictionary.
+            facets[param] = {
+                (row[field_name] if row[field_name] not in (None, "") else "blank"):
+                    row["count"]
+                for row in counts
+            }
+
+        # Return a total count and the facet counts
+        return Response(
+            {
+                "count": queryset.count(),
+                "facets": facets,
+            }
+        )
 
 
 class AccountsListView(generics.ListAPIView):
