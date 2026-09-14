@@ -31,15 +31,17 @@ export default function AccountSearchPage(): ReactElement {
   return (
     <>
       <LocatorBar
-        subhead={`Data from ${eventData.name} ${dateRange ? `from ${dateRange}` : undefined}`}
         heading='Account search'
         breadcrumbs={[
           {
             to: `/events/${String(eventData.id)}`,
             label: 'Event results'
           }
-        ]}
-      />
+        ]}>
+        <div>
+          Data from {eventData.name} {dateRange ? `from ${dateRange}` : undefined}
+        </div>
+      </LocatorBar>
       <div className='loader__wrapper'>
         <div className='row row--content row--summary u-mt0'>
           <div className='u-mt30'>

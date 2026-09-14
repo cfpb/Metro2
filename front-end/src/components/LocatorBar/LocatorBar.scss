@@ -35,4 +35,10 @@
       top: -2px;
     }
   }
+
+  &--vertically-centered {
+    .header-with-icon {
+      align-items: center;
+    }
+  }
 }
