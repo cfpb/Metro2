@@ -4,10 +4,16 @@ from django.test import TestCase
 
 from rest_framework.renderers import JSONRenderer
 
-from evaluate_m2.models import EvaluatorMetadata, EvaluatorResultSummary
+from evaluate_m2.models import (
+    EvaluatorMetadata,
+    EvaluatorResultSummary,
+    EvaluatorResult,
+    EvaluatorResultMaterializedView,
+)
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
     EventsViewSerializer,
+    EvaluatorResultSerializer,
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
@@ -195,3 +201,159 @@ class EventsViewSerializerTestCase(TestCase):
         json_output = JSONRenderer().render(serializer.data)
         expected = JSONRenderer().render([self.json_representation])
         self.assertEqual(json_output, expected)
+
+
+class EvaluatorResultSerializerTestCase(TestCase):
+    acct_date = date(2023, 12, 31)
+
+    def setUp(self):
+        self.evaluator = EvaluatorMetadata.objects.create(id="Filter-Test-1")
+        self.event = Metro2Event.objects.create(name="test_exam")
+        data_file = M2DataFile.objects.create(
+            event=self.event,
+            file_name="file.txt"
+        )
+        summary = EvaluatorResultSummary.objects.create(
+            event=self.event,
+            evaluator=self.evaluator,
+        )
+        acct_activity = acct_record(data_file, {
+            'id': 32,
+            'cons_acct_num': 'ABC123',
+            'acct_stat': '11',
+            'compl_cond_cd': 'XB',
+            'php': '000000000000010',
+            'php1': '0',
+            'pmt_rating': '0',
+            'spc_com_cd': 'AH',
+            'terms_freq': 'M',
+            'cons_info_ind': 'Z',
+        })
+
+        EvaluatorResult.objects.create(
+            result_summary=summary,
+            source_record=acct_activity,
+            date=self.acct_date,
+        )
+
+        EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
+
+        self.result = EvaluatorResultMaterializedView.objects.first()
+
+    def test_export_to_json(self):
+        # The serializer uses all columns of the
+        # EvaluatorResultMaterializedView and translates the column names
+        # to match those on the AccountActivity model (using double
+        # underscores for related models).
+        to_json = EvaluatorResultSerializer(self.result)
+        expected_keys = [
+            'id',
+            'k2__purch_sold_ind',
+            'k2__purch_sold_name',
+            'k4__spc_pmt_ind',
+            'k4__deferred_pmt_st_dt',
+            'k4__balloon_pmt_due_dt',
+            'k4__balloon_pmt_amt',
+            'l1__change_ind',
+            'l1__new_acc_num',
+            'l1__new_id_num',
+            'previous_values__activity_date',
+            'previous_values__port_type',
+            'previous_values__acct_type',
+            'previous_values__date_open',
+            'previous_values__id_num',
+            'previous_values__acct_stat',
+            'previous_values__pmt_rating',
+            'previous_values__current_bal',
+            'previous_values__orig_chg_off_amt',
+            'previous_values__dofd',
+            'previous_values__date_closed',
+            'previous_values__surname',
+            'previous_values__first_name',
+            'previous_values__ecoa',
+            'previous_values__ecoa_assoc',
+            'previous_values__cons_info_ind',
+            'previous_values__cons_info_ind_assoc',
+            'previous_values__l1__change_ind',
+            'previous_values__l1__new_acc_num',
+            'previous_values__l1__new_id_num',
+            'event_id',
+            'evaluator_id',
+            'source_record_id',
+            'sample',
+            'activity_date',
+            'cons_acct_num',
+            'port_type',
+            'acct_type',
+            'date_open',
+            'credit_limit',
+            'hcola',
+            'id_num',
+            'terms_dur',
+            'terms_freq',
+            'smpa',
+            'actual_pmt_amt',
+            'acct_stat',
+            'pmt_rating',
+            'php',
+            'php1',
+            'spc_com_cd',
+            'compl_cond_cd',
+            'current_bal',
+            'amt_past_due',
+            'orig_chg_off_amt',
+            'doai',
+            'dofd',
+            'date_closed',
+            'dolp',
+            'int_type_ind',
+            'surname',
+            'first_name',
+            'middle_name',
+            'gen_code',
+            'ssn',
+            'dob',
+            'phone_num',
+            'ecoa',
+            'ecoa_assoc',
+            'cons_info_ind',
+            'cons_info_ind_assoc',
+            'addr_line_1',
+            'addr_line_2',
+            'city',
+            'state',
+            'zip',
+            'addr_ind',
+            'res_cd',
+            'purch_sold_ind',
+            'purch_sold_name',
+            'spc_pmt_ind',
+            'deferred_pmt_st_dt',
+            'balloon_pmt_due_dt',
+            'balloon_pmt_amt',
+            'change_ind',
+            'new_acc_num',
+            'new_id_num',
+            'prior_activity_date',
+            'prior_port_type',
+            'prior_acct_type',
+            'prior_date_open',
+            'prior_id_num',
+            'prior_acct_stat',
+            'prior_pmt_rating',
+            'prior_current_bal',
+            'prior_orig_chg_off_amt',
+            'prior_dofd',
+            'prior_date_closed',
+            'prior_surname',
+            'prior_first_name',
+            'prior_ecoa',
+            'prior_ecoa_assoc',
+            'prior_cons_info_ind',
+            'prior_cons_info_ind_assoc',
+            'prior_change_ind',
+            'prior_new_acc_num',
+            'prior_new_id_num',
+        ]
+        actual_keys = to_json.data.keys()
+        [self.assertTrue(k in actual_keys) for k in expected_keys]

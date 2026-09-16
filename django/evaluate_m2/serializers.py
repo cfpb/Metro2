@@ -229,30 +229,30 @@ class EvaluatorResultSerializer(serializers.ModelSerializer):
     l1__change_ind = serializers.CharField(source="change_ind")
     l1__new_acc_num = serializers.CharField(source="new_acc_num")
     l1__new_id_num = serializers.CharField(source="new_id_num")
-    previous_value__activity_date = serializers.CharField(source="prior_activity_date")
-    previous_value__port_type = serializers.CharField(source="prior_port_type")
-    previous_value__acct_type = serializers.CharField(source="prior_acct_type")
-    previous_value__date_open = serializers.CharField(source="prior_date_open")
-    previous_value__id_num = serializers.CharField(source="prior_id_num")
-    previous_value__acct_stat = serializers.CharField(source="prior_acct_stat")
-    previous_value__pmt_rating = serializers.CharField(source="prior_pmt_rating")
-    previous_value__current_bal = serializers.CharField(source="prior_current_bal")
-    previous_value__orig_chg_off_amt = serializers.CharField(
+    previous_values__activity_date = serializers.CharField(source="prior_activity_date")
+    previous_values__port_type = serializers.CharField(source="prior_port_type")
+    previous_values__acct_type = serializers.CharField(source="prior_acct_type")
+    previous_values__date_open = serializers.CharField(source="prior_date_open")
+    previous_values__id_num = serializers.CharField(source="prior_id_num")
+    previous_values__acct_stat = serializers.CharField(source="prior_acct_stat")
+    previous_values__pmt_rating = serializers.CharField(source="prior_pmt_rating")
+    previous_values__current_bal = serializers.CharField(source="prior_current_bal")
+    previous_values__orig_chg_off_amt = serializers.CharField(
         source="prior_orig_chg_off_amt"
     )
-    previous_value__dofd = serializers.CharField(source="prior_dofd")
-    previous_value__date_closed = serializers.CharField(source="prior_date_closed")
-    previous_value__surname = serializers.CharField(source="prior_surname")
-    previous_value__first_name = serializers.CharField(source="prior_first_name")
-    previous_value__ecoa = serializers.CharField(source="prior_ecoa")
-    previous_value__ecoa_assoc = serializers.CharField(source="prior_ecoa_assoc")
-    previous_value__cons_info_ind = serializers.CharField(source="prior_cons_info_ind")
-    previous_value__cons_info_ind_assoc = serializers.CharField(
+    previous_values__dofd = serializers.CharField(source="prior_dofd")
+    previous_values__date_closed = serializers.CharField(source="prior_date_closed")
+    previous_values__surname = serializers.CharField(source="prior_surname")
+    previous_values__first_name = serializers.CharField(source="prior_first_name")
+    previous_values__ecoa = serializers.CharField(source="prior_ecoa")
+    previous_values__ecoa_assoc = serializers.CharField(source="prior_ecoa_assoc")
+    previous_values__cons_info_ind = serializers.CharField(source="prior_cons_info_ind")
+    previous_values__cons_info_ind_assoc = serializers.CharField(
         source="prior_cons_info_ind_assoc"
     )
-    previous_value__l1__change_ind = serializers.CharField(source="prior_change_ind")
-    previous_value__l1__new_acc_num = serializers.CharField(source="prior_new_acc_num")
-    previous_value__l1__new_id_num = serializers.CharField(source="prior_new_id_num")
+    previous_values__l1__change_ind = serializers.CharField(source="prior_change_ind")
+    previous_values__l1__new_acc_num = serializers.CharField(source="prior_new_acc_num")
+    previous_values__l1__new_id_num = serializers.CharField(source="prior_new_id_num")
 
     class Meta:
         model = EvaluatorResultMaterializedView
