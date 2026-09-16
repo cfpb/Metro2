@@ -6,14 +6,14 @@ from rest_framework.renderers import JSONRenderer
 
 from evaluate_m2.models import (
     EvaluatorMetadata,
-    EvaluatorResultSummary,
     EvaluatorResult,
     EvaluatorResultMaterializedView,
+    EvaluatorResultSummary,
 )
 from evaluate_m2.serializers import (
     EvaluatorMetadataSerializer,
-    EventsViewSerializer,
     EvaluatorResultSerializer,
+    EventsViewSerializer,
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.models import M2DataFile, Metro2Event
