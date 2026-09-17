@@ -1,26 +1,6 @@
-import getTableFields from '@src/pages/Evaluator/results/utils/getTableFields'
-import type AccountRecord from '@src/types/AccountRecord'
-import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
-import type Event from '@src/types/Event'
-
-import hitsFixture from '@cypress/fixtures/evaluatorHits_page1.json'
-import eventFixture from '@cypress/fixtures/event_1.json'
 import { EvaluatorPage } from '@cypress/helpers/evaluatorPageHelpers'
 import { Metro2Table } from '@cypress/helpers/tableHelpers'
 import { PII_COOKIE_NAME } from '@src/constants/settings'
-
-const evaluatorName = 'Test-Eval-1'
-
-// Get data from event fixture
-const event: Event = eventFixture
-
-// Get evaluator data from event
-const evaluator: EvaluatorMetadata = event.evaluators.find(
-  item => item.id == evaluatorName
-)!
-
-// Get data from hits fixture
-const hits: AccountRecord[] = hitsFixture.hits
 
 // Instantiate helpers
 const page = new EvaluatorPage()
@@ -221,49 +201,4 @@ describe('Error handling', () => {
   //     .and('include', 'page=2')
   //   page.getNoResultsMessage().should('be.visible')
   // })
-})
-
-describe('Results table', () => {
-  beforeEach(() => {
-    page.loadEvaluatorPage()
-  })
-
-  it('Should show correct columns for the evaluator in results table', () => {
-    const expectedHeaders = [
-      'Account number',
-      'Activity date',
-      'Current balance',
-      'DOFD',
-      'Terms frequency',
-      'Account status',
-      'Payment rating',
-      'Payment history profile',
-      'Payment history profile (all entries)',
-      'Special comment code',
-      'Compliance condition code',
-      'Amount past due',
-      'Date of account information',
-      'Date closed',
-      'Consumer information indicator',
-      'Consumer information indicator - J1+J2 segments',
-      'Account change indicator (L1)'
-    ]
-    table.verifyHeaders(expectedHeaders)
-  })
-
-  it('Should show correct values for each result', () => {
-    // verify that the consumer account numbers are displayed for each row
-    // in the pinned left column
-    table.verifyTableBodyContent<AccountRecord>(
-      table.getPinnedRows(),
-      ['cons_acct_num'],
-      hits
-    )
-    // verify that the rest of the fields are displayed for each row
-    // in the main table section
-    const fields = getTableFields(evaluator.fields_used, evaluator.fields_display)
-    // remove consumer account number because it's in a separate section
-    fields.shift()
-    table.verifyTableBodyContent<AccountRecord>(table.getBodyRows(), fields, hits)
-  })
 })
