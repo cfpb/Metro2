@@ -247,7 +247,6 @@ class EvaluatorResultSerializerTestCase(TestCase):
         # underscores for related models).
         to_json = EvaluatorResultSerializer(self.result)
         expected_keys = [
-            'id',
             'k2__purch_sold_ind',
             'k2__purch_sold_name',
             'k4__spc_pmt_ind',
@@ -277,10 +276,6 @@ class EvaluatorResultSerializerTestCase(TestCase):
             'previous_values__l1__change_ind',
             'previous_values__l1__new_acc_num',
             'previous_values__l1__new_id_num',
-            'event_id',
-            'evaluator_id',
-            'source_record_id',
-            'sample',
             'activity_date',
             'cons_acct_num',
             'port_type',
@@ -325,35 +320,7 @@ class EvaluatorResultSerializerTestCase(TestCase):
             'zip',
             'addr_ind',
             'res_cd',
-            'purch_sold_ind',
-            'purch_sold_name',
-            'spc_pmt_ind',
-            'deferred_pmt_st_dt',
-            'balloon_pmt_due_dt',
-            'balloon_pmt_amt',
-            'change_ind',
-            'new_acc_num',
-            'new_id_num',
-            'prior_activity_date',
-            'prior_port_type',
-            'prior_acct_type',
-            'prior_date_open',
-            'prior_id_num',
-            'prior_acct_stat',
-            'prior_pmt_rating',
-            'prior_current_bal',
-            'prior_orig_chg_off_amt',
-            'prior_dofd',
-            'prior_date_closed',
-            'prior_surname',
-            'prior_first_name',
-            'prior_ecoa',
-            'prior_ecoa_assoc',
-            'prior_cons_info_ind',
-            'prior_cons_info_ind_assoc',
-            'prior_change_ind',
-            'prior_new_acc_num',
-            'prior_new_id_num',
         ]
         actual_keys = to_json.data.keys()
-        [self.assertTrue(k in actual_keys) for k in expected_keys]
+        [self.assertIn(k, actual_keys) for k in expected_keys]
+        self.assertEqual(len(actual_keys), len(expected_keys))
