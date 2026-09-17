@@ -21,7 +21,7 @@ export class Metro2Table {
     this.getBodyRows().should('have.length', count)
   }
 
-  verifyHeaders(expectedHeaderValues: string[]) {
+  verifyHeaders(expectedHeaderValues: (string | undefined)[]) {
     // Verify that text of header cells in table matches array of expected values
     this.getHeaderCells().each((cell, cellIndex) => {
       cy.wrap(cell).should('have.text', expectedHeaderValues[cellIndex])
