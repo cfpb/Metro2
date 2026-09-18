@@ -211,6 +211,16 @@ class AccountActivity(models.Model):
         if m2_data_file.collection:
             account_num = f"{m2_data_file.collection}.{account_num}"
 
+        # Temporary: default actual_pmt_amt to zero for EID-14642
+        from parse_m2.parse_utils import get_field_string
+        start, end, _ = fields.base_fields['actual_pmt_amt']
+        if get_field_string(start, end, base_seg) == '         ':
+            actual_pmt_amt= 0
+        else:
+            actual_pmt_amt = get_field_value(
+                fields.base_fields, "actual_pmt_amt", base_seg
+            )
+
         return cls(
             data_file = m2_data_file,
             event = m2_data_file.event,
@@ -229,9 +239,7 @@ class AccountActivity(models.Model):
             terms_dur = get_field_value(fields.base_fields, "terms_dur", base_seg),
             terms_freq = get_field_value(fields.base_fields, "terms_freq", base_seg),
             smpa = get_field_value(fields.base_fields, "smpa", base_seg),
-            actual_pmt_amt = get_field_value(
-                fields.base_fields, "actual_pmt_amt", base_seg
-            ),
+            actual_pmt_amt = actual_pmt_amt,
             acct_stat = get_field_value(fields.base_fields, "acct_stat", base_seg),
             pmt_rating = get_field_value(fields.base_fields, "pmt_rating", base_seg),
             php = php,

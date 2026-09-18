@@ -22,7 +22,7 @@ from parse_m2.models import (
 class M2FileParser:
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
-    parser_version = "3.1"
+    parser_version = "3.2.EID-14642.a"
 
     chunk_size = 2000  # TODO: determine a good number for this
     any_non_whitespace = r'\S'
