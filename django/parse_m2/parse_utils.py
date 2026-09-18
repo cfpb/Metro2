@@ -52,6 +52,18 @@ def cast_to_type(input: str, type_str: str):
             else:
                 return None
 
+def get_field_string(field_start: int, field_end: int, line: str) -> str:
+    # Throw an error if the desired indices don't exist in the string
+    if len(line) < field_end:
+        msg = f"Segment too short: looking for index {field_end}, " + \
+            f"but segment length is {len(line)}"
+        raise UnreadableLineException(msg)
+
+    # Get the string between start and end indices.
+    # The CRRG (and fields.py) uses string positions that start at 1,
+    # but python indicates string position starting at 0.
+    # So we use `field_start-1` to adjust for the difference.
+    return line[field_start - 1: field_end]
 
 def get_field_value(field_ref: dict, field_name: str, line: str):
     """
@@ -80,20 +92,9 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
         field_type = "string"
 
     try:
-        # Throw an error if the desired indices don't exist in the string
-        if len(line) < field_end:
-            msg = f"Segment too short: looking for index {field_end}, " + \
-                f"but segment length is {len(line)}"
-            raise UnreadableLineException(msg)
-
-        # Get the string between start and end indices.
-        # The CRRG (and fields.py) uses string positions that start at 1,
-        # but python indicates string position starting at 0.
-        # So we use `field_start-1` to adjust for the difference.
-        target_str = line[field_start - 1: field_end]
-
+        value = get_field_string(field_start, field_end, line)
         # Cast the string to the given type
-        result =  cast_to_type(target_str, field_type)
+        return cast_to_type(value, field_type)
 
     except UnreadableLineException as e:
         # Add context to the error message that comes out of cast_to_type
@@ -101,16 +102,38 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
                + f"Field_type `{field_type}`. Issue detail: " + str(e)
         raise UnreadableLineException(msg) from e
 
-    return result
-
 def get_next_line(f) -> str:
     """
     Depending on whether the file is being read from the filesytem or from S3,
     readline may return a string or a bytes-like object. Since the parser
     expects strings, use this method to ensure a string is returned.
     """
-    line = f.readline()
-    return decode_if_needed(line)
+    line = read_a_line(f)
+    if decode_needed(line):
+        decoded = m2_decode(line)
+        return m2_replace_nulls(decoded)
+    else:
+        return line
+
+def read_a_line(f):
+    return f.readline()
+
+def decode_needed(input) -> bool:
+    if isinstance(input, str):
+        return False
+    elif isinstance(input, bytes):
+        return True
+    else:
+        # We don't know what this is
+        raise UnreadableLineException(
+            f"Input type: {type(input)} is neither string nor bytes"
+        )
+
+def m2_decode(input: bytes) -> str:
+    return input.decode('utf-8', errors='replace')
+
+def m2_replace_nulls(input: str) -> str:
+    return input.replace('\x00', '\uFFFD')
 
 def decode_if_needed(input: any) -> str:
     if isinstance(input, str):
