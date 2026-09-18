@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import date
 
 
 date_format = "%m%d%Y"
