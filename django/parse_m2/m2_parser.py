@@ -341,9 +341,10 @@ class M2FileParser:
         # handle the first line of the file
         try:
             first_line = parse_utils.get_next_line(f)
-            self.activity_date = self.handle_first_line_and_return_activity_date(
-                first_line
-            )
+            # self.activity_date = self.handle_first_line_and_return_activity_date(
+            #     first_line
+            # )
+            self.activity_date = self.get_activity_date_from_header(first_line)
             self.file_record.activity_date = self.activity_date
         except (parse_utils.UnreadableFileException,
                 parse_utils.UnreadableLineException) as e:

@@ -40,11 +40,8 @@ def cast_to_type(input: str, type_str: str):
                 return None
 
     if type_str == "date" or type_str == "date optional":
-        if len(input) != 8:
-            msg = f"Date value `{input}` must have length 8, instead had {len(input)}"
-            raise UnreadableLineException(msg)
         try:
-            return datetime.strptime(input, date_format).date()
+            return date.strptime(input.strip(), date_format)
         except (ValueError, TypeError) as e:
             if type_str == "date":
                 msg = f"Date value `{input}` could not be parsed as date"
