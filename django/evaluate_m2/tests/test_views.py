@@ -242,14 +242,14 @@ class EvaluateViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # the response should return a hits field with a list of EvaluatorResult records
-        # There should be two hits. Each one should have a set of keys that matches
-        # the fields in evaluator.result_summary_fields
+        # The response should return a hits field with a list of evaluator
+        # results (from the EvaluatorResultSerializer).
+        # Check that the hits match the test data created above.
         hits = response.json()['hits']
         self.assertEqual(len(hits), 2)
-        keys = list(hits[0].keys())
-        expected_keys = ["id"] + self.stat_dofd_1.result_summary_fields()
-        self.assertEqual(keys.sort(), expected_keys.sort())
+        for hit in hits:
+            self.assertIn(hit['cons_acct_num'], ['0032', '0033'])
+
 
     def test_evaluator_results_view_all(self):
         self.create_activity_data()
@@ -258,15 +258,13 @@ class EvaluateViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # the response should return a hits field with a list of EvaluatorResult
-        # field_values
-        # There should be two hits. Each one should have a set of keys that matches
-        # the fields in evaluator.result_summary_fields
+        # The response should return a hits field with a list of evaluator
+        # results (from the EvaluatorResultSerializer).
+        # Check that the hits match the test data created above.
         hits = response.json()['hits']
         self.assertEqual(len(hits), 2)
-        keys = list(hits[0].keys())
-        expected_keys = ["id"] + self.stat_dofd_1.result_summary_fields()
-        self.assertEqual(keys.sort(), expected_keys.sort())
+        for hit in hits:
+            self.assertIn(hit['cons_acct_num'], ['0032', '0033'])
 
     def test_evaluator_results_view_max_20_results(self):
         self.create_activity_data()
