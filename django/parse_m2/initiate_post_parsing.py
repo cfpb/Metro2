@@ -72,11 +72,16 @@ def associate_previous_records(event: Metro2Event):
     """
     logger = logging.getLogger('parse_m2.associate_previous_records')
 
+    all_records = event.get_all_account_activity()
+    # if all_records.filter(previous_values_id__isnull=False).exists():
+    #     logger.info("First, make sure all previous_values pointers are empty.")
+    #     all_records.update(previous_values_id=None)
+
     logger.info("Creating temp table of previous values...")
     _create_previous_values_temp_table(event.id)
 
-    logger.info("Creating index...")
-    _create_previous_values_index()
+    # logger.info("Creating index...")
+    # _create_previous_values_index()
 
     logger.info("Updating AccountActivity...")
     _write_previous_values_to_account_activity()
