@@ -1,7 +1,7 @@
 // M2 fields mapped to their human-readable names
 // Ordered according to their position in M2 reporting,
 // with base segment values first.
-// This order is used in the account view tables.
+// This order is used in the account and evaluator tables.
 const M2_FIELD_NAMES = new Map([
   ['activity_date', 'Activity date'],
   ['cons_acct_num', 'Account number'],
@@ -29,15 +29,13 @@ const M2_FIELD_NAMES = new Map([
   ['date_closed', 'Date closed'],
   ['dolp', 'Date of last payment'],
   ['int_type_ind', 'Interest type indicator'],
-  ['first_name', 'Account holder first name'],
-  ['surname', 'Account holder surname'],
+  ['ecoa', 'ECOA code for account holder'],
+  ['ecoa_assoc', 'ECOA codes for associated consumers'],
   ['cons_info_ind', 'Consumer information indicator'],
   [
     'cons_info_ind_assoc',
     'Consumer information indicator - J1+J2 segments'
   ],
-  ['ecoa', 'ECOA code for account holder'],
-  ['ecoa_assoc', 'ECOA codes for associated consumers'],
   ['k2__purch_sold_ind', 'Purchased-sold indicator (K2)'],
   ['k2__purch_sold_name', 'Purchased-sold name (K2)'],
   ['k4__spc_pmt_ind', 'Specialized payment indicator (K4)'],
@@ -58,8 +56,6 @@ const M2_FIELD_NAMES = new Map([
   ['previous_values__orig_chg_off_amt', 'Prior original charge-off amount'],
   ['previous_values__dofd', 'Prior DOFD'],
   ['previous_values__date_closed', 'Prior date closed'],
-  ['previous_values__first_name', 'Prior account holder first name'],
-  ['previous_values__surname', 'Prior account holder surname'],
   ['previous_values__ecoa', 'Prior ECOA code for account holder'],
   ['previous_values__ecoa_assoc', 'Prior ECOA code for associated consumers'],
   [
