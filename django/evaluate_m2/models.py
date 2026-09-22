@@ -261,7 +261,7 @@ class EvaluatorResultMaterializedView(models.Model):
             'prior_first_name',
             'prior_surname',
         ]
-        return [f.name for f in cls._meta.fields if not f.name in exclude]
+        return [f.name for f in cls._meta.fields if f.name not in exclude]
 
     @classmethod
     def create_or_refresh_materialized_view(cls):

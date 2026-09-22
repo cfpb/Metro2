@@ -8,8 +8,7 @@ from smart_open import open
 
 from django_application.s3_utils import s3_session
 from evaluate_m2.field_names import M2_FIELD_NAMES
-from evaluate_m2.models import EvaluatorResultSummary
-from evaluate_m2.models import EvaluatorResultMaterializedView
+from evaluate_m2.models import EvaluatorResultMaterializedView, EvaluatorResultSummary
 
 
 def stream_results_files_to_s3(result_summary: EvaluatorResultSummary):

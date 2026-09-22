@@ -6,8 +6,8 @@ from django.test import TestCase
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
-    EvaluatorResultSummary,
     EvaluatorResultMaterializedView,
+    EvaluatorResultSummary,
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from evaluate_m2.upload_utils import (
