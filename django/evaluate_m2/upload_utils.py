@@ -2,11 +2,14 @@ import csv
 import logging
 
 from django.conf import settings
+from django.db.models.query import QuerySet
 
 from smart_open import open
 
 from django_application.s3_utils import s3_session
+from evaluate_m2.field_names import M2_FIELD_NAMES
 from evaluate_m2.models import EvaluatorResultSummary
+from evaluate_m2.models import EvaluatorResultMaterializedView
 
 
 def stream_results_files_to_s3(result_summary: EvaluatorResultSummary):
@@ -18,46 +21,45 @@ def stream_full_results_csv_to_s3(
     result_summary: EvaluatorResultSummary, url: str = None
 ):
     """
-    If the EvaluatorResultSummary record has accounts affected,
-    save the evaluator results files to an S3 bucket.
+    Save the results for this evaluator to an S3 bucket.
     """
+    event_id = result_summary.event_id
+    eval_id = result_summary.evaluator_id
+
     logger = logging.getLogger('evaluate.stream_full_results_csv_to_s3')
     if not url:
-        url = full_s3_url(result_summary.event_id, result_summary.evaluator_id, 'csv')
+        url = full_s3_url(event_id, eval_id, 'csv')
+
     logger.info(
-        f"Saving CSV for event {result_summary.event_id}, evaluator "
-        f"{result_summary.evaluator_id}"
+        f"Saving results CSV for event {event_id}, evaluator {eval_id}"
     )
 
+    results_set = EvaluatorResultMaterializedView.objects.filter(
+        event_id = event_id, evaluator_id=eval_id,
+    )
     with open(url, 'w', transport_params={'client': s3_session()}) as fout:
-        generate_full_csv(result_summary, fout)
+        generate_eval_results_csv(results_set, fout)
     logger.debug("Completed saving CSV file")
 
-def generate_full_csv(result_summary: EvaluatorResultSummary, fout):
+def csv_header_row(columns: list[str]) -> str:
+    """
+    Translate the list of fields to their human-friendly names.
+    """
+    return [M2_FIELD_NAMES[c] for c in columns]
+
+def generate_eval_results_csv(qs: QuerySet, fout):
     """
     Generate the CSV of evaluator results that the user downloads when exporting
     the full set of results. When S3_ENABLED == True, this method is used
     by evaluate.py to send the CSV to S3. When S3_ENABLED == False, this
     method is used by views.py to generate the file for the API response.
     """
-    # For now, limit file uploads to 1 million records
-    # TODO: handle uploading results where hits > 1 million
-    total_hits = min(result_summary.hits, 1_000_000)
-    CHUNK_SIZE = 25000
-    fields_list = result_summary.evaluator.result_summary_fields()
-
     writer = csv.writer(fout)
-    # Add the header to the CSV response
-    writer.writerow(result_summary.create_csv_header())
-    for i in range(0, total_hits, CHUNK_SIZE):
-        max_count = min(total_hits, (i + CHUNK_SIZE))
-        for eval_result in result_summary.evaluatorresult_set.all()[i:max_count]:
-            # TODO: This method queries the database for every eval result.
-            # Find a way to use pre-fetched data to improve efficiency
-            writer.writerow(eval_result.create_csv_row_data(fields_list))
-
+    columns = EvaluatorResultMaterializedView.csv_fields()
+    writer.writerow(csv_header_row(columns))
+    for i in qs:
+        writer.writerow([getattr(i, c) for c in columns])
     return fout
-
 
 ###############
 # Utility methods for S3 bucket locations
