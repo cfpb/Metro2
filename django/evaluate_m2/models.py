@@ -90,31 +90,6 @@ class EvaluatorMetadata(models.Model):
 
     func: any
 
-    # Fields that should always be present in the evaluator results view
-    identifying_fields = [
-        'id',
-        'activity_date',
-        'cons_acct_num',
-        'doai',
-    ]
-
-    filterable_fields = [
-        'acct_stat',
-        'compl_cond_cd',
-        'php',
-        'php1',
-        'pmt_rating',
-        'spc_com_cd',
-        'terms_freq',
-        'cons_info_ind',
-        'cons_info_ind_assoc',
-        'l1__change_ind',
-        'dofd',
-        'date_closed',
-        'amt_past_due',
-        'current_bal',
-    ]
-
     _from_bulk_import: bool = False
     _loaded_values: dict = {}
 
@@ -162,26 +137,6 @@ class EvaluatorMetadata(models.Model):
     def __str__(self) -> str:
         return self.id
 
-    def result_summary_fields(self) -> list[str]:
-        """
-        Return the list of AccountActivity fields (and fields on related
-        records) that should be shown in the evaluator result view API
-        endpoint.
-
-        Fields are listed in the following order (but with duplicates removed):
-        - identifying fields (consistent for every evaluator)
-        - fields_used and fields_display (evaluator-dependent)
-        - filterable fields (consistent for every evaluator)
-        """
-        fieldset = self.identifying_fields + \
-            self.fields_used + \
-            self.fields_display + \
-            self.filterable_fields
-
-        dups_removed = [*dict.fromkeys(fieldset)]
-        return dups_removed
-
-
 
 class EvaluatorResultSummary(models.Model):
     class Meta:
@@ -197,11 +152,6 @@ class EvaluatorResultSummary(models.Model):
 
     def __str__(self) -> str:
         return f"Event: {self.event} - {self.evaluator}"
-
-    def create_csv_header(self):
-        csv_header = list(self.evaluator.result_summary_fields())
-        csv_header.insert(0, 'event_name')
-        return csv_header
 
     def sample_results(self):
         return self.evaluatorresult_set.filter(sample=True)
@@ -271,15 +221,6 @@ class EvaluatorResult(models.Model):
     acct_num = models.CharField(max_length=30)
     # Indicate whether this result is included in the set of random sample results
     sample = models.BooleanField(default=False)
-
-    def create_csv_row_data(self, fields_list: list[str]):
-        field_values = AccountActivity.objects \
-                    .values_list(*fields_list) \
-                    .get(id=self.source_record.id)
-        response = [
-            self.result_summary.event.name,
-            ] + list(field_values)
-        return response
 
 
 class EvaluatorResultMaterializedView(models.Model):

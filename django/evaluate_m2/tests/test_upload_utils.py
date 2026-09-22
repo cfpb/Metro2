@@ -10,7 +10,6 @@ from evaluate_m2.models import (
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from evaluate_m2.upload_utils import (
     full_s3_url,
-    generate_full_csv,
     s3_bucket_key,
     s3_filename,
 )
