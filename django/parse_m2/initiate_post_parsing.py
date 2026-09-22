@@ -26,14 +26,8 @@ def save_total_records(event: Metro2Event):
     event.total_tradelines = event.calculate_total_tradelines()
     event.save()
 
-def associate_previous_records(event: Metro2Event):
-    logger = logging.getLogger('parse_m2.associate_previous_records')
-
-    logger.info("First, make sure all previous_values pointers are empty.")
-    event.get_all_account_activity().update(previous_values_id=None)
-
-    logger.info("Beginning to update all previous_values pointers.")
-    temp_table_query = """
+def _create_previous_values_temp_table(event_id):
+    create_temp_table_query = """
         CREATE table temp_previous_values_for_event as (
             SELECT "parse_m2_accountactivity"."id",
             LAG ("parse_m2_accountactivity"."id", 1) OVER (
@@ -44,27 +38,49 @@ def associate_previous_records(event: Metro2Event):
             WHERE "parse_m2_accountactivity"."event_id" = %s
         )
     """
-    temp_table_index = """
+    with connection.cursor() as cursor:
+        cursor.execute(create_temp_table_query, [event_id])
+
+def _create_previous_values_index():
+    temp_table_index_sql = """
         CREATE INDEX idx_tmp_accountactivity_id
         ON temp_previous_values_for_event (id)
     """
-    query_sql = """
+    with connection.cursor() as cursor:
+        cursor.execute(temp_table_index_sql)
+
+def _write_previous_values_to_account_activity():
+    update_previous_values_sql = """
         UPDATE "parse_m2_accountactivity"
         SET "previous_values_id" = prev_vals
         FROM "temp_previous_values_for_event"
         WHERE "temp_previous_values_for_event"."id" = parse_m2_accountactivity.id
     """
+    with connection.cursor() as cursor:
+        cursor.execute(update_previous_values_sql)
 
-    delete_temp = """
+def _clean_up_temp_table():
+    delete_temp_table_sql = """
         drop table temp_previous_values_for_event
     """
     with connection.cursor() as cursor:
-        logger.info("Creating temp table of previous values...")
-        cursor.execute(temp_table_query, [event.id])
-        logger.info("Creating index...")
-        cursor.execute(temp_table_index)
-        logger.info("Updating AccountActivity...")
-        cursor.execute(query_sql)
-        logger.info("Done. Cleaning up...")
-        cursor.execute(delete_temp)
+        cursor.execute(delete_temp_table_sql)
+
+def associate_previous_records(event: Metro2Event):
+    """
+    a.k.a. "the progressive evaluator query"
+    """
+    logger = logging.getLogger('parse_m2.associate_previous_records')
+
+    logger.info("Creating temp table of previous values...")
+    _create_previous_values_temp_table(event.id)
+
+    logger.info("Creating index...")
+    _create_previous_values_index()
+
+    logger.info("Updating AccountActivity...")
+    _write_previous_values_to_account_activity()
+
+    logger.info("Done. Cleaning up...")
+    _clean_up_temp_table()
 
