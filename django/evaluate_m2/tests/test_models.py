@@ -6,6 +6,7 @@ from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
     EvaluatorResultSummary,
+    EvaluatorResultMaterializedView,
 )
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
 from evaluate_m2.tests.evaluator_test_helper import acct_record
@@ -159,4 +160,70 @@ class EvaluatorMetadataTestCase(TestCase):
         self.assertEqual(
             eval_load_2.additional_notes_last_modified,
             date.today()
+        )
+
+
+class EvaluatorResultMaterializedViewTestCase(TestCase):
+    def test_csv_fields(self):
+        self.assertEqual(
+            EvaluatorResultMaterializedView.csv_fields(),
+            [
+                'activity_date',
+                'cons_acct_num',
+                'port_type',
+                'acct_type',
+                'date_open',
+                'credit_limit',
+                'hcola',
+                'id_num',
+                'terms_dur',
+                'terms_freq',
+                'smpa',
+                'actual_pmt_amt',
+                'acct_stat',
+                'pmt_rating',
+                'php',
+                'php1',
+                'spc_com_cd',
+                'compl_cond_cd',
+                'current_bal',
+                'amt_past_due',
+                'orig_chg_off_amt',
+                'doai',
+                'dofd',
+                'date_closed',
+                'dolp',
+                'int_type_ind',
+                'ecoa',
+                'ecoa_assoc',
+                'cons_info_ind',
+                'cons_info_ind_assoc',
+                'purch_sold_ind',
+                'purch_sold_name',
+                'spc_pmt_ind',
+                'deferred_pmt_st_dt',
+                'balloon_pmt_due_dt',
+                'balloon_pmt_amt',
+                'change_ind',
+                'new_acc_num',
+                'new_id_num',
+                'prior_activity_date',
+                'prior_port_type',
+                'prior_acct_type',
+                'prior_date_open',
+                'prior_id_num',
+                'prior_acct_stat',
+                'prior_pmt_rating',
+                'prior_current_bal',
+                'prior_orig_chg_off_amt',
+                'prior_dofd',
+                'prior_date_closed',
+                'prior_ecoa',
+                'prior_ecoa_assoc',
+                'prior_cons_info_ind',
+                'prior_cons_info_ind_assoc',
+                'prior_change_ind',
+                'prior_new_acc_num',
+                'prior_new_id_num',
+            ]
         )

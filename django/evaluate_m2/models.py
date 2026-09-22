@@ -232,6 +232,38 @@ class EvaluatorResultMaterializedView(models.Model):
     table_name = 'mv_all_evaluator_results'
 
     @classmethod
+    def csv_fields(cls):
+        # Return all field names in the materialized view except ones
+        # listed in 'exclude'. The field list is used as the headers
+        # of the evaluator results CSV.
+        exclude = [
+            # Internal-only identifiers
+            'id',
+            'event_id',
+            'evaluator_id',
+            'source_record_id',
+            'sample',
+            # Account holder personal information
+            'first_name',
+            'middle_name',
+            'surname',
+            'gen_code',
+            'ssn',
+            'dob',
+            'phone_num',
+            'addr_line_1',
+            'addr_line_2',
+            'city',
+            'state',
+            'zip',
+            'addr_ind',
+            'res_cd',
+            'prior_first_name',
+            'prior_surname',
+        ]
+        return [f.name for f in cls._meta.fields if not f.name in exclude]
+
+    @classmethod
     def create_or_refresh_materialized_view(cls):
         lg = logging.getLogger('eval_mv.create_or_refresh_materialized_view')
         if cls.materialized_view_exists():
