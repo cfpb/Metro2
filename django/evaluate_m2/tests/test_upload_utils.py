@@ -1,3 +1,4 @@
+import csv
 import io
 
 from django.test import TestCase
@@ -5,12 +6,13 @@ from django.test import TestCase
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
+    EvaluatorResultMaterializedView,
     EvaluatorResultSummary,
 )
 from evaluate_m2.tests.evaluator_test_helper import acct_record
 from evaluate_m2.upload_utils import (
     full_s3_url,
-    generate_full_csv,
+    generate_eval_results_csv,
     s3_bucket_key,
     s3_filename,
 )
@@ -58,22 +60,86 @@ class UploadUtilsTestCase(TestCase):
             result_summary=self.ers,
             source_record=r4
         )
+        EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
         return super().setUp()
 
+    expected_csv_headers = [
+        'Activity date',
+        'Account number',
+        'Portfolio type',
+        'Account type',
+        'Date opened',
+        'Credit limit',
+        'HCOLA',
+        'ID number',
+        'Terms duration',
+        'Terms frequency',
+        'Scheduled monthly payment amount',
+        'Actual payment amount',
+        'Account status',
+        'Payment rating',
+        'Payment history profile (all entries)',
+        'Payment history profile',
+        'Special comment code',
+        'Compliance condition code',
+        'Current balance',
+        'Amount past due',
+        'Original charge-off amount',
+        'Date of account information',
+        'DOFD',
+        'Date closed',
+        'Date of last payment',
+        'Interest type indicator',
+        'ECOA code for account holder',
+        'ECOA codes for associated consumers',
+        'Consumer information indicator',
+        'Consumer information indicator - J1+J2 segments',
+        'Purchased-sold indicator (K2)',
+        'Purchased-sold name (K2)',
+        'Specialized payment indicator (K4)',
+        'Deferred payment start date (K4)',
+        'Balloon payment due date (K4)',
+        'Balloon payment amount (K4)',
+        'Account change indicator (L1)',
+        'New consumer account number (L1)',
+        'New identification number (L1)',
+        'Prior activity date',
+        'Prior portfolio type',
+        'Prior account type',
+        'Prior date open',
+        'Prior ID number',
+        'Prior account status',
+        'Prior payment rating',
+        'Prior current balance',
+        'Prior original charge-off amount',
+        'Prior DOFD',
+        'Prior date closed',
+        'Prior ECOA code for account holder',
+        'Prior ECOA codes for associated consumers',
+        'Prior bankruptcy - Consumer information indicator for account holder',
+        'Prior bankruptcy - Consumer information indicator for associated consumers',
+        'Prior account change indicator (L1)',
+        'Prior new consumer account number (L1)',
+        'Prior new identification number (L1)',
+    ]
+
     def test_generate_results_csv(self):
+        qs = EvaluatorResultMaterializedView.objects.all()
         with io.StringIO() as f:
-            generate_full_csv(self.ers, f)
+            generate_eval_results_csv(qs, f)
             f.seek(0)
             result = f.read().splitlines()
 
-        expected = [
-            'event_name,id,activity_date,cons_acct_num,doai,amt_past_due,ecoa,acct_stat,compl_cond_cd,php,php1,pmt_rating,spc_com_cd,terms_freq,cons_info_ind,cons_info_ind_assoc,l1__change_ind,dofd,date_closed,current_bal',  # noqa: E501
-            'MyEVENT,1,2022-05-30,41,2022-05-01,0,AB,,,,,,,00,,,,,,0',
-            'MyEVENT,2,2022-05-30,42,2022-05-01,0,AC,,,,,,,00,,,,,,0',
-            'MyEVENT,3,2022-05-30,43,2022-05-01,0,,,,,,,,00,,,,,,0',
-            'MyEVENT,4,2022-05-30,44,2022-05-01,0,AE,,,,,,,00,,,,,,0'
-        ]
-        self.assertEqual(expected, result)
+        self.assertEqual(result[0].split(','), self.expected_csv_headers)
+        # CSV output should have 4 results, plus a header row
+        self.assertEqual(len(result), 5)
+        # Check the content of the CSV output
+        csvreader = csv.DictReader(result)
+        for row in csvreader:
+            self.assertEqual(row['Activity date'], '2022-05-30')
+            self.assertIn(
+                row['Account number'],
+                ['41', '42', '43', '44'])
 
     def test_get_url(self):
         with self.settings(S3_BUCKET_NAME = 'sample-bucket'):

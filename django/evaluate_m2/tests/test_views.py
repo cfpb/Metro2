@@ -221,12 +221,6 @@ class EvaluateViewsTestCase(TestCase):
             response.headers['Content-Disposition'])
         csv_content = response.content.decode('utf-8').splitlines()
 
-        # the CSV should contain the columns specified by
-        # EvaluatorMetadata.result_summary_fields, plus "event_name"
-        headers = csv_content[0].split(",")
-        expected_headers = ['event_name'] + self.stat_dofd_1.result_summary_fields()
-        self.assertEqual(headers, expected_headers)
-
         # the CSV should have a row for each eval result as defined in
         # create_activity_data (plus the header)
         self.assertEqual(len(csv_content), 3)

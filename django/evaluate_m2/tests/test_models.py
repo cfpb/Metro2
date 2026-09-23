@@ -5,6 +5,7 @@ from django.test import TestCase
 from evaluate_m2.models import (
     EvaluatorMetadata,
     EvaluatorResult,
+    EvaluatorResultMaterializedView,
     EvaluatorResultSummary,
 )
 from evaluate_m2.serializers import EvaluatorMetadataSerializer
@@ -68,62 +69,6 @@ class EvaluatorResultSummaryTestCase(TestCase):
 
 
 class EvaluatorMetadataTestCase(TestCase):
-    def test_eval_res_create_csv_header(self):
-        eval = EvaluatorMetadata(
-            id="event_name",
-            fields_used=['field1', 'field2', 'field3'],
-            fields_display=[]
-        )
-        eval_rs1 = EvaluatorResultSummary(
-            event = Metro2Event(name = 'test'),
-            evaluator = eval,
-            hits = 1
-        )
-        expected = ['event_name'] + eval.result_summary_fields()
-        self.assertEqual(eval_rs1.create_csv_header(), expected)
-
-    def test_eval_res_create_csv_row_data(self):
-        acct_date=date(2019, 12, 31)
-        event = Metro2Event.objects.create(name = 'test')
-        data_file = M2DataFile.objects.create(event=event, file_name='file.txt')
-        record = acct_record(data_file, {'id': 1, 'cons_acct_num': '001',
-                                         'activity_date': acct_date})
-        eval_rs1 = EvaluatorResultSummary(
-            event = event,
-            evaluator = EvaluatorMetadata(),
-            hits = 1
-        )
-
-        eval_res = EvaluatorResult(
-            result_summary = eval_rs1,
-            source_record = record
-        )
-        field_list = ['id', 'cons_acct_num', 'activity_date']
-        expected = [ 'test', 1, '001', acct_date ]
-        self.assertEqual(eval_res.create_csv_row_data(field_list), expected)
-
-    def test_result_summary_fields(self):
-        my_evaluator = EvaluatorMetadata(
-            id="Sample-Eval-1",
-            fields_used=["one", "two", "three"],
-            fields_display=["four", "five"]
-        )
-
-        field_list = my_evaluator.result_summary_fields()
-        expected = [
-            # identifying fields
-            'id', 'activity_date', 'cons_acct_num', 'doai',
-            # fields in fields_used and fields_display
-            'one', 'two', 'three', 'four', 'five',
-            # fields that should always be shown
-            'acct_stat', 'compl_cond_cd', 'php', 'php1', 'pmt_rating',
-            'spc_com_cd', 'terms_freq', 'cons_info_ind',
-            'cons_info_ind_assoc',
-            'l1__change_ind', 'dofd', 'date_closed', 'amt_past_due',
-            'current_bal',
-            ]
-        self.assertEqual(field_list, expected)
-
     def test_save_new_from_csv_imports_last_modified_dates(self):
         info = {
             "id": "Test-Type-A",
@@ -215,4 +160,70 @@ class EvaluatorMetadataTestCase(TestCase):
         self.assertEqual(
             eval_load_2.additional_notes_last_modified,
             date.today()
+        )
+
+
+class EvaluatorResultMaterializedViewTestCase(TestCase):
+    def test_csv_fields(self):
+        self.assertEqual(
+            EvaluatorResultMaterializedView.csv_fields(),
+            [
+                'activity_date',
+                'cons_acct_num',
+                'port_type',
+                'acct_type',
+                'date_open',
+                'credit_limit',
+                'hcola',
+                'id_num',
+                'terms_dur',
+                'terms_freq',
+                'smpa',
+                'actual_pmt_amt',
+                'acct_stat',
+                'pmt_rating',
+                'php',
+                'php1',
+                'spc_com_cd',
+                'compl_cond_cd',
+                'current_bal',
+                'amt_past_due',
+                'orig_chg_off_amt',
+                'doai',
+                'dofd',
+                'date_closed',
+                'dolp',
+                'int_type_ind',
+                'ecoa',
+                'ecoa_assoc',
+                'cons_info_ind',
+                'cons_info_ind_assoc',
+                'purch_sold_ind',
+                'purch_sold_name',
+                'spc_pmt_ind',
+                'deferred_pmt_st_dt',
+                'balloon_pmt_due_dt',
+                'balloon_pmt_amt',
+                'change_ind',
+                'new_acc_num',
+                'new_id_num',
+                'prior_activity_date',
+                'prior_port_type',
+                'prior_acct_type',
+                'prior_date_open',
+                'prior_id_num',
+                'prior_acct_stat',
+                'prior_pmt_rating',
+                'prior_current_bal',
+                'prior_orig_chg_off_amt',
+                'prior_dofd',
+                'prior_date_closed',
+                'prior_ecoa',
+                'prior_ecoa_assoc',
+                'prior_cons_info_ind',
+                'prior_cons_info_ind_assoc',
+                'prior_change_ind',
+                'prior_new_acc_num',
+                'prior_new_id_num',
+            ]
         )
