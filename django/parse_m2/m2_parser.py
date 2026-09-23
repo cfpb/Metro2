@@ -204,7 +204,7 @@ class M2FileParser:
             parsed["AccountActivity"] = acct_activity
 
             # parse the extra segments
-            base_segment_length = fields.seg_length["header"]
+            base_segment_length = fields.seg_length["base"]
             remaining_chars = line[base_segment_length:]
             parsed = self.parse_extra_segments(remaining_chars, parsed)
 

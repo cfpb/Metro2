@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import date
 
 
 date_format = "%m%d%Y"
@@ -44,7 +44,7 @@ def cast_to_type(input: str, type_str: str):
             msg = f"Date value `{input}` must have length 8, instead had {len(input)}"
             raise UnreadableLineException(msg)
         try:
-            return datetime.strptime(input, date_format).date()
+            return date.strptime(input, date_format)
         except (ValueError, TypeError) as e:
             if type_str == "date":
                 msg = f"Date value `{input}` could not be parsed as date"
