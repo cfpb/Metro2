@@ -33,7 +33,7 @@ class Metro2Event(models.Model):
         return AccountActivity.objects.filter(event=self)
 
     def account_activity_date_range(self) -> dict:
-        activity = self.get_all_account_activity()
+        activity = self.get_all_account_activity().only('activity_date')
         return get_activity_date_range(activity)
 
     def evaluate(self):
