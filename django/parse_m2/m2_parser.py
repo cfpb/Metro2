@@ -22,7 +22,7 @@ from parse_m2.models import (
 class M2FileParser:
     # Parser version is saved on each file record.
     # Increment this version for all updates to parser functionality.
-    parser_version = "3.1"
+    parser_version = "3.2.EID-14623.a"
 
     chunk_size = 2000  # TODO: determine a good number for this
     any_non_whitespace = r'\S'
@@ -204,7 +204,7 @@ class M2FileParser:
             parsed["AccountActivity"] = acct_activity
 
             # parse the extra segments
-            base_segment_length = fields.seg_length["header"]
+            base_segment_length = fields.seg_length["base"]
             remaining_chars = line[base_segment_length:]
             parsed = self.parse_extra_segments(remaining_chars, parsed)
 
@@ -341,9 +341,10 @@ class M2FileParser:
         # handle the first line of the file
         try:
             first_line = parse_utils.get_next_line(f)
-            self.activity_date = self.handle_first_line_and_return_activity_date(
-                first_line
-            )
+            # self.activity_date = self.handle_first_line_and_return_activity_date(
+            #     first_line
+            # )
+            self.activity_date = self.get_activity_date_from_header(first_line)
             self.file_record.activity_date = self.activity_date
         except (parse_utils.UnreadableFileException,
                 parse_utils.UnreadableLineException) as e:
