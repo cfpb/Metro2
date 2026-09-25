@@ -35,97 +35,128 @@ describe('Results view', () => {
   it('Should show the sample results by default', () => {
     // Navigate to the evaluator page without query params
     page.loadEvaluatorPage()
+
     // view=sample is added to URL
     cy.location('search').should('include', 'view=sample').and('include', 'page=1')
+
     // Sample view tab is active
     cy.get('.tablist').should('be.visible')
     cy.findByTestId('sample-results-tab').should('have.class', 'tab--active')
     cy.findByTestId('all-results-tab').should('not.have.class', 'tab--active')
+
     // Sample results message is displayed
     cy.findByTestId('results-message').should(
       'have.text',
       'Showing 20 sample results'
     )
+
     // No pagination
     cy.get('.m-pagination').should('not.exist')
   })
+
   it('Should show full results view after clicking all results button', () => {
     // Navigate to the evaluator page without query params
     page.loadEvaluatorPage()
+
     // Sample view is indicated in URL and tab
     cy.location('search').should('include', 'view=sample').and('include', 'page=1')
     cy.findByTestId('sample-results-tab').should('have.class', 'tab--active')
+
     // Intercept all results request
     page.interceptFilteredResults(
       'allResults',
       { view: 'all' },
       'evaluatorHits_page1'
     )
+
     // Click all results button
     cy.findByTestId('all-results-tab').click({ force: true })
+
     cy.wait(['@allResults'])
+
     // URL includes view=all
     cy.location('search').should('include', 'view=all').and('include', 'page=1')
+
     // All results message is displayed
     cy.findByTestId('results-message').should('include.text', 'Showing 1 - 20 of 30')
+
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
     cy.get('.m-pagination__current-page').should('have.value', '1')
+
     // Table shows 20 rows
     table.hasRowCount(20)
   })
+
   it('Should show full results view when view=all is in query params', () => {
     page.loadEvaluatorPage({ view: 'all' })
+
     // All results message is displayed
     cy.findByTestId('results-message').should('include.text', 'Showing 1 - 20 of 30')
+
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
     cy.get('.m-pagination__current-page').should('have.value', '1')
+
     // Table shows 20 rows
     table.hasRowCount(20)
   })
+
   it('Should show second page of results when page 2 is in query params', () => {
     page.loadEvaluatorPage({ view: 'all', page: 2 })
+
     // Page 2 results message is displayed
     cy.findByTestId('results-message').should(
       'include.text',
       'Showing 21 - 30 of 30'
     )
+
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
     cy.get('.m-pagination__current-page').should('have.value', '2')
+
     // Table shows 10 rows
     table.hasRowCount(10)
   })
+
   it('Should update params after pagination control interaction', () => {
     page.loadEvaluatorPage({ view: 'all' })
+
     // Pagination is added to the page
     cy.get('.m-pagination').should('exist')
     cy.get('.m-pagination__current-page').should('have.value', '1')
+
     // All results message is displayed
     cy.findByTestId('results-message').should('include.text', 'Showing 1 - 20 of 30')
+
     // Table shows 20 rows
     table.hasRowCount(20)
+
     // Intercept page 2 request
     page.interceptFilteredResults(
       'page2',
       { page: 2, view: 'all' },
       'evaluatorHits_page2'
     )
+
     // Click next button to navigate to page 2
     cy.get('.m-pagination__btn-next').click()
     cy.wait(['@page2'])
+
     // Page 2 appears in querystring
     cy.location('search').should('include', 'page=2')
+
     // Updated results message is displayed
     cy.findByTestId('results-message').should(
       'include.text',
       'Showing 21 - 30 of 30'
     )
+
     // Table shows 10 rows
     table.hasRowCount(10)
   })
 })
+
 describe('Invalid param handling', () => {
   // Check that invalid values for valid param keys are replaced
   const invalidParams = {
@@ -136,6 +167,7 @@ describe('Invalid param handling', () => {
     '?view=random&page=2': ['view=sample', 'page=1'],
     '?view=sample&page=2': ['view=sample', 'page=1']
   } as const
+
   beforeEach(() => {
     cy.viewport(1920, 1800)
     cy.setCookie(PII_COOKIE_NAME, 'true')
@@ -145,6 +177,7 @@ describe('Invalid param handling', () => {
       fixture: 'evaluatorHits_page1'
     }).as('getEvaluatorHits')
   })
+
   for (const item of Object.entries(invalidParams)) {
     it(`Should replace invalid param value in "${item[0]}"`, () => {
       cy.visit(`/events/1/evaluators/Test-Eval-1/${item[0]}`)
@@ -156,14 +189,17 @@ describe('Invalid param handling', () => {
     })
   }
 })
+
 describe('Error handling', () => {
   it('Should navigate to page 1 when request 404s', () => {
     cy.viewport(1920, 1800)
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
     cy.intercept('GET', '/api/users/', { fixture: 'user' }).as('getUser')
+
     // intercept 24 with error
     page.interceptFilteredResultsWithError('page24', { page: 24, view: 'all' }, 404)
+
     // intercept page 1
     page.interceptFilteredResults(
       'page1',
