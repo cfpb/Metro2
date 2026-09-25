@@ -5,8 +5,6 @@ from django.test import TestCase
 
 from rest_framework.renderers import JSONRenderer
 
-from evaluate_m2.tests.evaluator_test_helper import acct_record
-from parse_m2.initiate_post_parsing import post_parse
 from parse_m2.models import M2DataFile, Metro2Event
 from users.serializers import UserViewSerializer
 
@@ -19,7 +17,11 @@ class UserViewSerializerTestCase(TestCase):
             password="",
             email="examiner@fake.gov"
         )
-        event = Metro2Event.objects.create(id=1, name='test_exam')
+        event = Metro2Event.objects.create(
+            id=1, name='test_exam',
+            date_range_start=date(2011,7,31),
+            date_range_end=date(2020,12,31),
+        )
         event.members.add(self.user)
         event2 = Metro2Event.objects.create(
             id=2,
@@ -30,18 +32,6 @@ class UserViewSerializerTestCase(TestCase):
         )
         event2.members.add(self.user)
         self.data_file = M2DataFile.objects.create(event=event, file_name='file.txt')
-
-        # Create account records for event 1
-        records = [
-            { 'id': 32, 'activity_date': date(2011, 7, 31), 'cons_acct_num': '0032', },
-            { 'id': 33, 'activity_date': date(2012, 10, 31), 'cons_acct_num': '0033', },
-            { 'id': 34, 'activity_date': date(2013, 11, 30), 'cons_acct_num': '0034', },
-            { 'id': 35, 'activity_date': date(2020, 12, 31), 'cons_acct_num': '0035', },
-        ]
-        for item in records:
-            acct_record(self.data_file, item)
-
-        post_parse(event)  # Ensure the event record has the date range saved
 
         self.json_representation = {
             'is_admin': False,
