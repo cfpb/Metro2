@@ -26,6 +26,8 @@ const COL_DEF_CONSTANTS = {
   k2__purch_sold_ind: { minWidth: 250 },
   k2__purch_sold_name: { minWidth: 210 },
   k4__balloon_pmt_amt: { type: 'currency' },
+  k4__deferred_pmt_st_dt: { type: 'formattedDate', minWidth: 120 },
+  k4__balloon_pmt_due_dt: { type: 'formattedDate', minWidth: 120 },
   l1__change_ind: { minWidth: 200 },
   l1__new_acc_num: { minWidth: 200 },
   l1__new_id_num: { minWidth: 200 },
