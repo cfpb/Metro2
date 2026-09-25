@@ -52,16 +52,19 @@ export default function EvaluatorResults({
 
   const rows = data?.hits ?? []
 
-  // Get list of fields to display for this evaluator
-  const fields = getTableFields(
-    evaluatorMetadata.fields_used ?? [],
-    evaluatorMetadata.fields_display ?? []
-  )
+  // Get list of fields to display in the table for this evaluator
+  const fields = getTableFields(evaluatorMetadata.fields_used ?? [])
 
+  // The total number of hits on this evaluator
   const totalHits = evaluatorMetadata.hits
+
+  // The number of hits for the current selection.
+  // This might be lower than the total number of hits if we're on the
+  // sample view or filters have been applied.
   const currentHits =
     view === 'sample' ? (data?.hits.length ?? 0) : (data?.count ?? 0)
 
+  // The number of pages for the current selection
   const pageCount = getPageCount(currentHits, page_size)
 
   // TODO: consider refining this to handle 404s for invalid page
