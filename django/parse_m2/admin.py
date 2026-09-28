@@ -33,13 +33,21 @@ class EventParseEvalView(DetailView):
 
 
 class Metro2EventAdmin(admin.ModelAdmin):
+    readonly_fields = [
+        'date_range_start',
+        'date_range_end',
+        'total_tradelines',
+    ]
     fields = [
         'name',
         'portfolio',
         'eid_or_matter_num',
         'other_descriptor',
         'directory',
-        'members'
+        'members',
+        'date_range_start',
+        'date_range_end',
+        'total_tradelines',
     ]
     list_display = [
         'name',
@@ -47,7 +55,8 @@ class Metro2EventAdmin(admin.ModelAdmin):
         'eid_or_matter_num',
         'import_data',
         'date_range_start',
-        'date_range_end'
+        'date_range_end',
+        'total_tradelines',
     ]
     filter_horizontal = ['members']
 

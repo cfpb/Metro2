@@ -86,6 +86,42 @@ class Metro2EventModelTestCase(TestCase):
         self.assertEqual(summary[1]['record_count'], 0)
         self.assertEqual(summary[1]['unparseable_data_count'], 2)
 
+    def test_account_activity_date_range_with_file_activity_date(self):
+        ev = Metro2Event.objects.create(name='test_e1')
+        M2DataFile.objects.create(event=ev, file_name="t1",
+            parsing_status="Finished", activity_date=date(2025,2,28))
+        M2DataFile.objects.create(event=ev, file_name="t2",
+            parsing_status="Finished", activity_date=date(2025,5,31))
+        M2DataFile.objects.create(event=ev, file_name="t3",
+            parsing_status="Errored", activity_date=date(2025,7,31))
+
+        self.assertEqual(
+            ev.account_activity_date_range(),
+            {
+                "earliest": date(2025,2,28),
+                "latest": date(2025,5,31)
+            }
+        )
+
+    def test_account_activity_date_range_with_account_activity_date(self):
+        ev = Metro2Event.objects.create(name='test_e1')
+        f1 = M2DataFile.objects.create(event=ev, file_name="t1",
+            parsing_status="Finished", activity_date=None)
+        f2 = M2DataFile.objects.create(event=ev, file_name="t2",
+            parsing_status="Finished", activity_date=date(2026,5,1))
+        acct_record(f1, {'id': 2, 'activity_date': date(2026,1,1)})
+        acct_record(f1, {'id': 3, 'activity_date': date(2026,2,1)})
+        acct_record(f2, {'id': 4, 'activity_date': date(2026,3,1)})
+
+        self.assertEqual(
+            ev.account_activity_date_range(),
+            {
+                "earliest": date(2026, 1, 1),
+                "latest": date(2026, 3, 1)
+            }
+        )
+
+
 
 class ParseSegmentsToModelInstancesTestCase(TestCase):
     def setUp(self):

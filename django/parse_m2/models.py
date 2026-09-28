@@ -33,8 +33,18 @@ class Metro2Event(models.Model):
         return AccountActivity.objects.filter(event=self)
 
     def account_activity_date_range(self) -> dict:
-        activity = self.get_all_account_activity().only('activity_date')
-        return get_activity_date_range(activity)
+        # Get all files of data belonging to this event
+        data_files = self.m2datafile_set.filter(
+            parsing_status="Finished").only("activity_date")
+        if data_files.filter(activity_date__isnull=True).exists():
+            # If any of the files are missing an activity_date value,
+            # use the account activity records to calculate the date range
+            activity = self.get_all_account_activity().only('activity_date')
+            return get_activity_date_range(activity)
+        else:
+            # if all of the files have an activity_date value,
+            # use those to calculate the event date range
+            return get_activity_date_range(data_files)
 
     def evaluate(self):
         call_command('run_evaluators', event_id=self.id)
