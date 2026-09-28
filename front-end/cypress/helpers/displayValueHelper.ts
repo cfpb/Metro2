@@ -43,3 +43,23 @@ export const getDisplayValue = (field: string, value: unknown): unknown => {
   // Any other value should be returned as is
   return value
 }
+
+// Generate the value that should be displayed in the CSV download
+// for a specific field:
+//    an annotated string for a value with an annotation lookup
+//    a comma-joined string for an array
+//    a string for a numerical value
+//    and the raw value for anything else
+export const getDownloadValue = (field: string, value: unknown): unknown => {
+  // Numbers and strings can be formatted if of an appropriate field type
+  if (value === null || value === undefined) return ''
+  if (typeof value === 'string' || Number.isFinite(value)) {
+    const val = value as string | number
+    if (annotatedFields.includes(field)) return annotateM2FieldValue(field, val)
+    return String(val)
+  }
+  // Arrays should be converted to strings
+  if (Array.isArray(value)) return value.join('')
+  // Any other value should be returned as is
+  return value
+}

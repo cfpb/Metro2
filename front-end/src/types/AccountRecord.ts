@@ -35,6 +35,9 @@ export default interface AccountRecord {
   ecoa_assoc?: string[] | null
   k2__purch_sold_ind?: string | null
   k2__purch_sold_name?: string | null
+  k4__spc_pmt_ind?: string | null
+  k4__deferred_pmt_st_dt?: string | null
+  k4__balloon_pmt_due_dt?: string | null
   k4__balloon_pmt_amt?: string | null
   l1__change_ind?: string | null
   l1__new_acc_num?: string | null
