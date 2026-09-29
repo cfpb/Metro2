@@ -10,13 +10,16 @@ class Command(BaseCommand):
     """
     Run this command by running the following:
     > python manage.py post_parse -e [event_id]
+    > python manage.py post_parse -e [event_id] --file_strategy
     """
     help = (
         "After all files have been parsed for this event, run this command "
         "to prepare for running evaluators. It does two things: (1) calculate "
-        "the date range of this event's data (for display), and (2) populate "
-        "the 'previous values' field for all records, which allows progressive"
+        "stats about this event's data (for display), and (2) populate "
+        "the 'previous values' field for all records, which allows progressive "
         "evaluators to work."
+        "In order to use the --file_strategy flag, you must first use the Django "
+        "admin to indicate 'prior' files for all relevant files."
     )
 
     def add_arguments(self, argparser):
@@ -29,9 +32,22 @@ class Command(BaseCommand):
             help=event_help
         )
 
+        strategy_help = (
+            "Optional flag: If flag is present, uses the `previous_file` "
+            "attribute on each M2DataFile instance to associate prior records. "
+            "`previous_file` setting must be set manually before using this strategy."
+        )
+        argparser.add_argument(
+            "--file_strategy",
+            required=False,
+            action='store_true',
+            help=strategy_help,
+        )
+
     def handle(self, *args, **options):
         logger = logging.getLogger('commands.post_parse')
         event_id = options["event_id"]
+        file_strategy = options['file_strategy']
 
         # Fetch the Metro2Event
         try:
@@ -41,7 +57,7 @@ class Command(BaseCommand):
             raise CommandError(f"No event found with id {event_id}. Exiting.") from e
 
         logger.info(f"Beginning post-parse process for event: {event_id}.")
-        post_parse(event)
+        post_parse(event, file_strategy)
 
         logger.info("Done. Generating report...")
 

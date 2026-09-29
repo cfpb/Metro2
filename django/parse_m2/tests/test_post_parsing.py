@@ -3,9 +3,14 @@ from datetime import date
 
 from django.test import TestCase
 
+from evaluate_m2.tests.evaluator_test_helper import acct_record
 from parse_m2.initiate_parsing_local import parse_files_from_local_filesystem
-from parse_m2.initiate_post_parsing import associate_previous_records, post_parse
-from parse_m2.models import AccountActivity, Metro2Event
+from parse_m2.initiate_post_parsing import (
+    _associate_prior_records_single_datafile,
+    associate_previous_records,
+    post_parse,
+)
+from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
 
 
 class InitiatePostParsingTestCase(TestCase):
@@ -61,3 +66,59 @@ class InitiatePostParsingTestCase(TestCase):
 
         self.assertEqual(prev_feb_record, feb_record.previous_values)
         self.assertEqual(prev_mar_record, mar_record.previous_values)
+
+
+class AssociatePriorRecordsByFileOrderTestCase(TestCase):
+    def setUp(self):
+        self.event = Metro2Event.objects.create(name="event")
+        self.file1 = M2DataFile.objects.create(
+            event = self.event, file_name="f1", activity_date=date(2022, 1, 1))
+        self.file2 = M2DataFile.objects.create(
+            event = self.event, file_name="f2", activity_date=date(2022, 2, 1),
+            previous_file=self.file1)
+        self.file3 = M2DataFile.objects.create(
+            event = self.event, file_name="f3", activity_date=date(2022, 3, 1),
+            previous_file=self.file2)
+
+        self.a11 = acct_record(self.file1, {'id': 11, 'cons_acct_num': 'A'})
+        self.a12 = acct_record(self.file1, {'id': 12, 'cons_acct_num': 'B'})
+        self.a13 = acct_record(self.file1, {'id': 13, 'cons_acct_num': 'C'})
+
+        self.a21 = acct_record(self.file2, {'id': 21, 'cons_acct_num': 'A'})
+        self.a22 = acct_record(self.file2, {'id': 22, 'cons_acct_num': 'B'})
+
+        self.a31 = acct_record(self.file3, {'id': 31, 'cons_acct_num': 'A'})
+        self.a32 = acct_record(self.file3, {'id': 32, 'cons_acct_num': 'B'})
+        self.a33 = acct_record(self.file3, {'id': 33, 'cons_acct_num': 'C'})
+
+        return super().setUp()
+
+    def test_associate_records_by_file(self):
+        _associate_prior_records_single_datafile(self.file2, self.file1)
+        self.a21.refresh_from_db()
+        self.a22.refresh_from_db()
+        self.assertEqual(self.a21.previous_values, self.a11)
+        self.assertEqual(self.a22.previous_values, self.a12)
+
+    def test_associate_records_by_file_2(self):
+        _associate_prior_records_single_datafile(self.file3, self.file2)
+        self.a31.refresh_from_db()
+        self.a32.refresh_from_db()
+        self.a33.refresh_from_db()
+        self.assertEqual(self.a31.previous_values, self.a21)
+        self.assertEqual(self.a32.previous_values, self.a22)
+        self.assertEqual(self.a33.previous_values, None)
+
+    def test_file_strategy_for_prior_records_full_event(self):
+        associate_previous_records(self.event, file_strategy=True)
+        records = [self.a11, self.a12, self.a13, self.a21, self.a22,
+                   self.a31, self.a32, self.a33]
+        [r.refresh_from_db() for r in records]
+        self.assertEqual(self.a11.previous_values, None)
+        self.assertEqual(self.a12.previous_values, None)
+        self.assertEqual(self.a13.previous_values, None)
+        self.assertEqual(self.a21.previous_values, self.a11)
+        self.assertEqual(self.a22.previous_values, self.a12)
+        self.assertEqual(self.a31.previous_values, self.a21)
+        self.assertEqual(self.a32.previous_values, self.a22)
+        self.assertEqual(self.a33.previous_values, None)
