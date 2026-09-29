@@ -119,7 +119,7 @@ class Metro2EventAdmin(Metro2AdminPermissions):
 
 class M2DataFileAdmin(Metro2AdminPermissions):
     list_display = ['id', 'event', 'file_name', 'parsing_status',
-                    'parsed_lines', 'unparseable_lines', 'previous_file__id',
+                    'previous_file__id',
                     'activity_date', 'collection', 'parser_version']
 
     readonly_fields = [
