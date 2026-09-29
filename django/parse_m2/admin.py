@@ -32,7 +32,22 @@ class EventParseEvalView(DetailView):
         return context
 
 
-class Metro2EventAdmin(admin.ModelAdmin):
+class Metro2AdminPermissions(admin.ModelAdmin):
+    # The vast majority of M2 models should provide view permission,
+    # but not add, change, or delete permission. In models with
+    # different requirements, override the relevant method.
+
+    def has_add_permission(self, request, obj=None):
+        return False
+    def has_view_permission(self, request, obj=None):
+        return True
+    def has_change_permission(self, request, obj=None):
+        return False
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+class Metro2EventAdmin(Metro2AdminPermissions):
     readonly_fields = [
         'date_range_start',
         'date_range_end',
@@ -99,14 +114,10 @@ class Metro2EventAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request, obj=None):
         return True
-    def has_view_permission(self, request, obj=None):
-        return True
     def has_change_permission(self, request, obj=None):
         return True
-    def has_delete_permission(self, request, obj=None):
-        return True
 
-class M2DataFileAdmin(admin.ModelAdmin):
+class M2DataFileAdmin(Metro2AdminPermissions):
     list_display = ['id', 'event', 'file_name', 'parsing_status',
                     'parsed_lines', 'unparseable_lines', 'timestamp',
                     'error_message', 'collection', 'parser_version']
@@ -117,28 +128,10 @@ class M2DataFileAdmin(admin.ModelAdmin):
     def unparseable_lines(self, obj):
         return obj.unparseabledata_set.count()
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
+class UnparseableDataAdmin(Metro2AdminPermissions):
 
-class UnparseableDataAdmin(admin.ModelAdmin):
-    list_display = ['data_file', 'unparseable_line', 'error_description']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
-
-class AccountActivityAdmin(admin.ModelAdmin):
+class AccountActivityAdmin(Metro2AdminPermissions):
     list_display = ['data_file', 'activity_date', 'cons_acct_num', 'port_type',
                     'acct_type', 'date_open', 'credit_limit','hcola', 'terms_dur',
                     'terms_freq', 'smpa', 'actual_pmt_amt', 'acct_stat', 'pmt_rating',
@@ -150,124 +143,52 @@ class AccountActivityAdmin(admin.ModelAdmin):
                     'res_cd', 'cons_info_ind_assoc', 'ecoa_assoc']
                     # Some Account Holder information is not included in Admin list view
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-class J1Admin(admin.ModelAdmin):
+class J1Admin(Metro2AdminPermissions):
     list_display = ['account_activity', 'surname',
                     'first_name', 'middle_name', 'gen_code','ssn',
                     'dob', 'phone_num', 'ecoa', 'cons_info_ind']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-class J2Admin(admin.ModelAdmin):
+class J2Admin(Metro2AdminPermissions):
     list_display = ['account_activity', 'surname',
                     'first_name', 'middle_name', 'gen_code','ssn',
                     'dob', 'phone_num', 'ecoa', 'cons_info_ind',
                     'country_cd', 'addr_line_1', 'addr_line_2',
                     'city', 'state', 'zip', 'addr_ind', 'res_cd']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-class K1Admin(admin.ModelAdmin):
+class K1Admin(Metro2AdminPermissions):
     list_display = ['account_activity', 'orig_creditor_name',
                     'creditor_classification']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-class K2Admin(admin.ModelAdmin):
+class K2Admin(Metro2AdminPermissions):
     list_display = ['account_activity', 'purch_sold_ind',
                     'purch_sold_name']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-class K3Admin(admin.ModelAdmin):
+class K3Admin(Metro2AdminPermissions):
     list_display = ['account_activity', 'agency_id',
                     'agency_acct_num', 'min']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-class K4Admin(admin.ModelAdmin):
+class K4Admin(Metro2AdminPermissions):
     list_display = ['account_activity', 'spc_pmt_ind',
                     'deferred_pmt_st_dt', 'balloon_pmt_due_dt',
                     'balloon_pmt_amt']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-class L1Admin(admin.ModelAdmin):
+class L1Admin(Metro2AdminPermissions):
     list_display = ['account_activity', 'change_ind', 'new_acc_num',
                     'new_id_num']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-class N1Admin(admin.ModelAdmin):
+class N1Admin(Metro2AdminPermissions):
     list_display = ['account_activity', 'employer_name', 'employer_addr1',
                     'employer_addr2', 'employer_city', 'employer_state',
                     'employer_zip', 'occupation']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 admin.site.register(Metro2Event, Metro2EventAdmin)
 admin.site.register(M2DataFile, M2DataFileAdmin)

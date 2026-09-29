@@ -7,10 +7,10 @@ from evaluate_m2.models import (
     EvaluatorResultMaterializedView,
     EvaluatorResultSummary,
 )
+from parse_m2.admin import Metro2AdminPermissions
 
 
-# Register your models here.
-class EvaluatorMetadataAdmin(admin.ModelAdmin):
+class EvaluatorMetadataAdmin(Metro2AdminPermissions):
     readonly_fields = [
         'id', 'category', 'fields_used', 'fields_display',
         'interpret_fields_last_modified',
@@ -34,43 +34,19 @@ class EvaluatorMetadataAdmin(admin.ModelAdmin):
     def show_long_description(self, obj):
         return format_html(obj.long_description)
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
     def has_change_permission(self, request, obj=None):
         return True
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-
-class EvaluatorResultSummaryAdmin(admin.ModelAdmin):
     list_display = ['event', 'evaluator', 'hits']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
+class EvaluatorResultSummaryAdmin(Metro2AdminPermissions):
 
 
-class EvaluatorResultAdmin(admin.ModelAdmin):
+class EvaluatorResultAdmin(Metro2AdminPermissions):
     list_display = ['result_summary', 'date', 'source_record', 'acct_num']
 
-    def has_add_permission(self, request, obj=None):
-        return False
-    def has_view_permission(self, request, obj=None):
-        return True
-    def has_change_permission(self, request, obj=None):
-        return False
-    def has_delete_permission(self, request, obj=None):
-        return False
 
-
-class EvaluatorResultMaterializedViewAdmin(admin.ModelAdmin):
+class EvaluatorResultMaterializedViewAdmin(Metro2AdminPermissions):
     list_display = [
         'source_record_id',
         'event_id',
@@ -94,18 +70,6 @@ class EvaluatorResultMaterializedViewAdmin(admin.ModelAdmin):
         "current_bal",
         "smpa",
     ]
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_view_permission(self, request, obj=None):
-        return True
-
-    def has_change_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 admin.site.register(EvaluatorMetadata, EvaluatorMetadataAdmin)
