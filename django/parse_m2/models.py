@@ -115,7 +115,8 @@ class M2DataFile(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"Event: {self.event_id}, File ID: {self.id}, Act. date: {self.activity_date}, Name: {self.file_name}"
+        return f"Event: {self.event_id}, File ID: {self.id}, " + \
+            f"Act. date: {self.activity_date}, Name: {self.file_name}"
 
 class UnparseableData(models.Model):
     class Meta:

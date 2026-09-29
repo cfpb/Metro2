@@ -73,7 +73,10 @@ def lag_method_associate_prior_records(event: Metro2Event):
 # if the data structure allows. If we believe accounts are reported once per month
 # and the files are separated by collection, try only looking for 'prior' records
 # in the datafile where they would have been reported.
-def _associate_prior_records_single_datafile(file_to_update: M2DataFile, prior_file: M2DataFile):
+def _associate_prior_records_single_datafile(
+    file_to_update: M2DataFile,
+    prior_file: M2DataFile
+):
     query_sql = """
         UPDATE parse_m2_accountactivity SET previous_values_id = prev_id
         from (
