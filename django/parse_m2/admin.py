@@ -119,8 +119,8 @@ class Metro2EventAdmin(Metro2AdminPermissions):
 
 class M2DataFileAdmin(Metro2AdminPermissions):
     list_display = ['id', 'event', 'file_name', 'parsing_status',
-                    'parsed_lines', 'unparseable_lines', 'timestamp',
-                    'error_message', 'collection', 'parser_version']
+                    'parsed_lines', 'unparseable_lines',
+                    'activity_date', 'collection', 'parser_version']
 
     def parsed_lines(self, obj):
         return obj.accountactivity_set.count()
@@ -129,10 +129,11 @@ class M2DataFileAdmin(Metro2AdminPermissions):
         return obj.unparseabledata_set.count()
 
 class UnparseableDataAdmin(Metro2AdminPermissions):
+    list_display = ['id', 'data_file', 'unparseable_line', 'error_description']
 
 
 class AccountActivityAdmin(Metro2AdminPermissions):
-    list_display = ['data_file', 'activity_date', 'cons_acct_num', 'port_type',
+    list_display = ['id', 'data_file', 'activity_date', 'cons_acct_num', 'port_type',
                     'acct_type', 'date_open', 'credit_limit','hcola', 'terms_dur',
                     'terms_freq', 'smpa', 'actual_pmt_amt', 'acct_stat', 'pmt_rating',
                     'php', 'spc_com_cd', 'compl_cond_cd', 'current_bal', 'amt_past_due',
@@ -145,13 +146,13 @@ class AccountActivityAdmin(Metro2AdminPermissions):
 
 
 class J1Admin(Metro2AdminPermissions):
-    list_display = ['account_activity', 'surname',
+    list_display = ['id', 'account_activity', 'surname',
                     'first_name', 'middle_name', 'gen_code','ssn',
                     'dob', 'phone_num', 'ecoa', 'cons_info_ind']
 
 
 class J2Admin(Metro2AdminPermissions):
-    list_display = ['account_activity', 'surname',
+    list_display = ['id', 'account_activity', 'surname',
                     'first_name', 'middle_name', 'gen_code','ssn',
                     'dob', 'phone_num', 'ecoa', 'cons_info_ind',
                     'country_cd', 'addr_line_1', 'addr_line_2',
@@ -159,33 +160,33 @@ class J2Admin(Metro2AdminPermissions):
 
 
 class K1Admin(Metro2AdminPermissions):
-    list_display = ['account_activity', 'orig_creditor_name',
+    list_display = ['id', 'account_activity', 'orig_creditor_name',
                     'creditor_classification']
 
 
 class K2Admin(Metro2AdminPermissions):
-    list_display = ['account_activity', 'purch_sold_ind',
+    list_display = ['id', 'account_activity', 'purch_sold_ind',
                     'purch_sold_name']
 
 
 class K3Admin(Metro2AdminPermissions):
-    list_display = ['account_activity', 'agency_id',
+    list_display = ['id', 'account_activity', 'agency_id',
                     'agency_acct_num', 'min']
 
 
 class K4Admin(Metro2AdminPermissions):
-    list_display = ['account_activity', 'spc_pmt_ind',
+    list_display = ['id', 'account_activity', 'spc_pmt_ind',
                     'deferred_pmt_st_dt', 'balloon_pmt_due_dt',
                     'balloon_pmt_amt']
 
 
 class L1Admin(Metro2AdminPermissions):
-    list_display = ['account_activity', 'change_ind', 'new_acc_num',
+    list_display = ['id', 'account_activity', 'change_ind', 'new_acc_num',
                     'new_id_num']
 
 
 class N1Admin(Metro2AdminPermissions):
-    list_display = ['account_activity', 'employer_name', 'employer_addr1',
+    list_display = ['id', 'account_activity', 'employer_name', 'employer_addr1',
                     'employer_addr2', 'employer_city', 'employer_state',
                     'employer_zip', 'occupation']
 

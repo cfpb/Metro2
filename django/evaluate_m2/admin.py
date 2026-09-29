@@ -37,13 +37,13 @@ class EvaluatorMetadataAdmin(Metro2AdminPermissions):
     def has_change_permission(self, request, obj=None):
         return True
 
-    list_display = ['event', 'evaluator', 'hits']
 
 class EvaluatorResultSummaryAdmin(Metro2AdminPermissions):
+    list_display = ['id', 'event', 'evaluator', 'hits']
 
 
 class EvaluatorResultAdmin(Metro2AdminPermissions):
-    list_display = ['result_summary', 'date', 'source_record', 'acct_num']
+    list_display = ['id', 'result_summary', 'date', 'source_record', 'acct_num']
 
 
 class EvaluatorResultMaterializedViewAdmin(Metro2AdminPermissions):
