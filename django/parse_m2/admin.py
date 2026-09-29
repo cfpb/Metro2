@@ -65,8 +65,8 @@ class Metro2EventAdmin(Metro2AdminPermissions):
         'total_tradelines',
     ]
     list_display = [
+        'id',
         'name',
-        'portfolio',
         'eid_or_matter_num',
         'import_data',
         'date_range_start',
