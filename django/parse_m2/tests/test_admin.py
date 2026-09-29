@@ -64,8 +64,9 @@ class M2DataFileAdminTestCase(TestCase):
     def test_view_permission_is_true(self):
         self.assertTrue(self.ma.has_view_permission(self.request))
 
-    def test_change_permission_is_false(self):
-        self.assertFalse(self.ma.has_change_permission(self.request))
+    # M2DataFile differs from the others in that it is editable
+    def test_change_permission_is_true(self):
+        self.assertTrue(self.ma.has_change_permission(self.request))
 
     def test_delete_permission_is_false(self):
         self.assertFalse(self.ma.has_delete_permission(self.request))
