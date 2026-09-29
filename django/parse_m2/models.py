@@ -107,9 +107,15 @@ class M2DataFile(models.Model):
     parser_version = models.CharField(max_length=200, blank=True)
     activity_date = models.DateField(null=True)
     collection = models.CharField(max_length=50, blank=True, null=True)
+    previous_file = models.OneToOneField(
+        "M2DataFile",
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True
+    )
 
     def __str__(self) -> str:
-        return self.file_name
+        return f"Event: {self.event_id}, File ID: {self.id}, Act. date: {self.activity_date}, Name: {self.file_name}"
 
 class UnparseableData(models.Model):
     class Meta:

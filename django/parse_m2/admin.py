@@ -119,14 +119,23 @@ class Metro2EventAdmin(Metro2AdminPermissions):
 
 class M2DataFileAdmin(Metro2AdminPermissions):
     list_display = ['id', 'event', 'file_name', 'parsing_status',
-                    'parsed_lines', 'unparseable_lines',
+                    'parsed_lines', 'unparseable_lines', 'previous_file__id',
                     'activity_date', 'collection', 'parser_version']
+
+    readonly_fields = [
+        'id', 'event', 'file_name', 'parsing_status',
+        'parsed_lines', 'unparseable_lines', 'timestamp',
+        'error_message', 'collection', 'parser_version'
+    ]
 
     def parsed_lines(self, obj):
         return obj.accountactivity_set.count()
 
     def unparseable_lines(self, obj):
         return obj.unparseabledata_set.count()
+
+    def has_change_permission(self, request, obj=None):
+        return True  # Allow users to modify the prior_values field
 
 class UnparseableDataAdmin(Metro2AdminPermissions):
     list_display = ['id', 'data_file', 'unparseable_line', 'error_description']
