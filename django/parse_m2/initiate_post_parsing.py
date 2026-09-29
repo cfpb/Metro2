@@ -37,8 +37,7 @@ def associate_previous_records(event: Metro2Event, file_strategy: bool=False):
         lag_method_associate_prior_records(event)
 
 
-##########################################################################
-# Record-by-record strategy for associating prior records #################
+# Record-by-record strategy for associating prior records
 ##########################################################################
 # Also known as the 'lag' strategy, this processes the whole dataset at once.
 # This strategy is preferred when the dataset is small, and when we can't
@@ -66,13 +65,12 @@ def lag_method_associate_prior_records(event: Metro2Event):
         logger.info("Done.")
 
 
-##########################################################################
-# Data file strategy for associating prior records #######################
+# Data file strategy for associating prior records
 ##########################################################################
 # This is the preferred strategy for associating prior records for large datasets,
 # if the data structure allows. If we believe accounts are reported once per month
-# and the files are separated by collection, try only looking for 'prior' records
-# in the datafile where they would have been reported.
+# and the files are separated by collection, use the 'previous_file' value on
+# the M2DataFile to indicate where to look for prior records.
 def _associate_prior_records_single_datafile(
     file_to_update: M2DataFile,
     prior_file: M2DataFile

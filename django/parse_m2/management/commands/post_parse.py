@@ -33,10 +33,9 @@ class Command(BaseCommand):
         )
 
         strategy_help = (
-            "Optional flag: which strategy to use when associating previous records. "
-            "If present, use the M2DataFile activity date. This strategy should only "
-            "be used when all files for the event have an activity date, and the files "
-            "are at a monthly interval. If flag not present, use the lag strategy."
+            "Optional flag: If flag is present, uses the `previous_file` "
+            "attribute on each M2DataFile instance to associate prior records. "
+            "`previous_file` setting must be set manually before using this strategy."
         )
         argparser.add_argument(
             "--file_strategy",
