@@ -8,6 +8,7 @@ interface ModalProperties {
   children?: ReactNode
   interactionRequired?: boolean
   onClose?: () => void
+  className?: string
 }
 
 export function Modal({
@@ -15,6 +16,7 @@ export function Modal({
   interactionRequired = false,
   open,
   onClose,
+  className = '',
   ...rest
 }: ModalProperties & React.HTMLAttributes<HTMLDialogElement>): ReactElement | null {
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -52,7 +54,7 @@ export function Modal({
   })
 
   return (
-    <dialog className='modal' ref={dialogRef} {...rest}>
+    <dialog className={`modal ${className}`} ref={dialogRef} {...rest}>
       <div className='modal-wrapper'>
         {interactionRequired ? (
           ''
