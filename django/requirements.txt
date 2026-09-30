@@ -6,7 +6,7 @@ psycopg==3.3.3
 psycopg-binary==3.3.3
 ruff==0.15.11
 boto3==1.42.91
-djangorestframework==3.17.1
+djangorestframework==3.17.2
 django-auth-adfs==1.16.0
 django-filter==25.2
 gunicorn==25.3.0
