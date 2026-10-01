@@ -381,6 +381,9 @@ class EvaluatorResultMaterializedView(models.Model):
 
         CREATE INDEX idx_mv_eval_results_sample
         ON mv_all_evaluator_results (sample);
+
+        CREATE INDEX idx_mv_eval_results_activity_date
+        ON mv_all_evaluator_results (event_id, activity_date);
     """
 
     # The column names in the materialized view correspond to the
