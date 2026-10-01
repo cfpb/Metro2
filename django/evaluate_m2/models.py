@@ -274,7 +274,7 @@ class EvaluatorResultMaterializedView(models.Model):
             lg.info("Creating the evaluator results materialized view...")
             with connection.cursor() as c:
                 c.execute(cls.create_view_command)
-                c.execute(cls.create_index_command)
+                c.execute(cls.create_indexes_command)
         lg.info("... Done.")
 
     @classmethod
@@ -375,16 +375,55 @@ class EvaluatorResultMaterializedView(models.Model):
     refresh_view_command = """
         REFRESH MATERIALIZED VIEW mv_all_evaluator_results;
     """
-    create_index_command = """
+    create_indexes_command = "\n".join([
+        # Index on results by evaluator
+        """
         CREATE INDEX idx_event_id_evaluator_id
         ON mv_all_evaluator_results (event_id, evaluator_id);
-
+        """
+        # Index on sample results (to improve sample view performance)
+        """
         CREATE INDEX idx_mv_eval_results_sample
         ON mv_all_evaluator_results (sample);
-
+        """
+        # Index on activity date (this is the default sort of the all-results view)
+        """
         CREATE INDEX idx_mv_eval_results_activity_date
         ON mv_all_evaluator_results (event_id, activity_date);
-    """
+        """
+        # Index on several filterable fields
+        """
+        CREATE INDEX idx_mv_eval_results_acct_stat
+        ON mv_all_evaluator_results (event_id, acct_stat);
+
+        CREATE INDEX idx_mv_eval_results_compl_cond_cd
+        ON mv_all_evaluator_results (event_id, compl_cond_cd);
+
+        CREATE INDEX idx_mv_eval_results_php1
+        ON mv_all_evaluator_results (event_id, php1);
+
+        CREATE INDEX idx_mv_eval_results_pmt_rating
+        ON mv_all_evaluator_results (event_id, pmt_rating);
+
+        CREATE INDEX idx_mv_eval_results_spc_com_cd
+        ON mv_all_evaluator_results (event_id, spc_com_cd);
+
+        CREATE INDEX idx_mv_eval_results_terms_freq
+        ON mv_all_evaluator_results (event_id, terms_freq);
+
+        CREATE INDEX idx_mv_eval_results_cons_info_ind
+        ON mv_all_evaluator_results (event_id, cons_info_ind);
+
+        CREATE INDEX idx_mv_eval_results_change_ind
+        ON mv_all_evaluator_results (event_id, change_ind);
+        """
+
+        # TODO: determine whether and how to index remaining filterable columns
+        # - cons_info_ind_assoc: JSON column
+        # - dofd, date_closed: Dates filtered as boolean (null or not null)
+        # - amt_past_due, current_bal: Amounts as ranges
+    ])
+
 
     # The column names in the materialized view correspond to the
     # fields on the model
