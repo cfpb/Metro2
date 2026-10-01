@@ -13,8 +13,10 @@ interface DownloadModalProperties {
   copyText?: string
   content?: ReactElement | null
   requirePrivacyAcknowledgment?: boolean
-  privacyHeader?: string
+  downloadHeading?: string
+  downloadContent?: ReactElement | null
   buttonText?: string
+  testId?: string | null
 }
 
 const downloadText = DOMPurify.sanitize(
@@ -38,9 +40,9 @@ const downloadText = DOMPurify.sanitize(
  * @param {string} copyText - Descriptive text for the copy url section
  * @param {ReactElement} content - Any custom content for the modal
  * @param {boolean} requirePrivacyAcknowledgment - Whether to require privcay acknowledgment before download
- * @param {string} privacyHeader - Heading for privacy acknowledgment text
+ * @param {string} downloadHeading - Heading for privacy acknowledgment text
  * @param {string} buttonText - Text for the download button
-
+ * @param {string} testId - Optional test id
  * @returns {ReactElement}
  */
 
@@ -52,8 +54,10 @@ export default function DownloadModal({
   copyText = 'Copy a link to this page',
   content = null,
   requirePrivacyAcknowledgment = true,
-  privacyHeader = 'Confirmation of ability to download PII or CI',
-  buttonText = 'Download file'
+  downloadHeading = 'Confirmation of ability to download PII or CI',
+  downloadContent = null,
+  buttonText = 'Download file',
+  testId = null
 }: DownloadModalProperties): ReactElement | null {
   const [privacyMessageAcknowledged, setPrivacyMessageAcknowledged] = useState(false)
 
@@ -63,15 +67,19 @@ export default function DownloadModal({
 
   const onClickDownloadButton = (): void => {
     void onDownload?.()
-  }
-
-  const onCloseModal = (): void => {
-    onClose?.()
     setPrivacyMessageAcknowledged(false)
   }
 
+  const onCloseModal = (): void => {
+    setPrivacyMessageAcknowledged(false)
+    onClose?.()
+  }
+
   return (
-    <Modal open={open} onClose={onCloseModal}>
+    <Modal
+      open={open}
+      onClose={onCloseModal}
+      data-testId={testId ?? 'download-modal'}>
       <h1 className='h3'>{title}</h1>
       <div className='block block--sub'>
         <h4>Save a link for later</h4>
@@ -83,7 +91,8 @@ export default function DownloadModal({
         <fieldset
           className='o-form__fieldset block block--sub'
           data-testid='download-acknowledgment'>
-          <legend className='h4'>{privacyHeader}</legend>
+          <legend className='h4'>{downloadHeading}</legend>
+          {downloadContent ? <>{downloadContent}</> : null}
           <p
             dangerouslySetInnerHTML={{ __html: downloadText }}
             data-testid='download-acknowledgment-text'></p>

@@ -182,3 +182,12 @@ header h1 {
 p {
   max-width: 670px;
 }
+
+// Utility
+.heading-with-icon {
+  display: flex;
+
+  .cf-icon-svg {
+    padding-right: 10px;
+  }
+}

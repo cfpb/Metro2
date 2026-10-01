@@ -1,10 +1,30 @@
 import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
+import AccountRecord from '@src/types/AccountRecord'
 import type EvaluatorHits from '@src/types/EvaluatorHits'
 import { annotateAccountRecords } from '@src/utils/annotations'
 import { stringifySearchParams } from '@src/utils/customStringify'
 import fetchData from '@src/utils/fetchData'
 import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 import { keepPreviousData, queryOptions, useQuery } from '@tanstack/react-query'
+
+export const fetchHitsForDownload = async (
+  eventId: string,
+  evaluatorId: string,
+  query: EvaluatorSearch
+): Promise<AccountRecord[]> => {
+  const searchParams = stringifySearchParams(query)
+  const url = `/api/events/${eventId}/evaluator/${evaluatorId}/${searchParams}`
+  try {
+    const response = await fetch(url)
+    if (response.ok) {
+      const data = (await response.json()) as EvaluatorHits
+      return annotateAccountRecords(data.hits)
+    }
+    throw new Error(String(response.status))
+  } catch (error) {
+    throw new Error('Hits download error', { cause: error })
+  }
+}
 
 export const fetchEvaluatorHits = async (
   eventId: string,

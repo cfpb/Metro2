@@ -1,6 +1,7 @@
 import { PII_COOKIE_NAME } from '@src/constants/settings'
 import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
 import { stringifySearchParams } from '@src/utils/customStringify'
+import { expect } from 'chai'
 
 type EvaluatorSearchOptionalParams = Partial<EvaluatorSearch>
 
@@ -30,22 +31,34 @@ export class EvaluatorPage {
     return stringifySearchParams({ ...defaults, ...params })
   }
 
+  downloadURL(eventId: string | number, evaluatorId: string | number) {
+    return `/api/events/${eventId}/evaluator/${evaluatorId}/csv/`
+  }
+
   /**
    * Waits for default evaluator page to load with fixture data.
    * @param {object} params - Optional query string params.
-   * @param {object} hitsFixture - Optional fixture name.
+   * @param {boolean} interceptAllHitsPath - Whether to intercept path with any query params.
+   * @param {object} fixture - Optional fixture name.
    * @returns {void} void
    */
   loadEvaluatorPage(
     params: EvaluatorSearchOptionalParams = {},
-    interceptAllHitsPaths = false
+    interceptAllHitsPaths = false,
+    fixture = null
   ): void {
     const querystring = this.queryString(params)
     const apiExt = interceptAllHitsPaths ? '**' : this.apiExt(params)
-    const hitsFixture =
-      'page' in params && params.page === 2
-        ? 'evaluatorHits_page2'
-        : 'evaluatorHits_page1'
+    let hitsFixture
+    if (fixture) {
+      hitsFixture = fixture
+    } else {
+      hitsFixture =
+        'page' in params && params.page === 2
+          ? 'evaluatorHits_page2'
+          : 'evaluatorHits_page1'
+    }
+
     cy.viewport(1920, 1800)
     cy.setCookie(PII_COOKIE_NAME, 'true')
     cy.intercept('GET', 'api/events/1/', { fixture: 'event_1' }).as('getEvent')
@@ -174,5 +187,21 @@ export class EvaluatorPage {
     cy.get(`.ag-header-cell[col-id="${field}"]`)
       .find('.ag-sort-indicator-container')
       .click({ shiftKey: true })
+  }
+
+  verifyFirstCSVCell(fileName: string, val: string) {
+    cy.readFile(fileName)
+      .should('exist')
+      .then((txt: string) => {
+        const rows = txt.split('\n')
+        const firstRowFields = rows[1].split(',')
+        expect(firstRowFields[0]).to.eq(val)
+      })
+  }
+
+  generateRecords(count: number, id: string) {
+    return Array.from({ length: count }, (_, ind) => {
+      return { cons_acct_num: `${id}-${ind}` }
+    })
   }
 }
