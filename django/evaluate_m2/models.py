@@ -378,6 +378,9 @@ class EvaluatorResultMaterializedView(models.Model):
     create_index_command = """
         CREATE INDEX idx_event_id_evaluator_id
         ON mv_all_evaluator_results (event_id, evaluator_id);
+
+        CREATE INDEX idx_mv_eval_results_sample
+        ON mv_all_evaluator_results (sample);
     """
 
     # The column names in the materialized view correspond to the
