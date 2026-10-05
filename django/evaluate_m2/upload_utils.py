@@ -13,7 +13,9 @@ from parse_m2.models import Metro2Event
 
 
 def stream_results_files_to_s3(event: Metro2Event):
-    for rs in event.evaluatorresultsummary_set.filter(hits__gt=0):
+    # temp: limit uploads to 5M results
+    for rs in event.evaluatorresultsummary_set.filter(
+        hits__gt=0, hits__lt=5_000_000):
         stream_full_results_csv_to_s3(rs)
 
 ##############
