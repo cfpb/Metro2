@@ -9,10 +9,12 @@ from smart_open import open
 from django_application.s3_utils import s3_session
 from evaluate_m2.field_names import M2_FIELD_NAMES
 from evaluate_m2.models import EvaluatorResultMaterializedView, EvaluatorResultSummary
+from parse_m2.models import Metro2Event
 
 
-def stream_results_files_to_s3(result_summary: EvaluatorResultSummary):
-    stream_full_results_csv_to_s3(result_summary)
+def stream_results_files_to_s3(event: Metro2Event):
+    for rs in event.evaluatorresultsummary_set.filter(hits__gt=0):
+        stream_full_results_csv_to_s3(rs)
 
 ##############
 # Methods for generating and uploading full CSV

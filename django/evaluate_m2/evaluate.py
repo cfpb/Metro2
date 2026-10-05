@@ -47,11 +47,10 @@ class Evaluate:
         logger = logging.getLogger('evaluate.run_evaluators')
 
         record_set = event.get_all_account_activity()
-        # run evaluators only if there are records in the record_set
         if record_set.exists():
             for eval_name, eval_func in self.evaluators.items():
                 self.run_single_evaluator(event, eval_name, eval_func, record_set)
-            EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
+            self.post_evaluate(event)
         else:
             logger.info(f"No AccountActivity found for the event '{event.id}'")
 
@@ -68,12 +67,7 @@ class Evaluate:
             logger.error(f"Error in evaluator {eval_name}: {e}")
             self.save_error_result(result_summary)
             return
-
         result_summary.summarize_eval_results()
-
-        if settings.S3_ENABLED and result_summary.hits > 0:
-            stream_results_files_to_s3(result_summary)
-
 
     def save_evaluator_results(self, result_summary, eval_query):
         """
@@ -81,17 +75,21 @@ class Evaluate:
         to the EvaluatorResult table.
         """
         select_query, query_params = eval_query.query.sql_with_params()
-
         full_query = create_eval_insert_query(select_query, result_summary)
-
         with connection.cursor() as cursor:
             cursor.execute(full_query, query_params)
-
-
 
     def save_error_result(self, result_summary):
         result_summary.hits = -1
         result_summary.save()
+
+    def post_evaluate(self, event: Metro2Event):
+        # Refresh the Evaluator Result Materialized View
+        EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
+        # Publish CSVs of evaluator results for evals that had hits
+        if settings.S3_ENABLED:
+            stream_results_files_to_s3(event)
+
 
 # create instance of evaluator
 evaluator = Evaluate()
