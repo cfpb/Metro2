@@ -48,7 +48,8 @@ export default function EvaluatorResults({
   )
 
   // Check if the search params include any of the filterable fields
-  const isFiltered = Object.keys(others).some(key => filterableFields.includes(key))
+  const isFiltered =
+    view === 'all' && Object.keys(others).some(key => filterableFields.includes(key))
 
   const rows = data?.hits ?? []
 

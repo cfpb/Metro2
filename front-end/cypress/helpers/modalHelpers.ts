@@ -18,13 +18,13 @@ export class Metro2Modal {
     return testid ? cy.get(`[data-testid="${testid}"].modal`) : cy.get('.modal')
   }
 
-  openModal(buttonText: string): Cypress.Chainable<JQuery> {
+  openModal(buttonText: string, modalTestId?: string): Cypress.Chainable<JQuery> {
     cy.get('button').contains(buttonText).click()
-    return this.getModal()
+    return this.getModal(modalTestId)
   }
 
-  closeModal() {
-    this.getModal().within(() => {
+  closeModal(modalTestId?: string) {
+    this.getModal(modalTestId).within(() => {
       this.getCloseButton().click()
     })
   }
@@ -57,8 +57,8 @@ export class Metro2Modal {
     return cy.contains('button', 'Download')
   }
 
-  verifyPrivacyCheckboxRequired() {
-    this.getModal().within(() => {
+  verifyPrivacyCheckboxRequired(modalTestId?: string) {
+    this.getModal(modalTestId).within(() => {
       // privacy checkbox should be unchecked
       this.getPIICheckbox().should('exist').and('not.be.checked')
       // save button should be disabled

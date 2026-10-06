@@ -33,7 +33,7 @@
     "@tanstack/router-devtools": "^1.167.0",
     "ag-grid-community": "^35.1.0",
     "ag-grid-react": "^35.1.0",
-    "dompurify": "^3.4.12",
+    "dompurify": "^3.4.16",
     "exceljs": "^4.4.0",
     "query-string": "^9.1.1",
     "react": "^19.2.4",
@@ -102,7 +102,7 @@
   "resolutions": {
     "minimatch@npm:5.1.6": "~5.1.8",
     "minimatch@npm:3.1.2": "~3.1.5",
-    "brace-expansion": "5.0.9",
+    "brace-expansion": "5.0.12",
     "uuid": "14.0.0",
     "tmp": "0.2.7",
     "async": "3.2.6",
