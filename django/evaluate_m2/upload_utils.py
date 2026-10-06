@@ -9,10 +9,15 @@ from smart_open import open
 from django_application.s3_utils import s3_session
 from evaluate_m2.field_names import M2_FIELD_NAMES
 from evaluate_m2.models import EvaluatorResultMaterializedView, EvaluatorResultSummary
+from parse_m2.models import Metro2Event
 
 
-def stream_results_files_to_s3(result_summary: EvaluatorResultSummary):
-    stream_full_results_csv_to_s3(result_summary)
+def stream_results_files_to_s3(event: Metro2Event, evals: dict = None):
+    for rs in event.evaluatorresultsummary_set.filter(hits__gt=0):
+        # If a list of evals is provided, only publish results for those evals.
+        # Otherwise, publish all evals that have results.
+        if not evals or (rs.evaluator_id in evals):
+            stream_full_results_csv_to_s3(rs)
 
 ##############
 # Methods for generating and uploading full CSV
@@ -53,10 +58,11 @@ def generate_eval_results_csv(qs: QuerySet, fout):
     by evaluate.py to send the CSV to S3. When S3_ENABLED == False, this
     method is used by views.py to generate the file for the API response.
     """
+    size_limit = 2_000_000  # for now, limit CSVs to 2M rows
     writer = csv.writer(fout)
     columns = EvaluatorResultMaterializedView.csv_fields()
     writer.writerow(csv_header_row(columns))
-    for i in qs:
+    for i in qs[:size_limit]:
         writer.writerow([getattr(i, c) for c in columns])
     return fout
 
