@@ -58,10 +58,11 @@ def generate_eval_results_csv(qs: QuerySet, fout):
     by evaluate.py to send the CSV to S3. When S3_ENABLED == False, this
     method is used by views.py to generate the file for the API response.
     """
+    size_limit = 2_000_000  # for now, limit CSVs to 2M rows
     writer = csv.writer(fout)
     columns = EvaluatorResultMaterializedView.csv_fields()
     writer.writerow(csv_header_row(columns))
-    for i in qs:
+    for i in qs[:size_limit]:
         writer.writerow([getattr(i, c) for c in columns])
     return fout
 
