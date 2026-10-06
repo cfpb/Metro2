@@ -88,7 +88,7 @@ class Evaluate:
         EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
         # Publish CSVs of evaluator results for evals that had hits
         if settings.S3_ENABLED:
-            stream_results_files_to_s3(event)
+            stream_results_files_to_s3(event, self.evaluators)
 
 
 # create instance of evaluator

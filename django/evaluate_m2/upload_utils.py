@@ -12,11 +12,12 @@ from evaluate_m2.models import EvaluatorResultMaterializedView, EvaluatorResultS
 from parse_m2.models import Metro2Event
 
 
-def stream_results_files_to_s3(event: Metro2Event):
-    # temp: limit uploads to 5M results
-    for rs in event.evaluatorresultsummary_set.filter(
-        hits__gt=0, hits__lt=5_000_000):
-        stream_full_results_csv_to_s3(rs)
+def stream_results_files_to_s3(event: Metro2Event, evals: dict = None):
+    for rs in event.evaluatorresultsummary_set.filter(hits__gt=0):
+        # If a list of evals is provided, only publish results for those evals.
+        # Otherwise, publish all evals that have results.
+        if not evals or (rs.evaluator_id in evals):
+            stream_full_results_csv_to_s3(rs)
 
 ##############
 # Methods for generating and uploading full CSV
