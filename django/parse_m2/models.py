@@ -130,8 +130,8 @@ class AccountActivity(models.Model):
     class Meta:
         verbose_name_plural = "Account Activity"
         indexes = [
-            models.Index(fields=['cons_acct_num',]),
-            models.Index(fields=['activity_date',]),
+            models.Index(fields=['event_id', 'cons_acct_num',]),
+            models.Index(fields=['event_id', 'activity_date',]),
         ]
 
     # Note: Numeric fields are using models.IntegerField, which
