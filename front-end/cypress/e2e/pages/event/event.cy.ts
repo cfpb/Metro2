@@ -80,11 +80,7 @@ describe('Event page', () => {
   })
   it('Should show correct evaluator value per row', () => {
     const fields = ['id', 'description', 'category', 'hits', 'accounts_affected']
-    table.verifyTableBodyContent<EvaluatorMetadata>(
-      table.getBodyRows(),
-      fields,
-      eventData.evaluators
-    )
+    table.verifyTableBodyContent<EvaluatorMetadata>(fields, eventData.evaluators)
   })
   it('Should contain the correct URL per evaluator', () => {
     table.getBodyRows().each((row, rowIndex) => {
@@ -138,19 +134,19 @@ describe('Event file download', () => {
 })
 
 /**
- * Table sorting
- *
- * 1. When event page is loaded without a sort param in the URL,
- *      URL & table sort should be updated to reflect default sort (id ascending)
- * 2. Clicking another column's sort indicator three times should update sort state,
- *      cycling through ascending sort, descending sort, and then sort removal 
- *      and a return to default sort
- * 4. Navigating to page with non-default sort state in URL should apply that state
- * 5. Sort values in URL should be validated and replaced with id if invalid
- *
- * Excerpt of fields for the two records in the event data fixture
- * 
- *  [
+Table sorting
+
+1. When event page is loaded without a sort param in the URL,
+     URL & table sort should be updated to reflect default sort (id ascending)
+2. Clicking another column's sort indicator three times should update sort state,
+     cycling through ascending sort, descending sort, and then sort removal 
+     and a return to default sort
+4. Navigating to page with non-default sort state in URL should apply that state
+5. Sort values in URL should be validated and replaced with id if invalid
+
+Excerpt of fields for the two records in the event data fixture
+
+ [
       {
       "hits": 1000,
       "id": "Test-Eval-1",
@@ -162,7 +158,7 @@ describe('Event file download', () => {
       "category": "Bankruptcy"
     }
     ]
- */
+*/
 
 describe('Sorting is configured for event page', () => {
   beforeEach(() => {
@@ -260,9 +256,9 @@ describe('Sort params are validated and used', () => {
 
   describe('Invalid sort param handling', () => {
     const invalidValues = ['', 'activity_date', 'random']
-    for (const val of invalidValues) {
-      it(`Should replace invalid sort param "${val}" with default`, () => {
-        eventPage.loadEventPage(val)
+    for (const value of invalidValues) {
+      it(`Should replace invalid sort param "${value}" with default`, () => {
+        eventPage.loadEventPage(value)
         cy.location('search').should('include', 'sort=id')
       })
     }
