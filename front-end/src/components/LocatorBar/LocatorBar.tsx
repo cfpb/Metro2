@@ -10,24 +10,24 @@ interface BreadcrumbCrumb {
 }
 
 /**
- * LocatorBar
- *
- * Implements a full-width header bar with an icon and heading,
- * as well as optional eyebrow, subhead, and breadcrumbs.
- *
- * @param {string} heading - H1-level heading text
- * @param {string} icon - name for a design-system icon
- *                        eg, 'bank' or 'bank-round'
- *                        Full list here:
- *                        https://cfpb.github.io/design-system/foundation/iconography
- * @param {string} eyebrow - text for small heading above the H1
- * @param {ReactElement | string | null} children - additional content to be displayed
- *                                                  under the heading
- * @param {array} breadcrumbs - array of breadcrumb links
- *                              with format:
- *                              [to:'link url', label:'link text']
- *
- */
+LocatorBar
+
+Implements a full-width header bar with an icon and heading,
+as well as optional eyebrow, subhead, and breadcrumbs.
+
+@param {string} heading - H1-level heading text
+@param {string} icon - name for a design-system icon
+                       eg, 'bank' or 'bank-round'
+                       Full list here:
+                       https://cfpb.github.io/design-system/foundation/iconography
+@param {string} eyebrow - text for small heading above the H1
+@param {ReactElement | string | null} children - additional content to be displayed
+                                                 under the heading
+@param {array} breadcrumbs - array of breadcrumb links
+                             with format:
+                             [to:'link url', label:'link text']
+
+*/
 
 interface LocatorBarProperties {
   icon?: string

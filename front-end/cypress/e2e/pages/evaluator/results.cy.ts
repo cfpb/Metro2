@@ -158,16 +158,6 @@ describe('Results view', () => {
 })
 
 describe('Invalid param handling', () => {
-  // Check that invalid values for valid param keys are replaced
-  const invalidParams = {
-    '?view=invalid': ['view=sample', 'page=1'],
-    '?page=num': ['page=1', 'view=sample'],
-    '?view=unsupported&page=two': ['view=sample', 'page=1'],
-    '?view=all&page=num': ['view=all', 'page=1'],
-    '?view=random&page=2': ['view=sample', 'page=1'],
-    '?view=sample&page=2': ['view=sample', 'page=1']
-  } as const
-
   beforeEach(() => {
     cy.viewport(1920, 1800)
     cy.setCookie(PII_COOKIE_NAME, 'true')
@@ -178,13 +168,25 @@ describe('Invalid param handling', () => {
     }).as('getEvaluatorHits')
   })
 
-  for (const item of Object.entries(invalidParams)) {
-    it(`Should replace invalid param value in "${item[0]}"`, () => {
-      cy.visit(`/events/1/evaluators/Test-Eval-1/${item[0]}`)
+  // Check that invalid values for valid param keys are replaced
+  const invalidParameters = {
+    '?view=invalid': ['view=sample', 'page=1'],
+    '?page=num': ['page=1', 'view=sample'],
+    '?view=unsupported&page=two': ['view=sample', 'page=1'],
+    '?view=all&page=num': ['view=all', 'page=1'],
+    '?view=random&page=2': ['view=sample', 'page=1'],
+    '?view=sample&page=2': ['view=sample', 'page=1']
+  } as const
+
+  for (const item of Object.entries(invalidParameters)) {
+    const invalidQueryString = item[0]
+    const validParamaters = item[1]
+    it(`Should replace invalid param value in "${invalidQueryString}"`, () => {
+      cy.visit(`/events/1/evaluators/Test-Eval-1/${invalidQueryString}`)
       cy.wait(['@getEvent', '@getUser', '@getEvaluatorHits'])
-      cy.location('search').should('not.include', item[0])
-      for (const validParam of item[1]) {
-        cy.location('search').should('include', validParam)
+      cy.location('search').should('not.include', invalidQueryString)
+      for (const validParameter of validParamaters) {
+        cy.location('search').should('include', validParameter)
       }
     })
   }

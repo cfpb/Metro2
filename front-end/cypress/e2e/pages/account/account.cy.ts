@@ -152,11 +152,11 @@ describe('Account data download', () => {
   })
   it('Should reset options when closed', () => {
     /**
-     * When the account download modal is closed, its form elements
-     * should be reset to initial state:
-     *   - PII acknowledgment checkbox should be unchecked
-     *   - 'Exclude' option should be selected in contact info radio buttons
-     */
+    When the account download modal is closed, its form elements
+    should be reset to initial state:
+      - PII acknowledgment checkbox should be unchecked
+      - 'Exclude' option should be selected in contact info radio buttons
+    */
 
     const includeContactInfoLabel =
       'Include latest contact information for account holder'
@@ -191,20 +191,20 @@ describe('Account data download', () => {
 })
 
 /**
- * Table sorting
- *
- * 1. When account page is loaded without a sort param in the URL,
- *      URL & table sort should be updated to reflect default sort (activity_date ascending)
- * 2. Clicking another column's sort indicator three times should update sort state,
- *      cycling through ascending sort, descending sort, and then sort removal / return to default sort
- * 3. Clicking one column's sort indicator and then shift-clicking the sort indicator in an
- *      additional column should update row order and URL to include the additional sort param
- * 4. Navigating to page with sort state in URL should apply that state
- * 
- *
- * Excerpt of fields for the four records in the account data fixture
- * 
- *  [
+Table sorting
+
+1. When account page is loaded without a sort param in the URL,
+     URL & table sort should be updated to reflect default sort (activity_date ascending)
+2. Clicking another column's sort indicator three times should update sort state,
+     cycling through ascending sort, descending sort, and then sort removal / return to default sort
+3. Clicking one column's sort indicator and then shift-clicking the sort indicator in an
+     additional column should update row order and URL to include the additional sort param
+4. Navigating to page with sort state in URL should apply that state
+
+
+Excerpt of fields for the four records in the account data fixture
+
+ [
       {
         activity_date: '2018-07-30',
         actual_pmt_amt: 50,
@@ -226,7 +226,7 @@ describe('Account data download', () => {
         current_bal: 1000
       }
     ]
- */
+*/
 
 describe('Account page sorting', () => {
   beforeEach(() => {

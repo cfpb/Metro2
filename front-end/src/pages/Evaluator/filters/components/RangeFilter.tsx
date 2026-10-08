@@ -13,18 +13,18 @@ interface RangeFilterData {
 }
 
 /**
- * EvaluatorRangeFilter
- *
- * Manages filtering by min and max value for a Metro 2 dollar amount field.
- *
- *   1. Retrieves min and max values for the field from the query string.
- *   2. Outputs an accordion containing range filter for the field.
- *      Accordion will be open if min or max value exists in query string.
- *   3. When min or max value is updated, calls navigate with new value.
- *
- * @param {string} field - name of a Metro 2 dollar amount field
- *
- */
+EvaluatorRangeFilter
+
+Manages filtering by min and max value for a Metro 2 dollar amount field.
+
+  1. Retrieves min and max values for the field from the query string.
+  2. Outputs an accordion containing range filter for the field.
+     Accordion will be open if min or max value exists in query string.
+  3. When min or max value is updated, calls navigate with new value.
+
+@param {string} field - name of a Metro 2 dollar amount field
+
+*/
 
 export default function EvaluatorRangeFilter({
   field

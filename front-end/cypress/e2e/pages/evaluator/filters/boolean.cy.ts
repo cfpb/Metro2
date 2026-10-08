@@ -8,14 +8,14 @@ const evaluatorPage = new EvaluatorPage()
 const table = new Metro2Table()
 
 /**
- * Boolean filters consist of two checkboxes that allow a user
- * to filter for cases where a field has a value and ones where it doesn't.
- *
- * Both options (populated & blank) can be selected,
- * which is effectively the same as neither option being selected.
- * In that situation, a filter value of field_name=any is added to the URL
- * but no filter for the field is included in the API request.
- */
+Boolean filters consist of two checkboxes that allow a user
+to filter for cases where a field has a value and ones where it doesn't.
+
+Both options (populated & blank) can be selected,
+which is effectively the same as neither option being selected.
+In that situation, a filter value of field_name=any is added to the URL
+but no filter for the field is included in the API request.
+*/
 
 describe('Evaluator page boolean filters', () => {
   beforeEach(() => {
@@ -29,26 +29,26 @@ describe('Evaluator page boolean filters', () => {
   })
 
   /**
-   * This test verifies that
-   *   1. checking one box
-   *       - URL: adds field_name=true or field_name=false to querystring
-   *       - API: sends field_name=true or field_name=false in request
-   *       - UI: updates the page with filtered data from API
-   *   2. checking both boxes
-   *       - URL: adds field_name=any
-   *       - API: removes field_name from query
-   *              no request is made since results without this filter are stored
-   *       - UI: updates the page with all data from react-query storage
-   *   3. unchecking one box when both are checked
-   *       - URL: field_name=still checked value in querystring
-   *       - API: sends the still selected filter value in request
-   *       - UI: updates the page with filtered data from API
-   *   4. unchecking only checked box
-   *       - URL: removes field_name
-   *       - API: removes field_name from query
-   *              no request is made since results without this filter are stored
-   *       - UI: updates the page with all data from react-query storage
-   */
+  This test verifies that
+    1. checking one box
+        - URL: adds field_name=true or field_name=false to querystring
+        - API: sends field_name=true or field_name=false in request
+        - UI: updates the page with filtered data from API
+    2. checking both boxes
+        - URL: adds field_name=any
+        - API: removes field_name from query
+               no request is made since results without this filter are stored
+        - UI: updates the page with all data from react-query storage
+    3. unchecking one box when both are checked
+        - URL: field_name=still checked value in querystring
+        - API: sends the still selected filter value in request
+        - UI: updates the page with filtered data from API
+    4. unchecking only checked box
+        - URL: removes field_name
+        - API: removes field_name from query
+               no request is made since results without this filter are stored
+        - UI: updates the page with all data from react-query storage
+  */
   it('Should apply and remove boolean filters with checkboxes', () => {
     // Intercept '?dofd=false' with 8-result fixture
     evaluatorPage.interceptFilteredResults(

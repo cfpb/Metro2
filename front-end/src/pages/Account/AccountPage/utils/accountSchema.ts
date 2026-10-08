@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/prefer-top-level-await */
 import { accountTableFields } from '@src/pages/Account/AccountPage/utils/accountTableFields'
 import { validateSortQueryParams } from '@src/utils/sortState'
 import { z } from 'zod'

@@ -1,6 +1,6 @@
 import { Link as DSRLink, Header } from '@cfpb/design-system-react'
 import { ReactElement } from 'react'
-const showCFPBHeader =
+const isShowCFPBHeader =
   import.meta.env.VITE_SHOW_CFPB_HEADER === 'true' ? true : false
 
 interface HeaderProps {
@@ -33,4 +33,4 @@ export function Metro2Header({ showCFPBHeader = false }: HeaderProps): ReactElem
   )
 }
 
-export const M2Header = <Metro2Header showCFPBHeader={showCFPBHeader} />
+export const M2Header = <Metro2Header showCFPBHeader={isShowCFPBHeader} />
