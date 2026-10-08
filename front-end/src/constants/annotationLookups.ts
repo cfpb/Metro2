@@ -1,11 +1,11 @@
 /**
- * Many Metro2 fields contain coded values that need to be translated
- * into a more human-readable format for display in the Metro2 tool.
- *
- * The following lookups map a field's possible coded values to their
- * definitions.
- *
- */
+Many Metro2 fields contain coded values that need to be translated
+into a more human-readable format for display in the Metro2 tool.
+
+The following lookups map a field's possible coded values to their
+definitions.
+
+*/
 
 export const ACCOUNT_STATUS_LOOKUP = {
   '05': 'Transferred',

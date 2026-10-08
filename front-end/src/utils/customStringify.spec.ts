@@ -28,7 +28,7 @@ describe('customStringify', () => {
   it('returns empty string for empty, null, or undefined values', () => {
     expect(customStringify(null)).toEqual('')
     expect(customStringify(UNDEFINED)).toEqual('')
-    expect(customStringify('    ')).toEqual('')
+    expect(customStringify(' '.repeat(4))).toEqual('')
     expect(customStringify('')).toEqual('')
   })
 })

@@ -9,13 +9,13 @@ import { formatNumber, formatUSD } from '@src/utils/formatNumbers'
 // Derive a list of date fields from the account record column definitions
 const dateFields = Object.keys(COL_DEF_CONSTANTS).filter(field => {
   const coldef = COL_DEF_CONSTANTS[field as keyof typeof COL_DEF_CONSTANTS]
-  return 'type' in coldef ? coldef.type === 'formattedDate' : false
+  return 'type' in coldef && coldef.type === 'formattedDate'
 })
 
 // Derive a list of currency fields from the account record column definitions
 const currencyFields = Object.keys(COL_DEF_CONSTANTS).filter(field => {
   const coldef = COL_DEF_CONSTANTS[field as keyof typeof COL_DEF_CONSTANTS]
-  return 'type' in coldef ? coldef.type === 'currency' : false
+  return 'type' in coldef && coldef.type === 'currency'
 })
 
 // Derive a list of annotated fields from the annotation lookup map
@@ -55,11 +55,32 @@ export const getDownloadValue = (field: string, value: unknown): unknown => {
   if (value === null || value === undefined) return ''
   if (typeof value === 'string' || Number.isFinite(value)) {
     const val = value as string | number
-    if (annotatedFields.includes(field)) return annotateM2FieldValue(field, val)
-    return String(val)
+    return annotatedFields.includes(field)
+      ? annotateM2FieldValue(field, val)
+      : String(val)
   }
   // Arrays should be converted to strings
   if (Array.isArray(value)) return value.join('')
   // Any other value should be returned as is
   return value
 }
+
+// const dateFields = ['activity_date', 'date_open', 'date_closed', 'doai', 'dofd', 'dolp', 'k4__deferred_pmt_st_dt', 'k4__balloon_pmt_due_dt', 'previous_values__activity_date', 'previous_values__date_open', 'previous_values__dofd', '']
+// const COL_DEF_CONSTANTS = {
+//   actual_pmt_amt: { type: 'currency' },
+//   amt_past_due: { type: 'currency' },
+//   credit_limit: { type: 'currency' },
+//   current_bal: { type: 'currency' },
+//   hcola: { type: 'currency' },
+
+//   orig_chg_off_amt: { type: 'currency' },
+//   smpa: { type: 'currency', minWidth: 140 },
+//   k4__balloon_pmt_amt: { type: 'currency' },
+
+//   previous_values__activity_date: { type: 'formattedDate', minWidth: 160 },
+//   previous_values__date_open: { type: 'formattedDate', minWidth: 100 },
+//   previous_values__dofd: { type: 'formattedDate', minWidth: 100 },
+//   previous_values__date_closed: { type: 'formattedDate', minWidth: 110 },
+//   previous_values__current_bal: { type: 'currency' },
+//   previous_values__orig_chg_off_amt: { type: 'currency' }
+// }

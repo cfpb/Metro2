@@ -1,22 +1,22 @@
 import { notFound } from '@tanstack/react-router'
 
 /**
- * fetchData()
- *
- * Fetches data from the API using provided URL.
- * Returns JSON from successful requests and throws
- * appropriate errors for unsuccessful ones.
- *
- * @param {string} url - url for an API endpoint
- * @param {string} dataType - type of data (ie, 'event' or 'account') being
- *                            fetched from API. This is used to determine
- *                            error message text if request fails
- * @param {number} delay - an optional parameter for use in local testing.
- *                         Uncomment this param and the associated if clause
- *                         and pass a number in milliseconds to delay the
- *                         request completion
- * @returns {Promise} - returns response or throws error
- */
+fetchData()
+
+Fetches data from the API using provided URL.
+Returns JSON from successful requests and throws
+appropriate errors for unsuccessful ones.
+
+@param {string} url - url for an API endpoint
+@param {string} dataType - type of data (ie, 'event' or 'account') being
+                           fetched from API. This is used to determine
+                           error message text if request fails
+@param {number} delay - an optional parameter for use in local testing.
+                        Uncomment this param and the associated if clause
+                        and pass a number in milliseconds to delay the
+                        request completion
+@returns {Promise} - returns response or throws error
+*/
 const fetchData = async <TData>(
   url: string,
   dataType: string,

@@ -15,7 +15,7 @@ export default function AccountSearchPage(): ReactElement {
     accountString.length > 0 && !Array.isArray(cons_acct_num)
       ? [cons_acct_num]
       : cons_acct_num
-  const noSearchTerms =
+  const isNoSearchTerms =
     accountString === '' || cons_acct_num === undefined || cons_acct_num === null
 
   // Get event data
@@ -49,7 +49,7 @@ export default function AccountSearchPage(): ReactElement {
           </div>
         </div>
 
-        {noSearchTerms ? null : (
+        {isNoSearchTerms ? null : (
           <AccountSearchResults
             accountIds={ids as (string | number)[]}
             eventId={eventData.id}

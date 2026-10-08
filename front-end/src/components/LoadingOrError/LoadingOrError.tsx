@@ -9,8 +9,7 @@ export default function LoadingOrError({
   error,
   loading_message
 }: Properties): ReactElement {
-  if (error) return <>{error.message}</>
-  return <Loader message={loading_message} />
+  return error ? <>{error.message}</> : <Loader message={loading_message} />;
 }
 LoadingOrError.defaultProps = {
   error: undefined

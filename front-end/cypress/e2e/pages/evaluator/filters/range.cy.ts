@@ -8,9 +8,9 @@ const evaluatorPage = new EvaluatorPage()
 const table = new Metro2Table()
 
 /**
- * Amount range filters consist of two numerical inputs,
- * one for a min value and the other for a max value.
- */
+Amount range filters consist of two numerical inputs,
+one for a min value and the other for a max value.
+*/
 
 describe('Evaluator page range amount filters', () => {
   beforeEach(() => {

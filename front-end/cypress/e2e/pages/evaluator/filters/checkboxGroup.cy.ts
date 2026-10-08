@@ -31,8 +31,8 @@ describe('Checkbox group filters', () => {
     )
 
     /**
-     * Account status filter should not be applied when page loads
-     */
+    Account status filter should not be applied when page loads
+    */
 
     // Account status parent checkbox should be unchecked
     page.checkboxShouldHaveState('Account status', 'unchecked')
@@ -44,8 +44,8 @@ describe('Checkbox group filters', () => {
     cy.url().should('not.include', 'acct_stat')
 
     /**
-     * Clicking an account status checkbox should apply the filter
-     */
+    Clicking an account status checkbox should apply the filter
+    */
 
     // Click the '11' checkbox in the account status filter
     page.openExpandable('Current')
@@ -76,8 +76,8 @@ describe('Checkbox group filters', () => {
     table.hasRowCount(16)
 
     /**
-     * Clicking the account status checkbox again should remove the filter
-     */
+    Clicking the account status checkbox again should remove the filter
+    */
 
     // Click the account status '11' checkbox
     page.getExpandableByText('Current').within(() => {
@@ -108,8 +108,8 @@ describe('Checkbox group filters', () => {
     page.openExpandable('Special comment code')
 
     /**
-     * Special comment code filter should not be applied when page loads
-     */
+    Special comment code filter should not be applied when page loads
+    */
 
     // Special comment code parent checkbox should be unchecked
     page.checkboxShouldHaveState('Special comment code', 'unchecked')
@@ -121,8 +121,8 @@ describe('Checkbox group filters', () => {
     cy.url().should('not.include', 'spc_com_cd')
 
     /**
-     * Clicking a special comment code status checkbox should apply the filter
-     */
+    Clicking a special comment code status checkbox should apply the filter
+    */
 
     // Click the 'Blank' checkbox in the special comment code filter
     page.getExpandableByText('Special comment code').within(() => {
@@ -149,8 +149,8 @@ describe('Checkbox group filters', () => {
     table.hasRowCount(16)
 
     /**
-     * Clicking the special comment code checkbox again should remove the filter
-     */
+    Clicking the special comment code checkbox again should remove the filter
+    */
 
     // Click the special comment code 'blank' checkbox
     page.getExpandableByText('Special comment code').within(() => {

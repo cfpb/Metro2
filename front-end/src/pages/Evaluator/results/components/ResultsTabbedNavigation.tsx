@@ -10,12 +10,13 @@ export default function EvaluatorResultsTabbedNavigation(): ReactElement {
   const navigate = useNavigate()
 
   const onClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
+    const id = event.currentTarget.id
     void navigate({
       resetScroll: false,
       to: '.',
       search: (): object => {
         return {
-          view: event.currentTarget.id === 'tab-all' ? 'all' : 'sample',
+          view: id === 'tab-all' ? 'all' : 'sample',
           page: 1,
           sort: 'activity_date'
         }

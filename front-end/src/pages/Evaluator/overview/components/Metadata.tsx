@@ -4,18 +4,18 @@ import { formatDate } from '@src/utils/formatDates'
 import type { ReactElement } from 'react'
 export const adminUrlPrefix = import.meta.env.DEV ? 'http://localhost:8000' : ''
 /**
- * EvaluatorMetadata
- *
- * An evaluator's metadata contains four fields that are displayed
- * in the 'How to evaluate these results' section of the evaluator page.
- *
- * Most of the fields won't have content at first, so we check for
- * populated fields and display any that exist.
- *
- * We also display information on how users can contribute content
- * for the empty fields or update content for populated fields.
- *
- */
+EvaluatorMetadata
+
+An evaluator's metadata contains four fields that are displayed
+in the 'How to evaluate these results' section of the evaluator page.
+
+Most of the fields won't have content at first, so we check for
+populated fields and display any that exist.
+
+We also display information on how users can contribute content
+for the empty fields or update content for populated fields.
+
+*/
 
 interface MetadataProps {
   metadata: EvaluatorMetadata
@@ -33,7 +33,7 @@ export const getPopulatedMetadataFields = (
   metadata: EvaluatorMetadata
 ): string[] => {
   const populatedFields: string[] = []
-  for (const [field] of explanatoryFields.entries()) {
+  for (const [field] of explanatoryFields) {
     if (metadata[field as keyof EvaluatorMetadata]) {
       populatedFields.push(field)
     }
@@ -78,7 +78,7 @@ export default function EvaluatorMetadataSection({
           )}
 
           <div className='contribute-instructions'>
-            {isAdmin === true ? (
+            {isAdmin ? (
               <p data-testid='metadata-contribute-admin'>
                 {' '}
                 As a Metro2 admin, you can{' '}

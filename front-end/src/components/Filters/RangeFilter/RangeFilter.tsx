@@ -14,10 +14,12 @@ interface RangeFilterData {
 }
 
 const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-  if (event.key === 'Enter') {
-    const target = event.target as HTMLInputElement
-    target.blur()
+  if (event.key !== 'Enter') {
+    return;
   }
+
+  const target = event.target as HTMLInputElement
+  target.blur()
 }
 
 export default function RangeFilter({

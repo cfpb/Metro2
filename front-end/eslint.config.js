@@ -75,11 +75,16 @@ export default defineConfig([
       // General overrides
       'no-console': 'warn',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'react/prop-types': 'off', // Using TypeScript, so don't use PropTypes.
       'unicorn/prevent-abbreviations': 'off', // Airbnb was less strict than Unicorn
       'unicorn/null-data-property': 'off',
       'unicorn/no-null': 'off',
-      'react/prop-types': 'off', // Using TypeScript, so don't use PropTypes.
-      'unicorn/filename-case': 'off'
+      'unicorn/name-replacements': 'off',
+      'unicorn/filename-case': 'off',
+      'unicorn/no-computed-property-existence-check': 'off',
+      'unicorn/prefer-iterator-to-array': 'off',
+      'unicorn/consistent-boolean-name': 'off',
+      'unicorn/require-array-sort-compare': 'off'
     }
   },
 

@@ -36,12 +36,12 @@ export class EvaluatorPage {
   }
 
   /**
-   * Waits for default evaluator page to load with fixture data.
-   * @param {object} params - Optional query string params.
-   * @param {boolean} interceptAllHitsPath - Whether to intercept path with any query params.
-   * @param {object} fixture - Optional fixture name.
-   * @returns {void} void
-   */
+  Waits for default evaluator page to load with fixture data.
+  @param {object} params - Optional query string params.
+  @param {boolean} interceptAllHitsPath - Whether to intercept path with any query params.
+  @param {object} fixture - Optional fixture name.
+  @returns {void} void
+  */
   loadEvaluatorPage(
     params: EvaluatorSearchOptionalParams = {},
     interceptAllHitsPaths = false,

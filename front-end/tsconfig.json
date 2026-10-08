@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "noEmit": true,

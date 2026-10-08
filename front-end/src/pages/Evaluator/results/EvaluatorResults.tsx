@@ -89,7 +89,7 @@ export default function EvaluatorResults({
         <div className='loader__wrapper'>
           {isFetching ? <Loader message='Your data is loading' /> : null}
           <div className='row row--content u-mt0 u-mb0'>
-            <TabPanel id={`${view === 'all' ? 'all' : 'sample'}`}>
+            <TabPanel id={view === 'all' ? 'all' : 'sample'}>
               <div className={`results-container results-container--${view}`}>
                 <div className='row row--action row--background'>
                   <div className='results-message' data-testid='results-message'>

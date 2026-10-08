@@ -5,40 +5,40 @@ import type { CheckboxItem } from './CheckboxItem'
 import './NestedCheckboxGroup.scss'
 
 /**
- * NestedCheckboxGroup
- *
- * Recursively generates a group of nested checkboxes. Each parent checkbox is displayed
- * in the header of an expandable and its children in the expandable body.
- *
- * Parent checkbox state is calculated as follows:
- *    - if all the parent's descendant checkboxes are checked, parent = checked
- *    - if some but not all of the descendants are checked, parent = indeterminate
- *    - otherwise, parent = not checked
- *
- * @param {array} items An array of checkbox items, each of which might have its own
- *                      array of child checkbox items.
- *
- *                      Example array:
- *                      [
- *                        {
- *                          key: 'parent',
- *                          name: 'Parent',
- *                          onChange: parentChangeHandler
- *                          children: [
- *                              {
- *                                key: 'child1',
- *                                name: 'First child',
- *                                checked: false, // optional
- *                                onChange: childChangeHandler
- *                                children: [child items] // optional
- *                              }
- *                          ]
- *                        }
- *                      ]
- * @param {boolean} level Current level. Defaults to 1, is incremented
- *                        for children.
- *
- */
+NestedCheckboxGroup
+
+Recursively generates a group of nested checkboxes. Each parent checkbox is displayed
+in the header of an expandable and its children in the expandable body.
+
+Parent checkbox state is calculated as follows:
+   - if all the parent's descendant checkboxes are checked, parent = checked
+   - if some but not all of the descendants are checked, parent = indeterminate
+   - otherwise, parent = not checked
+
+@param {array} items An array of checkbox items, each of which might have its own
+                     array of child checkbox items.
+
+                     Example array:
+                     [
+                       {
+                         key: 'parent',
+                         name: 'Parent',
+                         onChange: parentChangeHandler
+                         children: [
+                             {
+                               key: 'child1',
+                               name: 'First child',
+                               checked: false, // optional
+                               onChange: childChangeHandler
+                               children: [child items] // optional
+                             }
+                         ]
+                       }
+                     ]
+@param {boolean} level Current level. Defaults to 1, is incremented
+                       for children.
+
+*/
 
 interface NestedCheckboxGroupProperties {
   items: CheckboxItem[]
@@ -68,22 +68,22 @@ export default function NestedCheckboxGroup({
     <>
       {items.map(item => {
         const checkedDescendants = getCheckedDescendants(item)
-        const allChecked = checkedDescendants.every(Boolean)
-        const someChecked = allChecked || checkedDescendants.includes(true)
+        const isAllChecked = checkedDescendants.every(Boolean)
+        const isSomeChecked = isAllChecked || checkedDescendants.includes(true)
         return item.children && item.children.length > 0 ? (
           <Accordion
             className={`nested nested--level-${level}`}
             hasBackground={false}
             key={item.key}
-            openOnLoad={level === 1 && someChecked}
+            openOnLoad={level === 1 && isSomeChecked}
             header={
               <Checkbox
                 onChange={item.onChange}
                 id={String(item.key)}
                 label={item.name}
-                checked={allChecked}
+                checked={isAllChecked}
                 // isLabelInline={level !== 1}
-                isIndeterminate={!allChecked && someChecked}
+                isIndeterminate={!isAllChecked && isSomeChecked}
               />
             }>
             <NestedCheckboxGroup items={item.children} level={level + 1} />

@@ -24,20 +24,20 @@ const summaryFields = [
 ] as const
 
 /**
- * AccountSummary()
- *
- * Using the latest activity record for an account, generates a
- * definition list containing the titles and values (plus annotation,
- * where available) for five key fields on the record.
- *
- * Also adds a "Contact information" entry to the list containing
- * a button that allows users to request and display contact info
- * for the account holder.
- *
- * @param {object} latestAccountRecord - most recent record for this account
- * @param {number} eventId - the id of the current event
- * @returns {ReactElement}
- */
+AccountSummary()
+
+Using the latest activity record for an account, generates a
+definition list containing the titles and values (plus annotation,
+where available) for five key fields on the record.
+
+Also adds a "Contact information" entry to the list containing
+a button that allows users to request and display contact info
+for the account holder.
+
+@param {object} latestAccountRecord - most recent record for this account
+@param {number} eventId - the id of the current event
+@returns {ReactElement}
+*/
 
 export default function AccountSummary({
   latestAccountRecord,

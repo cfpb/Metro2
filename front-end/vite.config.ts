@@ -3,19 +3,19 @@ import eslintPlugin from '@nabla/vite-plugin-eslint'
 import react from '@vitejs/plugin-react'
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(({ mode }) => ({
   resolve: {
+    tsconfigPaths: true,
     alias: {
       // Catch-all for internal library paths to bypass restrictive "exports" in package.json
       '@cfpb/cfpb-design-system/src': resolve(
-        __dirname,
+        import.meta.dirname,
         'node_modules/@cfpb/cfpb-design-system/src'
       ),
       // Helper for specifically accessing the new abstracts location
       '@cfpb/cfpb-design-system/src/abstracts': resolve(
-        __dirname,
+        import.meta.dirname,
         'node_modules/@cfpb/cfpb-design-system/src/abstracts/index.scss'
       )
     }
@@ -41,7 +41,7 @@ export default defineConfig(({ mode }) => ({
       }
     }
   },
-  plugins: [tsconfigPaths(), react(), eslintPlugin()],
+  plugins: [react(), eslintPlugin()],
   server: {
     port: 3000,
     host: true,

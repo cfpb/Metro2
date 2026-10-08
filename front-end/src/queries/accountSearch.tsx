@@ -12,11 +12,9 @@ export const fetchAccounts = async (
   const url = `/api/events/${eventId}/account/?cons_acct_num=${searchParam}`
   const data = await fetchData<AccountSummary[] | []>(url, 'accounts')
   // Add annotations for portfolio and account type fields
-  if (data.length > 0) {
-    for (const acct of data) {
-      acct.port_type = annotateM2FieldValue('port_type', acct.port_type) as string
-      acct.acct_type = annotateM2FieldValue('acct_type', acct.acct_type) as string
-    }
+  for (const acct of data) {
+    acct.port_type = annotateM2FieldValue('port_type', acct.port_type) as string
+    acct.acct_type = annotateM2FieldValue('acct_type', acct.acct_type) as string
   }
   return data
 }

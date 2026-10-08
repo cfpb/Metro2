@@ -19,6 +19,11 @@ export default function AccountSearchResults({
   // Fetch the data for these accounts
   const { data, isFetching } = useAccounts(String(eventId), accountIds.join(','))
 
+  // Show loader if data is being fetched
+  if (isFetching) {
+    return <Loader message='Searching for accounts' />
+  }
+
   // Generate colDefs
   const colDefs = [
     {
@@ -46,7 +51,7 @@ export default function AccountSearchResults({
   let foundAccounts = new Set()
 
   if (data) {
-    foundAccounts = new Set(data.map(acct => String(acct.cons_acct_num)))
+    foundAccounts = new Set(data.map(acct => acct.cons_acct_num))
     for (const acct of accountIds) {
       if (!foundAccounts.has(String(acct))) {
         notFoundAccounts.add(acct)
@@ -67,11 +72,6 @@ export default function AccountSearchResults({
     foundCount > 1
       ? `Showing 1 - ${foundCount} of ${foundCount} results`
       : `Showing 1 result`
-
-  // Show loader if data is being fetched
-  if (isFetching) {
-    return <Loader message='Searching for accounts' />
-  }
 
   return (
     <>

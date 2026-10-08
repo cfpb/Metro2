@@ -8,10 +8,11 @@ import type { ColDef, SortChangedEvent } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry, themeAlpine } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import type { ComponentType, ReactElement } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import './Table.scss'
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
 // Register all Community features
+// eslint-disable-next-line unicorn/no-top-level-side-effects
 ModuleRegistry.registerModules([AllCommunityModule])
 
 /* Table props
@@ -65,8 +66,8 @@ export default function Table<T extends object>({
   isSortedOnServer = false,
   sizeColumnsToFit = false
 }: TableProperties<T>): ReactElement {
-  // store row data in state
-  const [rowData, setRowData] = useState(rows)
+  console.log(rows)
+  console.log(columnDefinitions)
   const gridRef = useRef<AgGridReact<T>>(null)
 
   const tableHeight = rows.length <= 20 ? 'full' : height
@@ -77,11 +78,6 @@ export default function Table<T extends object>({
     strict: false,
     select: search => search.sort ?? defaultSort
   })
-
-  // Update table when new row data loads
-  useEffect(() => {
-    setRowData(rows)
-  }, [rows])
 
   const updateTableSortState = (): void => {
     setTimeout(() => {
@@ -118,31 +114,33 @@ export default function Table<T extends object>({
    */
   const onSortChanged = (event: SortChangedEvent): void => {
     // Only handle if triggered by a user's interaction with the table
-    if (event.source === 'uiColumnSorted') {
-      // Generate a list of the currently sorted columns.
-      const columnState = gridRef.current?.api.getColumnState()
-      let currentSort = generateSortArrayFromColumnState(columnState)
-
-      // If no columns are sorted, apply default sort.
-      if (currentSort === undefined) {
-        gridRef.current?.api.applyColumnState({
-          state: generateColumnStateFromSortArray(defaultSort)
-        })
-        currentSort = defaultSort
-      }
-
-      // Navigate to the current page with the new sort params.
-      void navigate({
-        to: '.',
-        resetScroll: false,
-        search: (prev: Record<string, unknown>) => {
-          const newSearch = { ...prev, sort: currentSort }
-          // If data is paginated, request the first page of new set of results.
-          if ('page' in newSearch) newSearch.page = 1
-          return newSearch
-        }
-      })
+    if (event.source !== 'uiColumnSorted') {
+      return
     }
+
+    // Generate a list of the currently sorted columns.
+    const columnState = gridRef.current?.api.getColumnState()
+    let currentSort = generateSortArrayFromColumnState(columnState)
+
+    // If no columns are sorted, apply default sort.
+    if (currentSort === undefined) {
+      gridRef.current?.api.applyColumnState({
+        state: generateColumnStateFromSortArray(defaultSort)
+      })
+      currentSort = defaultSort
+    }
+
+    // Navigate to the current page with the new sort params.
+    void navigate({
+      to: '.',
+      resetScroll: false,
+      search: (prev: Record<string, unknown>) => {
+        const newSearch = { ...prev, sort: currentSort }
+        // If data is paginated, request the first page of new set of results.
+        if ('page' in newSearch) newSearch.page = 1
+        return newSearch
+      }
+    })
   }
 
   return (
@@ -153,7 +151,7 @@ export default function Table<T extends object>({
       data-testid='data-grid-container'>
       <AgGridReact
         ref={gridRef}
-        rowData={rowData}
+        rowData={rows}
         onSortChanged={onSortChanged}
         onRowDataUpdated={onDataChanged}
         onFirstDataRendered={onFirstDataRendered}

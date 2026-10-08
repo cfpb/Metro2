@@ -20,5 +20,5 @@ export const accountHolderQueryOptions = (
     queryFn: async (): Promise<AccountHolder> =>
       fetchAccountHolderData(eventId, accountId),
     enabled: false,
-    staleTime: Number.POSITIVE_INFINITY
+    staleTime: Infinity
   })

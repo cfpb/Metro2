@@ -46,7 +46,7 @@ export function Metro2Footer({
 const footerContent = DOMPurify.sanitize(
   import.meta.env.VITE_FOOTER_CONTENT as string
 )
-const showFooterTagline =
+const isShowFooterTagline =
   (import.meta.env.VITE_SHOW_FOOTER_TAGLINE as string) === 'true' ? true : false
 
 const footerLinkContent = import.meta.env.VITE_FOOTER_LINKS as string
@@ -63,6 +63,6 @@ export const M2Footer = (
   <Metro2Footer
     content={footerContent}
     links={footerLinks}
-    showTagline={showFooterTagline}
+    showTagline={isShowFooterTagline}
   />
 )

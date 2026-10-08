@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/prefer-top-level-await */
 import { validateSortQueryParams } from '@src/utils/sortState'
 import { z } from 'zod'
 import { EVENT_COLUMN_MAP } from './eventColumns'
