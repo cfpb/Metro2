@@ -29,25 +29,27 @@ class Command(BaseCommand):
             "--event_id",
             nargs="?",
             required=True,
-            help=event_help
+            help=event_help,
         )
 
         strategy_help = (
-            "Optional flag: If flag is present, uses the `previous_file` "
-            "attribute on each M2DataFile instance to associate prior records. "
-            "`previous_file` setting must be set manually before using this strategy."
+            "The strategy to use when associating prior records. "
+            "Options are: lag, chunk, file. "
+            "If not present, will default to 'chunk'. "
+            "See code for explanation of each option. "
         )
         argparser.add_argument(
-            "--file_strategy",
+            "-s",
+            "--strategy",
+            nargs="?",
             required=False,
-            action='store_true',
             help=strategy_help,
         )
 
     def handle(self, *args, **options):
         logger = logging.getLogger('commands.post_parse')
         event_id = options["event_id"]
-        file_strategy = options['file_strategy']
+        strategy = options['strategy']
 
         # Fetch the Metro2Event
         try:
@@ -57,7 +59,7 @@ class Command(BaseCommand):
             raise CommandError(f"No event found with id {event_id}. Exiting.") from e
 
         logger.info(f"Beginning post-parse process for event: {event_id}.")
-        post_parse(event, file_strategy)
+        post_parse(event, strategy)
 
         logger.info(
             self.style.SUCCESS(f"Finished post-parse for event ID: {event_id}.")
