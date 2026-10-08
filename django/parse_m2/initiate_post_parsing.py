@@ -38,8 +38,9 @@ def associate_previous_records(event: Metro2Event, strategy: str = 'chunk'):
     activity date. (a.k.a. 'the progressive evaluator query')
     Since this is a complex and time-consuming task, there are three
     possible strategies to accomplish it. The strategy field should
-    match one of these options: lag, chunk, file. See docs for details
-    of how each one works and when to use it.
+    match one of these options: lag, chunk, file. Also accepts 'skip'
+    option to skip associating prior records at all.
+    See docs for details of how each strategy works and when to use it.
     """
     logger = logging.getLogger('parse_m2.associate_previous_records')
     if strategy == 'file':
@@ -51,10 +52,12 @@ def associate_previous_records(event: Metro2Event, strategy: str = 'chunk'):
     elif strategy == 'lag':
         logger.info("Using the lag strategy to associate prior records.")
         lag_method_associate_prior_records(event)
+    elif strategy == 'skip':
+        logger.info("'Skip' option, was used; skipping prior records step.")
     else:
         logger.info(
             f"Invalid strategy input: {strategy}. "
-            "Must match one of the following: lag, chunk, or file")
+            "Must match one of the following: lag, chunk, file, or skip")
 
 def report_on_prior_record_outcome(event: Metro2Event):
     logger = logging.getLogger('parse_m2.report_on_prior_record_outcome')

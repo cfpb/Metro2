@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
         strategy_help = (
             "The strategy to use when associating prior records. "
-            "Options are: lag, chunk, file. "
+            "Options are: lag, chunk, file, or skip. "
             "If not present, will default to 'chunk'. "
             "See code for explanation of each option. "
         )

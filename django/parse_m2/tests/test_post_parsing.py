@@ -96,6 +96,12 @@ class InitiatePostParsingTestCase(TestCase):
         report_on_prior_record_outcome(self.event)
         self.assertEqual(self.event.prior_records_associated, 4)
 
+    def test_associate_previous_records_skip(self):
+        associate_previous_records(self.event, strategy='skip')
+        self.assertEqual(self.event.prior_records_associated, 0)
+        report_on_prior_record_outcome(self.event)
+        self.assertEqual(self.event.prior_records_associated, 0)
+
 
 class AssociatePriorRecordsByFileOrderTestCase(TestCase):
     def setUp(self):
