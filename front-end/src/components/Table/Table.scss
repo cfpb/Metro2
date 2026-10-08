@@ -68,13 +68,13 @@
     padding-left: 5px;
   }
 
-  &.data-grid-container--message .ag-center-cols-viewport {
+  &.data-grid-container--message .ag-grid-scrolling-rows {
     min-height: 500px;
   }
 
   // make the row borders take up full width even if row content
   // doesn't extend to end of row
-  .ag-center-cols-container {
+  .ag-grid-scrolling-cells {
     min-width: 100%;
   }
 

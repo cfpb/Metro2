@@ -4,7 +4,7 @@ const COL_DEF_CONSTANTS = {
   amt_past_due: { type: 'currency' },
   credit_limit: { type: 'currency' },
   current_bal: { type: 'currency' },
-  date_open: { type: 'formattedDate', minWidth: 100 },
+  date_open: { type: 'formattedDate', minWidth: 120 },
   date_closed: { type: 'formattedDate', minWidth: 120 },
   doai: { type: 'formattedDate', minWidth: 185 },
   dofd: { type: 'formattedDate', minWidth: 120 },

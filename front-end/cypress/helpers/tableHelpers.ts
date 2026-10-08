@@ -10,11 +10,11 @@ export class Metro2Table {
   }
 
   getPinnedRows() {
-    return cy.get(`.ag-pinned-left-cols-container div[role="row"]`)
+    return cy.get(`.ag-grid-scrolling-container .ag-grid-pinned-left-cells`)
   }
 
   getBodyRows() {
-    return cy.get(`.ag-center-cols-container div[role="row"]`)
+    return cy.get(`.ag-grid-scrolling-container .ag-grid-scrolling-cells`)
   }
 
   hasRowCount(count: number) {
@@ -29,10 +29,11 @@ export class Metro2Table {
   }
 
   verifyTableBodyContent<Type>(
-    rows: Cypress.Chainable<JQuery>,
     fields: string[],
-    expectedData: Type[]
+    expectedData: Type[],
+    rowType = 'body'
   ) {
+    const rows = rowType === 'pinned' ? this.getPinnedRows() : this.getBodyRows()
     rows.each((row, rowIndex) => {
       // Get the object that corresponds with this row
       // from the expected data array

@@ -8,7 +8,7 @@ import type { ColDef, SortChangedEvent } from 'ag-grid-community'
 import { AllCommunityModule, ModuleRegistry, themeAlpine } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import type { ComponentType, ReactElement } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import './Table.scss'
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
 // Register all Community features
@@ -51,6 +51,7 @@ interface TableProperties<T> {
   defaultSort?: string[]
   isSortedOnServer?: boolean
   sizeColumnsToFit?: boolean
+  showNoResultsMessage?: boolean
 }
 
 export default function Table<T extends object>({
@@ -63,11 +64,10 @@ export default function Table<T extends object>({
   isLoadingError,
   defaultSort,
   isSortedOnServer = false,
-  sizeColumnsToFit = false
+  sizeColumnsToFit = false,
+  showNoResultsMessage = false
 }: TableProperties<T>): ReactElement {
-  // store row data in state
-  const [rowData, setRowData] = useState(rows)
-  const gridRef = useRef<AgGridReact<T>>(null)
+  const gridReference = useRef<AgGridReact<T>>(null)
 
   const tableHeight = rows.length <= 20 ? 'full' : height
 
@@ -78,14 +78,9 @@ export default function Table<T extends object>({
     select: search => search.sort ?? defaultSort
   })
 
-  // Update table when new row data loads
-  useEffect(() => {
-    setRowData(rows)
-  }, [rows])
-
   const updateTableSortState = (): void => {
     setTimeout(() => {
-      gridRef.current?.api.applyColumnState({
+      gridReference.current?.api.applyColumnState({
         state: generateColumnStateFromSortArray(sort),
         defaultState: { sort: null } // clear any other sort state in the table
       })
@@ -106,7 +101,7 @@ export default function Table<T extends object>({
     if (defaultSort) {
       updateTableSortState()
     }
-    if (sizeColumnsToFit) gridRef.current?.api.sizeColumnsToFit()
+    if (sizeColumnsToFit) gridReference.current?.api.sizeColumnsToFit()
   }
 
   /* onSortChanged
@@ -118,42 +113,44 @@ export default function Table<T extends object>({
    */
   const onSortChanged = (event: SortChangedEvent): void => {
     // Only handle if triggered by a user's interaction with the table
-    if (event.source === 'uiColumnSorted') {
-      // Generate a list of the currently sorted columns.
-      const columnState = gridRef.current?.api.getColumnState()
-      let currentSort = generateSortArrayFromColumnState(columnState)
-
-      // If no columns are sorted, apply default sort.
-      if (currentSort === undefined) {
-        gridRef.current?.api.applyColumnState({
-          state: generateColumnStateFromSortArray(defaultSort)
-        })
-        currentSort = defaultSort
-      }
-
-      // Navigate to the current page with the new sort params.
-      void navigate({
-        to: '.',
-        resetScroll: false,
-        search: (prev: Record<string, unknown>) => {
-          const newSearch = { ...prev, sort: currentSort }
-          // If data is paginated, request the first page of new set of results.
-          if ('page' in newSearch) newSearch.page = 1
-          return newSearch
-        }
-      })
+    if (event.source !== 'uiColumnSorted') {
+      return
     }
+
+    // Generate a list of the currently sorted columns.
+    const columnState = gridReference.current?.api.getColumnState()
+    let currentSort = generateSortArrayFromColumnState(columnState)
+
+    // If no columns are sorted, apply default sort.
+    if (currentSort === undefined) {
+      gridReference.current?.api.applyColumnState({
+        state: generateColumnStateFromSortArray(defaultSort)
+      })
+      currentSort = defaultSort
+    }
+
+    // Navigate to the current page with the new sort params.
+    void navigate({
+      to: '.',
+      resetScroll: false,
+      search: (previous: Record<string, unknown>) => {
+        const newSearch = { ...previous, sort: currentSort }
+        // If data is paginated, request the first page of new set of results.
+        if ('page' in newSearch) newSearch.page = 1
+        return newSearch
+      }
+    })
   }
 
   return (
     <div
       className={`ag-theme-alpine data-grid-container data-grid-container--${tableHeight}-height ${
-        NoResultsMessage ? 'data-grid-container--message' : ''
+        showNoResultsMessage ? 'data-grid-container--message' : ''
       }`}
       data-testid='data-grid-container'>
       <AgGridReact
-        ref={gridRef}
-        rowData={rowData}
+        ref={gridReference}
+        rowData={rows}
         onSortChanged={onSortChanged}
         onRowDataUpdated={onDataChanged}
         onFirstDataRendered={onFirstDataRendered}

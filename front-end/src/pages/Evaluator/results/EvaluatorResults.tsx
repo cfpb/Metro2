@@ -36,7 +36,7 @@ export default function EvaluatorResults({
   if (view == 'sample' && page != 1) {
     void navigate({
       to: '.',
-      search: (prev: Record<string, unknown>) => ({ ...prev, page: 1 })
+      search: (previous: Record<string, unknown>) => ({ ...previous, page: 1 })
     })
   }
 
@@ -73,7 +73,7 @@ export default function EvaluatorResults({
   if (isLoadingError && typeof page === 'number' && page > pageCount) {
     void navigate({
       to: '.',
-      search: (prev: Record<string, unknown>) => ({ ...prev, page: 1 })
+      search: (previous: Record<string, unknown>) => ({ ...previous, page: 1 })
     })
   }
 
@@ -89,7 +89,7 @@ export default function EvaluatorResults({
         <div className='loader__wrapper'>
           {isFetching ? <Loader message='Your data is loading' /> : null}
           <div className='row row--content u-mt0 u-mb0'>
-            <TabPanel id={`${view === 'all' ? 'all' : 'sample'}`}>
+            <TabPanel id={view === 'all' ? 'all' : 'sample'}>
               <div className={`results-container results-container--${view}`}>
                 <div className='row row--action row--background'>
                   <div className='results-message' data-testid='results-message'>
@@ -108,9 +108,9 @@ export default function EvaluatorResults({
                           className='a-btn a-btn--link a-btn--warning'
                           to='.'
                           resetScroll={false}
-                          search={(prev): object => ({
+                          search={(previous): object => ({
                             page: 1,
-                            page_size: prev.page_size,
+                            page_size: previous.page_size,
                             view: 'all'
                           })}
                           activeOptions={{ exact: true }}
