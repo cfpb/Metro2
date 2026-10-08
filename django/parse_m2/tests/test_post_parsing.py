@@ -9,6 +9,7 @@ from parse_m2.initiate_post_parsing import (
     _associate_prior_records_single_datafile,
     associate_previous_records,
     post_parse,
+    report_on_prior_record_outcome,
 )
 from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
 
@@ -66,6 +67,13 @@ class InitiatePostParsingTestCase(TestCase):
 
         self.assertEqual(prev_feb_record, feb_record.previous_values)
         self.assertEqual(prev_mar_record, mar_record.previous_values)
+
+    def test_report_prior_record_outcome(self):
+        associate_previous_records(self.event)
+        # event.prior_records_associated defaults to 0, then is updated
+        self.assertEqual(self.event.prior_records_associated, 0)
+        report_on_prior_record_outcome(self.event)
+        self.assertEqual(self.event.prior_records_associated, 4)
 
 
 class AssociatePriorRecordsByFileOrderTestCase(TestCase):

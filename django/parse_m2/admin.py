@@ -52,6 +52,7 @@ class Metro2EventAdmin(Metro2AdminPermissions):
         'date_range_start',
         'date_range_end',
         'total_tradelines',
+        'prior_records_associated',
     ]
     fields = [
         'name',
@@ -63,6 +64,7 @@ class Metro2EventAdmin(Metro2AdminPermissions):
         'date_range_start',
         'date_range_end',
         'total_tradelines',
+        'prior_records_associated',
     ]
     list_display = [
         'id',
@@ -72,6 +74,7 @@ class Metro2EventAdmin(Metro2AdminPermissions):
         'date_range_start',
         'date_range_end',
         'total_tradelines',
+        'prior_records_associated',
     ]
     filter_horizontal = ['members']
 
