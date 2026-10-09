@@ -49,8 +49,29 @@ class InitiatePostParsingTestCase(TestCase):
         # There are no record prior to Jan-2018
         self.assertEqual(None, record.previous_values)
 
-    def test_associate_previous_records(self):
-        associate_previous_records(self.event)
+    def test_associate_previous_records_lag_method(self):
+        # For a small event, 'lag' and 'chunk' methods are identical
+        associate_previous_records(self.event, strategy='lag')
+
+        # Retrieve any record with activity_date 2018-02-28
+        feb_record = AccountActivity.objects.filter(activity_date='2018-02-28').first()
+        prev_feb_record = AccountActivity.objects.get(
+            cons_acct_num=feb_record.cons_acct_num,
+            activity_date='2018-01-31'
+        )
+
+        # Retrieve any record with activity_date 2018-03-31
+        mar_record = AccountActivity.objects.filter(activity_date='2018-03-31').first()
+        prev_mar_record = AccountActivity.objects.get(
+            cons_acct_num=mar_record.cons_acct_num, activity_date='2018-02-28'
+        )
+
+        self.assertEqual(prev_feb_record, feb_record.previous_values)
+        self.assertEqual(prev_mar_record, mar_record.previous_values)
+
+    def test_associate_previous_records_chunk_method(self):
+        # For a small event, 'lag' and 'chunk' methods are identical
+        associate_previous_records(self.event, strategy='chunk')
 
         # Retrieve any record with activity_date 2018-02-28
         feb_record = AccountActivity.objects.filter(activity_date='2018-02-28').first()
@@ -74,6 +95,12 @@ class InitiatePostParsingTestCase(TestCase):
         self.assertEqual(self.event.prior_records_associated, 0)
         report_on_prior_record_outcome(self.event)
         self.assertEqual(self.event.prior_records_associated, 4)
+
+    def test_associate_previous_records_skip(self):
+        associate_previous_records(self.event, strategy='skip')
+        self.assertEqual(self.event.prior_records_associated, 0)
+        report_on_prior_record_outcome(self.event)
+        self.assertEqual(self.event.prior_records_associated, 0)
 
 
 class AssociatePriorRecordsByFileOrderTestCase(TestCase):
@@ -118,7 +145,7 @@ class AssociatePriorRecordsByFileOrderTestCase(TestCase):
         self.assertEqual(self.a33.previous_values, None)
 
     def test_file_strategy_for_prior_records_full_event(self):
-        associate_previous_records(self.event, file_strategy=True)
+        associate_previous_records(self.event, strategy= 'file')
         records = [self.a11, self.a12, self.a13, self.a21, self.a22,
                    self.a31, self.a32, self.a33]
         [r.refresh_from_db() for r in records]
