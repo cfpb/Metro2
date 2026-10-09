@@ -93,7 +93,7 @@ def lag_method_associate_prior_records(event: Metro2Event):
             FROM parse_m2_accountactivity
             WHERE event_id = %s
         ) prv_lag
-        WHERE prv_lag.id = parse_m2_accountactivity.id ;
+        WHERE prv_lag.id = parse_m2_accountactivity.id;
     """
     with connection.cursor() as cursor:
         logger.info("Beginning to associate previous values...")
@@ -106,7 +106,7 @@ def lag_method_associate_prior_records(event: Metro2Event):
 # into smaller transactions of chunk_size accounts. Choose this strategy
 # for larger datasets where we can't can't use the file strategy (below),
 # since we don't know the cadence of how often individual accounts are reported.
-def chunk_method_associate_prior_records(event: Metro2Event, chunk_size = 10_000):
+def chunk_method_associate_prior_records(event: Metro2Event, chunk_size = 100_000):
     logger = logging.getLogger('parse_m2.chunk_method_associate_prior_records')
     # Count the number of distinct account numbers
     total_accts = event.accountactivity_set.values('cons_acct_num').distinct().count()
@@ -115,7 +115,8 @@ def chunk_method_associate_prior_records(event: Metro2Event, chunk_size = 10_000
     q,r = divmod(total_accts, chunk_size)
     num_chunks = q + (1 if r else 0)
     logger.info("Associating previous values using chunks of "
-            f"{chunk_size:,} accounts. Using {num_chunks} total chunks.")
+            f"{chunk_size:,} accounts. For {total_accts:,}, using "
+            f"{num_chunks:,} total chunks.")
 
     # Run the query on each chunk
     for i in range(num_chunks):
@@ -139,7 +140,7 @@ def _update_one_chunk(event_id: int, chunk_counter: int, chunk_size: int):
                 LIMIT %s OFFSET %s
             )
         ) prv_lag
-        WHERE prv_lag.id = parse_m2_accountactivity.id ;
+        WHERE prv_lag.id = parse_m2_accountactivity.id;
     """
     offset = chunk_size * chunk_counter
     with connection.cursor() as cursor:
