@@ -11,10 +11,16 @@ def post_parse(event, file_strategy=False) -> None:
     logger = logging.getLogger('parse_m2.post_parse')
     logger.info("Calculating total records.")
     save_total_records(event)
-    logger.info("Calculating event date range.")
-    save_date_range(event)
-    logger.info("Beginning progressive evaluator query.")
-    associate_previous_records(event, file_strategy)
+    if event.total_tradelines > 0:
+        logger.info("Calculating event date range.")
+        save_date_range(event)
+        logger.info("Beginning progressive evaluator query.")
+        associate_previous_records(event, file_strategy)
+        logger.info("Done. Generating report...")
+        report_on_prior_record_outcome(event)
+    else:
+        logger.info("No tradelines found.")
+
 
 def save_date_range(event: Metro2Event):
     date_range = event.account_activity_date_range()
@@ -36,8 +42,20 @@ def associate_previous_records(event: Metro2Event, file_strategy: bool=False):
         logger.info("Using the lag strategy to associate prior records.")
         lag_method_associate_prior_records(event)
 
+def report_on_prior_record_outcome(event: Metro2Event):
+    logger = logging.getLogger('parse_m2.report_on_prior_record_outcome')
 
-# Record-by-record strategy for associating prior records
+    record_set = event.get_all_account_activity()
+    total_updated = record_set.filter(previous_values_id__isnull=False).count()
+    logger.info(f"Records with a previous record associated: {total_updated}")
+    total_not_updated = record_set.filter(previous_values_id__isnull=True).count()
+    logger.info(f"Records with NO previous record associated: {total_not_updated}")
+
+    event.prior_records_associated = total_updated
+    event.save()
+
+
+# Lag strategy for associating prior records
 ##########################################################################
 # Also known as the 'lag' strategy, this processes the whole dataset at once.
 # This strategy is preferred when the dataset is small, and when we can't

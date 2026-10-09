@@ -24,7 +24,7 @@ class Metro2Event(models.Model):
     date_range_start = models.DateField(null=True)
     date_range_end = models.DateField(null=True)
     total_tradelines = models.IntegerField(default=0)
-
+    prior_records_associated = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return self.name
