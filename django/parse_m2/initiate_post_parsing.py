@@ -40,7 +40,7 @@ def associate_previous_records(event: Metro2Event, strategy: str = 'chunk'):
     possible strategies to accomplish it. The strategy field should
     match one of these options: lag, chunk, file. Also accepts 'skip'
     option to skip associating prior records at all.
-    See docs for details of how each strategy works and when to use it.
+    See code comments for details of how each strategy works and when to use it.
     """
     logger = logging.getLogger('parse_m2.associate_previous_records')
     if strategy == 'file':
@@ -75,7 +75,7 @@ def report_on_prior_record_outcome(event: Metro2Event):
 # Lag strategy for associating prior records
 ##########################################################################
 # This strategy processes the whole dataset at once. This is preferred when
-# the dataset is small, or when we can't assume the accounts are reported monthly.
+# the dataset is small.
 # For each consumer account, put all of the records in order by activity date,
 # then assign previous_values based on that order.
 def lag_method_associate_prior_records(event: Metro2Event):
@@ -99,9 +99,9 @@ def lag_method_associate_prior_records(event: Metro2Event):
 # Chunk strategy for associating prior records
 ##########################################################################
 # Uses the same basic method as the lag strategy, but splits the dataset
-# into chunks of 10,000 accounts.
-# For extra large datasets that can't use the file strategy (below), this
-# strategy helps split the transaction into more manageable pieces.
+# into smaller transactions of chunk_size accounts. Choose this strategy
+# for larger datasets where we can't can't use the file strategy (below),
+# since we don't know the cadence of how often individual accounts are reported.
 def chunk_method_associate_prior_records(event: Metro2Event, chunk_size = 10_000):
     logger = logging.getLogger('parse_m2.chunk_method_associate_prior_records')
     # Count the number of distinct account numbers
