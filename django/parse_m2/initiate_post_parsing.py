@@ -46,9 +46,13 @@ def associate_previous_records(event: Metro2Event, strategy: str = 'chunk'):
     if strategy == 'file':
         logger.info("Using the datafile strategy to associate prior records.")
         associate_prior_records_by_file_order(event)
-    elif strategy == 'chunk':
+    elif strategy[:5] == 'chunk':
         logger.info("Using the chunk strategy to associate prior records.")
-        chunk_method_associate_prior_records(event)
+        try:
+            chunk_size = int(strategy[5:])
+            chunk_method_associate_prior_records(event, chunk_size)
+        except ValueError:
+            chunk_method_associate_prior_records(event)
     elif strategy == 'lag':
         logger.info("Using the lag strategy to associate prior records.")
         lag_method_associate_prior_records(event)
@@ -110,8 +114,8 @@ def chunk_method_associate_prior_records(event: Metro2Event, chunk_size = 10_000
     # Use that to decide number of chunks
     q,r = divmod(total_accts, chunk_size)
     num_chunks = q + (1 if r else 0)
-    logger.info("Associating previous values using the chunk method. "
-          f"Using {num_chunks} total chunks.")
+    logger.info("Associating previous values using chunks of "
+            f"{chunk_size:,} accounts. Using {num_chunks} total chunks.")
 
     # Run the query on each chunk
     for i in range(num_chunks):
