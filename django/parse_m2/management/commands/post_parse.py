@@ -18,7 +18,7 @@ class Command(BaseCommand):
         "stats about this event's data (for display), and (2) populate "
         "the 'previous values' field for all records, which allows progressive "
         "evaluators to work."
-        "In order to use the --file_strategy flag, you must first use the Django "
+        "In order to use the file strategy, you must first use the Django "
         "admin to indicate 'prior' files for all relevant files."
     )
 
@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
         strategy_help = (
             "The strategy to use when associating prior records. "
-            "Options are: lag, chunk, file, or skip. "
+            "Options are: chunk, file, or skip. "
             "If not present, will default to 'chunk'. "
             "See code for explanation of each option. "
         )

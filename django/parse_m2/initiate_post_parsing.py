@@ -36,9 +36,9 @@ def associate_previous_records(event: Metro2Event, strategy: str = 'chunk'):
     For each applicable record, set previous_values to the record
     with the same consumer account number and the closest earlier
     activity date. (a.k.a. 'the progressive evaluator query')
-    Since this is a complex and time-consuming task, there are three
+    Since this is a complex and time-consuming task, there are two
     possible strategies to accomplish it. The strategy field should
-    match one of these options: lag, chunk, file. Also accepts 'skip'
+    match one of these options: chunk, file, or skip. Use the 'skip'
     option to skip associating prior records at all.
     See code comments for details of how each strategy works and when to use it.
     """
@@ -53,15 +53,12 @@ def associate_previous_records(event: Metro2Event, strategy: str = 'chunk'):
             chunk_method_associate_prior_records(event, chunk_size)
         except ValueError:
             chunk_method_associate_prior_records(event)
-    elif strategy == 'lag':
-        logger.info("Using the lag strategy to associate prior records.")
-        lag_method_associate_prior_records(event)
     elif strategy == 'skip':
         logger.info("'Skip' option, was used; skipping prior records step.")
     else:
         logger.info(
             f"Invalid strategy input: {strategy}. "
-            "Must match one of the following: lag, chunk, file, or skip")
+            "Must match one of the following: chunk, file, or skip")
 
 def report_on_prior_record_outcome(event: Metro2Event):
     logger = logging.getLogger('parse_m2.report_on_prior_record_outcome')
@@ -76,36 +73,14 @@ def report_on_prior_record_outcome(event: Metro2Event):
     event.save()
 
 
-# Lag strategy for associating prior records
-##########################################################################
-# This strategy processes the whole dataset at once. This is preferred when
-# the dataset is small.
-# For each consumer account, put all of the records in order by activity date,
-# then assign previous_values based on that order.
-def lag_method_associate_prior_records(event: Metro2Event):
-    logger = logging.getLogger('parse_m2.lag_method_associate_prior_records')
-    query_sql = """
-        UPDATE parse_m2_accountactivity SET previous_values_id = prevals
-        FROM (
-            SELECT id, LAG (id, 1) OVER (
-                PARTITION BY cons_acct_num ORDER BY activity_date
-            ) as prevals
-            FROM parse_m2_accountactivity
-            WHERE event_id = %s
-        ) prv_lag
-        WHERE prv_lag.id = parse_m2_accountactivity.id;
-    """
-    with connection.cursor() as cursor:
-        logger.info("Beginning to associate previous values...")
-        cursor.execute(query_sql, [event.id])
-
-
 # Chunk strategy for associating prior records
 ##########################################################################
-# Uses the same basic method as the lag strategy, but splits the dataset
-# into smaller transactions of chunk_size accounts. Choose this strategy
-# for larger datasets where we can't can't use the file strategy (below),
-# since we don't know the cadence of how often individual accounts are reported.
+# First, break up the dataset into chunks by consumer account number.
+# Within each chunk, for each consumer account, put all of the records
+# in order by activity date, then assign previous_values based on that order.
+# Choose this strategy for any datasets where we can't can't use the file
+# strategy (below), i.e. when we don't know the cadence of how often
+# individual accounts are reported.
 def chunk_method_associate_prior_records(event: Metro2Event, chunk_size = 100_000):
     logger = logging.getLogger('parse_m2.chunk_method_associate_prior_records')
     # Count the number of distinct account numbers
