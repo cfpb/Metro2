@@ -63,6 +63,14 @@ class Command(BaseCommand):
             logger.info(f"Deleting {parsed_files.count()} existing files.")
             parsed_files.delete()
 
+        logger.info("Deleting any cached summary data for event")
+        event.date_range_start = None
+        event.date_range_end = None
+        event.total_tradelines = 0
+        event.total_accounts = 0
+        event.prior_records_associated = 0
+        event.save()
+
         logger.info(
             self.style.SUCCESS(f"Finished deleting data for event: {event_id}.")
         )

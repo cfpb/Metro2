@@ -12,6 +12,8 @@ def post_parse(event: Metro2Event, strategy:str = 'chunk') -> None:
     logger.info("Calculating total records.")
     save_total_records(event)
     if event.total_tradelines > 0:
+        logger.info("Calculating total accounts.")
+        save_total_accts(event)
         logger.info("Calculating event date range.")
         save_date_range(event)
         logger.info("Beginning progressive evaluator query.")
@@ -25,6 +27,11 @@ def save_date_range(event: Metro2Event):
     date_range = event.account_activity_date_range()
     event.date_range_start = date_range['earliest']
     event.date_range_end = date_range['latest']
+    event.save()
+
+def save_total_accts(event: Metro2Event):
+    event.total_accounts = event.accountactivity_set.values(
+        'cons_acct_num').distinct().count()
     event.save()
 
 def save_total_records(event: Metro2Event):
@@ -66,11 +73,11 @@ def report_on_prior_record_outcome(event: Metro2Event):
     record_set = event.get_all_account_activity()
     total_updated = record_set.filter(previous_values_id__isnull=False).count()
     logger.info(f"Records with a previous record associated: {total_updated:,}")
-    total_not_updated = record_set.filter(previous_values_id__isnull=True).count()
-    logger.info(f"Records with NO previous record associated: {total_not_updated:,}")
-
     event.prior_records_associated = total_updated
     event.save()
+
+    total_not_updated = record_set.filter(previous_values_id__isnull=True).count()
+    logger.info(f"Records with NO previous record associated: {total_not_updated:,}")
 
 
 # Chunk strategy for associating prior records
