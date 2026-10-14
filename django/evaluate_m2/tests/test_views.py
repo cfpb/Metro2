@@ -116,7 +116,8 @@ class EvaluateViewsTestCase(TestCase):
             id=1, name='test_exam', portfolio='credit cards',
             directory='Enforcement/Huyndai2025', eid_or_matter_num='123-456789',
             other_descriptor='',date_range_start='2023-11-30',
-            date_range_end='2023-12-31', total_tradelines=1234)
+            date_range_end='2023-12-31', total_tradelines=1234,
+            total_accounts=321)
         self.data_file = M2DataFile.objects.create(
             event=self.event, file_name='file.txt'
         )
@@ -437,6 +438,7 @@ class EvaluateViewsTestCase(TestCase):
             'date_range_start': '2023-11-30',
             'date_range_end': '2023-12-31',
             'total_tradelines': 1234,
+            'total_accounts': 321,
             'evaluators': [{
                 'hits': 2,
                 'accounts_affected': 1,
