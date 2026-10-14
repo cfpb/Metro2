@@ -61,7 +61,7 @@ def associate_previous_records(event: Metro2Event, strategy: str = 'chunk'):
         except ValueError:
             chunk_method_associate_prior_records(event)
     elif strategy == 'skip':
-        logger.info("'Skip' option, was used; skipping prior records step.")
+        logger.info("'Skip' option selected; skipping prior records step.")
     else:
         logger.info(
             f"Invalid strategy input: {strategy}. "
