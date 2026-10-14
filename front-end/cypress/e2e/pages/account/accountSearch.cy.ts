@@ -120,9 +120,7 @@ describe('Account search', () => {
       table.getTable().should('be.visible')
       table.verifyHeaders(EXPECTED_TABLE_HEADERS)
       table.hasRowCount(1)
-      table.verifyTableBodyContent(table.getBodyRows(), EXPECTED_TABLE_FIELDS, [
-        ACCOUNT_ONE
-      ])
+      table.verifyTableBodyContent(EXPECTED_TABLE_FIELDS, [ACCOUNT_ONE])
 
       // but 'not found' message should not be visible
       page.getNotFoundMessage().should('not.exist')
@@ -144,10 +142,7 @@ describe('Account search', () => {
       // results for both accounts should be displayed
       page.hasResultsMessage('Showing 1 - 2 of 2 results')
       table.hasRowCount(2)
-      table.verifyTableBodyContent(table.getBodyRows(), EXPECTED_TABLE_FIELDS, [
-        ACCOUNT_ONE,
-        ACCOUNT_TWO
-      ])
+      table.verifyTableBodyContent(EXPECTED_TABLE_FIELDS, [ACCOUNT_ONE, ACCOUNT_TWO])
     })
 
     it('Should show error message and results when some accounts found', () => {
@@ -174,9 +169,7 @@ describe('Account search', () => {
       table.getTable().should('be.visible')
       table.verifyHeaders(EXPECTED_TABLE_HEADERS)
       table.hasRowCount(1)
-      table.verifyTableBodyContent(table.getBodyRows(), EXPECTED_TABLE_FIELDS, [
-        ACCOUNT_ONE
-      ])
+      table.verifyTableBodyContent(EXPECTED_TABLE_FIELDS, [ACCOUNT_ONE])
     })
   })
 
@@ -199,10 +192,7 @@ describe('Account search', () => {
       // Search results should be visible
       page.hasResultsMessage('Showing 1 - 2 of 2 results')
       table.hasRowCount(2)
-      table.verifyTableBodyContent(table.getBodyRows(), EXPECTED_TABLE_FIELDS, [
-        ACCOUNT_ONE,
-        ACCOUNT_TWO
-      ])
+      table.verifyTableBodyContent(EXPECTED_TABLE_FIELDS, [ACCOUNT_ONE, ACCOUNT_TWO])
     })
   })
 
@@ -234,9 +224,7 @@ describe('Account search', () => {
       table.getTable().should('be.visible')
       table.verifyHeaders(EXPECTED_TABLE_HEADERS)
       table.hasRowCount(1)
-      table.verifyTableBodyContent(table.getBodyRows(), EXPECTED_TABLE_FIELDS, [
-        ACCOUNT_ONE
-      ])
+      table.verifyTableBodyContent(EXPECTED_TABLE_FIELDS, [ACCOUNT_ONE])
 
       // but not found message should not be shown
       page.getNotFoundMessage().should('not.exist')
@@ -306,9 +294,7 @@ describe('Account search', () => {
 
       page.getSearchResults().should('be.visible')
       page.hasResultsMessage('Showing 1 result')
-      table.verifyTableBodyContent(table.getBodyRows(), EXPECTED_TABLE_FIELDS, [
-        ACCOUNT_ONE
-      ])
+      table.verifyTableBodyContent(EXPECTED_TABLE_FIELDS, [ACCOUNT_ONE])
 
       // KEYBOARD RESET
       // from search input, tab to reset button and press enter to clear form

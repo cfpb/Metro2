@@ -10,6 +10,7 @@ export default function ErrorComponent({
     error instanceof Error && Object.hasOwn(errors, error.message)
       ? error.message
       : '500'
+
   const errorObject = errors[errorType as keyof typeof errors]
 
   return (
