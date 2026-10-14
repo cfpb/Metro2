@@ -91,7 +91,11 @@ def report_on_prior_record_outcome(event: Metro2Event):
 def chunk_method_associate_prior_records(event: Metro2Event, chunk_size = 100_000):
     logger = logging.getLogger('parse_m2.chunk_method_associate_prior_records')
     # Count the number of distinct account numbers
-    total_accts = event.accountactivity_set.values('cons_acct_num').distinct().count()
+    if event.total_accounts:
+        total_accts = event.total_accounts
+    else:
+        total_accts = event.accountactivity_set.values(
+            'cons_acct_num').distinct().count()
 
     # Use that to decide number of chunks
     q,r = divmod(total_accts, chunk_size)
