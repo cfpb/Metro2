@@ -8,15 +8,16 @@ import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 import EvaluatorFilterSidebar from '../filters/FilterSidebar'
 import type { EvaluatorSearch } from '../utils/evaluatorSearchSchema'
-import './EvaluatorResults.scss'
+import { evaluatorFilters } from '../utils/evaluatorSearchSchema'
 import EvaluatorDownloader from './components/Downloader'
 import EvaluatorResultsMessage from './components/ResultsMessage'
 import EvaluatorResultsPagination from './components/ResultsPagination'
 import EvaluatorResultsTabbedNavigation from './components/ResultsTabbedNavigation'
 import EvaluatorResultsTable from './components/ResultsTable'
-import filterableFields from './utils/getFilterableFields'
 import getPageCount from './utils/getPageCount'
-import getTableFields from './utils/getTableFields'
+import { getTableFields } from './utils/getTableFields'
+
+import './EvaluatorResults.scss'
 
 interface EvaluatorResultsData {
   evaluatorMetadata: EvaluatorMetadata
@@ -49,7 +50,7 @@ export default function EvaluatorResults({
 
   // Check if the search params include any of the filterable fields
   const isFiltered =
-    view === 'all' && Object.keys(others).some(key => filterableFields.includes(key))
+    view === 'all' && Object.keys(others).some(key => evaluatorFilters.includes(key))
 
   const rows = data?.hits ?? []
 
