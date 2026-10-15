@@ -9,15 +9,16 @@ import type { ReactElement } from 'react'
 import EvaluatorFilterSidebar from '../filters/FilterSidebar'
 import Filters from '../filters/components/Filters'
 import type { EvaluatorSearch } from '../utils/evaluatorSearchSchema'
-import './EvaluatorResults.scss'
+import { evaluatorFilters } from '../utils/evaluatorSearchSchema'
 import EvaluatorDownloader from './components/Downloader'
 import EvaluatorResultsMessage from './components/ResultsMessage'
 import EvaluatorResultsPagination from './components/ResultsPagination'
 import EvaluatorResultsTabbedNavigation from './components/ResultsTabbedNavigation'
 import EvaluatorResultsTable from './components/ResultsTable'
-import filterableFields from './utils/getFilterableFields'
 import getPageCount from './utils/getPageCount'
-import getTableFields from './utils/getTableFields'
+import { getTableFields } from './utils/getTableFields'
+
+import './EvaluatorResults.scss'
 
 interface EvaluatorResultsData {
   evaluatorMetadata: EvaluatorMetadata
@@ -32,7 +33,7 @@ export default function EvaluatorResults({
 
   const query: EvaluatorSearch = useSearch({ strict: false })
 
-  const { page, view, page_size, show_counts, ...selectedFilters } = query
+  const { page, view, page_size, show_counts, ...others } = query
 
   if (view == 'sample' && page != 1) {
     void navigate({
@@ -49,9 +50,11 @@ export default function EvaluatorResults({
   )
 
   // Check if the search params include any of the filterable fields
+  // We use a list of filter values from the evaluator schema because
+  // some of the filter names don't directly match the filterable fields:
+  // eg, current_bal_min and current_bal_max instead of current_bal
   const isFiltered =
-    view === 'all' &&
-    Object.keys(selectedFilters).some(key => filterableFields.includes(key))
+    view === 'all' && Object.keys(others).some(key => evaluatorFilters.includes(key))
 
   const rows = data?.hits ?? []
 
