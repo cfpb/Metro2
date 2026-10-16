@@ -42,16 +42,16 @@ export default function EvaluatorBooleanFilter({
     void navigate({
       resetScroll: false,
       to: '.',
-      search: (prev: Record<string, unknown>) => {
-        const params = { ...prev }
+      search: (previous: Record<string, unknown>) => {
+        const parameters = { ...previous }
         if (currentValue === undefined) {
-          if (field in params) delete params[field]
+          delete parameters[field]
         } else {
-          params[field] = currentValue
+          parameters[field] = currentValue
         }
         // reset page to 1
-        params.page = 1
-        return params
+        parameters.page = 1
+        return parameters
       }
     })
   }

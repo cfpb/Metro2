@@ -1,41 +1,40 @@
 /**
- * customStringify()
- *
- * Stringifies values without quotation marks or encoding
- *
- * Input     Output
- * string    trimmed string
- * number    number as string
- * array     comma-separated string of values.
- *           If the key is not 'sort', values are sorted alphabetically
- *           to make query strings more human readable.
- *           We don't sort the values when the key is 'sort'
- *           because order is meaningful for a list of multisort fields.
- * object    result of JSON.stringify(object)
- *
- * @param {number | object | string} value - A value to stringify
- * @param {string} value - Value's key
- * @returns {string} A string
- */
+customStringify()
+
+Stringifies values without quotation marks or encoding
+
+Input     Output
+string    trimmed string
+number    number as string
+array     comma-separated string of values.
+          If the key is not 'sort', values are sorted alphabetically
+          to make query strings more human readable.
+          We don't sort the values when the key is 'sort'
+          because order is meaningful for a list of multisort fields.
+object    result of JSON.stringify(object)
+
+@param {number | object | string} value - A value to stringify
+@param {string} value - Value's key
+@returns {string} A string
+*/
 export function customStringify(
   value: number | object | string | null | undefined
 ): string {
   if (typeof value === 'string') return value.trim()
   if (typeof value === 'number') return String(value)
   if (Array.isArray(value)) return value.join(',')
-  if (value && typeof value === 'object') return JSON.stringify(value)
-  return ''
+  return value && typeof value === 'object' ? JSON.stringify(value) : '';
 }
 
 /**
- * stringifySearchParams()
- *
- * Generates a human-readable query string from a search object
- * without encoding
- *
- * @param {object} search - Search object
- * @returns {string} A query string or empty string
- */
+stringifySearchParams()
+
+Generates a human-readable query string from a search object
+without encoding
+
+@param {object} search - Search object
+@returns {string} A query string or empty string
+*/
 
 export function stringifySearchParams(search: object | null | undefined): string {
   if (typeof search !== 'object' || search === null) return ''

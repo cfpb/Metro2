@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/prefer-top-level-await */
 import { ITEMS_PER_PAGE } from '@src/constants/settings'
 import { z } from 'zod'
 import BooleanStringValidator from './booleanValidator'

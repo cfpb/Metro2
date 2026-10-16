@@ -2,28 +2,28 @@ import { formatNumber } from '@src/utils/formatNumbers'
 import type { ReactElement } from 'react'
 
 /**
- * EvaluatorResultsMessage
- *
- * Returns a results message for 4 different scenarios:
- *     1. Sample view when there are more than 20 total hits:
- *           Showing 20 sample results
- *     2. All results view with no filters OR sample view with < 20 total hits:
- *           Showing {x} - {y} of {total} results
- *     3. All results view with filters applied & results:
- *           Showing {x} - {y} of {total} filtered results
- *     4. All results view with filters and no results:
- *           Showing 0 results
- *
- * @param {number} currentHitsCount - hits count for current request to evaluator
- *                                    results endpoint
- * @param {number} totalResultsCount - total hits on evaluator for this event
- * @param {number} page - current page
- * @param {number} pageSize - how many items to view per page
- * @param {string} view - whether sample or all results are being displayed
- * @param {boolean} isFiltered - whether data filters were included
- *                               in this request to evaluator results endpoint
- * @returns {string} - a results count message
- */
+EvaluatorResultsMessage
+
+Returns a results message for 4 different scenarios:
+    1. Sample view when there are more than 20 total hits:
+          Showing 20 sample results
+    2. All results view with no filters OR sample view with < 20 total hits:
+          Showing {x} - {y} of {total} results
+    3. All results view with filters applied & results:
+          Showing {x} - {y} of {total} filtered results
+    4. All results view with filters and no results:
+          Showing 0 results
+
+@param {number} currentHitsCount - hits count for current request to evaluator
+                                   results endpoint
+@param {number} totalResultsCount - total hits on evaluator for this event
+@param {number} page - current page
+@param {number} pageSize - how many items to view per page
+@param {string} view - whether sample or all results are being displayed
+@param {boolean} isFiltered - whether data filters were included
+                              in this request to evaluator results endpoint
+@returns {string} - a results count message
+*/
 
 interface EvaluatorResultsMessageProps {
   currentHitsCount: number

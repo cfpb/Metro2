@@ -16,23 +16,25 @@ export default function BooleanFilter({
   onChange,
   selected,
   id,
-  label_0,
-  label_1
+  label_0 = 'No value',
+  label_1 = 'Has value'
 }: BooleanFilterData): ReactElement {
   return (
     <div>
       <Checkbox
         id={`${id}_false`}
-        checked={selected === 'false' || selected === false || selected === 'any'}
+        checked={
+          selected !== undefined && ['false', false, 'any'].includes(selected)
+        }
         name='false'
-        label={label_0 ?? 'No value'}
+        label={label_0}
         onChange={onChange}
       />
       <Checkbox
         id={`${id}_true`}
-        checked={selected === 'true' || selected === true || selected === 'any'}
+        checked={selected !== undefined && ['true', true, 'any'].includes(selected)}
         name='true'
-        label={label_1 ?? 'Has value'}
+        label={label_1}
         onChange={onChange}
       />
     </div>
