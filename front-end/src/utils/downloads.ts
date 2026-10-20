@@ -1,21 +1,21 @@
 import getHeaderName from './getHeaderName'
 
 /**
- * generateDownloadData()
- *
- * Generates a CSV string using a list of fields, an array of records with those fields,
- * and a map matching field names to header values.
- *
- * Generates a header string by looking up each of the fields in the header map.
- * Generates comma-separated string of field values for each record.
- * Returns all the strings joined with new line characters.
- *
- * @param {array} fields - Ordered array of field names
- * @param {array} records - Array of objects with values for the fields
- * @param {map} headerMap - Map containing header values for the fields
- * @returns {string} - CSV string containing header and body rows for each record
- *
- */
+generateDownloadData()
+
+Generates a CSV string using a list of fields, an array of records with those fields,
+and a map matching field names to header values.
+
+Generates a header string by looking up each of the fields in the header map.
+Generates comma-separated string of field values for each record.
+Returns all the strings joined with new line characters.
+
+@param {array} fields - Ordered array of field names
+@param {array} records - Array of objects with values for the fields
+@param {map} headerMap - Map containing header values for the fields
+@returns {string} - CSV string containing header and body rows for each record
+
+*/
 export const generateDownloadData = <T>(
   fields: string[],
   records: T[],
@@ -44,26 +44,26 @@ export const generateDownloadData = <T>(
 }
 
 /**
- * replaceSpaces()
- *
- * Formats a string by replacing spaces with hyphens.
- *
- * @param {string} str -String to format
- * @returns {string} - Formatted string
- *
- */
-export const replaceSpaces = (str: string): string => str.split(' ').join('-')
+replaceSpaces()
+
+Formats a string by replacing spaces with hyphens.
+
+@param {string} str -String to format
+@returns {string} - Formatted string
+
+*/
+export const replaceSpaces = (str: string): string => str.replaceAll(' ', '-')
 
 /**
- * downloadData()
- *
- * Initiates a download for a locally-generated file as a blob.
- *
- * @param {buffer | string} file - A buffer or CSV string to download
- * @param {string} fileName - Name for the file
- * @param {string} fileType - Type for the file
- *
- */
+downloadData()
+
+Initiates a download for a locally-generated file as a blob.
+
+@param {buffer | string} file - A buffer or CSV string to download
+@param {string} fileName - Name for the file
+@param {string} fileType - Type for the file
+
+*/
 export const downloadData = (
   file: Buffer | string,
   fileName: string,
@@ -71,23 +71,23 @@ export const downloadData = (
 ): void => {
   const formattedFileName = replaceSpaces(fileName)
   const blob = new Blob([file as BlobPart], { type: fileType })
-  const url = globalThis.URL.createObjectURL(blob)
+  const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
   link.download = formattedFileName
   link.click()
-  globalThis.URL.revokeObjectURL(url)
+  URL.revokeObjectURL(url)
 }
 
 /**
- * downloadFileFromURL()
- *
- * Given the URL of a file, initiates a download by creating
- * and programmatically clicking an off-screen link for the file.
- *
- * @param {string} url - File URL
- *
- */
+downloadFileFromURL()
+
+Given the URL of a file, initiates a download by creating
+and programmatically clicking an off-screen link for the file.
+
+@param {string} url - File URL
+
+*/
 export const downloadFileFromURL = (url: string): void => {
   const link = document.createElement('a')
   link.setAttribute('href', url)

@@ -10,22 +10,22 @@ import { annotateM2FieldValue } from '@src/utils/annotations'
 import getHeaderName from '@src/utils/getHeaderName'
 
 /**
- * EvaluatorCheckboxGroup
- *
- * Implements nested checkbox group filters for a Metro2 field that has
- * a predetermined list of possible values.
- *
- * 1. Gets any applied filters for this field from search params
- * 2. Checks if this field's values are grouped and generates
- *    array of either grouped or flat checkbox items for its values
- * 3. Outputs NestedCheckboxGroup using checkbox item array
- * 4. When user checks or unchecks one of the nested checkboxes,
- *    navigates to current page with updated search params
- *
- *
- * @param {string} field - name of a Metro 2 list value field
- *
- */
+EvaluatorCheckboxGroup
+
+Implements nested checkbox group filters for a Metro2 field that has
+a predetermined list of possible values.
+
+1. Gets any applied filters for this field from search params
+2. Checks if this field's values are grouped and generates
+   array of either grouped or flat checkbox items for its values
+3. Outputs NestedCheckboxGroup using checkbox item array
+4. When user checks or unchecks one of the nested checkboxes,
+   navigates to current page with updated search params
+
+
+@param {string} field - name of a Metro 2 list value field
+
+*/
 
 interface EvaluatorCheckboxGroupProperties {
   field: keyof EvaluatorSearch
@@ -48,7 +48,7 @@ export const generateCheckboxItem = (
   appliedFilters: string[],
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void
 ): CheckboxItem => ({
-  checked: appliedFilters.includes(String(val)),
+  checked: appliedFilters.includes(val),
   key: `${field}_${val}`,
   name: annotateM2FieldValue(field, val) as string,
   onChange
@@ -59,7 +59,9 @@ export default function EvaluatorCheckboxGroup({
 }: EvaluatorCheckboxGroupProperties): ReactElement {
   const navigate = useNavigate()
 
-  /** Get any currently applied filters for this field from the URL  */
+  /**
+  Get any currently applied filters for this field from the URL
+  */
   const appliedFilters = useSearch({
     strict: false,
     select: (search): string[] => {
@@ -69,20 +71,20 @@ export default function EvaluatorCheckboxGroup({
   })
 
   /**
-   * Gets any groupings for this field's values.
-   */
+  Gets any groupings for this field's values.
+  */
   const currentFieldGroups =
     field in fieldGroups ? fieldGroups[field as keyof typeof fieldGroups] : new Map()
 
   /**
-   * Event handlers
-   */
+  Event handlers
+  */
 
   /**
-   * After a checkbox is changed, receives updated list
-   * of values for the field, generates updated query params,
-   * and calls navigate with new params.
-   */
+  After a checkbox is changed, receives updated list
+  of values for the field, generates updated query params,
+  and calls navigate with new params.
+  */
   const updateNavigation = (fieldValue: unknown[]): void => {
     void navigate({
       resetScroll: false,
@@ -102,11 +104,11 @@ export default function EvaluatorCheckboxGroup({
   }
 
   /**
-   * When top-level checkbox for the field is changed:
-   *   - if checked, update navigation with all possible values
-   *     for the field
-   *   - if unchecked, update navigation with empty array
-   */
+  When top-level checkbox for the field is changed:
+    - if checked, update navigation with all possible values
+      for the field
+    - if unchecked, update navigation with empty array
+  */
   const onFieldCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
@@ -120,11 +122,11 @@ export default function EvaluatorCheckboxGroup({
   }
 
   /**
-   * When a group level checkbox is changed:
-   *   - if checked, update navigation with current list of
-   *     values for the field + all possible values for group
-   *   - if unchecked, remove all group values from current value list
-   */
+  When a group level checkbox is changed:
+    - if checked, update navigation with current list of
+      values for the field + all possible values for group
+    - if unchecked, remove all group values from current value list
+  */
   const onGroupCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
@@ -139,12 +141,12 @@ export default function EvaluatorCheckboxGroup({
   }
 
   /**
-   * When an individual checkbox is changed:
-   *   - if checked, add this value to list of applied values
-   *     from query params and update navigation
-   *   - if unchecked, remove value from list of applied values
-   *     and update navigation
-   */
+  When an individual checkbox is changed:
+    - if checked, add this value to list of applied values
+      from query params and update navigation
+    - if unchecked, remove value from list of applied values
+      and update navigation
+  */
   const onIndividualCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
@@ -158,8 +160,8 @@ export default function EvaluatorCheckboxGroup({
   }
 
   /**
-   * Generate list of checkbox items for this field
-   */
+  Generate list of checkbox items for this field
+  */
   // eslint-disable-next-line no-useless-assignment
   let children: CheckboxItem[] = []
 

@@ -12,6 +12,7 @@ import { useRef } from 'react'
 import './Table.scss'
 import { columnDefaults, columnTypes, gridOptionDefaults } from './tableUtils'
 // Register all Community features
+// eslint-disable-next-line unicorn/no-top-level-side-effects
 ModuleRegistry.registerModules([AllCommunityModule])
 
 /* Table props
