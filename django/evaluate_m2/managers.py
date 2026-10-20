@@ -14,17 +14,16 @@ class AccountActivityQuerySet(models.QuerySet):
         )
 
     def with_hit_count(self, event):
-        from evaluate_m2.models import EvaluatorResult
+        from evaluate_m2.models import EvaluatorResultMaterializedView
 
-        # Subquery for the number of evaluators hit for
+        # Subquery for the number of evaluators hits for
         # each account
         subquery = (
-            EvaluatorResult.objects.filter(
-                result_summary__event=event,
-                acct_num=OuterRef("cons_acct_num"),
+            EvaluatorResultMaterializedView.objects.filter(
+                event_id=event.id,
+                cons_acct_num=OuterRef("cons_acct_num"),
             )
-            .order_by()
-            .values("acct_num")
+            .values("cons_acct_num")
             .annotate(
                 n=Count("id"),
             )
@@ -41,10 +40,9 @@ class AccountActivityQuerySet(models.QuerySet):
     def with_record_count(self, event):
         subquery = (
             self.model._default_manager.filter(
-                data_file__event=event,
+                event=event,
                 cons_acct_num=OuterRef("cons_acct_num"),
             )
-            .order_by()
             .values("cons_acct_num")
             .annotate(
                 n=Count("id"),
