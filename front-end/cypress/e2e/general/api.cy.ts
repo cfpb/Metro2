@@ -13,6 +13,7 @@ describe('API accepts account fields as sort params on evaluator view', () => {
       const body = response.body as Event
       const evaluators = body?.evaluators
       if (Array.isArray(evaluators) && evaluators.length > 0 && evaluators[0]?.id) {
+        // eslint-disable-next-line unicorn/no-top-level-assignment-in-function
         evaluatorName = evaluators[0].id
       }
     })

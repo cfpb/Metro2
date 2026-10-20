@@ -11,23 +11,23 @@ interface InconsistenciesListProperties {
 }
 
 /**
- * AccountInconsistenciesList()
- *
- * Takes an array of names of evaluators with hits on any of this
- * account's records.
- *
- * Returns a numbered list containing links for each of these evaluators.
- * The link text includes the evaluator's name and its short description and
- * the link goes to this event's page for the evaluator.
- *
- * The list serves as a legend for the account records table -- each row
- * in the table shows numbers corresponding to this list for any inconsistencies
- * flagged on the row's account record.
- *
- * @param {object} latestAccountRecord - most recent record for this account
- * @param {number} eventId - the id of the current event
- * @returns {ReactElement}
- */
+AccountInconsistenciesList()
+
+Takes an array of names of evaluators with hits on any of this
+account's records.
+
+Returns a numbered list containing links for each of these evaluators.
+The link text includes the evaluator's name and its short description and
+the link goes to this event's page for the evaluator.
+
+The list serves as a legend for the account records table -- each row
+in the table shows numbers corresponding to this list for any inconsistencies
+flagged on the row's account record.
+
+@param {object} latestAccountRecord - most recent record for this account
+@param {number} eventId - the id of the current event
+@returns {ReactElement}
+*/
 
 export default function AccountInconsistenciesList({
   inconsistencies,

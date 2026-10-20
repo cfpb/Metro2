@@ -18,46 +18,47 @@ export default function AccountSearchBar({
   initialValue = '',
   eventId
 }: AccountSearchBarProperties): ReactElement {
-  const inputRef = useRef<HTMLTextAreaElement>(null)
+  const inputReference = useRef<HTMLTextAreaElement>(null)
 
   const navigate = useNavigate()
 
   const submitSearch = () => {
     // Get the value from the search input
-    const searchString = inputRef.current?.value
+    const searchString = inputReference.current?.value
+
     // Verify that the search value has changed
-    if (searchString !== initialValue) {
-      // Sanitize the search string
-      const sanitizedSearchString = sanitizeAccountIdInput(searchString).replaceAll(
-        ' ',
-        ''
-      )
-      if (sanitizedSearchString === initialValue) {
-        if (inputRef.current) inputRef.current.value = ''
-      } else {
-        const accountIds = [
-          ...new Set(sanitizedSearchString.split(',').filter(item => item !== ''))
-        ]
-        // Navigate to account search page with account ids in querystring
-        void navigate({
-          resetScroll: false,
-          to: '/events/$eventId/accounts',
-          params: { eventId: String(eventId) },
-          search: () => {
-            return accountIds.length === 0
-              ? {}
-              : {
-                  cons_acct_num: accountIds
-                }
-          }
-        })
-      }
+    if (searchString === initialValue) return
+
+    // Sanitize the search string
+    const sanitizedSearchString = sanitizeAccountIdInput(searchString).replaceAll(
+      ' ',
+      ''
+    )
+    if (sanitizedSearchString === initialValue) {
+      if (inputReference.current) inputReference.current.value = ''
+    } else {
+      const accountIds = [
+        ...new Set(sanitizedSearchString.split(',').filter(item => item !== ''))
+      ]
+      // Navigate to account search page with account ids in querystring
+      void navigate({
+        resetScroll: false,
+        to: '/events/$eventId/accounts',
+        params: { eventId: String(eventId) },
+        search: () => {
+          return accountIds.length === 0
+            ? {}
+            : {
+                cons_acct_num: accountIds
+              }
+        }
+      })
     }
   }
 
   const handleReset = (event: React.BaseSyntheticEvent) => {
     event.preventDefault()
-    if (inputRef.current) inputRef.current.value = ''
+    if (inputReference.current) inputReference.current.value = ''
   }
 
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
@@ -66,10 +67,12 @@ export default function AccountSearchBar({
   }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      submitSearch()
+    if (event.key !== 'Enter') {
+      return
     }
+
+    event.preventDefault()
+    submitSearch()
   }
 
   return (
@@ -91,7 +94,7 @@ export default function AccountSearchBar({
             <TextArea
               id='SearchInput'
               name='SearchInput'
-              ref={inputRef}
+              ref={inputReference}
               placeholder=''
               defaultValue={initialValue ?? ''}
               data-testid='account-search-input'

@@ -24,27 +24,27 @@ const downloadText = DOMPurify.sanitize(
 )
 
 /**
- * DownloadModal()
- *
- * A modal that provides some shared download functionality, including:
- *   - CopyUrl component
- *   - PII acknowledgment checkbox
- *   - Download button that is activated when privacy warning is acknowledged,
- *   - useEffect hook that updates state to clear the PII checkbox when the modal
- *     is closed by its parent component (modal is not visible when this happens)
- *
- * @param {boolean} open - Whether the modal is open or closed
- * @param {function} onClose - event handler for modal close button
- * @param {function} onDownload - event handler for modal download button
- * @param {string} title - Heading for the modal
- * @param {string} copyText - Descriptive text for the copy url section
- * @param {ReactElement} content - Any custom content for the modal
- * @param {boolean} requirePrivacyAcknowledgment - Whether to require privcay acknowledgment before download
- * @param {string} downloadHeading - Heading for privacy acknowledgment text
- * @param {string} buttonText - Text for the download button
- * @param {string} testId - Optional test id
- * @returns {ReactElement}
- */
+DownloadModal()
+
+A modal that provides some shared download functionality, including:
+  - CopyUrl component
+  - PII acknowledgment checkbox
+  - Download button that is activated when privacy warning is acknowledged,
+  - useEffect hook that updates state to clear the PII checkbox when the modal
+    is closed by its parent component (modal is not visible when this happens)
+
+@param {boolean} open - Whether the modal is open or closed
+@param {function} onClose - event handler for modal close button
+@param {function} onDownload - event handler for modal download button
+@param {string} title - Heading for the modal
+@param {string} copyText - Descriptive text for the copy url section
+@param {ReactElement} content - Any custom content for the modal
+@param {boolean} requirePrivacyAcknowledgment - Whether to require privcay acknowledgment before download
+@param {string} downloadHeading - Heading for privacy acknowledgment text
+@param {string} buttonText - Text for the download button
+@param {string} testId - Optional test id
+@returns {ReactElement}
+*/
 
 export default function DownloadModal({
   open,
@@ -79,7 +79,7 @@ export default function DownloadModal({
     <Modal
       open={open}
       onClose={onCloseModal}
-      data-testId={testId ?? 'download-modal'}>
+      data-testid={testId ?? 'download-modal'}>
       <h1 className='h3'>{title}</h1>
       <div className='block block--sub'>
         <h4>Save a link for later</h4>
