@@ -380,48 +380,64 @@ class EvaluatorResultMaterializedView(models.Model):
         """
         CREATE INDEX idx_event_id_evaluator_id
         ON mv_all_evaluator_results (event_id, evaluator_id);
-        """
+        """,
         # Index on sample results (to improve sample view performance)
         """
         CREATE INDEX idx_mv_eval_results_sample
-        ON mv_all_evaluator_results (sample);
-        """
+        ON mv_all_evaluator_results (event_id, evaluator_id, sample);
+        """,
         # Index on activity date (this is the default sort of the all-results view)
         """
         CREATE INDEX idx_mv_eval_results_activity_date
-        ON mv_all_evaluator_results (event_id, activity_date);
-        """
-        # Index on several filterable fields
+        ON mv_all_evaluator_results (event_id, evaluator_id, activity_date);
+        """,
+        # Index on filterable fields with a preset list of values
         """
         CREATE INDEX idx_mv_eval_results_acct_stat
-        ON mv_all_evaluator_results (event_id, acct_stat);
+        ON mv_all_evaluator_results (event_id, evaluator_id, acct_stat);
 
         CREATE INDEX idx_mv_eval_results_compl_cond_cd
-        ON mv_all_evaluator_results (event_id, compl_cond_cd);
+        ON mv_all_evaluator_results (event_id, evaluator_id, compl_cond_cd);
 
         CREATE INDEX idx_mv_eval_results_php1
-        ON mv_all_evaluator_results (event_id, php1);
+        ON mv_all_evaluator_results (event_id, evaluator_id, php1);
 
         CREATE INDEX idx_mv_eval_results_pmt_rating
-        ON mv_all_evaluator_results (event_id, pmt_rating);
+        ON mv_all_evaluator_results (event_id, evaluator_id, pmt_rating);
 
         CREATE INDEX idx_mv_eval_results_spc_com_cd
-        ON mv_all_evaluator_results (event_id, spc_com_cd);
+        ON mv_all_evaluator_results (event_id, evaluator_id, spc_com_cd);
 
         CREATE INDEX idx_mv_eval_results_terms_freq
-        ON mv_all_evaluator_results (event_id, terms_freq);
+        ON mv_all_evaluator_results (event_id, evaluator_id, terms_freq);
 
         CREATE INDEX idx_mv_eval_results_cons_info_ind
-        ON mv_all_evaluator_results (event_id, cons_info_ind);
+        ON mv_all_evaluator_results (event_id, evaluator_id, cons_info_ind);
 
         CREATE INDEX idx_mv_eval_results_change_ind
-        ON mv_all_evaluator_results (event_id, change_ind);
-        """
+        ON mv_all_evaluator_results (event_id, evaluator_id, change_ind);
+        """,
 
-        # TODO: determine whether and how to index remaining filterable columns
+        # Index on amt_past_due, current_bal: filtered on amounts as ranges
+        """
+        CREATE INDEX idx_mv_eval_results_amt_past_due
+        ON mv_all_evaluator_results (event_id, evaluator_id, amt_past_due);
+
+        CREATE INDEX idx_mv_eval_results_current_bal
+        ON mv_all_evaluator_results (event_id, evaluator_id, current_bal);
+        """,
+
+        # Index on dofd, date_closed: Dates filtered as boolean (null/not null)
+        """
+        CREATE INDEX idx_mv_eval_results_dofd
+        ON mv_all_evaluator_results (event_id, evaluator_id, dofd);
+
+        CREATE INDEX idx_mv_eval_results_date_closed
+        ON mv_all_evaluator_results (event_id, evaluator_id, date_closed);
+        """,
+
+        # TODO: determine whether and how to index remaining filterable column
         # - cons_info_ind_assoc: JSON column
-        # - dofd, date_closed: Dates filtered as boolean (null or not null)
-        # - amt_past_due, current_bal: Amounts as ranges
     ])
 
 
