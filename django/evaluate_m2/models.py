@@ -381,7 +381,12 @@ class EvaluatorResultMaterializedView(models.Model):
         CREATE INDEX idx_event_id_evaluator_id
         ON mv_all_evaluator_results (event_id, evaluator_id);
         """,
-        # Index on sample results (to improve sample view performance)
+        # Index on results by consumer account (for acct search performance)
+        """
+        CREATE INDEX idx_event_id_cons_acct_num
+        ON mv_all_evaluator_results (event_id, cons_acct_num);
+        """,
+        # Index on sample results (for sample view performance)
         """
         CREATE INDEX idx_mv_eval_results_sample
         ON mv_all_evaluator_results (event_id, evaluator_id, sample);
