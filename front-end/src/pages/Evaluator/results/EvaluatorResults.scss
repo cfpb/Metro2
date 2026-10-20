@@ -2,6 +2,12 @@
 @use '@cfpb/cfpb-design-system/src/abstracts' as *;
 @use '@cfpb/cfpb-design-system/src/utilities' as *;
 
+.evaluator-hits-row .loader__wrapper.loading {
+  .loader__wrapper .loader--background {
+    display: none;
+  }
+}
+
 .results-message {
   display: flex;
   gap: 1em;
@@ -32,13 +38,15 @@
     // max-height: 92vh; // toggle off for full height sidebar
 
     .results__sidebar {
+      position: relative;
       background-color: var(--gray-5);
-      flex: 1;
-      width: 33%;
-      max-width: 450px;
 
       // overflow-y: scroll; // toggle off for full height sidebar
       padding: 0.75em 1em 1em 1.5em;
+
+      flex: 1;
+      width: 33%;
+      max-width: 450px;
 
       // padding-right: 2em;
 

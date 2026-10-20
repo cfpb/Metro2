@@ -1,4 +1,9 @@
-const accountStatusGroups = new Map([
+import { M2_FIELD_LOOKUPS } from '@src/constants/annotationLookups'
+
+const accountStatusGroups = new Map<
+  string,
+  (keyof typeof M2_FIELD_LOOKUPS.acct_stat)[]
+>([
   ['Current', ['11']],
   ['Paid or settled in full', ['05', '13', '61', '62', '63', '64']],
   ['Delinquent', ['71', '78', '80', '82', '83', '84', '93', '97']],
@@ -13,7 +18,10 @@ const accountStatusGroups = new Map([
 //   ['Other', ['XR']]
 // ])
 
-const specialCommentCodeGroups = new Map([
+const specialCommentCodeGroups = new Map<
+  string,
+  (keyof typeof M2_FIELD_LOOKUPS.spc_com_cd)[]
+>([
   ['Transferred or sold', ['H', 'O', 'AH', 'AN', 'AT', 'BA']],
   ['Closed', ['AS', 'CI', 'CJ', 'CL', 'M']],
   ['Prepaid', ['BS']],
@@ -47,7 +55,7 @@ const specialCommentCodeGroups = new Map([
   ]
 ])
 
-const phpCodeGroups = new Map([
+const phpCodeGroups = new Map<string, (keyof typeof M2_FIELD_LOOKUPS.php1)[]>([
   ['Current', ['0', 'E']],
   ['Delinquent', ['1', '2', '3', '4', '5', '6', 'G', 'L']],
   ['Foreclosure', ['H']],
@@ -55,20 +63,30 @@ const phpCodeGroups = new Map([
   ['Other', ['B', 'D']]
 ])
 
-const paymentRatingGroups = new Map([
+const paymentRatingGroups = new Map<
+  string,
+  (keyof typeof M2_FIELD_LOOKUPS.pmt_rating)[]
+>([
   ['Current', ['0']],
   ['Delinquent', ['1', '2', '3', '4', '5', '6', 'G', 'L']]
 ])
 
-const bankruptcyGroups = new Map([
+const bankruptcyGroups = new Map<
+  string,
+  (keyof typeof M2_FIELD_LOOKUPS.cons_info_ind)[]
+>([
   ['Petition for bankruptcy', ['A', 'B', 'C', 'D']],
   ['Bankruptcy discharged', ['E', 'F', 'G', 'H']],
   ['Reaffirmation of debt', ['R', 'V']],
   ['Bankruptcy indicators removed', ['Q', 'S']],
-  ['Other', ['T', 'U', '1A', '2A']]
+  ['Other', ['T', 'U', '1A', '2A']],
+  ['Obsolete', ['I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Z']]
 ])
 
-const termsFrequencyGroups = new Map([
+const termsFrequencyGroups = new Map<
+  string,
+  (keyof typeof M2_FIELD_LOOKUPS.terms_freq)[]
+>([
   ['Deferred', ['D']],
   [
     'Not deferred (all other payment frequencies)',

@@ -7,6 +7,7 @@ import type Event from '@src/types/Event'
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 import EvaluatorFilterSidebar from '../filters/FilterSidebar'
+import Filters from '../filters/components/Filters'
 import type { EvaluatorSearch } from '../utils/evaluatorSearchSchema'
 import './EvaluatorResults.scss'
 import EvaluatorDownloader from './components/Downloader'
@@ -31,7 +32,7 @@ export default function EvaluatorResults({
 
   const query: EvaluatorSearch = useSearch({ strict: false })
 
-  const { page, view, page_size, ...others } = query
+  const { page, view, page_size, show_counts, ...selectedFilters } = query
 
   if (view == 'sample' && page != 1) {
     void navigate({
@@ -49,7 +50,8 @@ export default function EvaluatorResults({
 
   // Check if the search params include any of the filterable fields
   const isFiltered =
-    view === 'all' && Object.keys(others).some(key => filterableFields.includes(key))
+    view === 'all' &&
+    Object.keys(selectedFilters).some(key => filterableFields.includes(key))
 
   const rows = data?.hits ?? []
 
@@ -86,7 +88,7 @@ export default function EvaluatorResults({
         </Link>
       </div>
       <div className='evaluator-hits-row'>
-        <div className='loader__wrapper'>
+        <div className={`loader__wrapper ${isFetching ? 'loading' : ''}`}>
           {isFetching ? <Loader message='Your data is loading' /> : null}
           <div className='row row--content u-mt0 u-mb0'>
             <TabPanel id={view === 'all' ? 'all' : 'sample'}>
@@ -111,7 +113,8 @@ export default function EvaluatorResults({
                           search={(previous): object => ({
                             page: 1,
                             page_size: previous.page_size,
-                            view: 'all'
+                            view: 'all',
+                            show_counts: previous.show_counts
                           })}
                           activeOptions={{ exact: true }}
                           style={{ pointerEvents: 'auto' }}
@@ -136,7 +139,18 @@ export default function EvaluatorResults({
                 </div>
                 <div className='results'>
                   <div className='results__sidebar sidebar'>
-                    {view === 'all' ? <EvaluatorFilterSidebar /> : null}
+                    {view === 'all' ? (
+                      <>
+                        {show_counts ? (
+                          <EvaluatorFilterSidebar
+                            eventId={eventData.id}
+                            evaluatorId={evaluatorMetadata.id}
+                          />
+                        ) : (
+                          <Filters showCounts={!!show_counts} />
+                        )}
+                      </>
+                    ) : null}
                   </div>
                   <div className='results__table'>
                     <EvaluatorResultsTable

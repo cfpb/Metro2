@@ -50,7 +50,7 @@ export const generateCheckboxItem = (
 ): CheckboxItem => ({
   checked: appliedFilters.includes(val),
   key: `${field}_${val}`,
-  name: annotateM2FieldValue(field, val) as string,
+  label: annotateM2FieldValue(field, val) as string,
   onChange
 })
 
@@ -170,7 +170,7 @@ export default function EvaluatorCheckboxGroup({
     // Each group item gets an array of child items for its values.
     children = [...fieldGroups[field as keyof typeof fieldGroups]].map(item => ({
       key: `${field}_${item[0]}`, // prefix key with field because some fields share values
-      name: item[0],
+      label: item[0],
       onChange: onGroupCheckboxChange,
       children: item[1].map(val =>
         generateCheckboxItem(field, val, appliedFilters, onIndividualCheckboxChange)
@@ -193,7 +193,7 @@ export default function EvaluatorCheckboxGroup({
   if (canBeBlankFields.has(field)) {
     children.unshift({
       key: `${field}_blank`,
-      name: `Blank (no ${fieldName.toLowerCase()})`,
+      label: `Blank (no ${fieldName.toLowerCase()})`,
       checked: appliedFilters.includes('blank'),
       onChange: onIndividualCheckboxChange
     })
@@ -203,7 +203,7 @@ export default function EvaluatorCheckboxGroup({
   const items = [
     {
       key: field,
-      name: fieldName,
+      label: fieldName,
       onChange: onFieldCheckboxChange,
       children
     }
