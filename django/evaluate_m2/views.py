@@ -410,6 +410,7 @@ class AccountsListView(generics.ListAPIView):
     def get_queryset(self):
         return (
             self.event.get_all_account_activity()
+            .only('cons_acct_num', 'port_type', 'acct_type')
             .with_hit_count(self.event)
             .with_record_count(self.event)
         )

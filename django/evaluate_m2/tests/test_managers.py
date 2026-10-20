@@ -2,6 +2,7 @@ from datetime import date
 
 from django.test import TestCase
 
+from evaluate_m2.models import EvaluatorResultMaterializedView
 from evaluate_m2.tests.evaluator_test_helper import acct_record, evaluator_result_record
 from parse_m2.models import AccountActivity, M2DataFile, Metro2Event
 
@@ -158,6 +159,7 @@ class AccountActivityQuerySetAnnotationsTest(TestCase):
         )
         evaluator_result_record(self.event, "Sample-1", acct)
         evaluator_result_record(self.event, "Sample-2", acct)
+        EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
 
         qs = AccountActivity.objects.with_hit_count(self.event)
         query_acct = qs.filter(cons_acct_num=acct.cons_acct_num).first()
@@ -183,6 +185,7 @@ class AccountActivityQuerySetAnnotationsTest(TestCase):
         # One hit across two months
         evaluator_result_record(self.event, "Sample-1", acct1)
         evaluator_result_record(self.event, "Sample-1", acct2)
+        EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
 
         qs = AccountActivity.objects.with_hit_count(self.event)
         query_acct = qs.filter(cons_acct_num=acct1.cons_acct_num).first()
