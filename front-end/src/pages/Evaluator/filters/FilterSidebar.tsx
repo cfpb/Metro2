@@ -1,58 +1,42 @@
+import Loader from '@src/components/Loader/Loader'
 import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
+import { useEvaluatorFacets } from '@src/queries/evaluatorFacets'
+import { useSearch } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
-import EvaluatorBooleanFilter from './components/BooleanFilter'
-import EvaluatorCheckboxGroup from './components/CheckboxGroup'
-import type { currencyRangeField } from './components/RangeFilter'
-import EvaluatorRangeFilter from './components/RangeFilter'
+import Filters from './components/Filters'
 import './FilterSidebar.scss'
 
-export default function EvaluatorFilterSidebar(): ReactElement {
+interface EvaluatorSidebarData {
+  evaluatorId: string
+  eventId: string | number
+}
+
+export default function EvaluatorFilterSidebar({
+  evaluatorId,
+  eventId
+}: EvaluatorSidebarData): ReactElement {
+  const query: EvaluatorSearch = useSearch({ strict: false })
+
+  // Fetch all filter counts data from server
+  const { data: allFacets, isFetching: isFetchingAllFacets } = useEvaluatorFacets(
+    eventId,
+    evaluatorId
+  )
+
+  // Fetch filter counts data for currently applied filters from server
+  const { data: filteredFacets, isFetching: isFetchingFilteredFacets } =
+    useEvaluatorFacets(eventId, evaluatorId, query)
+
+  const counts = allFacets?.facets
+  const filteredCounts = filteredFacets?.facets
+
   return (
-    <fieldset
-      className='o-form__fieldset filter-sidebar'
-      data-testid='evaluator-filter-sidebar'>
-      <div className='block block--sub block--flush-top'>
-        <h2 className='h3'>Account details</h2>
-        <p>
-          Filters are under development. Some options may not be relevant for this
-          evaluator.
-        </p>
-        {[
-          'acct_stat',
-          'compl_cond_cd',
-          'php1',
-          'pmt_rating',
-          'spc_com_cd',
-          'terms_freq',
-          'cons_info_ind',
-          'cons_info_ind_assoc',
-          'l1__change_ind'
-        ].map(field => (
-          <EvaluatorCheckboxGroup
-            field={field as keyof EvaluatorSearch}
-            key={field}
-          />
-        ))}
-        <div className='block block--sub'>
-          <h2 className='h3'>Dates</h2>
-          <EvaluatorBooleanFilter
-            field='dofd'
-            header='Date of first delinquency (DOFD)'
-            checkboxLabel='DOFD'
-          />
-          <EvaluatorBooleanFilter
-            field='date_closed'
-            header='Date closed'
-            checkboxLabel='date closed'
-          />
-        </div>
-        <div className='block block--sub'>
-          <h2 className='h3'>Amounts</h2>
-          {['amt_past_due', 'current_bal'].map(field => (
-            <EvaluatorRangeFilter key={field} field={field as currencyRangeField} />
-          ))}
-        </div>
-      </div>
-    </fieldset>
+    <div className='loader__wrapper'>
+      {isFetchingFilteredFacets || isFetchingAllFacets ? (
+        <Loader message='Loading filter counts' className='lighter' />
+      ) : (
+        <Filters counts={counts} filteredCounts={filteredCounts} showCounts={true} />
+      )}
+    </div>
   )
 }

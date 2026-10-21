@@ -5,6 +5,9 @@ into a more human-readable format for display in the Metro2 tool.
 The following lookups map a field's possible coded values to their
 definitions.
 
+These lookups are the source of truth within the front end 
+for the possible values of these fields.
+
 */
 
 export const ACCOUNT_STATUS_LOOKUP = {
@@ -31,13 +34,13 @@ export const ACCOUNT_STATUS_LOOKUP = {
   '97': 'Unpaid balance reported as a loss (charge-off)',
   DA: 'Delete entire account (for reasons other than fraud)',
   DF: 'Delete entire account due to confirmed fraud (fraud investigation completed)'
-}
+} as const
 
 const L1_CHANGE_INDICATOR_LOOKUP = {
   '1': 'Consumer Account Number Change ONLY',
   '2': 'Identification Number Change ONLY',
   '3': 'Consumer Account Number AND Identification Number Change'
-}
+} as const
 
 export const PAYMENT_RATING_LOOKUP = {
   '0': '0-29 days past the due date (current account)',
@@ -49,7 +52,7 @@ export const PAYMENT_RATING_LOOKUP = {
   '6': '180 or more days past the due date',
   G: 'Collection',
   L: 'Charge-off'
-}
+} as const
 
 export const PAYMENT_HISTORY_PROFILE_LOOKUP = {
   '0': '0 - 29 days past due date (current account)',
@@ -67,7 +70,7 @@ export const PAYMENT_HISTORY_PROFILE_LOOKUP = {
   J: 'Voluntary Surrender',
   K: 'Repossession',
   L: 'Charge-off'
-}
+} as const
 
 export const SPECIAL_COMMENT_CODE_LOOKUP = {
   B: 'Account payments managed by financial counseling program.',
@@ -122,7 +125,7 @@ export const SPECIAL_COMMENT_CODE_LOOKUP = {
   CS: 'Child support',
   DE: 'Debt extinguished under state law.',
   AL: 'Student Loan Assigned to Government'
-}
+} as const
 
 export const COMPLIANCE_CONDTION_CODE_LOOKUP = {
   XA: 'Account closed at consumer’s request',
@@ -135,13 +138,13 @@ export const COMPLIANCE_CONDTION_CODE_LOOKUP = {
   XH: 'Account previously in dispute; investigation completed',
   XJ: 'Account closed at consumer’s request; data furnisher conducting investigation after consumer disputed account information under FCBA',
   XR: 'Removes most recently reported code'
-}
+} as const
 
 export const K2_PURCHASED_SOLD_INDICATOR_LOOKUP = {
   '1': 'Purchased From Name',
   '2': 'Sold To Name',
   '9': 'Remove Previously Reported K2 Segment Information'
-}
+} as const
 
 export const PORTFOLIO_TYPE_LOOKUP = {
   C: 'Line of Credit',
@@ -149,7 +152,7 @@ export const PORTFOLIO_TYPE_LOOKUP = {
   M: 'Mortgage',
   O: 'Open',
   R: 'Revolving'
-}
+} as const
 
 export const ECOA_CODE_LOOKUP = {
   '1': 'Individual',
@@ -161,7 +164,7 @@ export const ECOA_CODE_LOOKUP = {
   X: 'Deceased',
   W: 'Business / Commercial',
   Z: 'Delete consumer'
-}
+} as const
 
 export const ACCOUNT_TYPE_LOOKUP = {
   '00': 'Auto',
@@ -227,7 +230,7 @@ export const ACCOUNT_TYPE_LOOKUP = {
   '6D': 'Home Equity',
   '0F': 'Construction Loan',
   '0G': 'Flexible Spending Credit Card'
-}
+} as const
 
 export const TERMS_FREQUENCY_LOOKUP = {
   D: 'Deferred',
@@ -241,7 +244,7 @@ export const TERMS_FREQUENCY_LOOKUP = {
   T: 'Triannually',
   S: 'Semiannually',
   Y: 'Annually'
-}
+} as const
 
 export const CONSUMER_INFORMATION_INDICATOR_LOOKUP = {
   A: 'Petition for Chapter 7 Bankruptcy',
@@ -252,20 +255,29 @@ export const CONSUMER_INFORMATION_INDICATOR_LOOKUP = {
   F: 'Discharged through Bankruptcy Chapter 11',
   G: 'Discharged through Bankruptcy Chapter 12',
   H: 'Discharged/Completed through Bankruptcy Chapter 13',
+  I: 'Chapter 7 Bankruptcy Dismissed (obsolete as of 4/21)',
+  J: 'Chapter 11 Bankruptcy Dismissed (obsolete as of 4/21)',
+  K: 'Chapter 12 Bankruptcy Dismissed (obsolete as of 4/21)',
+  L: 'Chapter 13 Bankruptcy Dismissed (obsolete as of 4/21)',
+  M: 'Chapter 7 Bankruptcy Withdrawn (obsolete as of 4/21)',
+  N: 'Chapter 11 Bankruptcy Withdrawn (obsolete as of 4/21)',
+  O: 'Chapter 12 Bankruptcy Withdrawn (obsolete as of 4/21)',
+  P: 'Chapter 13 Bankruptcy Withdrawn (obsolete as of 4/21)',
   Q: 'Removes previously reported Bankruptcy Indicator or reports bankruptcy has been closed, terminated, dismissed or withdrawn, without being discharged.',
   R: 'Chapter 7 Reaffirmation of Debt',
   S: 'Removes previously reported Reaffirmation of Debt, Reaffirmation of Debt Rescinded and Lease Assumption Indicators (R, V, 2A, and obsolete values W, X, Y)',
   T: 'Credit Grantor Cannot Locate Consumer',
   U: 'Consumer Now Located (Removes previously reported T Indicator)',
   V: 'Chapter 7 Reaffirmation of Debt Rescinded',
+  Z: 'Bankruptcy - Undesignated Chapter (obsolete as of 4/21)',
   '1A': 'Personal Receivership',
   '2A': 'Lease Assumption'
-}
+} as const
 
 export const INTEREST_TYPE_INDICATOR_LOOKUP = {
   F: 'Fixed',
   V: 'Variable/Adjustable'
-}
+} as const
 
 // Enables accessing a field's lookup by the field's id.
 export const M2_FIELD_LOOKUPS = {
@@ -285,14 +297,48 @@ export const M2_FIELD_LOOKUPS = {
   ecoa_assoc: ECOA_CODE_LOOKUP,
   k2__purch_sold_ind: K2_PURCHASED_SOLD_INDICATOR_LOOKUP,
   l1__change_ind: L1_CHANGE_INDICATOR_LOOKUP,
-  previous_values__cons_info_ind:
-    CONSUMER_INFORMATION_INDICATOR_LOOKUP,
-  previous_values__cons_info_ind_assoc:
-    CONSUMER_INFORMATION_INDICATOR_LOOKUP,
+  previous_values__cons_info_ind: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
+  previous_values__cons_info_ind_assoc: CONSUMER_INFORMATION_INDICATOR_LOOKUP,
   previous_values__ecoa: ECOA_CODE_LOOKUP,
   previous_values__l1__change_ind: L1_CHANGE_INDICATOR_LOOKUP,
   previous_values__port_type: PORTFOLIO_TYPE_LOOKUP,
   previous_values__acct_type: ACCOUNT_TYPE_LOOKUP,
   previous_values__acct_stat: ACCOUNT_STATUS_LOOKUP,
   previous_values__pmt_rating: PAYMENT_RATING_LOOKUP
+} as const
+
+// Generate arrays from the keys of the above lookups.
+// This makes the possible values for these fields
+// available for use throughout the app in typing, schemas, and filtering.
+//
+// We could also consider storing the values as lists of strings,
+// but that introduces a risk they could go out of sync with the lookups.
+export const FILTER_VALUES = {
+  acct_stat: Object.keys(
+    M2_FIELD_LOOKUPS.acct_stat
+  ) as unknown as keyof (typeof M2_FIELD_LOOKUPS)['acct_stat'],
+  compl_cond_cd: [
+    'blank',
+    ...Object.keys(M2_FIELD_LOOKUPS.compl_cond_cd)
+  ] as unknown as keyof (typeof M2_FIELD_LOOKUPS)['compl_cond_cd'] | 'blank',
+  php1: ['blank', ...Object.keys(M2_FIELD_LOOKUPS.php1)] as unknown as
+    | keyof (typeof M2_FIELD_LOOKUPS)['php1']
+    | 'blank',
+  pmt_rating: ['blank', ...Object.keys(M2_FIELD_LOOKUPS.pmt_rating)] as unknown as
+    | keyof (typeof M2_FIELD_LOOKUPS)['pmt_rating']
+    | 'blank',
+  spc_com_cd: ['blank', ...Object.keys(M2_FIELD_LOOKUPS.spc_com_cd)] as unknown as
+    | keyof (typeof M2_FIELD_LOOKUPS)['spc_com_cd']
+    | 'blank',
+  terms_freq: ['blank', ...Object.keys(M2_FIELD_LOOKUPS.terms_freq)] as unknown as
+    | keyof (typeof M2_FIELD_LOOKUPS)['terms_freq']
+    | 'blank',
+  cons_info_ind: [
+    'blank',
+    ...Object.keys(M2_FIELD_LOOKUPS.cons_info_ind)
+  ] as unknown as keyof (typeof M2_FIELD_LOOKUPS)['cons_info_ind'] | 'blank',
+  l1__change_ind: [
+    'blank',
+    ...Object.keys(M2_FIELD_LOOKUPS.l1__change_ind)
+  ] as unknown as keyof (typeof M2_FIELD_LOOKUPS)['l1__change_ind'] | 'blank'
 }

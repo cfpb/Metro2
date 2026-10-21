@@ -6,13 +6,14 @@ import './Accordion.scss'
 
 export interface AccordionProperties {
   header: ReactNode
-  children: ReactNode
+  children?: ReactNode
   className?: string
   // inAccordionGroup?: boolean
   openOnLoad?: boolean
   isPadded?: boolean
   hasBorder?: boolean
   hasBackground?: boolean
+  disabled?: boolean
 }
 
 export default function Accordion({
@@ -24,6 +25,7 @@ export default function Accordion({
   isPadded = false,
   hasBorder = true,
   hasBackground = false,
+  disabled = false,
   ...properties
 }: AccordionProperties): ReactElement {
   const [isExpanded, setIsExpanded] = useState(openOnLoad)
@@ -33,6 +35,7 @@ export default function Accordion({
   if (isPadded) expandableClasses.push('o-expandable--padded')
   if (hasBorder) expandableClasses.push('o-expandable--border')
   if (hasBackground) expandableClasses.push('o-expandable--background')
+  if (disabled) expandableClasses.push('o-expandable--disabled')
 
   const onClick = (): void => {
     setIsExpanded(!isExpanded)
@@ -62,28 +65,34 @@ export default function Accordion({
           className='o-expandable__header o-expandable__target'
           aria-expanded={isExpanded}
           title={header}
-          onClick={onClick}>
+          onClick={onClick}
+          disabled={disabled}>
           <h3 className='o-expandable__label'>{header}</h3>
           {expandableLink}
         </button>
       ) : (
         <div
-          className='o-expandable__header o-expandable__header-interactive'
+          className={`o-expandable__header o-expandable__header-interactive ${disabled ? ' disabled' : ''}`}
           aria-expanded={isExpanded}>
           {header}
-          <button type='button' className='o-expandable__target' onClick={onClick}>
+          <button
+            type='button'
+            className='o-expandable__target'
+            onClick={onClick}
+            disabled={disabled}>
             {expandableLink}
           </button>
         </div>
       )}
-
-      <div data-testid='accordion-wrapper' className='o-expandable__wrapper'>
-        <div data-testid='accordion-inner' className='o-expandable__inner'>
-          <div data-testid='accordion-content' className='o-expandable__content'>
-            {children}
+      {disabled ? null : (
+        <div data-testid='accordion-wrapper' className='o-expandable__wrapper'>
+          <div data-testid='accordion-inner' className='o-expandable__inner'>
+            <div data-testid='accordion-content' className='o-expandable__content'>
+              {children}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

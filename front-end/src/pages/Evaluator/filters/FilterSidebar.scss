@@ -1,6 +1,43 @@
 @use '@cfpb/cfpb-design-system/src/abstracts' as *;
+@use '@cfpb/cfpb-design-system/src/utilities' as *;
 
 .filter-sidebar {
+  .o-expandable.nested {
+    .a-label--heading {
+      position: relative;
+      top: 0.25em;
+    }
+
+    .o-expandable {
+      &__content {
+        padding-left: 0;
+        padding-right: 0;
+
+        > .nested {
+          margin-left: 1.75rem;
+        }
+
+        > .o-expandable:first-child {
+          margin-top: -1rem;
+        }
+
+        > .o-expandable:last-child {
+          margin-bottom: -1rem;
+        }
+
+        .m-form-field--checkbox + .o-expandable {
+          margin-top: 0.75rem;
+        }
+      }
+    }
+
+    &:not(.o-expandable--open) {
+      .o-expandable__content {
+        visibility: hidden !important;
+      }
+    }
+  }
+
   // show lines between checkboxes in sidebar filters
   .m-form-field--checkbox + .m-form-field--checkbox {
     border-top: 1px solid var(--gray-40);
@@ -26,8 +63,8 @@
   }
 
   // all top-level sidebar expandables should get blue background / white text
-  .o-expandable--open.nested--level-1 > .o-expandable__header,
-  .o-expandable.nested--level-1 > .o-expandable__header:hover {
+  .o-expandable--open.nested--level-1 > .o-expandable__header:not(.disabled),
+  .o-expandable.nested--level-1 > .o-expandable__header:not(.disabled):hover {
     background-color: var(--navy-90);
     color: var(--white);
 
@@ -38,6 +75,33 @@
       }
 
       color: var(--white);
+    }
+  }
+
+  .o-expandable__header {
+    gap: 0;
+  }
+
+  .o-expandable__header .m-form-field--checkbox {
+    width: 100%;
+  }
+
+  label {
+    width: 100%;
+  }
+}
+
+.label-with-count {
+  display: flex;
+  justify-content: space-between;
+  gap: em-from-px(10);
+
+  .count {
+    font-size: em-from-px(14);
+    flex-shrink: 0;
+
+    &--pad-right {
+      padding-right: em-from-px(47);
     }
   }
 }

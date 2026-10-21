@@ -80,7 +80,7 @@ export default function NestedCheckboxGroup({
               <Checkbox
                 onChange={item.onChange}
                 id={String(item.key)}
-                label={item.name}
+                label={item.label}
                 checked={isAllChecked}
                 // isLabelInline={level !== 1}
                 isIndeterminate={!isAllChecked && isSomeChecked}
@@ -92,7 +92,7 @@ export default function NestedCheckboxGroup({
           <Checkbox
             id={String(item.key)}
             key={item.key}
-            label={item.name}
+            label={item.label}
             checked={item.checked}
             className='nested'
             onChange={item.onChange}
