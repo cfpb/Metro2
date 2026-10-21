@@ -33,7 +33,7 @@ export default function EvaluatorResults({
 
   const query: EvaluatorSearch = useSearch({ strict: false })
 
-  const { page, view, page_size, sort, show_counts, ...filters } = query
+  const { page, view, page_size, show_counts, ...filters } = query
 
   if (view == 'sample' && page != 1) {
     void navigate({
@@ -56,8 +56,6 @@ export default function EvaluatorResults({
   const isFiltered =
     view === 'all' &&
     Object.keys(filters).some(key => evaluatorFilters.includes(key))
-
-  console.log(isFiltered)
 
   const rows = data?.hits ?? []
 

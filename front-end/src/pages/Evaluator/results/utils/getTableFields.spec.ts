@@ -14,7 +14,7 @@ describe('getTableFields', () => {
     expect(result.slice(2, 4)).toEqual(fieldsUsed)
 
     // Then the filterable fields
-    expect(result.slice(4, 17)).toEqual(filterableFields)
+    expect(result.slice(4, 18)).toEqual(filterableFields)
 
     // Then the remaining M2 fields, in order, with the
     // above fields filtered out
@@ -22,6 +22,6 @@ describe('getTableFields', () => {
       value =>
         ![...identifierFields, ...fieldsUsed, ...filterableFields].includes(value)
     )
-    expect(result.slice(17)).toEqual(remainingFields)
+    expect(result.slice(18)).toEqual(remainingFields)
   })
 })
