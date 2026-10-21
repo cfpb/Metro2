@@ -33,6 +33,7 @@ export const filterableFields = [
   'dofd',
   'compl_cond_cd',
   'php1',
+  'php',
   'pmt_rating',
   'spc_com_cd',
   'terms_freq',
