@@ -1,27 +1,41 @@
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
-import { filterableFields, getTableFields, identifierFields } from './getTableFields'
+import { getTableFields } from './getTableFields'
 
 describe('getTableFields', () => {
   it('should return fields in correct order', () => {
-    const fieldsUsed = ['acct_type', 'port_type']
+    const result = getTableFields(['acct_type', 'port_type'])
 
-    const result = getTableFields(fieldsUsed)
+    const expectedFields = [
+      ...new Set([
+        // Identifier fields come first
+        'cons_acct_num',
+        'activity_date',
 
-    // The first two fields should be the identifier fields
-    expect(result.slice(0, 2)).toEqual(identifierFields)
+        // Then fields used
+        'acct_type',
+        'port_type',
 
-    // The fields used should come next
-    expect(result.slice(2, 4)).toEqual(fieldsUsed)
+        // Then filterable fields
+        'acct_stat',
+        'current_bal',
+        'amt_past_due',
+        'dofd',
+        'compl_cond_cd',
+        'php1',
+        'php',
+        'pmt_rating',
+        'spc_com_cd',
+        'terms_freq',
+        'cons_info_ind',
+        'cons_info_ind_assoc',
+        'l1__change_ind',
+        'date_closed',
 
-    // Then the filterable fields
-    expect(result.slice(4, 18)).toEqual(filterableFields)
+        // Then the remaining fields
+        ...M2_FIELD_NAMES.keys()
+      ])
+    ]
 
-    // Then the remaining M2 fields, in order, with the
-    // above fields filtered out
-    const remainingFields = [...M2_FIELD_NAMES.keys()].filter(
-      value =>
-        ![...identifierFields, ...fieldsUsed, ...filterableFields].includes(value)
-    )
-    expect(result.slice(18)).toEqual(remainingFields)
+    expect(result).toEqual(expectedFields)
   })
 })
