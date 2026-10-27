@@ -1,12 +1,12 @@
 asgiref==3.11.1
 coverage==7.13.5
-Django==5.2.17
+Django==5.2.18
 django-debug-toolbar==7.0.0
 psycopg==3.3.3
 psycopg-binary==3.3.3
 ruff==0.15.11
 boto3==1.42.91
-djangorestframework==3.17.2
+djangorestframework==3.18.2
 django-auth-adfs==1.16.0
 django-filter==25.2
 gunicorn==25.3.0
@@ -16,7 +16,7 @@ yappi==1.7.6
 django-prose-editor[sanitize]
 
 # Not required directly by Metro2; pinned to avoid CVEs
-certifi==2026.7.22
+certifi==2026.10.19
 cryptography==50.0.1
 idna==3.19
 PyJWT==2.15.0
