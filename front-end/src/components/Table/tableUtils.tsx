@@ -13,19 +13,19 @@ export const columnTypes = {
   formattedNumber: {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    valueFormatter: ({ value }: ValueFormatterParams): string => formatNumber(value)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    valueFormatter: ({ value }: ValueFormatterParams): any => formatNumber(value)
   },
   formattedDate: {
     cellDataType: 'dateString',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    valueFormatter: ({ value }: ValueFormatterParams): string => formatDate(value)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    valueFormatter: ({ value }: ValueFormatterParams): any => formatDate(value)
   },
   currency: {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    valueFormatter: ({ value }: ValueFormatterParams): string => formatUSD(value)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    valueFormatter: ({ value }: ValueFormatterParams): any => formatUSD(value)
   }
 }
 
