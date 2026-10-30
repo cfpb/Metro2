@@ -217,8 +217,19 @@ class EvaluatorResultSerializerTestCase(TestCase):
             event=self.event,
             evaluator=self.evaluator,
         )
+        acct_activity_prior = acct_record(data_file, {
+            'id': 31,
+            'cons_acct_num': 'ABC123',
+            'acct_stat': '11',
+            'compl_cond_cd': 'XB',
+            'pmt_rating': '0',
+            'cons_info_ind': 'Z',
+            'current_bal': 215,
+            'dofd': date(2025, 2, 20),
+        })
         acct_activity = acct_record(data_file, {
             'id': 32,
+            'previous_values': acct_activity_prior,
             'cons_acct_num': 'ABC123',
             'acct_stat': '11',
             'compl_cond_cd': 'XB',
@@ -228,6 +239,8 @@ class EvaluatorResultSerializerTestCase(TestCase):
             'spc_com_cd': 'AH',
             'terms_freq': 'M',
             'cons_info_ind': 'Z',
+            'current_bal': 250,
+            'dofd': date(2025, 2, 20),
         })
 
         EvaluatorResult.objects.create(
@@ -245,7 +258,7 @@ class EvaluatorResultSerializerTestCase(TestCase):
         # EvaluatorResultMaterializedView and translates the column names
         # to match those on the AccountActivity model (using double
         # underscores for related models).
-        to_json = EvaluatorResultSerializer(self.result)
+        json_data = EvaluatorResultSerializer(self.result).data
         expected_keys = [
             'k2__purch_sold_ind',
             'k2__purch_sold_name',
@@ -321,6 +334,12 @@ class EvaluatorResultSerializerTestCase(TestCase):
             'addr_ind',
             'res_cd',
         ]
-        actual_keys = to_json.data.keys()
+        actual_keys = json_data.keys()
         [self.assertIn(k, actual_keys) for k in expected_keys]
         self.assertEqual(len(actual_keys), len(expected_keys))
+
+        self.assertEqual(json_data['dofd'], json_data['previous_values__dofd'])
+        self.assertEqual(json_data['dofd'], '2025-02-20')
+
+        self.assertEqual(json_data['current_bal'], 250)
+        self.assertEqual(json_data['previous_values__current_bal'], 215)
