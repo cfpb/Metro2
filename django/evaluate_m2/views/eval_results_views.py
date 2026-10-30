@@ -6,8 +6,6 @@ from django.conf import settings
 from django.db import ProgrammingError
 from django.db.models import Count
 from django.http import Http404, HttpResponse, StreamingHttpResponse
-from django.shortcuts import get_list_or_404
-from django.utils.functional import cached_property
 
 import botocore
 import django_filters.rest_framework
@@ -22,54 +20,24 @@ from evaluate_m2.exception_utils import (
     get_evaluate_m2_not_found_exception,
 )
 from evaluate_m2.filters import (
-    AccountListFilterSet,
     AnyCharFilter,
     EvaluatorResultFilterSet,
 )
 from evaluate_m2.models import (
     EvaluatorMetadata,
-    EvaluatorResult,
     EvaluatorResultMaterializedView,
     EvaluatorResultSummary,
 )
 from evaluate_m2.pagination import EvaluatorResultsPaginator
 from evaluate_m2.serializers import (
-    AccountListSerializer,
     EvaluatorMetadataSerializer,
     EvaluatorResultSerializer,
-    EventsViewSerializer,
 )
-from evaluate_m2.views_utils import (
+from evaluate_m2.views.views_utils import (
     get_object,
     has_permissions_for_request,
 )
-from parse_m2.models import AccountActivity, Metro2Event
-from parse_m2.serializers import AccountActivitySerializer, AccountHolderSerializer
-
-
-@api_view(("GET",))
-def download_evaluator_metadata_csv(request):
-    # Documentation on returning CSV: https://docs.djangoproject.com/en/4.2/howto/outputting-csv/
-    filename = f"evaluator-metadata-{date.today()}.csv"
-    response = HttpResponse(
-        content_type="text/csv",
-        headers={"Content-Disposition": f"attachment; filename={filename}"},
-    )
-
-    eval_metadata_serializer = EvaluatorMetadataSerializer(
-        EvaluatorMetadata.objects.all().order_by('id'),
-        many=True,
-    )
-    header = EvaluatorMetadataSerializer.Meta.fields
-    # Add the header to the CSV response
-    writer = csv.DictWriter(response, fieldnames=header)
-    writer.writeheader()
-
-    # Add all evaluators to the response
-    for row in eval_metadata_serializer.data:
-        writer.writerow(row)
-
-    return response
+from parse_m2.models import  Metro2Event
 
 
 @api_view(("GET",))
@@ -108,106 +76,6 @@ def download_evaluator_results_csv(request, event_id, evaluator_id):
 
         return upload_utils.generate_eval_results_csv(qs, response)
 
-
-@api_view(("GET",))
-def account_summary_view(request, event_id, account_number):
-    logger = logging.getLogger("views.account_summary_view")
-    try:
-        event = Metro2Event.objects.get(id=event_id)
-        if not has_permissions_for_request(request, event):
-            return HttpResponse("Unauthorized", status=401)
-        event_activities = get_list_or_404(
-            event.get_all_account_activity()
-            .filter(cons_acct_num=account_number)
-            .order_by("activity_date")
-            .select_related("k2", "k4", "l1")
-        )
-        if not event_activities:
-            raise Http404()
-        activities_serializer = AccountActivitySerializer(event_activities, many=True)
-
-        eval_results = EvaluatorResult.objects.filter(
-            acct_num=account_number, result_summary__event=event
-        ).select_related("result_summary")
-        evals_hit = [e.result_summary.evaluator_id for e in eval_results]
-        evals_hit_uniq = sorted(list(set(evals_hit)))
-
-        data = {
-            "cons_acct_num": account_number,
-            "inconsistencies": evals_hit_uniq,
-            "account_activity": activities_serializer.data,
-        }
-        return Response(data)
-    except (
-        Http404,
-        Metro2Event.DoesNotExist,
-        EvaluatorMetadata.DoesNotExist,
-        EvaluatorResult.DoesNotExist,
-        AccountActivity.DoesNotExist,
-    ) as e:
-        error = get_evaluate_m2_not_found_exception(
-            str(e), event_id, None, request.path, account_number
-        )
-        logger.error(error["message"])
-        return Response(error, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(("GET",))
-def account_pii_view(request, event_id, account_number):
-    logger = logging.getLogger("views.account_pii_view")
-    try:
-        event = Metro2Event.objects.get(id=event_id)
-        if not has_permissions_for_request(request, event):
-            return HttpResponse("Unauthorized", status=401)
-        latest_acct_activity = AccountActivity.objects.filter(
-            data_file__event=event, cons_acct_num=account_number
-        ).latest("activity_date")
-        acct_holder_serializer = AccountHolderSerializer(latest_acct_activity)
-        return Response(acct_holder_serializer.data)
-    except (Metro2Event.DoesNotExist, AccountActivity.DoesNotExist) as e:
-        error = get_evaluate_m2_not_found_exception(
-            str(e), event_id, None, request.path, account_number
-        )
-        logger.error(error["message"])
-        return Response(error, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view()
-def events_view(request, event_id):
-    logger = logging.getLogger("views.evaluator_results_view")
-    try:
-        event = Metro2Event.objects.get(id=event_id)
-        if not has_permissions_for_request(request, event):
-            return HttpResponse("Unauthorized", status=401)
-
-        eval_result_summaries = (
-            EvaluatorResultSummary.objects.filter(event=event, hits__gt=0)
-            .select_related("evaluator")
-            .order_by("evaluator__id")
-        )
-        evaluator_metadata_serializer = EventsViewSerializer(
-            eval_result_summaries, many=True, context={"event": event}
-        )
-        result = {
-            "id": event.id,
-            "name": event.name,
-            "portfolio": event.portfolio,
-            "eid_or_matter_num": event.eid_or_matter_num,
-            "other_descriptor": event.other_descriptor,
-            "directory": event.directory,
-            "date_range_start": event.date_range_start,
-            "date_range_end": event.date_range_end,
-            "total_tradelines": event.total_tradelines,
-            "total_accounts": event.total_accounts,
-            "evaluators": evaluator_metadata_serializer.data,
-        }
-        return Response(result)
-    except (Metro2Event.DoesNotExist, EvaluatorResultSummary.DoesNotExist) as e:
-        error = get_evaluate_m2_not_found_exception(
-            str(e), event_id, None, request.path
-        )
-        logger.error(error["message"])
-        return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
 ###########################################
@@ -394,33 +262,3 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
                 "facets": facets,
             }
         )
-
-
-class AccountsListView(generics.ListAPIView):
-    filter_backends = [
-        django_filters.rest_framework.DjangoFilterBackend,
-    ]
-    filterset_class = AccountListFilterSet
-
-    @cached_property
-    def event(self):
-        event_id = self.kwargs["event_id"]
-        return Metro2Event.objects.get(id=event_id)
-
-    def get_queryset(self):
-        return (
-            self.event.get_all_account_activity()
-            .only('cons_acct_num', 'port_type', 'acct_type')
-            .with_hit_count(self.event)
-            .with_record_count(self.event)
-        )
-
-    def list(self, request, *args, **kwargs):
-        # TODO: replace using DRF permissions/check_permissions()
-        if not has_permissions_for_request(request, self.event):
-            return HttpResponse("Unauthorized", status=401)
-
-        queryset = self.filter_queryset(self.get_queryset()).distinct_accounts()
-
-        serializer = AccountListSerializer(queryset, many=True)
-        return Response(serializer.data)

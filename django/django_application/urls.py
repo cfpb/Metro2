@@ -24,13 +24,13 @@ from django.views.generic import TemplateView
 
 from django_application import views as app_views
 from evaluate_m2 import urls as evaluate_m2_urls
-from evaluate_m2 import views as eval_views
+from evaluate_m2.views import eval_metadata_views
 from users import views
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/all-evaluator-metadata/', eval_views.download_evaluator_metadata_csv),
+    path('api/all-evaluator-metadata/', eval_metadata_views.download_evaluator_metadata_csv),
     path('api/events/', include(evaluate_m2_urls)),
     path('api/users/', views.users_view),
     path('api/users/<int:user_id>/', views.users_view),

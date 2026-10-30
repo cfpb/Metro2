@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import RequestFactory, TestCase
 
-from evaluate_m2.views_utils import has_permissions_for_request
+from evaluate_m2.views.views_utils import has_permissions_for_request
 from parse_m2.models import Metro2Event
 
 
