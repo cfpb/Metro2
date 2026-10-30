@@ -13,6 +13,7 @@ describe('isDateString', () => {
     expect(isDateString(null)).toEqual(false)
     expect(isDateString(UNDEFINED)).toEqual(false)
     expect(isDateString('abcdefg')).toEqual(false)
+    expect(isDateString(24)).toEqual(false)
   })
 })
 
@@ -31,10 +32,10 @@ describe('formatDate', () => {
     expect(formatDate('2024-01-23', 'fullText')).toEqual('January 23, 2024')
   })
 
-  it('returns empty string when passed a non-date-string value', () => {
-    expect(formatDate(null)).toEqual('')
-    expect(formatDate(UNDEFINED)).toEqual('')
-    expect(formatDate('abcdefg')).toEqual('')
+  it('returns original value when passed a non-date-string value', () => {
+    expect(formatDate(null)).toEqual(null)
+    expect(formatDate(UNDEFINED)).toEqual(UNDEFINED)
+    expect(formatDate('abcdefg')).toEqual('abcdefg')
   })
 })
 

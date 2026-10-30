@@ -1,3 +1,7 @@
+export function isNumeric(value: unknown) {
+  return value !== '' && value !== null && Number.isFinite(Number(value))
+}
+
 export const numberFormatter = new Intl.NumberFormat('en-US', {
   notation: 'standard'
 })
@@ -14,17 +18,17 @@ formatNumber()
 
 Formats a number as a string
 
-@param {number | string | null | undefined} val - a value
-@returns {string} - Formatted numeric string if given a number
-                    Empty string for any other data type
+@param {string | number | null | undefined} val - a value
+@returns {string | number | null | undefined} - Formatted numeric string if given a numeric value
+                                                Original value for any other type
 @examples
    Input: 1234567
    Output: 1,234,567
    Input: 'anything else'
    Output: ''
 */
-export function formatNumber(val: number | string | null | undefined): string {
-  return typeof val === 'number' ? numberFormatter.format(val) : ''
+export function formatNumber(val: string | number | null | undefined): string | number | null | undefined {
+  return isNumeric(val) ? numberFormatter.format(Number(val)) : val
 }
 
 /**
@@ -32,17 +36,17 @@ formatUSD()
 
 Applies US currency formatting to a number
 
-@param {number | string | null | undefined} val - a value
-@returns {string} - USD-formatted numeric string if given a number
-                    Empty string for any other data type
+@param {string | number | null | undefined} val - a value
+@returns {string | number | null | undefined} - USD-formatted numeric string if given a numeric value
+                                                Original value for any other type
 @examples
-   Input: 1234567
+   Input: '1234567'
    Output: $1,234,567
    Input: 1234567.4567
    Output: $1,234,567.46
-   Input: 'anything else'
-   Output: ''
+   Input: anything else
+   Output: original value
 */
-export function formatUSD(val: number | string | null | undefined): string {
-  return typeof val === 'number' ? currencyFormatter.format(val) : ''
+export function formatUSD(val: string | number | null | undefined): string | number | null | undefined {
+  return isNumeric(val) ? currencyFormatter.format(Number(val)) : val
 }

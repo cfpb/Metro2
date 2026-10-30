@@ -33,8 +33,8 @@ Checks if a string is a valid date
    - isDateString(null)
      // False
 */
-export const isDateString = (val: number | string | null | undefined): boolean =>
-  !!val && !Number.isNaN(new Date(val).valueOf())
+export const isDateString = (val: string | number | null | undefined): boolean =>
+  typeof val === 'string' && !Number.isNaN(new Date(val).valueOf())
 
 /**
 formatDate()
@@ -42,10 +42,10 @@ formatDate()
 Given a valid date string, returns a string with specified date format.
 Otherwise, returns empty string.
 
-@param {number | string | null | undefined} val - a value
+@param {string | number | null | undefined} val - a value
 @param {string} format - the format for the returned string
-@returns {string} - Formatted date string if val is a valid date string
-                  - Empty string for any other input
+@returns {string | number | null | undefined} - Formatted date string if val is a valid date string
+                                              - Original val for any other input
 @examples
    - formatDate('2024-01-04')
      Returns: 01/04/24
@@ -57,13 +57,13 @@ Otherwise, returns empty string.
      Returns: January 4, 2024
 */
 export const formatDate = (
-  val: number | string | null | undefined,
+  val: string | number | null | undefined,
   format: 'default' | 'text' | 'fullText' = 'default'
-): string => {
+): string | number | null | undefined => {
   return isDateString(val) ? new Intl.DateTimeFormat(
     'en-US',
     dateFormat[format] as Intl.DateTimeFormatOptions
-  ).format(new Date(String(val))) : '';
+  ).format(new Date(String(val))) : val;
 }
 
 /**
@@ -84,10 +84,11 @@ Given two date strings, returns a data range string with provided format
    Returns: Jan 2024 - Feb 2024
 */
 export const formatDateRange = (
-  start: number | string | null | undefined,
-  end: number | string | null | undefined,
+  start: string | number | null | undefined,
+  end: string | number | null | undefined,
   format: 'default' | 'text' = 'default'
 ): string =>
   isDateString(start) && isDateString(end)
+     
     ? `${formatDate(start, format)} - ${formatDate(end, format)}`
     : ''
