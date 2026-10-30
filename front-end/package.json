@@ -34,7 +34,7 @@
     "ag-grid-community": "^36.2.0",
     "ag-grid-react": "^36.2.0",
     "ag-stack": "^36.2.0",
-    "dompurify": "^3.4.16",
+    "dompurify": "^3.4.17",
     "exceljs": "^4.4.0",
     "query-string": "^9.5.1",
     "react": "^19.3.0",
