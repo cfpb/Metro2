@@ -6,6 +6,7 @@
 !.github/**
 !django/
 !django/**
+!django/evaluate_m2/views/
 !front-end/
 !front-end/**
 
