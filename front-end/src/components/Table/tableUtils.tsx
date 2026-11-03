@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { formatDate } from '@src/utils/formatDates'
 import { formatNumber, formatUSD } from '@src/utils/formatNumbers'
 import type { ValueFormatterParams } from 'ag-grid-community'
@@ -13,18 +15,15 @@ export const columnTypes = {
   formattedNumber: {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     valueFormatter: ({ value }: ValueFormatterParams): any => formatNumber(value)
   },
   formattedDate: {
     cellDataType: 'dateString',
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     valueFormatter: ({ value }: ValueFormatterParams): any => formatDate(value)
   },
   currency: {
     cellClass: 'ag-right-aligned-cell',
     cellDataType: 'number',
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     valueFormatter: ({ value }: ValueFormatterParams): any => formatUSD(value)
   }
 }

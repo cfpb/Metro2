@@ -7,4 +7,5 @@ export default interface EventMetadata {
   date_range_start?: string | null
   date_range_end?: string | null
   total_tradelines?: number | null
+  total_accounts?: number | null
 }
