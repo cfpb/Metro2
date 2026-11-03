@@ -19,13 +19,15 @@ RUN apk add --no-cache --no-check-certificate ca-certificates && update-ca-certi
 
 # upgrade apk and pip, add build dependencies to .build-deps virtual to be
 # deleted later
-RUN apk update --no-cache
-RUN apk upgrade --no-cache
-RUN apk add libpq
-RUN apk add --virtual .build-deps gcc python3-dev musl-dev
-RUN apk add --no-cache aws-cli bash jq
-RUN apk add libffi-dev
-RUN pip install --upgrade pip
+RUN apk update --no-cache && \
+    apk upgrade --no-cache && \
+    apk add libpq && \
+    apk add --virtual .build-deps gcc python3-dev musl-dev
+RUN apk add --no-cache aws-cli
+RUN apk add --no-cache bash
+RUN apk add --no-cache jq
+RUN apk add libffi-dev && \
+    pip install --upgrade pip
 
 # Copy the django application into the WORKDIR
 COPY . .
