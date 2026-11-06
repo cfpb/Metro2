@@ -46,6 +46,10 @@ describe('Event page', () => {
         'include.text',
         `Total tradelines evaluated: ${formatNumber(eventData.total_tradelines)}`
       )
+      .and(
+        'include.text',
+        `Total consumer accounts: ${formatNumber(eventData.total_accounts)}`
+      )
   })
 
   // Account search

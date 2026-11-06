@@ -3,7 +3,7 @@ import LocatorBar from '@src/components/LocatorBar/LocatorBar'
 import Table from '@src/components/Table/Table'
 import { useEventSuspense } from '@src/queries/event'
 import { formatDateRange } from '@src/utils/formatDates'
-import { formatNumber } from '@src/utils/formatNumbers'
+import { formatNumber, isNumeric } from '@src/utils/formatNumbers'
 import { getRouteApi, Link } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
 import EventDownloader from './components/EventDownloader'
@@ -17,16 +17,22 @@ export default function EventPage(): ReactElement {
     data.date_range_end,
     'text'
   )
+
   return (
     <>
       <LocatorBar heading={data.name} icon='bank-round'>
         <>
           {dateRange ? <div>Data from {dateRange}</div> : null}
-          {Number.isNaN(data.total_tradelines) ? null : (
+          {isNumeric(data.total_tradelines) ?  (
             <div>
               Total tradelines evaluated: {formatNumber(data.total_tradelines)}
             </div>
-          )}
+          ) : null}
+          {isNumeric(data.total_accounts) ? (
+            <div>
+              Total consumer accounts: {formatNumber(data.total_accounts)}
+            </div>
+          ) : null}
         </>
       </LocatorBar>
       <div className='block block--sub'>
