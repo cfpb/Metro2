@@ -40,10 +40,6 @@ export default function Filters({
         data-testid='evaluator-filter-sidebar'>
         <div className='block block--sub block--flush-top'>
           <h2 className='h3'>Account details</h2>
-          <p>
-            Filters are under development. Some options may not be relevant for this
-            evaluator.
-          </p>
           {showCounts ? (
             <>
               {checkboxFilters.map(field => {
@@ -59,6 +55,7 @@ export default function Filters({
             </>
           ) : (
             <>
+              <p data-testid='counts-message'>Filter counts are not available for evaluators with over a million results.</p>
               {checkboxFilters.map(field => {
                 return <EvaluatorCheckboxGroup field={field} key={field} />
               })}
