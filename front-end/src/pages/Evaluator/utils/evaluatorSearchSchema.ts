@@ -10,13 +10,6 @@ export const evaluatorSchema = z.object({
   page: z.number().gt(0).int().catch(1).default(1),
   page_size: z.number().gt(0).catch(ITEMS_PER_PAGE).default(ITEMS_PER_PAGE),
   sort: sortValidator,
-  show_counts: z
-    .union([
-      z.boolean().transform(value => value.toString()),
-      z.enum(['true', 'false'])
-    ])
-    .catch('false')
-    .optional(),
   amt_past_due_min: minMaxValidator,
   amt_past_due_max: minMaxValidator,
   current_bal_min: minMaxValidator,

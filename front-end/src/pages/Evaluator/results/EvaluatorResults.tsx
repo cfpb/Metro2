@@ -32,7 +32,9 @@ export default function EvaluatorResults({
 
   const query: EvaluatorSearch = useSearch({ strict: false })
 
-  const { page, view, page_size, show_counts, ...selectedFilters } = query
+  const { page, view, page_size, ...selectedFilters } = query
+
+  const show_counts = evaluatorMetadata.hits < 1_000_000
 
   if (view == 'sample' && page != 1) {
     void navigate({
@@ -113,8 +115,7 @@ export default function EvaluatorResults({
                           search={(previous): object => ({
                             page: 1,
                             page_size: previous.page_size,
-                            view: 'all',
-                            show_counts: previous.show_counts
+                            view: 'all'
                           })}
                           activeOptions={{ exact: true }}
                           style={{ pointerEvents: 'auto' }}
@@ -147,7 +148,7 @@ export default function EvaluatorResults({
                             evaluatorId={evaluatorMetadata.id}
                           />
                         ) : (
-                          <Filters showCounts={!!show_counts} />
+                          <Filters showCounts={false} />
                         )}
                       </>
                     ) : null}
