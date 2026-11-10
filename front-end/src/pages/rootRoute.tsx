@@ -1,6 +1,7 @@
 import { DSRContext } from '@cfpb/design-system-react'
 import { M2Footer } from '@src/components/Footer/Metro2Footer'
 import { M2Header } from '@src/components/Header/Metro2Header'
+import { useUIStore } from '@src/store'
 import type { QueryClient } from '@tanstack/react-query'
 import {
   createRootRouteWithContext,
@@ -9,8 +10,10 @@ import {
 } from '@tanstack/react-router'
 import LoadingOrError from 'components/LoadingOrError/LoadingOrError'
 import { Suspense } from 'react'
+
 interface RouterContext {
   queryClient: QueryClient
+  store: typeof useUIStore
 }
 
 const rootRoute = createRootRouteWithContext<RouterContext>()({

@@ -9,6 +9,7 @@ import CheckboxFilterGroup from '@src/pages/Evaluator/filters/components/Checkbo
 import CheckboxFilterItem from '@src/pages/Evaluator/filters/components/CheckboxFilterItem'
 import type { EvaluatorFacets } from '@src/types/EvaluatorFacets'
 import getHeaderName from '@src/utils/getHeaderName'
+import { useUIStore } from '@src/store'
 
 interface CheckboxFieldFilterProperties {
   // name of the M2 field this filter is for
@@ -31,6 +32,8 @@ const CheckboxFilterSection = function CheckboxFilterParent({
   isRequired = false
 }: CheckboxFieldFilterProperties): ReactElement {
   const navigate = useNavigate()
+
+  const { openEvaluatorFilters, toggleOpenEvaluatorFilter } = useUIStore()
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { checked } = event.currentTarget
@@ -95,12 +98,16 @@ const CheckboxFilterSection = function CheckboxFilterParent({
   const someSelected =
     !allSelected && validValues.some(value => selectedFilterValues.includes(value))
 
+  const accordionId = `${field}_accordion`
+
   return (
     <Accordion
       className='nested nested--level-1'
       hasBackground={false}
       key={field}
-      openOnLoad={allSelected || someSelected}
+      openOnLoad={allSelected || someSelected || openEvaluatorFilters?.includes(accordionId)}
+      id={accordionId}
+      onClick={toggleOpenEvaluatorFilter}
       header={
         <Checkbox
           id={field}
@@ -121,7 +128,7 @@ const CheckboxFilterSection = function CheckboxFilterParent({
                 }
                 filteredCount={
                   filteredCounts[
-                    'blank' as keyof EvaluatorFacets[keyof EvaluatorFacets]
+                  'blank' as keyof EvaluatorFacets[keyof EvaluatorFacets]
                   ]
                 }
                 selected={selectedValidValues}
@@ -159,7 +166,7 @@ const CheckboxFilterSection = function CheckboxFilterParent({
                 item={item as keyof EvaluatorFacets[keyof EvaluatorFacets]}
                 filteredCount={
                   filteredCounts[
-                    item as keyof EvaluatorFacets[keyof EvaluatorFacets]
+                  item as keyof EvaluatorFacets[keyof EvaluatorFacets]
                   ]
                 }
                 count={counts[item as keyof EvaluatorFacets[keyof EvaluatorFacets]]}
