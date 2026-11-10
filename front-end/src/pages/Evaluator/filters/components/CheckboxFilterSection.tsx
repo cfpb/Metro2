@@ -7,9 +7,9 @@ import { FILTER_VALUES } from '@src/constants/annotationLookups'
 import fieldGroups from '@src/constants/filterFieldGroups'
 import CheckboxFilterGroup from '@src/pages/Evaluator/filters/components/CheckboxFilterGroup'
 import CheckboxFilterItem from '@src/pages/Evaluator/filters/components/CheckboxFilterItem'
+import { useUIStore } from '@src/store'
 import type { EvaluatorFacets } from '@src/types/EvaluatorFacets'
 import getHeaderName from '@src/utils/getHeaderName'
-import { useUIStore } from '@src/store'
 
 interface CheckboxFieldFilterProperties {
   // name of the M2 field this filter is for
@@ -34,6 +34,7 @@ const CheckboxFilterSection = function CheckboxFilterParent({
   const navigate = useNavigate()
 
   const { openEvaluatorFilters, toggleOpenEvaluatorFilter } = useUIStore()
+  console.log(openEvaluatorFilters)
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { checked } = event.currentTarget
@@ -98,7 +99,7 @@ const CheckboxFilterSection = function CheckboxFilterParent({
   const someSelected =
     !allSelected && validValues.some(value => selectedFilterValues.includes(value))
 
-  const accordionId = `${field}_accordion`
+  const accordionId = `${field}_filter`
 
   return (
     <Accordion
