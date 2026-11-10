@@ -29,7 +29,7 @@ def parse_local_file(
 
     logger.info(f"Parsing local file: {filepath}")
     try:
-        with open(filepath) as fstream:
+        with open(filepath, mode='rb') as fstream:
             file_size = os.path.getsize(filepath)
             parser.parse_file_contents(fstream, file_size)
             logger.debug("Parsing completed")
