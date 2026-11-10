@@ -33,14 +33,17 @@ const evaluatorRoute = createRoute({
   component: EvaluatorPage,
   validateSearch: evaluatorSchema,
   loader: async ({ context, params: { eventId, evaluatorId } }) => {
-    const userData = context.queryClient.ensureQueryData(userQueryOptions())
-    const eventData = context.queryClient.ensureQueryData(eventQueryOptions(eventId))
+    const userData = context.queryClient.query(userQueryOptions())
+    const eventData = context.queryClient.query(eventQueryOptions(eventId))
     const evaluatorMetadata = getEvaluator(eventData, evaluatorId)
     return {
       userData: await userData,
       eventData: await eventData,
       evaluatorMetadata: await evaluatorMetadata
     }
+  },
+  onLeave: ({context}) => {
+    context.store.getState().resetOpenEvaluatorFilters()
   }
 })
 

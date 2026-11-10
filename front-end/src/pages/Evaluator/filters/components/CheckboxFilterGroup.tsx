@@ -1,6 +1,7 @@
 import { Checkbox } from '@cfpb/design-system-react'
 import Accordion from '@src/components/Accordion/Accordion'
 import CheckboxFilterItem from '@src/pages/Evaluator/filters/components/CheckboxFilterItem'
+import { useUIStore } from '@src/store'
 import type { EvaluatorFacets } from '@src/types/EvaluatorFacets'
 import { formatNumber } from '@src/utils/formatNumbers'
 import { useNavigate } from '@tanstack/react-router'
@@ -30,6 +31,10 @@ export default function CheckboxFilterGroup({
   filteredCounts = {}
 }: CheckboxGroupProperties): ReactElement {
   const navigate = useNavigate()
+
+  // We store the currently open filters so we can
+  // open them again when the filter counts update
+  const { openEvaluatorFilters, toggleOpenEvaluatorFilter } = useUIStore()
 
   const allSelected = validValues.every(item => selectedValues.includes(item))
 
@@ -65,6 +70,7 @@ export default function CheckboxFilterGroup({
       }
     })
   }
+  const accordionId = `${field}_filter_${groupName}_group`
 
   return (
     <>
@@ -72,7 +78,9 @@ export default function CheckboxFilterGroup({
         <Accordion
           className='nested nested--level-2'
           hasBackground={false}
-          openOnLoad={allSelected || someSelected}
+          openOnLoad={allSelected || someSelected || openEvaluatorFilters.includes(accordionId)}
+          id={accordionId}
+          onClick={toggleOpenEvaluatorFilter}
           header={
             <Checkbox
               id={`${field}_${groupName}`}
