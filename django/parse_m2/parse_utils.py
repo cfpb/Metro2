@@ -104,7 +104,7 @@ def get_field_value(field_ref: dict, field_name: str, line: str):
 
 def get_next_line(f) -> str:
     """
-    Depending on whether the file is being read from the filesytem or from S3,
+    Depending on how the file is opened,
     readline may return a string or a bytes-like object. Since the parser
     expects strings, use this method to ensure a string is returned.
     """
@@ -127,6 +127,7 @@ def decode_if_needed(input: any) -> str:
 
 def segment_has_contents(line: str) -> bool:
     """
-    If a string has no letters and no digits besides 0, return False
+    If a string has no letters and no digits besides 0 (after the 2-character
+    segment identifier), return False
     """
     return bool(re.search(r'[a-zA-Z1-9]', line[2:]))
