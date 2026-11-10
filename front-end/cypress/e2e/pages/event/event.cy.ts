@@ -122,7 +122,7 @@ describe('Event file download', () => {
 
   it('Should download event data', () => {
     const eventDownloadData =
-      'ID,DESCRIPTION,CATEGORY,HITS,ACCOUNTS AFFECTED\nTest-Eval-1,This is a test evaluator.,Delinquency,1000,450\nTest-Eval-2,Test evaluator.,Bankruptcy,85,17'
+      'ID,DESCRIPTION,CATEGORY,HITS,ACCOUNTS AFFECTED\nTest-Eval-1,This is a test evaluator.,Delinquency,1000000,450\nTest-Eval-2,Test evaluator.,Bankruptcy,85,17'
 
     modal.openModal('Save summary')
 

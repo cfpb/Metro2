@@ -34,7 +34,6 @@ const CheckboxFilterSection = function CheckboxFilterParent({
   const navigate = useNavigate()
 
   const { openEvaluatorFilters, toggleOpenEvaluatorFilter } = useUIStore()
-  console.log(openEvaluatorFilters)
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { checked } = event.currentTarget

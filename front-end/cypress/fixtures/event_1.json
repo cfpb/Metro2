@@ -11,7 +11,7 @@
   "total_accounts": 111,
   "evaluators": [
     {
-      "hits": 1000,
+      "hits": 1000000,
       "accounts_affected": 450,
       "inconsistency_start": "2020-01-30",
       "inconsistency_end": "2020-11-30",

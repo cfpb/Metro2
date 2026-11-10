@@ -21,7 +21,7 @@ export const evaluatorFacetsQueryOptions = (
 ): UseQueryOptions<EvaluatorFacetData, Error, EvaluatorFacetData, string[]> => {
   // get a list of filters in the querystring that affect facet counts
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { page, page_size, view, sort, show_counts, ...filters } = query
+  const { page, page_size, view, sort, ...filters } = query
   // Stringify the list for use as a key to the counts cache
   const searchParameters = stringifySearchParams(filters)
   const key = [
