@@ -110,7 +110,6 @@ export default function AccountSearchResults({
               height='full'
               isLoading={isFetching}
               resizableColumns={false}
-              sizeColumnsToFit={true}
             />
           </div>
         </div>
