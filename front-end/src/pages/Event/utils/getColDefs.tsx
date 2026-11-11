@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ITEMS_PER_PAGE } from '@src/constants/settings'
 import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
-import { formatNumber } from '@src/utils/formatNumbers'
 import { Link } from '@tanstack/react-router'
 import type { ColDef, ValueFormatterParams } from 'ag-grid-community'
 import type { ReactElement } from 'react'
@@ -46,14 +43,12 @@ const getColumnDefinitions = (eventId: string): ColDef<EvaluatorMetadata>[] => [
     headerName: 'Total instances',
     flex: 1,
     sortingOrder: ['desc', 'asc', null],
-    type: 'numericColumn',
-    valueFormatter: ({ value }: ValueFormatterParams): any => formatNumber(value),
+    type: 'formattedNumberRight',
   },
   {
     field: 'accounts_affected',
     headerName: 'Total accounts',
-    type: 'numericColumn',
-    valueFormatter: ({ value }: ValueFormatterParams): any => formatNumber(value),
+    type: 'formattedNumberRight',
     flex: 1,
     sortingOrder: ['desc', 'asc', null]
   }

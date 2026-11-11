@@ -17,6 +17,12 @@ export const columnTypes = {
     cellDataType: 'number',
     valueFormatter: ({ value }: ValueFormatterParams): any => formatNumber(value)
   },
+  formattedNumberRight: {
+    cellClass: 'ag-right-aligned-cell',
+    cellDataType: 'number',
+    headerClass: 'ag-right-aligned-header',
+    valueFormatter: ({ value }: ValueFormatterParams): any => formatNumber(value)
+  },
   formattedDate: {
     cellDataType: 'dateString',
     valueFormatter: ({ value }: ValueFormatterParams): any => formatDate(value)

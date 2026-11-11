@@ -127,3 +127,11 @@
 .ag-cell-wrapper a {
   border-bottom-width: 1px;
 }
+
+.ag-right-aligned-header  {
+  .ag-header-cell-label {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
