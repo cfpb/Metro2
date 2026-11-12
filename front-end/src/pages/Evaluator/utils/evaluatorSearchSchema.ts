@@ -34,4 +34,14 @@ export const evaluatorSchema = z.object({
   date_closed: BooleanStringValidator
 })
 
+// List of filters that can be present in query string for evaluator view.
+// This differs from the list of filterable fields used to construct table order
+// because filtering uses min and max values for some of the fields, eg
+// current_bal_min & current_bal_max, etc
+export const evaluatorFilters: string[] = evaluatorSchema
+  .keyof()
+  .options.filter(
+    key => !['page', 'view', 'page_size', 'sort', 'show_counts'].includes(key)
+  )
+
 export type EvaluatorSearch = z.infer<typeof evaluatorSchema>
