@@ -1,4 +1,3 @@
-from evaluate_m2.serializers import EvaluatorMetadataSerializer
 from evaluate_m2.tests.test_views.view_tests_helper import EvaluatorViewsTestHelper
 
 
@@ -17,11 +16,13 @@ class EvalMetadataViewsTestCase(EvaluatorViewsTestHelper):
         self.assertIn('filename=evaluator-metadata',
             response.headers['Content-Disposition'])
 
-        # the CSV should contain info about the evals
+        # the CSV should contain info about the test evals
         csv_content = response.content.decode('utf-8')
-        for item in EvaluatorMetadataSerializer(self.eval1).data:
-            self.assertIn(item, csv_content)
-        for item in EvaluatorMetadataSerializer(self.eval2).data:
-            self.assertIn(item, csv_content)
-        for item in EvaluatorMetadataSerializer(self.eval3).data:
-            self.assertIn(item, csv_content)
+
+        self.assertIn('Portfolio-Type-1', csv_content)
+        self.assertIn('description of Portfolio-Type-1', csv_content)
+        self.assertIn('hcola;smpa;dofd', csv_content)
+        self.assertIn('Portfolio-Type-2', csv_content)
+        self.assertIn('description for the other Portfolio-Type eval',
+                      csv_content)
+        self.assertIn('Portfolio-Type-3', csv_content)
