@@ -48,7 +48,6 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
         for hit in hits:
             self.assertEqual(hit['cons_acct_num'], '908070')
 
-
     def test_evaluator_results_view_all(self):
         response = self.client.get('/api/events/1/evaluator/Portfolio-Type-1/?view=all')
         self.assertEqual(response.status_code, 200)
@@ -65,6 +64,15 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
         self.assertEqual(len(hits), 3)
         for hit in hits:
             self.assertEqual(hit['cons_acct_num'], '908070')
+
+    def test_evaluator_results_view_zero_results(self):
+        response = self.client.get('/api/events/1/evaluator/Portfolio-Type-3/?view=all')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+
+        self.assertEqual(response.json()['count'], 0)
+        hits = response.json()['hits']
+        self.assertEqual(len(hits), 0)
 
     def test_evaluator_results_view_max_20_results(self):
         # create additional eval results, over 20
