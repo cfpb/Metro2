@@ -9,7 +9,6 @@ from django.http import HttpResponse, StreamingHttpResponse
 import botocore
 import django_filters.rest_framework
 from rest_framework import generics, status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from django_application.s3_utils import s3_session
@@ -37,71 +36,6 @@ from evaluate_m2.views.views_utils import (
     has_permissions_for_request,
 )
 from parse_m2.models import Metro2Event
-
-
-@api_view(("GET",))
-def download_evaluator_results_csv(request, event_id, evaluator_id):
-    logger = logging.getLogger("views.download_evaluator_results_csv")
-    try:
-        event = Metro2Event.objects.get(id=event_id)
-        evaluator = EvaluatorMetadata.objects.get(id=evaluator_id)
-    except (
-        Metro2Event.DoesNotExist,
-        EvaluatorMetadata.DoesNotExist,
-    ) as e:
-        error = get_evaluate_m2_not_found_exception(
-            str(e), event_id, evaluator_id, request.path
-        )
-        logger.error(error["message"])
-        return Response(error, status=status.HTTP_404_NOT_FOUND)
-
-    if not has_permissions_for_request(request, event):
-        return HttpResponse("Unauthorized", status=401)
-
-    if settings.S3_ENABLED:
-        return fetch_csv_results_from_s3(request, event_id, evaluator_id)
-        # TODO: fall back on generating the response if the fetch from S3 fails
-
-    else:
-        filename = f"{event.name}_{evaluator.id}.csv"
-        response = HttpResponse(
-            content_type="text/csv",
-            headers={"Content-Disposition": f"attachment; filename={filename}"},
-        )
-        qs =  EvaluatorResultMaterializedView.objects.filter(
-            event_id=event_id,
-            evaluator_id=evaluator_id,
-        ).order_by("activity_date")
-
-        return upload_utils.generate_eval_results_csv(qs, response)
-
-
-
-###########################################
-## Helper methods for eval results when S3_ENABLED == True
-def fetch_csv_results_from_s3(request, event_id, evaluator_id):
-    logger = logging.getLogger("views.fetch_csv_results_from_s3")
-    filename = upload_utils.s3_filename(evaluator_id, "csv")
-    key = upload_utils.s3_bucket_key(event_id, evaluator_id, "csv")
-    try:
-        response = StreamingHttpResponse(
-            get_object(s3_session(), settings.S3_BUCKET_NAME, key),
-            status=200,
-            content_type="text/csv",
-        )
-        response["Content-Disposition"] = f"attachment; filename={filename}"
-        return response
-    except botocore.exceptions.ClientError as e:
-        if e.response["Error"]["Code"] == "NoSuchKey":
-            error = get_evaluate_m2_not_found_exception(
-                e.response["Error"]["Message"],
-                event_id,
-                evaluator_id,
-                request.path,
-                None,
-            )
-            logger.error(error["message"])
-            return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
 class EvaluatorResultsGenericView(generics.ListAPIView):
@@ -186,6 +120,11 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
         super().list(request, *args, **kwargs)
         eval_id = self.kwargs["evaluator_id"]
 
+        if settings.S3_ENABLED:
+            return self.fetch_csv_results_from_s3(
+                request, self.event.id, eval_id)
+            # TODO: fall back on generating the response if the fetch from S3 fails
+
         queryset = self.filter_queryset(self.get_queryset())
 
         filename = f"{self.event.name}_{eval_id}_filtered.csv"
@@ -197,6 +136,30 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
         )
         return response
 
+    # Helper method for fetching and returning files from S3 bucket
+    def fetch_csv_results_from_s3(request, event_id, evaluator_id):
+        logger = logging.getLogger("views.fetch_csv_results_from_s3")
+        filename = upload_utils.s3_filename(evaluator_id, "csv")
+        key = upload_utils.s3_bucket_key(event_id, evaluator_id, "csv")
+        try:
+            response = StreamingHttpResponse(
+                get_object(s3_session(), settings.S3_BUCKET_NAME, key),
+                status=200,
+                content_type="text/csv",
+            )
+            response["Content-Disposition"] = f"attachment; filename={filename}"
+            return response
+        except botocore.exceptions.ClientError as e:
+            if e.response["Error"]["Code"] == "NoSuchKey":
+                error = get_evaluate_m2_not_found_exception(
+                    e.response["Error"]["Message"],
+                    event_id,
+                    evaluator_id,
+                    request.path,
+                    None,
+                )
+                logger.error(error["message"])
+                return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
 class EvaluatorResultsJSONView(EvaluatorResultsGenericView):
