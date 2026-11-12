@@ -10,13 +10,12 @@ class EvalMetadataViewsTestCase(EvaluatorViewsTestHelper):
     def test_download_eval_metadata(self):
         response = self.client.get('/api/all-evaluator-metadata/')
 
-        # the response should be a CSV
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'text/csv')
         self.assertIn('filename=evaluator-metadata',
             response.headers['Content-Disposition'])
 
-        # the CSV should contain info about the test evals
+        # The CSV should contain info about the test evals
         csv_content = response.content.decode('utf-8')
 
         self.assertIn('Portfolio-Type-1', csv_content)

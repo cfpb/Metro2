@@ -6,7 +6,9 @@ class EventViewsTestCase(EvaluatorViewsTestHelper):
         self.create_evaluator_metadata()
         self.create_eval_results_summaries()
 
-    # Test for Events view API endpoint (all evals with hits for an event)
+    # Test for Events view API endpoint (all evals with hits for an event).
+    # The evaluator field of the response is a list of evaluators with >0 hits
+    # for this event, sorted by ID.
     def test_events_view(self):
         event_id=self.event.id
         expected = {
@@ -65,6 +67,4 @@ class EventViewsTestCase(EvaluatorViewsTestHelper):
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertEqual(len(response.json()['evaluators']), 2)
 
-        # the response should include the evaluator field as a list sorted by the id,
-        # evaluators with a hits field greater than 0 will be returned
         self.assertEqual(response.json(), expected)

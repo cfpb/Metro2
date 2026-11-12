@@ -16,7 +16,6 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
     def test_download_evaluator_results_csv(self):
         response = self.client.get('/api/events/1/evaluator/Portfolio-Type-1/csv/')
 
-        # the response should be a CSV
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'text/csv')
         self.assertIn('filename=Enforcement: ABC Bank_Portfolio-Type-1.csv',
@@ -30,18 +29,19 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
 
     ########################################
     # Tests for Eval Results view API endpoint
+    # The response should be a JSON with the following structure. Hits is a
+    # list of evaluator results from the EvaluatorResultSerializer
+    # {
+    #     'count': 3,
+    #     'hits': [ ... ]
+    # }
+
     def test_evaluator_results_view_sample(self):
         response = self.client.get(
             '/api/events/1/evaluator/Portfolio-Type-1/?view=sample')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # The response should be a JSON with the following structure. Hits is a
-        # list of evaluator results from the EvaluatorResultSerializer
-        # {
-        #     'count': 3,
-        #     'hits': [ ... ]
-        # }
         self.assertEqual(response.json()['count'], 3)
         hits = response.json()['hits']
         self.assertEqual(len(hits), 3)
@@ -53,12 +53,6 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
-        # The response should be a JSON with the following structure. Hits is a
-        # list of evaluator results from the EvaluatorResultSerializer
-        # {
-        #     'count': 3,
-        #     'hits': [ ... ]
-        # }
         self.assertEqual(response.json()['count'], 3)
         hits = response.json()['hits']
         self.assertEqual(len(hits), 3)
@@ -84,7 +78,6 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
         EvaluatorResultMaterializedView.create_or_refresh_materialized_view()
 
         response = self.client.get('/api/events/1/evaluator/Portfolio-Type-1/')
-        # the response should be a JSON
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['count'], 20)
         self.assertEqual(len(response.json()['hits']), 20)

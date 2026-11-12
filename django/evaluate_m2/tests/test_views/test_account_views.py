@@ -37,16 +37,16 @@ class AccountViewsTestCase(EvaluatorViewsTestHelper):
 
     ########################################
     # Tests for Account Summary view API endpoint
-    def test_account_summary_view_single_results(self):
-        # Response follows this pattern, where account_activity is a list
-        # of all accountactivity records for this consumer acct number
-        # from the AccountActivitySerializer
-        # expected = {
-        #     'cons_acct_num': '908070',
-        #     'inconsistencies': ['Portfolio-Type-1', 'Portfolio-Type-2'],
-        #     'account_activity': [ ... ]
-        # }
+    # Response follows this pattern, where account_activity is a list
+    # of all accountactivity records for this consumer acct number
+    # from the AccountActivitySerializer
+    # {
+    #     'cons_acct_num': '908070',
+    #     'inconsistencies': ['Portfolio-Type-1', 'Portfolio-Type-2'],
+    #     'account_activity': [ ... ]
+    # }
 
+    def test_account_summary_view_single_results(self):
         response = self.client.get('/api/events/1/account/908070/')
 
         self.assertEqual(response.status_code, 200)
@@ -65,7 +65,6 @@ class AccountViewsTestCase(EvaluatorViewsTestHelper):
         error='AccountActivity record(s) not found for account number 0039.'
         response = self.client.get('/api/events/1/account/0039/')
 
-        # the response should be a JSON
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.headers['Content-Type'], 'application/json')
 
