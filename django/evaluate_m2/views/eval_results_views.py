@@ -102,9 +102,7 @@ def fetch_csv_results_from_s3(request, event_id, evaluator_id):
             return Response(error, status=status.HTTP_404_NOT_FOUND)
 
 
-class EvaluatorResultsView(generics.ListAPIView):
-    serializer_class = EvaluatorResultSerializer
-    pagination_class = EvaluatorResultsPaginator
+class EvaluatorResultsGenericView(generics.ListAPIView):
     filter_backends = [
         django_filters.rest_framework.DjangoFilterBackend,
     ]
@@ -154,6 +152,20 @@ class EvaluatorResultsView(generics.ListAPIView):
                 status=503
             )
 
+    def list(self, request, *args, **kwargs):
+        # TODO: replace using DRF permissions/check_permissions()
+        event_id = self.kwargs["event_id"]
+        self.event = Metro2Event.objects.get(id=event_id)
+        if not has_permissions_for_request(request, self.event):
+            return HttpResponse("Unauthorized", status=401)
+
+
+
+class EvaluatorResultsJSONView(EvaluatorResultsGenericView):
+    serializer_class = EvaluatorResultSerializer
+    pagination_class = EvaluatorResultsPaginator
+
+
     def get_sample_queryset(self, queryset):
         event_id = self.kwargs["event_id"]
         evaluator_id = self.kwargs["evaluator_id"]
@@ -173,11 +185,8 @@ class EvaluatorResultsView(generics.ListAPIView):
             return queryset.order_by("?")[:settings.M2_RESULT_SAMPLE_SIZE]
 
     def list(self, request, *args, **kwargs):
-        # TODO: replace using DRF permissions/check_permissions()
-        event_id = self.kwargs["event_id"]
-        event = Metro2Event.objects.get(id=event_id)
-        if not has_permissions_for_request(request, event):
-            return HttpResponse("Unauthorized", status=401)
+        # Check permisisons
+        super().list(request, *args, **kwargs)
 
         # Default to sample view
         view_param = self.request.query_params.get("view", "sample")
