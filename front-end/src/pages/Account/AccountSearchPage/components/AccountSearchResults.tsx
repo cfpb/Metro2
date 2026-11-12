@@ -41,8 +41,8 @@ export default function AccountSearchResults({
     }, //tooltipField: 'cons_acct_num'
     { field: 'port_type', headerName: 'Portfolio type' },
     { field: 'acct_type', headerName: 'Account type' }, //tooltipField: 'acct_type'
-    { field: 'total_records', headerName: 'Number of records' },
-    { field: 'total_hits', headerName: 'Total number of hits' }
+    { field: 'total_records', headerName: 'Number of records', type: 'formattedNumberRight'},
+    { field: 'total_hits', headerName: 'Total number of hits', type: 'formattedNumberRight'}
   ]
 
   // Check if any searched-for accounts are missing from the data
@@ -110,7 +110,6 @@ export default function AccountSearchResults({
               height='full'
               isLoading={isFetching}
               resizableColumns={false}
-              sizeColumnsToFit={true}
             />
           </div>
         </div>

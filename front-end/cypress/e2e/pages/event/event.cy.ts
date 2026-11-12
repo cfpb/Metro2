@@ -84,11 +84,15 @@ describe('Event page', () => {
   })
   it('Should show correct evaluator value per row', () => {
     const fields = ['id', 'description', 'category', 'hits', 'accounts_affected']
-    table.verifyTableBodyContent<EvaluatorMetadata>(fields, eventData.evaluators)
-  })
+    const expectedEvaluatorOrder = eventData.evaluators.toSorted((a, b) => b.hits - a.hits)
+    table.verifyTableBodyContent<EvaluatorMetadata>(
+      fields, 
+      expectedEvaluatorOrder
+  )})
   it('Should contain the correct URL per evaluator', () => {
+    const expectedEvaluatorOrder = eventData.evaluators.toSorted((a, b) => b.hits - a.hits)
     table.getBodyRows().each((row, rowIndex) => {
-      const rowEvaluator = eventData.evaluators[rowIndex]
+      const rowEvaluator = expectedEvaluatorOrder[rowIndex]
       cy.wrap(row)
         .find('.ag-cell-value')
         .then(rowCells => {
@@ -141,7 +145,7 @@ describe('Event file download', () => {
 Table sorting
 
 1. When event page is loaded without a sort param in the URL,
-     URL & table sort should be updated to reflect default sort (id ascending)
+     URL & table sort should be updated to reflect default sort (hits descending)
 2. Clicking another column's sort indicator three times should update sort state,
      cycling through ascending sort, descending sort, and then sort removal 
      and a return to default sort
@@ -151,7 +155,7 @@ Table sorting
 Excerpt of fields for the two records in the event data fixture
 
  [
-      {
+    {
       "hits": 1000,
       "id": "Test-Eval-1",
       "category": "Delinquency"
@@ -174,24 +178,24 @@ describe('Sorting is configured for event page', () => {
   })
 
   it('Should default to sorting by id when there is no sort param in URL', () => {
-    // A sort param of id is added to the URL
-    cy.location('search').should('include', 'sort=id')
+    // A sort param of hits is added to the URL
+    cy.location('search').should('include', 'sort=-hits')
 
-    // The id column show the sort ascending icon,
+    // The hits column show the sort descending icon,
     // and all other columns show the unsorted icon
-    table.shouldShowSortIcon('id', 'ascending')
-    table.otherColumnsShouldBeUnsorted('id')
+    table.shouldShowSortIcon('hits', 'descending')
+    table.otherColumnsShouldBeUnsorted('hits')
 
-    // The data in the table is sorted by id ascending
+    // The data in the table is sorted by hits descending
     table.verifyColumnContent('id', ['Test-Eval-1', 'Test-Eval-2'])
     table.verifyColumnContent('category', ['Delinquency', 'Bankruptcy'])
   })
 
   it('Should update sort state when a column sort button is clicked repeatedly', () => {
-    // URL and table show sorting by default column id
-    cy.location('search').should('include', 'sort=id')
-    table.shouldShowSortIcon('id', 'ascending')
-    table.otherColumnsShouldBeUnsorted('id')
+    // URL and table show sorting by default column hits
+    cy.location('search').should('include', 'sort=-hits')
+    table.shouldShowSortIcon('hits', 'descending')
+    table.otherColumnsShouldBeUnsorted('hits')
 
     table.verifyColumnContent('id', ['Test-Eval-1', 'Test-Eval-2'])
     table.verifyColumnContent('category', ['Delinquency', 'Bankruptcy'])
@@ -219,8 +223,8 @@ describe('Sorting is configured for event page', () => {
     // Clicking the category sort button a third time removes
     // the category sorting and restores default sort
     table.clickSortButton('category')
-    cy.location('search').should('include', 'sort=id')
-    table.shouldShowSortIcon('id', 'ascending')
+    cy.location('search').should('include', 'sort=-hits')
+    table.shouldShowSortIcon('hits', 'descending')
     table.shouldShowUnsortedIcon('category')
   })
 })
@@ -263,7 +267,7 @@ describe('Sort params are validated and used', () => {
     for (const value of invalidValues) {
       it(`Should replace invalid sort param "${value}" with default`, () => {
         eventPage.loadEventPage(value)
-        cy.location('search').should('include', 'sort=id')
+        cy.location('search').should('include', 'sort=-hits')
       })
     }
   })

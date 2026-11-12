@@ -17,6 +17,7 @@ export default function EventPage(): ReactElement {
     data.date_range_end,
     'text'
   )
+  const evaluators = data.evaluators.toSorted((a, b) => b.hits - a.hits)
 
   return (
     <>
@@ -54,12 +55,12 @@ export default function EventPage(): ReactElement {
         </div>
         <div className='row row--action u-mt45'>
           <h2 className='u-mb0'>Evaluator results</h2>
-          <EventDownloader rows={data.evaluators} eventName={data.name} />
+          <EventDownloader rows={evaluators} eventName={data.name} />
         </div>
         <div className='row row--content'>
           <Table
-            defaultSort={['id']}
-            rows={data.evaluators}
+            defaultSort={['-hits']}
+            rows={evaluators}
             columnDefinitions={getColumnDefinitions(eventId)}
             height='full'
             resizableColumns={false}

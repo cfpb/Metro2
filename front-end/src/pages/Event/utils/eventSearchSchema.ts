@@ -6,8 +6,8 @@ export const eventSchema = z.object({
   sort: z
     .any()
     .transform(val => validateSortQueryParams(val, [...EVENT_COLUMN_MAP.keys()]))
-    .catch(['id'])
-    .default(['id'])
+    .catch(['-hits'])
+    .default(['-hits'])
 })
 
 export type EventSearch = z.infer<typeof eventSchema>
