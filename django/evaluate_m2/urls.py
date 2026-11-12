@@ -10,7 +10,7 @@ from evaluate_m2.views import (
 # All URLs begin with `/api/events/`
 urlpatterns = [
     path('<int:event_id>/evaluator/<str:evaluator_id>/csv/',
-         eval_results_views.download_evaluator_results_csv),
+         eval_results_views.EvaluatorResultsCSVView.as_view()),
     path('<int:event_id>/evaluator/<str:evaluator_id>/',
          eval_results_views.EvaluatorResultsJSONView().as_view()),
     path('<int:event_id>/evaluator/<str:evaluator_id>/facets/',

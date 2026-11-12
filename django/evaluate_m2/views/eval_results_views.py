@@ -1,3 +1,4 @@
+import csv
 import logging
 
 from django.conf import settings
@@ -17,6 +18,7 @@ from evaluate_m2.exception_utils import (
     format_error,
     get_evaluate_m2_not_found_exception,
 )
+from evaluate_m2.field_names import M2_FIELD_NAMES
 from evaluate_m2.filters import (
     AnyCharFilter,
     EvaluatorResultFilterSet,
@@ -158,6 +160,42 @@ class EvaluatorResultsGenericView(generics.ListAPIView):
         self.event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, self.event):
             return HttpResponse("Unauthorized", status=401)
+
+
+class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
+    # StreamingHttpResponse requires a File-like class that has a 'write' method
+    class Echo:
+        def write(self, value):
+            return value
+
+    def csv_content(self, qs, fout):
+        # Instantiate the CSV writer
+        writer = csv.writer(fout)
+
+        # Write the header row
+        columns = EvaluatorResultMaterializedView.csv_fields()
+        header_row = [M2_FIELD_NAMES[c] for c in columns]
+        yield writer.writerow(header_row)
+
+        # Write a row for each eval result
+        for i in qs:
+            yield writer.writerow([getattr(i, c) for c in columns])
+
+    def list(self, request, *args, **kwargs):
+        # Check permissions
+        super().list(request, *args, **kwargs)
+        eval_id = self.kwargs["evaluator_id"]
+
+        queryset = self.filter_queryset(self.get_queryset())
+
+        filename = f"{self.event.name}_{eval_id}_filtered.csv"
+        response = StreamingHttpResponse(
+            streaming_content=(self.csv_content(queryset, self.Echo())),
+            status=200,
+            content_type='text/csv',
+            headers={"Content-Disposition": f"attachment; filename={filename}"},
+        )
+        return response
 
 
 
