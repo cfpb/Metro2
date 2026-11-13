@@ -114,15 +114,18 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
         # Check permissions
         super().list(request, *args, **kwargs)
         eval_id = self.kwargs["evaluator_id"]
+        filename = f"{self.event.name}_{eval_id}_filtered.csv"
 
-        if settings.S3_ENABLED:
-            return self.fetch_csv_results_from_s3(
-                request, self.event.id, eval_id)
-            # TODO: fall back on generating the response if the fetch from S3 fails
+        if not self.request_has_filters_applied(request):
+            filename = f"{self.event.name}_{eval_id}.csv"
+            if settings.S3_ENABLED:
+                return self.fetch_csv_results_from_s3(
+                    request, self.event.id, eval_id)
+                # TODO: fall back on generating the response
+                # if the fetch from S3 fails
 
         queryset = self.filter_queryset(self.get_queryset())
 
-        filename = f"{self.event.name}_{eval_id}_filtered.csv"
         response = StreamingHttpResponse(
             streaming_content=(self.csv_content(queryset, self.Echo())),
             status=200,
@@ -130,6 +133,12 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
             headers={"Content-Disposition": f"attachment; filename={filename}"},
         )
         return response
+
+    def request_has_filters_applied(self, request) -> bool:
+        for f in self.filterset_class().Meta.fields:
+            if f != 'sort' and f in request.query_params:
+                return True
+        return False
 
     # StreamingHttpResponse requires a File-like class that has a 'write' method
     # https://docs.djangoproject.com/en/6.1/howto/outputting-csv/#streaming-large-csv-files  # noqa: E501
