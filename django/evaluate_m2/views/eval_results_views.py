@@ -97,11 +97,6 @@ class EvaluatorResultsGenericView(generics.ListAPIView):
 
 
 class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
-    # StreamingHttpResponse requires a File-like class that has a 'write' method
-    class Echo:
-        def write(self, value):
-            return value
-
     def csv_content(self, qs, fout):
         # Instantiate the CSV writer
         writer = csv.writer(fout)
@@ -142,6 +137,11 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
                 return True
         return False
 
+    # StreamingHttpResponse requires a File-like class that has a 'write' method
+    class Echo:
+        def write(self, value):
+            return value
+
     # Helper method for fetching and returning files from S3 bucket
     def fetch_csv_results_from_s3(request, event_id, evaluator_id):
         logger = logging.getLogger("views.fetch_csv_results_from_s3")
@@ -171,7 +171,6 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
 class EvaluatorResultsJSONView(EvaluatorResultsGenericView):
     serializer_class = EvaluatorResultSerializer
     pagination_class = EvaluatorResultsPaginator
-
 
     def get_sample_queryset(self, queryset):
         event_id = self.kwargs["event_id"]
