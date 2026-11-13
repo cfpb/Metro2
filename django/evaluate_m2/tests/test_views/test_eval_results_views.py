@@ -23,7 +23,7 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'text/csv')
         self.assertIn(
-            'filename=Enforcement: ABC Bank_Portfolio-Type-1_filtered.csv',
+            'filename=Enforcement: ABC Bank_Portfolio-Type-1.csv',
             response.headers['Content-Disposition'])
 
         # iterate through the streaming response
