@@ -120,7 +120,7 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
         super().list(request, *args, **kwargs)
         eval_id = self.kwargs["evaluator_id"]
 
-        if settings.S3_ENABLED:
+        if settings.S3_ENABLED and not self.request_has_filters_applied(request):
             return self.fetch_csv_results_from_s3(
                 request, self.event.id, eval_id)
             # TODO: fall back on generating the response if the fetch from S3 fails
@@ -135,6 +135,12 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
             headers={"Content-Disposition": f"attachment; filename={filename}"},
         )
         return response
+
+    def request_has_filters_applied(self, request) -> bool:
+        for f in self.filterset_class().Meta.fields:
+            if f != 'sort' and f in request.query_params:
+                return True
+        return False
 
     # Helper method for fetching and returning files from S3 bucket
     def fetch_csv_results_from_s3(request, event_id, evaluator_id):
