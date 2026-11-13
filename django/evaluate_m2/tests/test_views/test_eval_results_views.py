@@ -1,3 +1,7 @@
+from unittest.mock import patch
+
+from django.test import override_settings
+
 from evaluate_m2.models import (
     EvaluatorResultMaterializedView,
 )
@@ -18,14 +22,51 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'text/csv')
-        self.assertIn('filename=Enforcement: ABC Bank_Portfolio-Type-1.csv',
+        self.assertIn(
+            'filename=Enforcement: ABC Bank_Portfolio-Type-1.csv',
             response.headers['Content-Disposition'])
-        csv_content = response.content.decode('utf-8').splitlines()
+
+        # iterate through the streaming response
+        lines = []
+        for line in response.streaming_content:
+            lines.append(line.decode('utf-8'))
 
         # the CSV should have a row for each eval result as defined in
         # create_activity_data (plus the header)
-        self.assertEqual(len(csv_content), 4)
+        self.assertEqual(len(lines), 4)
 
+    def test_download_evaluator_results_csv_filters_applied(self):
+        response = self.client.get(
+            '/api/events/1/evaluator/Portfolio-Type-1/csv/?acct_stat=1&show_counts=true')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'text/csv')
+        self.assertIn(
+            'filename=Enforcement: ABC Bank_Portfolio-Type-1_filtered.csv',
+            response.headers['Content-Disposition'])
+
+        # iterate through the streaming response
+        lines = []
+        for line in response.streaming_content:
+            lines.append(line.decode('utf-8'))
+
+        # filters returned 2 eval results (plus the header)
+        self.assertEqual(len(lines), 3)
+
+    @override_settings(S3_ENABLED=True)
+    @patch('evaluate_m2.views.eval_results_views.EvaluatorResultsCSVView.fetch_csv_results_from_s3')  # noqa: E501
+    def test_fetch_from_s3_when_enabled_and_no_filters_applied(self, s3_fetch_method):
+        from django.http import HttpResponse
+        s3_fetch_method.return_value = HttpResponse(content="content")
+        self.client.get('/api/events/1/evaluator/Portfolio-Type-1/csv/')
+        self.assertTrue(s3_fetch_method.called)
+
+    @override_settings(S3_ENABLED=True)
+    @patch('evaluate_m2.views.eval_results_views.EvaluatorResultsCSVView.fetch_csv_results_from_s3')  # noqa: E501
+    def test_no_fetch_from_s3_when_filters_applied(self, s3_fetch_method):
+        self.client.get(
+            '/api/events/1/evaluator/Portfolio-Type-1/csv/?acct_stat=1&show_counts=true')
+        self.assertFalse(s3_fetch_method.called)
 
     ########################################
     # Tests for Eval Results view API endpoint
