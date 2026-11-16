@@ -120,7 +120,7 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
             filename = f"{self.event.name}_{eval_id}.csv"
             if settings.S3_ENABLED:
                 return self.fetch_csv_results_from_s3(
-                    request, self.event.id, eval_id)
+                    request, self.event.id, eval_id, filename)
                 # TODO: fall back on generating the response
                 # if the fetch from S3 fails
 
@@ -148,9 +148,11 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
             return value
 
     # Helper method for fetching and returning files from S3 bucket
-    def fetch_csv_results_from_s3(self, request, event_id, evaluator_id):
+    def fetch_csv_results_from_s3(
+            self, request, event_id: int, evaluator_id: str,
+            download_name:str
+        ):
         logger = logging.getLogger("views.fetch_csv_results_from_s3")
-        filename = upload_utils.s3_filename(evaluator_id, "csv")
         key = upload_utils.s3_bucket_key(event_id, evaluator_id, "csv")
         try:
             response = StreamingHttpResponse(
@@ -158,7 +160,7 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
                 status=200,
                 content_type="text/csv",
             )
-            response["Content-Disposition"] = f"attachment; filename={filename}"
+            response["Content-Disposition"] = f"attachment; filename={download_name}"
             return response
         except botocore.exceptions.ClientError as e:
             if e.response["Error"]["Code"] == "NoSuchKey":
