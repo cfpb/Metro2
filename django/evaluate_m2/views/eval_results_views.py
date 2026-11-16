@@ -124,7 +124,8 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
                 # TODO: fall back on generating the response
                 # if the fetch from S3 fails
 
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.filter_queryset(
+            self.get_queryset()).iterator(chunk_size=1000)
 
         response = StreamingHttpResponse(
             streaming_content=(self.csv_content(queryset, self.Echo())),
