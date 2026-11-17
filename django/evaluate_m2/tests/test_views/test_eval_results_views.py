@@ -53,6 +53,24 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
         # filters returned 2 eval results (plus the header)
         self.assertEqual(len(lines), 3)
 
+    def test_limit_results_with_page_size_param(self):
+        response = self.client.get(
+            '/api/events/1/evaluator/Portfolio-Type-1/csv/?page_size=2')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'text/csv')
+        self.assertIn(
+            'filename=Enforcement: ABC Bank_Portfolio-Type-1.csv',
+            response.headers['Content-Disposition'])
+
+        # iterate through the streaming response
+        lines = []
+        for line in response.streaming_content:
+            lines.append(line.decode('utf-8'))
+
+        # the CSV should have [page_size] rows (plus the header)
+        self.assertEqual(len(lines), 3)
+
     @override_settings(S3_ENABLED=True)
     @patch('evaluate_m2.views.eval_results_views.EvaluatorResultsCSVView.fetch_csv_results_from_s3')  # noqa: E501
     def test_fetch_from_s3_when_enabled_and_no_filters_applied(self, s3_fetch_method):

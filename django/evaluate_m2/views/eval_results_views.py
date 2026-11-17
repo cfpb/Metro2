@@ -97,7 +97,7 @@ class EvaluatorResultsGenericView(generics.ListAPIView):
 
 
 class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
-    def csv_content(self, qs, fout):
+    def csv_content(self, qs, fout, num_results):
         # Instantiate the CSV writer
         writer = csv.writer(fout)
 
@@ -106,8 +106,11 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
         header_row = [M2_FIELD_NAMES[c] for c in columns]
         yield writer.writerow(header_row)
 
+        if num_results:
+            qs = qs[:num_results]
+
         # Write a row for each eval result
-        for i in qs:
+        for i in qs.iterator():
             yield writer.writerow([getattr(i, c) for c in columns])
 
     def list(self, request, *args, **kwargs):
@@ -124,11 +127,15 @@ class EvaluatorResultsCSVView(EvaluatorResultsGenericView):
                 # TODO: fall back on generating the response
                 # if the fetch from S3 fails
 
-        queryset = self.filter_queryset(
-            self.get_queryset()).iterator(chunk_size=1000)
+        queryset = self.filter_queryset(self.get_queryset())
+
+        try:
+            num_results = int(request.query_params.get("page_size", 0))
+        except ValueError:
+            num_results = 0
 
         response = StreamingHttpResponse(
-            streaming_content=(self.csv_content(queryset, self.Echo())),
+            streaming_content=(self.csv_content(queryset, self.Echo(), num_results)),
             status=200,
             content_type='text/csv',
             headers={"Content-Disposition": f"attachment; filename={filename}"},
