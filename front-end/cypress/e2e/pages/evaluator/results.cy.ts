@@ -11,6 +11,7 @@ import { Metro2Table } from '@cypress/helpers/tableHelpers'
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 
 import { PII_COOKIE_NAME } from '@src/constants/settings'
+import { filterableFields } from '@src/pages/Evaluator/results/utils/getTableFields'
 import { expect } from 'chai'
 
 const evaluatorName = 'Test-Eval-1'
@@ -243,6 +244,7 @@ describe('Results table and csv', () => {
       'Account number',
       'Activity date',
       ...evaluator.fields_used.map(field => M2_FIELD_NAMES.get(field)),
+      ...filterableFields.map(field => M2_FIELD_NAMES.get(field)),
       ...M2_FIELD_NAMES.values()
     ])
   ]
@@ -253,6 +255,7 @@ describe('Results table and csv', () => {
       'cons_acct_num',
       'activity_date',
       ...evaluator.fields_used,
+      ...filterableFields,
       ...M2_FIELD_NAMES.keys()
     ])
   ] as (keyof AccountRecord)[]
