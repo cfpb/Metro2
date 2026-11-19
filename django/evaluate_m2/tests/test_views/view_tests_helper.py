@@ -77,13 +77,13 @@ class EvaluatorViewsTestHelper(TestCase):
                          'first_name': 'Santa'}
         a1 = acct_record(
             self.m2_file,
-            {'id': 1, 'activity_date': date(2025,3,1), 'acct_stat': 1} | consumer_info)
+            {'id': 1, 'activity_date': date(2025,3,1), 'acct_stat': 11} | consumer_info)
         a2 = acct_record(
             self.m2_file,
-            {'id': 2, 'activity_date': date(2025,4,1), 'acct_stat': 1} | consumer_info)
+            {'id': 2, 'activity_date': date(2025,4,1), 'acct_stat': 11} | consumer_info)
         a3 = acct_record(
             self.m2_file,
-            {'id': 3, 'activity_date': date(2025,5,1), 'acct_stat': 2} | consumer_info)
+            {'id': 3, 'activity_date': date(2025,5,1), 'acct_stat': 97} | consumer_info)
 
         # all three records hit on eval 1
         evaluator_result_record(self.event, self.eval1.id, a1)
