@@ -133,10 +133,10 @@ export const COMPLIANCE_CONDTION_CODE_LOOKUP = {
   XC: 'FCRA dispute investigation completed; consumer disagrees',
   XD: 'Account closed at consumer’s request; data furnisher conducting investigation after consumer disputed account information under FCRA',
   XE: 'Account closed at consumer’s request; data furnisher completed its investigation; consumer disagrees with results ',
-  XF: 'Data furnisher conducting investigation after consumer disputed account information under FCBA',
-  XG: 'FCBA dispute investigation completed; consumer disagrees',
+  XF: 'Data furnisher conducting investigation after consumer disputed account information under FCRA',
+  XG: 'FCRA dispute investigation completed; consumer disagrees',
   XH: 'Account previously in dispute; investigation completed',
-  XJ: 'Account closed at consumer’s request; data furnisher conducting investigation after consumer disputed account information under FCBA',
+  XJ: 'Account closed at consumer’s request; data furnisher conducting investigation after consumer disputed account information under FCRA',
   XR: 'Removes most recently reported code'
 } as const
 
@@ -322,17 +322,13 @@ export const FILTER_VALUES = {
     ...Object.keys(M2_FIELD_LOOKUPS.compl_cond_cd)
   ] as unknown as keyof (typeof M2_FIELD_LOOKUPS)['compl_cond_cd'] | 'blank',
   php1: ['blank', ...Object.keys(M2_FIELD_LOOKUPS.php1)] as unknown as
-    | keyof (typeof M2_FIELD_LOOKUPS)['php1']
-    | 'blank',
+    keyof (typeof M2_FIELD_LOOKUPS)['php1'] | 'blank',
   pmt_rating: ['blank', ...Object.keys(M2_FIELD_LOOKUPS.pmt_rating)] as unknown as
-    | keyof (typeof M2_FIELD_LOOKUPS)['pmt_rating']
-    | 'blank',
+    keyof (typeof M2_FIELD_LOOKUPS)['pmt_rating'] | 'blank',
   spc_com_cd: ['blank', ...Object.keys(M2_FIELD_LOOKUPS.spc_com_cd)] as unknown as
-    | keyof (typeof M2_FIELD_LOOKUPS)['spc_com_cd']
-    | 'blank',
+    keyof (typeof M2_FIELD_LOOKUPS)['spc_com_cd'] | 'blank',
   terms_freq: ['blank', ...Object.keys(M2_FIELD_LOOKUPS.terms_freq)] as unknown as
-    | keyof (typeof M2_FIELD_LOOKUPS)['terms_freq']
-    | 'blank',
+    keyof (typeof M2_FIELD_LOOKUPS)['terms_freq'] | 'blank',
   cons_info_ind: [
     'blank',
     ...Object.keys(M2_FIELD_LOOKUPS.cons_info_ind)

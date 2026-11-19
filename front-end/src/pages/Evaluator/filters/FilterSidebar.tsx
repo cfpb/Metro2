@@ -1,41 +1,31 @@
-import Loader from '@src/components/Loader/Loader'
-import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
-import { useEvaluatorFacets } from '@src/queries/evaluatorFacets'
-import { useSearch } from '@tanstack/react-router'
+import FilterCounts from '@src/pages/Evaluator/filters/components/FilterCounts'
 import type { ReactElement } from 'react'
 import Filters from './components/Filters'
 import './FilterSidebar.scss'
 
+const hitsLimit = 1_000_000
+const hitsCountMessage =
+  'Filter counts are not available for evaluators with over a million results.'
+
 interface EvaluatorSidebarData {
   evaluatorId: string
   eventId: string | number
+  hits: number
 }
 
 export default function EvaluatorFilterSidebar({
   evaluatorId,
-  eventId
+  eventId,
+  hits = 0
 }: EvaluatorSidebarData): ReactElement {
-  const query: EvaluatorSearch = useSearch({ strict: false })
-
-  // Fetch all filter counts data from server
-  const { data: allFacets, isFetching: isFetchingAllFacets } = useEvaluatorFacets(
-    eventId,
-    evaluatorId
-  )
-
-  // Fetch filter counts data for currently applied filters from server
-  const { data: filteredFacets, isFetching: isFetchingFilteredFacets } =
-    useEvaluatorFacets(eventId, evaluatorId, query)
-
-  const counts = allFacets?.facets
-  const filteredCounts = filteredFacets?.facets
+  const showFilterCounts = hits < hitsLimit
 
   return (
-    <div className='loader__wrapper'>
-      {isFetchingFilteredFacets || isFetchingAllFacets ? (
-        <Loader message='Loading filter counts' className='lighter' />
+    <div className='results__sidebar sidebar'>
+      {showFilterCounts ? (
+        <FilterCounts eventId={eventId} evaluatorId={evaluatorId} />
       ) : (
-        <Filters counts={counts} filteredCounts={filteredCounts} showCounts={true} />
+        <Filters message={hits > hitsLimit ? hitsCountMessage : null} />
       )}
     </div>
   )

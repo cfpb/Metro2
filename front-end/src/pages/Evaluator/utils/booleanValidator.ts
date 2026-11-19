@@ -8,7 +8,5 @@ const BooleanStringValidator =
     ])
     .catch('')
     .optional()
-   
-
 
 export default BooleanStringValidator

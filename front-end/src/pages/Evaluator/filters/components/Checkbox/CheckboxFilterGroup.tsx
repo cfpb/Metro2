@@ -1,6 +1,7 @@
 import { Checkbox } from '@cfpb/design-system-react'
 import Accordion from '@src/components/Accordion/Accordion'
-import CheckboxFilterItem from '@src/pages/Evaluator/filters/components/CheckboxFilterItem'
+import CheckboxFilterItem from '@src/pages/Evaluator/filters/components/Checkbox/CheckboxFilterItem'
+import { useUIStore } from '@src/store'
 import type { EvaluatorFacets } from '@src/types/EvaluatorFacets'
 import { formatNumber } from '@src/utils/formatNumbers'
 import { useNavigate } from '@tanstack/react-router'
@@ -16,6 +17,7 @@ interface CheckboxGroupProperties {
   selectedValues: (typeof FILTER_VALUES)[keyof typeof FILTER_VALUES][]
   counts?: EvaluatorFacets[keyof EvaluatorFacets]
   filteredCounts?: EvaluatorFacets[keyof EvaluatorFacets]
+  showCounts?: boolean
 }
 
 export default function CheckboxFilterGroup({
@@ -27,9 +29,14 @@ export default function CheckboxFilterGroup({
   validValues,
   // all the currently selected values (that are valid) for this group's parent field
   selectedValues,
-  filteredCounts = {}
+  filteredCounts = {},
+  showCounts = false
 }: CheckboxGroupProperties): ReactElement {
   const navigate = useNavigate()
+
+  // We store the currently open filters so we can
+  // open them again when the filter counts update
+  const { openEvaluatorFilters, toggleOpenEvaluatorFilter } = useUIStore()
 
   const allSelected = validValues.every(item => selectedValues.includes(item))
 
@@ -60,11 +67,11 @@ export default function CheckboxFilterGroup({
         }
         // reset page to 1
         parameters.page = 1
-        parameters.show_counts = true
         return parameters
       }
     })
   }
+  const accordionId = `${field}_filter_${groupName}_group`
 
   return (
     <>
@@ -72,17 +79,27 @@ export default function CheckboxFilterGroup({
         <Accordion
           className='nested nested--level-2'
           hasBackground={false}
-          openOnLoad={allSelected || someSelected}
+          openOnLoad={
+            allSelected || someSelected || openEvaluatorFilters.includes(accordionId)
+          }
+          id={accordionId}
+          onClick={toggleOpenEvaluatorFilter}
           header={
             <Checkbox
-              id={`${field}_${groupName}`}
+              id={`${field}_${groupName.replaceAll(' ', '_')}`}
               label={
-                <div className='label-with-count'>
-                  <span>{groupName}</span>
-                  <span className='count'>
-                    {groupCount > 0 ? formatNumber(groupCount) : ''}
-                  </span>
-                </div>
+                <>
+                  {showCounts ? (
+                    <div className='label-with-count'>
+                      <span>{groupName}</span>
+                      <span className='count'>
+                        {groupCount > 0 ? formatNumber(groupCount) : ''}
+                      </span>
+                    </div>
+                  ) : (
+                    <span>{groupName}</span>
+                  )}
+                </>
               }
               checked={allSelected}
               isIndeterminate={!allSelected && someSelected}
@@ -102,6 +119,7 @@ export default function CheckboxFilterGroup({
                   ]
                 }
                 selected={selectedValues}
+                showCounts={showCounts}
               />
             ))}
           </>
@@ -112,7 +130,13 @@ export default function CheckboxFilterGroup({
           hasBackground={false}
           key={groupName}
           disabled={true}
-          header={<Checkbox id={groupName} label={groupName} disabled={true} />}>
+          header={
+            <Checkbox
+              id={`${field}_${groupName.replaceAll(' ', '_')}`}
+              label={groupName}
+              disabled={true}
+            />
+          }>
           {null}
         </Accordion>
       )}

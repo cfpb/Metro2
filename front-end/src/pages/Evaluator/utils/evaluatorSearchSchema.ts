@@ -6,18 +6,11 @@ import minMaxValidator from './minMaxValidator'
 import sortValidator from './sortValidator'
 
 export const evaluatorSchema = z.object({
-  // general params
+  // ui params
   view: z.enum(['all', 'sample']).catch('sample').default('sample'),
   page: z.number().gt(0).int().catch(1).default(1),
   page_size: z.number().gt(0).catch(ITEMS_PER_PAGE).default(ITEMS_PER_PAGE),
   sort: sortValidator,
-  show_counts: z
-    .union([
-      z.boolean().transform(value => value.toString()),
-      z.enum(['true', 'false'])
-    ])
-    .catch('false')
-    .optional(),
 
   // filter params
   amt_past_due_min: minMaxValidator,
@@ -39,9 +32,7 @@ export const evaluatorSchema = z.object({
 
 export type EvaluatorSearch = z.infer<typeof evaluatorSchema>
 
-// List of filters that can be present in query string for evaluator view.
-export const evaluatorFilters: string[] = evaluatorSchema
+// filter out the UI params to get a list of filter params
+export const filterParams: string[] = evaluatorSchema
   .keyof()
-  .options.filter(
-    key => !['page', 'view', 'page_size', 'sort', 'show_counts'].includes(key)
-  )
+  .options.filter(key => !['page', 'view', 'page_size', 'sort'].includes(key))

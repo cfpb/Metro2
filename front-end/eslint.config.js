@@ -84,7 +84,8 @@ export default defineConfig([
       'unicorn/no-computed-property-existence-check': 'off',
       'unicorn/prefer-iterator-to-array': 'off',
       'unicorn/consistent-boolean-name': 'off',
-      'unicorn/require-array-sort-compare': 'off'
+      'unicorn/require-array-sort-compare': 'off',
+      'jsx-a11y/label-has-associated-control': 'off'
     }
   },
 

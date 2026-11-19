@@ -21,6 +21,7 @@ interface CheckboxFieldFilterProperties {
   // whether to add right padding to line up the count with
   // the counts in adjacent accordion headers
   padRight?: boolean
+  showCounts?: boolean
 }
 
 export default function CheckboxFilterItem({
@@ -29,7 +30,8 @@ export default function CheckboxFilterItem({
   filteredCount = 0,
   item,
   selected = [],
-  padRight = false
+  padRight = false,
+  showCounts = false
 }: CheckboxFieldFilterProperties): ReactElement {
   const navigate = useNavigate()
   const itemName = item
@@ -69,7 +71,6 @@ export default function CheckboxFilterItem({
         }
         // reset page to 1
         parameters.page = 1
-        parameters.show_counts = 'true'
 
         return parameters
       }
@@ -82,7 +83,7 @@ export default function CheckboxFilterItem({
       checked={selected?.includes(item)}
       className='nested'
       onChange={onChange}
-      disabled={count === 0}
+      disabled={showCounts && count === 0}
     />
   )
 }

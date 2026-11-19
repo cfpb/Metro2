@@ -3,9 +3,11 @@
 @use '@cfpb/cfpb-design-system/src/utilities' as *;
 
 .loader {
-  position: absolute;
-  inset: 0;
-  z-index: 1000;
+  &--overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+  }
 
   &--background {
     background-color: rgb(0 0 0 / 60%);
@@ -20,8 +22,12 @@
     justify-content: center;
   }
 
-  &__message {
+  &__contents {
     margin-top: 15dvh;
+    
+  }
+
+  &__message {
     background-color: var(--gray-10);
     padding: math.div(math.div($grid_gutter-width, 2), $base-font-size-px) + em;
   }

@@ -14,6 +14,8 @@ export interface AccordionProperties {
   hasBorder?: boolean
   hasBackground?: boolean
   disabled?: boolean
+  id?: string | number
+  onClick?: (id: string | number, open: boolean) => void
 }
 
 export default function Accordion({
@@ -26,6 +28,8 @@ export default function Accordion({
   hasBorder = true,
   hasBackground = false,
   disabled = false,
+  id = '',
+  onClick,
   ...properties
 }: AccordionProperties): ReactElement {
   const [isExpanded, setIsExpanded] = useState(openOnLoad)
@@ -37,8 +41,10 @@ export default function Accordion({
   if (hasBackground) expandableClasses.push('o-expandable--background')
   if (disabled) expandableClasses.push('o-expandable--disabled')
 
-  const onClick = (): void => {
-    setIsExpanded(!isExpanded)
+  const handleClick = (): void => {
+    const newState = !isExpanded
+    setIsExpanded(newState)
+    onClick?.(id, newState)
   }
 
   const expandableLink = (
@@ -65,7 +71,7 @@ export default function Accordion({
           className='o-expandable__header o-expandable__target'
           aria-expanded={isExpanded}
           title={header}
-          onClick={onClick}
+          onClick={handleClick}
           disabled={disabled}>
           <h3 className='o-expandable__label'>{header}</h3>
           {expandableLink}
@@ -78,7 +84,7 @@ export default function Accordion({
           <button
             type='button'
             className='o-expandable__target'
-            onClick={onClick}
+            onClick={handleClick}
             disabled={disabled}>
             {expandableLink}
           </button>
