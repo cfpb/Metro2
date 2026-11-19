@@ -281,10 +281,8 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
                 for row in counts
             }
 
-        # Return a total count and the facet counts
         return Response(
             {
-                "count": queryset.count(),
                 "facets": facets,
             }
         )

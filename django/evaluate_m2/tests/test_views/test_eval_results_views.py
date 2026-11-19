@@ -158,7 +158,6 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
     # Tests for Eval Results Facet view API endpoint
     # The response should be a JSON with the following structure
     # {
-    #     "count": 2333,
     #     "facets": {
     #         "acct_stat": {
     #             "71": 70,
