@@ -1,6 +1,22 @@
 @use '@cfpb/cfpb-design-system/src/abstracts' as *;
 @use '@cfpb/cfpb-design-system/src/utilities' as *;
 
+.sidebar {
+  .loader {
+    &__contents {
+      max-width: 15em;
+      margin-top: 3dvh;
+      padding-bottom: 5dvh;
+    }
+
+    &__message {
+      background: none;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
 .filter-sidebar {
   .o-expandable.nested {
     .a-label--heading {

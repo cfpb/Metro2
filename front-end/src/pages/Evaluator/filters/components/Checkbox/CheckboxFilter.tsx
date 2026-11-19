@@ -1,4 +1,4 @@
-import CheckboxFilterSection from '@src/pages/Evaluator/filters/components/CheckboxFilterSection'
+import CheckboxFilterSection from '@src/pages/Evaluator/filters/components/Checkbox/CheckboxFilterSection'
 import type { EvaluatorFacets } from '@src/types/EvaluatorFacets'
 import { useSearch } from '@tanstack/react-router'
 import { type ReactElement } from 'react'
@@ -9,12 +9,14 @@ interface CheckboxFieldFilterProperties {
   field: keyof typeof FILTER_VALUES
   countsForThisField?: EvaluatorFacets[keyof EvaluatorFacets]
   filteredCountsForThisField?: EvaluatorFacets[keyof EvaluatorFacets]
+  showCounts: boolean
 }
 
 export default function CheckboxFieldFilter({
   field,
   countsForThisField = {},
-  filteredCountsForThisField = {}
+  filteredCountsForThisField = {},
+  showCounts = false
 }: CheckboxFieldFilterProperties): ReactElement {
   /**
   Get any currently applied filters for this field from the querystring
@@ -29,6 +31,7 @@ export default function CheckboxFieldFilter({
 
   return (
     <CheckboxFilterSection
+      showCounts={showCounts}
       field={field}
       counts={countsForThisField}
       filteredCounts={filteredCountsForThisField}

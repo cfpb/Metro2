@@ -2,7 +2,7 @@ import { Alert, Button, List, ListItem } from '@cfpb/design-system-react'
 import DownloadModal from '@src/components/Modal/DownloadModal'
 import M2_FIELD_NAMES from '@src/constants/m2FieldNames'
 import type { EvaluatorSearch } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
-import { evaluatorFilters } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
+import { filterParams } from '@src/pages/Evaluator/utils/evaluatorSearchSchema'
 import type AccountRecord from '@src/types/AccountRecord'
 import type Event from '@src/types/Event'
 import { stringifySearchParams } from '@src/utils/customStringify'
@@ -52,11 +52,7 @@ interface EvaluatorDownloadInterface {
   query: EvaluatorSearch
 }
 
-type resultsScenarioType =
-  | 'allResults'
-  | 'sample'
-  | 'filteredOverLimit'
-  | 'filtered'
+type resultsScenarioType = 'allResults' | 'sample' | 'filteredOverLimit' | 'filtered'
 
 export const getDownloadHeading = (resultsScenario: resultsScenarioType): string => {
   switch (resultsScenario) {
@@ -115,7 +111,7 @@ export default function EvaluatorDownloader({
     // we're downloading a random sample.
     resultsScenario = 'sample'
   } else if (view === 'all' && isFiltered && currentHits < totalHits) {
-    // If filters have been applied and reduced the number of hits, 
+    // If filters have been applied and reduced the number of hits,
     // we're downloading either all the filtered results
     // or the max number of filtered results that can be downloaded at once.
     resultsScenario = currentHits > FILTERED_LIMIT ? 'filteredOverLimit' : 'filtered'
@@ -132,19 +128,18 @@ export default function EvaluatorDownloader({
   const onDownload = () => {
     if (resultsScenario === 'sample') {
       const fileName = `${eventData.name}_${evaluatorId}_sample.csv`
-        const csv = generateDownloadData<AccountRecord>(
-          fields,
-          rows,
-          M2_FIELD_NAMES
-        )
-        downloadData(csv, fileName)
+      const csv = generateDownloadData<AccountRecord>(fields, rows, M2_FIELD_NAMES)
+      downloadData(csv, fileName)
     } else {
       let url = `/api/events/${eventData.id}/evaluator/${evaluatorId}/csv/`
       if (resultsScenario.startsWith('filtered')) {
         // Remove any params that aren't filters
-        const params = Object.fromEntries(Object.entries(query).filter(([key]) => evaluatorFilters.includes(key)))
+        const params = Object.fromEntries(
+          Object.entries(query).filter(([key]) => filterParams.includes(key))
+        )
         // Add a page_size param if we're over the download size limit
-        if (resultsScenario === 'filteredOverLimit') params.page_size = FILTERED_LIMIT
+        if (resultsScenario === 'filteredOverLimit')
+          params.page_size = FILTERED_LIMIT
         // Add search param querystring to the csv download URL
         url += stringifySearchParams(params)
       }

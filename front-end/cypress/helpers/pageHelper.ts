@@ -36,6 +36,10 @@ export class Metro2Page {
     }
   }
 
+  getExpandableHeaderByText(text: string) {
+    return cy.get('.o-expandable__header').contains(text)
+  }
+
   getExpandableByText(text: string) {
     return cy
       .get('.o-expandable__header')

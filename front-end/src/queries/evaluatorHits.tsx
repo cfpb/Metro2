@@ -48,7 +48,7 @@ export const evaluatorHitsQueryOptions = (
     placeholderData: keepPreviousData,
     retry: (failureCount, error) => {
       // Don't retry if 404 -- that probably indicates an invalid page
-      return !(error.message === '404' || failureCount > 3);
+      return !(error.message === '404' || failureCount > 3)
     },
     ...additionalParams
   })

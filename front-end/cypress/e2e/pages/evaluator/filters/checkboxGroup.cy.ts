@@ -11,6 +11,10 @@ const table = new Metro2Table()
 const getCheckedCheckboxesInAccordion = (headerText: string) =>
   page.getExpandableByText(headerText).find('input[type="checkbox"]:checked')
 
+// TODO: the fixture evaluator used in these tests has 1M hits so
+// the tests don't need to account for showing counts. They should
+// eventually be updated to include counts as needed.
+
 describe('Checkbox group filters', () => {
   beforeEach(() => {
     // Loading the default fixture should show default results message

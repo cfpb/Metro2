@@ -42,7 +42,6 @@ export default function Accordion({
   if (disabled) expandableClasses.push('o-expandable--disabled')
 
   const handleClick = (): void => {
-    console.log('handling click')
     const newState = !isExpanded
     setIsExpanded(newState)
     onClick?.(id, newState)
@@ -51,8 +50,9 @@ export default function Accordion({
   const expandableLink = (
     <span className='o-expandable__link'>
       <span
-        className={`o-expandable__cue o-expandable__cue--${isExpanded ? 'close' : 'open'
-          }`}>
+        className={`o-expandable__cue o-expandable__cue--${
+          isExpanded ? 'close' : 'open'
+        }`}>
         <span className='o-expandable__cue-text'>
           <Icon name={isExpanded ? 'up' : 'down'} alt={isExpanded ? 'up' : 'down'} />
         </span>

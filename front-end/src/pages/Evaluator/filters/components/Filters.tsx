@@ -1,6 +1,5 @@
 import { FILTER_VALUES } from '@src/constants/annotationLookups'
-import CheckboxFilter from '@src/pages/Evaluator/filters/components/CheckboxFilter'
-import EvaluatorCheckboxGroup from '@src/pages/Evaluator/filters/components/EvaluatorCheckboxGroup'
+import CheckboxFilter from '@src/pages/Evaluator/filters/components/Checkbox/CheckboxFilter'
 import type { EvaluatorFacets } from '@src/types/EvaluatorFacets'
 import type { ReactElement } from 'react'
 import EvaluatorBooleanFilter from './BooleanFilter'
@@ -11,18 +10,8 @@ interface EvaluatorFiltersData {
   counts?: EvaluatorFacets
   filteredCounts?: EvaluatorFacets
   showCounts?: boolean
+  message?: string | null
 }
-
-// export const checkboxFilters = [
-//   'acct_stat',
-//   'compl_cond_cd',
-//   'php1',
-//   'pmt_rating',
-//   'spc_com_cd',
-//   'terms_freq',
-//   'cons_info_ind',
-//   'l1__change_ind'
-// ] as const satisfies readonly (keyof EvaluatorFacets)[]
 
 export const checkboxFilters = Object.keys(
   FILTER_VALUES
@@ -31,36 +20,30 @@ export const checkboxFilters = Object.keys(
 export default function Filters({
   counts = {},
   filteredCounts = {},
-  showCounts = false
+  showCounts = false,
+  message
 }: EvaluatorFiltersData): ReactElement {
   return (
     <div className='sidebar-background'>
       <fieldset
         className='o-form__fieldset filter-sidebar'
-        data-testid='evaluator-filter-sidebar'>
+        data-testid='evaluator-filter-container'>
         <div className='block block--sub block--flush-top'>
           <h2 className='h3'>Account details</h2>
-          {showCounts ? (
-            <>
-              {checkboxFilters.map(field => {
-                return (
-                  <CheckboxFilter
-                    key={field}
-                    field={field}
-                    countsForThisField={counts[field]}
-                    filteredCountsForThisField={filteredCounts[field]}
-                  />
-                )
-              })}
-            </>
-          ) : (
-            <>
-              <p data-testid='counts-message'>Filter counts are not available for evaluators with over a million results.</p>
-              {checkboxFilters.map(field => {
-                return <EvaluatorCheckboxGroup field={field} key={field} />
-              })}
-            </>
-          )}
+          <>
+            {message ? <p data-testid='counts-message'>{message}</p> : null}
+            {checkboxFilters.map(field => {
+              return (
+                <CheckboxFilter
+                  key={field}
+                  field={field}
+                  showCounts={showCounts}
+                  countsForThisField={counts[field]}
+                  filteredCountsForThisField={filteredCounts[field]}
+                />
+              )
+            })}
+          </>
           <div className='block block--sub'>
             <h2 className='h3'>Dates</h2>
             <EvaluatorBooleanFilter

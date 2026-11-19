@@ -1,21 +1,20 @@
 import { Icon, TabPanel } from '@cfpb/design-system-react'
 import Loader from '@src/components/Loader/Loader'
 import { ITEMS_PER_PAGE } from '@src/constants/settings'
+import FilterSidebar from '@src/pages/Evaluator/filters/FilterSidebar'
 import { useEvaluatorResults } from '@src/queries/evaluatorHits'
 import type EvaluatorMetadata from '@src/types/EvaluatorMetadata'
 import type Event from '@src/types/Event'
 import { Link, useNavigate, useSearch } from '@tanstack/react-router'
 import type { ReactElement } from 'react'
-import EvaluatorFilterSidebar from '../filters/FilterSidebar'
-import Filters from '../filters/components/Filters'
 import type { EvaluatorSearch } from '../utils/evaluatorSearchSchema'
+import { filterParams } from '../utils/evaluatorSearchSchema'
 import './EvaluatorResults.scss'
 import EvaluatorDownloader from './components/Downloader'
 import EvaluatorResultsMessage from './components/ResultsMessage'
 import EvaluatorResultsPagination from './components/ResultsPagination'
 import EvaluatorResultsTabbedNavigation from './components/ResultsTabbedNavigation'
 import EvaluatorResultsTable from './components/ResultsTable'
-import filterableFields from './utils/getFilterableFields'
 import getPageCount from './utils/getPageCount'
 import getTableFields from './utils/getTableFields'
 
@@ -32,9 +31,10 @@ export default function EvaluatorResults({
 
   const query: EvaluatorSearch = useSearch({ strict: false })
 
-  const { page, view, page_size, ...selectedFilters } = query
+  const { page, view, page_size, ...params } = query
 
-  const show_counts = evaluatorMetadata.hits < 1_000_000
+  const evaluatorId = evaluatorMetadata.id
+  const eventId = eventData.id
 
   if (view == 'sample' && page != 1) {
     void navigate({
@@ -45,15 +45,15 @@ export default function EvaluatorResults({
 
   // Fetch data from server
   const { data, isLoadingError, isFetching } = useEvaluatorResults(
-    eventData.id,
-    evaluatorMetadata.id,
+    eventId,
+    evaluatorId,
     query
   )
 
-  // Check if the search params include any of the filterable fields
+  // Check if there are any filter params in the query string
   const isFiltered =
     view === 'all' &&
-    Object.keys(selectedFilters).some(key => filterableFields.includes(key))
+    Object.keys(params).some(key => filterParams.includes(key))
 
   const rows = data?.hits ?? []
 
@@ -130,7 +130,7 @@ export default function EvaluatorResults({
                     rows={rows}
                     fields={fields}
                     eventData={eventData}
-                    evaluatorId={evaluatorMetadata.id}
+                    evaluatorId={evaluatorId}
                     isFiltered={isFiltered}
                     view={view ?? 'sample'}
                     totalHits={totalHits}
@@ -139,20 +139,10 @@ export default function EvaluatorResults({
                   />
                 </div>
                 <div className='results'>
-                  <div className='results__sidebar sidebar'>
-                    {view === 'all' ? (
-                      <>
-                        {show_counts ? (
-                          <EvaluatorFilterSidebar
-                            eventId={eventData.id}
-                            evaluatorId={evaluatorMetadata.id}
-                          />
-                        ) : (
-                          <Filters showCounts={false} />
-                        )}
-                      </>
-                    ) : null}
-                  </div>
+                  {view === 'all' ? 
+                    <FilterSidebar hits={totalHits} eventId={eventId} evaluatorId={evaluatorId}/> 
+                    : null
+                  }
                   <div className='results__table'>
                     <EvaluatorResultsTable
                       data={rows}

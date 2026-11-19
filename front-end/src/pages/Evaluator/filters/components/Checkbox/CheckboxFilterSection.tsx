@@ -5,8 +5,8 @@ import { Checkbox } from '@cfpb/design-system-react'
 import Accordion from '@src/components/Accordion/Accordion'
 import { FILTER_VALUES } from '@src/constants/annotationLookups'
 import fieldGroups from '@src/constants/filterFieldGroups'
-import CheckboxFilterGroup from '@src/pages/Evaluator/filters/components/CheckboxFilterGroup'
-import CheckboxFilterItem from '@src/pages/Evaluator/filters/components/CheckboxFilterItem'
+import CheckboxFilterGroup from '@src/pages/Evaluator/filters/components/Checkbox/CheckboxFilterGroup'
+import CheckboxFilterItem from '@src/pages/Evaluator/filters/components/Checkbox/CheckboxFilterItem'
 import { useUIStore } from '@src/store'
 import type { EvaluatorFacets } from '@src/types/EvaluatorFacets'
 import getHeaderName from '@src/utils/getHeaderName'
@@ -22,6 +22,7 @@ interface CheckboxFieldFilterProperties {
   filteredCounts?: EvaluatorFacets[keyof EvaluatorFacets]
   // whether the field is required
   isRequired?: boolean
+  showCounts?: boolean
 }
 
 const CheckboxFilterSection = function CheckboxFilterParent({
@@ -29,12 +30,12 @@ const CheckboxFilterSection = function CheckboxFilterParent({
   selectedFilterValues = [],
   counts = {},
   filteredCounts = {},
-  isRequired = false
+  isRequired = false,
+  showCounts = false
 }: CheckboxFieldFilterProperties): ReactElement {
   const navigate = useNavigate()
 
   const { openEvaluatorFilters, toggleOpenEvaluatorFilter } = useUIStore()
-  console.log(openEvaluatorFilters)
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { checked } = event.currentTarget
@@ -51,7 +52,6 @@ const CheckboxFilterSection = function CheckboxFilterParent({
         }
         // reset page to 1
         parameters.page = 1
-        parameters.show_counts = true
 
         return parameters
       }
@@ -61,9 +61,15 @@ const CheckboxFilterSection = function CheckboxFilterParent({
   // Get display name for field
   const fieldName = getHeaderName(field)
 
+  // Determine if this field's values can be grouped
+  const hasGroups = field in fieldGroups
+
+  // Create an id for the field's accordion
+  const accordionId = `${field}_filter`
+
   // If the only initial value for this filter is 'blank',
-  // the expandable should show as inactive
-  if (Object.keys(counts).every(value => value === 'blank')) {
+  // return an inactive expandable
+  if (showCounts && Object.keys(counts).every(value => value === 'blank')) {
     return (
       <Accordion
         className='nested nested--level-1'
@@ -75,16 +81,21 @@ const CheckboxFilterSection = function CheckboxFilterParent({
     )
   }
 
-  const hasGroups = field in fieldGroups
+  // Get all possible values for this field
+  const possibleValues = [
+    ...FILTER_VALUES[field]
+  ] as (typeof FILTER_VALUES)[keyof typeof FILTER_VALUES][]
 
-  // The values for this field that are initially valid / present in the data
-  // const validValues = Object.keys(counts) as CheckboxFilterValues[]
-  const validValues = Object.keys(
-    counts
-  ) as (typeof FILTER_VALUES)[keyof typeof FILTER_VALUES][]
+  // Get all the currently valid values for this field
+  // If we're not showing filter counts, this is all the values
+  // If we are showing filter counts, this is all the values that appear in the evaluator's results
+  // BEFORE filters are applied
+  const validValues = showCounts
+    ? (Object.keys(counts) as (typeof FILTER_VALUES)[keyof typeof FILTER_VALUES][])
+    : possibleValues
 
-  // Filter the currently selected values to make sure they're valid
-  // This way if the URL is edited so that acct_stat=71,73, but only 71 is valid,
+  // Filter the currently selected values in the query params to make sure they're valid
+  // This way if the URL is edited so that acct_stat=71,73, but only 71 is present in the data,
   // we won't show 73 as checked
   const selectedValidValues = selectedFilterValues.filter(value =>
     validValues.includes(value)
@@ -99,14 +110,14 @@ const CheckboxFilterSection = function CheckboxFilterParent({
   const someSelected =
     !allSelected && validValues.some(value => selectedFilterValues.includes(value))
 
-  const accordionId = `${field}_filter`
-
   return (
     <Accordion
       className='nested nested--level-1'
       hasBackground={false}
       key={field}
-      openOnLoad={allSelected || someSelected || openEvaluatorFilters?.includes(accordionId)}
+      openOnLoad={
+        allSelected || someSelected || openEvaluatorFilters?.includes(accordionId)
+      }
       id={accordionId}
       onClick={toggleOpenEvaluatorFilter}
       header={
@@ -129,21 +140,24 @@ const CheckboxFilterSection = function CheckboxFilterParent({
                 }
                 filteredCount={
                   filteredCounts[
-                  'blank' as keyof EvaluatorFacets[keyof EvaluatorFacets]
+                    'blank' as keyof EvaluatorFacets[keyof EvaluatorFacets]
                   ]
                 }
                 selected={selectedValidValues}
                 field={field}
                 padRight={hasGroups}
+                showCounts={showCounts}
               />
             )}
             {[...fieldGroups[field as keyof typeof fieldGroups]].map(group => {
               const groupName = group[0]
-              const groupItems = group[1] as (typeof FILTER_VALUES)[typeof field][]
-              const groupValuesInData: (typeof FILTER_VALUES)[typeof field][] =
-                groupItems.filter(item => validValues.includes(item))
+              const groupItems = group[1]
+              const groupValuesInData = groupItems.filter(item =>
+                validValues.includes(item)
+              )
               return (
                 <CheckboxFilterGroup
+                  showCounts={showCounts}
                   field={field}
                   key={groupName}
                   groupName={groupName}
@@ -159,19 +173,16 @@ const CheckboxFilterSection = function CheckboxFilterParent({
             })}
           </>
         ) : (
-          [...FILTER_VALUES[field]].map(item => {
+          possibleValues.map(item => {
             return (
               <CheckboxFilterItem
                 field={field}
                 key={item}
-                item={item as keyof EvaluatorFacets[keyof EvaluatorFacets]}
-                filteredCount={
-                  filteredCounts[
-                  item as keyof EvaluatorFacets[keyof EvaluatorFacets]
-                  ]
-                }
-                count={counts[item as keyof EvaluatorFacets[keyof EvaluatorFacets]]}
+                item={item}
+                filteredCount={filteredCounts[item]}
+                count={counts[item]}
                 selected={selectedValidValues}
+                showCounts={showCounts}
               />
             )
           })

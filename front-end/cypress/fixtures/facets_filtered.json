@@ -1,0 +1,30 @@
+{
+  "count": 2500,
+  "facets": {
+    "acct_stat": {
+      "11": 2500
+    },
+    "spc_com_cd": {
+      "blank": 2000,
+      "M": 500
+    },
+    "php1": {
+      "0": 2500
+    },
+    "compl_cond_cd": {
+      "blank": 2500
+    },
+    "pmt_rating": {
+      "blank": 2500
+    },
+    "terms_freq": {
+      "M": 2500
+    },
+    "cons_info_ind": {
+      "blank": 2500
+    },
+    "l1__change_ind": {
+      "blank": 2500
+    }
+  }
+}
