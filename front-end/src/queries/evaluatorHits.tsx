@@ -46,10 +46,7 @@ export const evaluatorHitsQueryOptions = (
     queryFn: async () => fetchEvaluatorHits(eventId, evaluatorId, searchParams),
     staleTime: 60 * 1000,
     placeholderData: keepPreviousData,
-    retry: (failureCount, error) => {
-      // Don't retry if 404 -- that probably indicates an invalid page
-      return !(error.message === '404' || failureCount > 3)
-    },
+    retry: 1,
     ...additionalParams
   })
 }
