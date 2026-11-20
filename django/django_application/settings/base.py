@@ -92,6 +92,13 @@ TEMPLATES = [
     },
 ]
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "metro2_cache",
+    }
+}
+
 WSGI_APPLICATION = 'django_application.wsgi.application'
 
 # Internationalization

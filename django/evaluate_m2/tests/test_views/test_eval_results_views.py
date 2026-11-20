@@ -179,5 +179,12 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         # Currently, we offer facets for 8 fields (all that have AnyCharFilter)
         self.assertEqual(len(response.json()['facets']), 8)
-        self.assertEqual(response.json()['facets']['acct_stat'],
-                         {'11': 2, '97': 1})
+        self.assertEqual(response.json()['facets']['acct_stat'], {'11': 2, '97': 1})
+
+    def test_facets_endpoint_with_filters(self):
+        response = self.client.get('/api/events/1/evaluator/Portfolio-Type-1/facets/?acct_stat=11')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        # Currently, we offer facets for 8 fields (all that have AnyCharFilter)
+        self.assertEqual(len(response.json()['facets']), 8)
+        self.assertEqual(response.json()['facets']['acct_stat'], {'11': 2})
