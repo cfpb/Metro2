@@ -52,8 +52,7 @@ export default function EvaluatorResults({
 
   // Check if there are any filter params in the query string
   const isFiltered =
-    view === 'all' &&
-    Object.keys(params).some(key => filterParams.includes(key))
+    view === 'all' && Object.keys(params).some(key => filterParams.includes(key))
 
   const rows = data?.hits ?? []
 
@@ -139,10 +138,13 @@ export default function EvaluatorResults({
                   />
                 </div>
                 <div className='results'>
-                  {view === 'all' ? 
-                    <FilterSidebar hits={totalHits} eventId={eventId} evaluatorId={evaluatorId}/> 
-                    : null
-                  }
+                  {view === 'all' ? (
+                    <FilterSidebar
+                      hits={totalHits}
+                      eventId={eventId}
+                      evaluatorId={evaluatorId}
+                    />
+                  ) : null}
                   <div className='results__table'>
                     <EvaluatorResultsTable
                       data={rows}
