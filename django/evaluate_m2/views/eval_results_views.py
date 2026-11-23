@@ -256,7 +256,10 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
 
         # If the value wasn't cached, calculate the facets and save them in the cache
         if not facets:
-            facets = self.calculate_facets()
+            # Filter the queryset, this way we compute facets to just what is
+            # available in the filtered results
+            queryset = self.filter_queryset(self.get_queryset())
+            facets = self.calculate_facets(queryset)
             year_in_seconds = 365 * 24 * 60 * 60
             cache.add(key=cache_key, value=facets, timeout=year_in_seconds)
 
@@ -266,19 +269,9 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
 
         return Response({"facets": facets})
 
-    def calculate_facets(self):
-        # Filter the queryset, this way we compute facets to just what is
-        # available in the filtered results
-        queryset = self.filter_queryset(self.get_queryset())
-
-        # Get a list of facet-able fields from the filterset.
-        # Right now this just facets AnyCharFilter fields, so the JSON field
-        # cons_info_ind_assoc isn't supported for facets yet.
-        facet_fields = {
-            param: declared.field_name
-            for param, declared in self.filterset_class.base_filters.items()
-            if isinstance(declared, AnyCharFilter)
-        }
+    def calculate_facets(self, queryset):
+        # Get a list of facet-able fields.
+        facet_fields = self.filterset_class.facet_fields()
 
         # Evaluate the queryset for facets
         # TODO: right now this performs a new query for every facet field, so

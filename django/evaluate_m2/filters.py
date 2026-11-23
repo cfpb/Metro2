@@ -193,6 +193,16 @@ class EvaluatorResultFilterSet(django_filters.rest_framework.FilterSet):
         )
     )
 
+    @classmethod
+    def facet_fields(cls):
+        # Get a list of facet-able fields.
+        # Right we only offer facets on AnyCharFilter fields.
+        return {
+            param: declared.field_name
+            for param, declared in cls.base_filters.items()
+            if isinstance(declared, AnyCharFilter)
+        }
+
     class Meta:
         model = EvaluatorResultMaterializedView
         fields = [
