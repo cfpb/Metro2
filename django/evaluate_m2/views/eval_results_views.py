@@ -6,8 +6,6 @@ from django.core.cache import cache
 from django.db import ProgrammingError
 from django.db.models import Count
 from django.http import HttpResponse, StreamingHttpResponse
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 
 import botocore
 import django_filters.rest_framework
@@ -22,7 +20,6 @@ from evaluate_m2.exception_utils import (
 )
 from evaluate_m2.field_names import M2_FIELD_NAMES
 from evaluate_m2.filters import (
-    AnyCharFilter,
     EvaluatorResultFilterSet,
 )
 from evaluate_m2.models import (
