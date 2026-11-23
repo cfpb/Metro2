@@ -243,7 +243,6 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
             evaluator_id=evaluator_id,
         )
 
-    # @method_decorator(cache_page(timeout=None))
     def get(self, request, *args, **kwargs):
         event_id = self.kwargs["event_id"]
         evaluator_id = self.kwargs["evaluator_id"]
@@ -260,6 +259,10 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
             facets = self.calculate_facets()
             year_in_seconds = 365 * 24 * 60 * 60
             cache.add(key=cache_key, value=facets, timeout=year_in_seconds)
+
+        # TODO: If the cache table gets too big, limit the complexity of requests
+        # that get saved in the cache. Currently all requests get added to the cache,
+        # which could proliferate if users request every combination of filters.
 
         return Response({"facets": facets})
 
