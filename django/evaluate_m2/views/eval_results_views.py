@@ -253,8 +253,6 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
 
         # If the value wasn't cached, calculate the facets and save them in the cache
         if not facets:
-            # Filter the queryset, this way we compute facets to just what is
-            # available in the filtered results
             queryset = self.filter_queryset(self.get_queryset())
             facets = self.calculate_facets(queryset)
             year_in_seconds = 365 * 24 * 60 * 60
@@ -266,9 +264,10 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
 
         return Response({"facets": facets})
 
-    def calculate_facets(self, queryset):
+    @classmethod
+    def calculate_facets(cls, queryset):
         # Get a list of facet-able fields.
-        facet_fields = self.filterset_class.facet_fields()
+        facet_fields = cls.filterset_class.facet_fields()
 
         # Evaluate the queryset for facets
         # TODO: right now this performs a new query for every facet field, so
