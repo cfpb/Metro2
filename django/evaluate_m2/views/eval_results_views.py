@@ -2,6 +2,7 @@ import csv
 import logging
 
 from django.conf import settings
+from django.core.cache import cache
 from django.db import ProgrammingError
 from django.db.models import Count
 from django.http import HttpResponse, StreamingHttpResponse
@@ -19,7 +20,6 @@ from evaluate_m2.exception_utils import (
 )
 from evaluate_m2.field_names import M2_FIELD_NAMES
 from evaluate_m2.filters import (
-    AnyCharFilter,
     EvaluatorResultFilterSet,
 )
 from evaluate_m2.models import (
@@ -242,22 +242,32 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         event_id = self.kwargs["event_id"]
+        evaluator_id = self.kwargs["evaluator_id"]
         event = Metro2Event.objects.get(id=event_id)
         if not has_permissions_for_request(request, event):
             return HttpResponse("Unauthorized", status=401)
 
-        # Filter the queryset, this way we compute facets to just what is
-        # available in the filtered results
-        queryset = self.filter_queryset(self.get_queryset())
+        # Try getting the facet values from the Django cache
+        cache_key = f"/api/events/{event_id}/evaluator/{evaluator_id}/facets/?{request.query_params.urlencode()}"  # noqa: E501
+        facets = cache.get(cache_key)
 
-        # Get a list of facet-able fields from the filterset.
-        # Right now this just facets AnyCharFilter fields, so the JSON field
-        # cons_info_ind_assoc isn't supported for facets yet.
-        facet_fields = {
-            param: declared.field_name
-            for param, declared in self.filterset_class.base_filters.items()
-            if isinstance(declared, AnyCharFilter)
-        }
+        # If the value wasn't cached, calculate the facets and save them in the cache
+        if not facets:
+            queryset = self.filter_queryset(self.get_queryset())
+            facets = self.calculate_facets(queryset)
+            year_in_seconds = 365 * 24 * 60 * 60
+            cache.add(key=cache_key, value=facets, timeout=year_in_seconds)
+
+        # TODO: If the cache table gets too big, limit the complexity of requests
+        # that get saved in the cache. Currently all requests get added to the cache,
+        # which could proliferate if users request every combination of filters.
+
+        return Response({"facets": facets})
+
+    @classmethod
+    def calculate_facets(cls, queryset):
+        # Get a list of facet-able fields.
+        facet_fields = cls.filterset_class.facet_fields()
 
         # Evaluate the queryset for facets
         # TODO: right now this performs a new query for every facet field, so
@@ -281,10 +291,4 @@ class EvaluatorResultsFacetsView(generics.GenericAPIView):
                 for row in counts
             }
 
-        # Return a total count and the facet counts
-        return Response(
-            {
-                "count": queryset.count(),
-                "facets": facets,
-            }
-        )
+        return facets

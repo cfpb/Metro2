@@ -37,7 +37,7 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
 
     def test_download_evaluator_results_csv_filters_applied(self):
         response = self.client.get(
-            '/api/events/1/evaluator/Portfolio-Type-1/csv/?acct_stat=1&show_counts=true')
+            '/api/events/1/evaluator/Portfolio-Type-1/csv/?acct_stat=11&show_counts=true')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'text/csv')
@@ -153,3 +153,38 @@ class EvalResultsViewsTestCase(EvaluatorViewsTestHelper):
 
         self.assertEqual(response.headers['Content-Type'], 'application/json')
         self.assertContains(response, 'Event ID: 2 does not exist.', status_code=404)
+
+    ########################################
+    # Tests for Eval Results Facet view API endpoint
+    # The response should be a JSON with the following structure
+    # {
+    #     "facets": {
+    #         "acct_stat": {
+    #             "71": 70,
+    #             "78": 40,
+    #             "80": 10,
+    #             "97": 10220
+    #         },
+    #         "compl_cond_cd": {
+    #             "blank": 10320,
+    #             "XH": 15,
+    #             "XR": 5
+    #         },  # more fields ...
+    #     }
+    # }
+
+    def test_facets_endpoint(self):
+        response = self.client.get('/api/events/1/evaluator/Portfolio-Type-1/facets/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        # Currently, we offer facets for 8 fields (all that have AnyCharFilter)
+        self.assertEqual(len(response.json()['facets']), 8)
+        self.assertEqual(response.json()['facets']['acct_stat'], {'11': 2, '97': 1})
+
+    def test_facets_endpoint_with_filters(self):
+        response = self.client.get('/api/events/1/evaluator/Portfolio-Type-1/facets/?acct_stat=11')  # noqa: E501
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers['Content-Type'], 'application/json')
+        # Currently, we offer facets for 8 fields (all that have AnyCharFilter)
+        self.assertEqual(len(response.json()['facets']), 8)
+        self.assertEqual(response.json()['facets']['acct_stat'], {'11': 2})
